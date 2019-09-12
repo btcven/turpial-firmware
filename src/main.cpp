@@ -15,10 +15,12 @@
 #include "hal/hardware.h"
 
 // Defines for NVS
-#define NVS_VALUES_NAMESPACE "values"
+#define NVS_BOOL_NAMESPACE "booleans"
+#define NVS_INT_NAMESPACE "integers"
+#define NVS_STR_NAMESPACE "strings"
 #define NVS_BOOL_KEY "bool"
 #define NVS_INT_KEY "int"
-#define NVS_STR_KEY "string"
+#define NVS_STR_KEY "str"
 
 /*
 esp_err_t batteryTest() {
@@ -42,23 +44,25 @@ char *getStr(const char* K) {
     esp_err_t err;
     const char* TAG = "NVS";
     nvs_handle str_handle;
-    char* mystr = ""; // value will default to empty, if not set yet in NVS
-    size_t length = 0;
+    char* mystr = NULL; 
+    size_t required_size;
 
     // Open
     ESP_LOGD(TAG, "Opening Non-Volatile Storage (NVS) handle... ");
-    err = nvs_open(NVS_VALUES_NAMESPACE, NVS_READONLY, &str_handle);
+    err = nvs_open(NVS_STR_NAMESPACE, NVS_READONLY, &str_handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error (%s) opening NVS handle!\n", esp_err_to_name(err));
     } else {
-        ESP_LOGV(TAG, "NVS opened\n");
+        ESP_LOGI(TAG, "NVS opened\n");
 
         // Read
         ESP_LOGD(TAG, "Reading string from NVS...");
-        err = nvs_get_str(str_handle, K, mystr, &length);
+        //err = nvs_get_str(str_handle, K, NULL, &required_size);
+        //str = (char*)malloc(required_size);
+        err = nvs_get_str(str_handle, K, mystr, &required_size);
         switch (err) {
             case ESP_OK:
-                ESP_LOGV("NVS read done\n");
+                ESP_LOGD(TAG, "NVS read done\n");
                 break;
             case ESP_ERR_NVS_NOT_FOUND:
                 ESP_LOGE(TAG, "The value is not initialized yet!\n");
@@ -67,6 +71,7 @@ char *getStr(const char* K) {
                 ESP_LOGE(TAG, "Error (%s) reading!\n", esp_err_to_name(err));
                 break;
         }
+        //ESP_ERROR_CHECK(err);
 
         // Close
         nvs_close(str_handle);
@@ -84,18 +89,18 @@ int getInt(const char* K) {
 
     // Open
     ESP_LOGD(TAG, "Opening Non-Volatile Storage (NVS) handle... ");
-    err = nvs_open(NVS_VALUES_NAMESPACE, NVS_READONLY, &int_handle);
+    err = nvs_open(NVS_INT_NAMESPACE, NVS_READONLY, &int_handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error (%s) opening NVS handle!\n", esp_err_to_name(err));
     } else {
-        ESP_LOGV(TAG, "NVS opened\n");
+        ESP_LOGI(TAG, "NVS opened\n");
 
         // Read
         ESP_LOGD(TAG, "Reading int from NVS...");
         err = nvs_get_i16(int_handle, K, &myint);
         switch (err) {
             case ESP_OK:
-                ESP_LOGV("NVS read done\n");
+                ESP_LOGD(TAG, "NVS read done\n");
                 break;
             case ESP_ERR_NVS_NOT_FOUND:
                 ESP_LOGE(TAG, "The value is not initialized yet!\n");
@@ -121,18 +126,18 @@ uint8_t getBool(const char *K) {
 
     // Open
     ESP_LOGD(TAG, "Opening Non-Volatile Storage (NVS) handle... ");
-    err = nvs_open(NVS_VALUES_NAMESPACE, NVS_READONLY, &bool_handle);
+    err = nvs_open(NVS_BOOL_NAMESPACE, NVS_READONLY, &bool_handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error (%s) opening NVS handle!\n", esp_err_to_name(err));
     } else {
-        ESP_LOGV(TAG, "NVS opened\n");
+        ESP_LOGI(TAG, "NVS opened\n");
 
         // Read
         ESP_LOGD(TAG, "Reading boolean from NVS...");
         err = nvs_get_u8(bool_handle, K, &mybool);
         switch (err) {
             case ESP_OK:
-                ESP_LOGV("NVS read done\n");
+                ESP_LOGD(TAG, "NVS read done\n");
                 break;
             case ESP_ERR_NVS_NOT_FOUND:
                 ESP_LOGE(TAG, "The value is not initialized yet!\n");
@@ -153,20 +158,21 @@ void setStr(const char* K, const char* value) {
     esp_err_t err;
     const char* TAG = "NVS";
     nvs_handle str_handle;
+    const char* var = "HOLAMUNDOOOO";
 
     // Open
     ESP_LOGD(TAG, "Opening Non-Volatile Storage (NVS) handle... ");
-    err = nvs_open(NVS_VALUES_NAMESPACE, NVS_READWRITE, &str_handle);
+    err = nvs_open(NVS_STR_NAMESPACE, NVS_READWRITE, &str_handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error (%s) opening NVS handle!\n", esp_err_to_name(err));
     } else {
-        ESP_LOGV(TAG, "NVS opened\n");
+        ESP_LOGI(TAG, "NVS opened\n");
 
         // Write
         ESP_LOGD(TAG, "Updating string value in NVS...\n");
-        err = nvs_set_str(str_handle, K, value);
+        err = nvs_set_str(str_handle, K, var);
         if (err == ESP_OK) {
-            ESP_LOGV(TAG, "NVS write done\n");
+            ESP_LOGD(TAG, "NVS write done\n");
         } else {
             ESP_LOGE(TAG, "An error occurred while writing the value to NVS");
         }
@@ -174,7 +180,7 @@ void setStr(const char* K, const char* value) {
         ESP_LOGD(TAG, "Committing updates in NVS\n");
         err = nvs_commit(str_handle);
         if (err == ESP_OK) {
-            ESP_LOGV(TAG, "Commit done\n");
+            ESP_LOGD(TAG, "Commit done\n");
         } else {
             ESP_LOGE(TAG, "An error occurred while committing changes");
         }
@@ -191,17 +197,17 @@ void setInt(const char* K, int16_t value) {
 
     // Open
     ESP_LOGD(TAG, "Opening Non-Volatile Storage (NVS) handle... ");
-    err = nvs_open(NVS_VALUES_NAMESPACE, NVS_READWRITE, &int_handle);
+    err = nvs_open(NVS_INT_NAMESPACE, NVS_READWRITE, &int_handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error (%s) opening NVS handle!\n", esp_err_to_name(err));
     } else {
-        ESP_LOGV(TAG, "NVS opened\n");
+        ESP_LOGI(TAG, "NVS opened\n");
 
         // Write
         printf("Updating int value in NVS ... ");
         err = nvs_set_i16(int_handle, K, value);
         if (err == ESP_OK) {
-            ESP_LOGV(TAG, "NVS write done\n");
+            ESP_LOGD(TAG, "NVS write done\n");
         } else {
             ESP_LOGE(TAG, "An error occurred while writing the value to NVS");
         }
@@ -209,7 +215,7 @@ void setInt(const char* K, int16_t value) {
         printf("Committing updates in NVS ... ");
         err = nvs_commit(int_handle);
         if (err == ESP_OK) {
-            ESP_LOGV(TAG, "Commit done\n");
+            ESP_LOGD(TAG, "Commit done\n");
         } else {
             ESP_LOGE(TAG, "An error occurred while committing changes");
         }
@@ -226,17 +232,17 @@ void setBool(const char *K, uint8_t value) {
 
     // Open
     ESP_LOGD(TAG, "Opening Non-Volatile Storage (NVS) handle... ");
-    err = nvs_open(NVS_VALUES_NAMESPACE, NVS_READWRITE, &bool_handle);
+    err = nvs_open(NVS_BOOL_NAMESPACE, NVS_READWRITE, &bool_handle);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error (%s) opening NVS handle!\n", esp_err_to_name(err));
     } else {
-        ESP_LOGV(TAG, "NVS opened\n");
+        ESP_LOGI(TAG, "NVS opened\n");
 
         // Write
         printf("Updating boolean value in NVS ... ");
         err = nvs_set_u8(bool_handle, K, value);
         if (err == ESP_OK) {
-            ESP_LOGV(TAG, "NVS write done\n");
+            ESP_LOGD(TAG, "NVS write done\n");
         } else {
             ESP_LOGE(TAG, "An error occurred while writing the value to NVS");
         }
@@ -244,7 +250,7 @@ void setBool(const char *K, uint8_t value) {
         printf("Committing updates in NVS ... ");
         err = nvs_commit(bool_handle);
         if (err == ESP_OK) {
-            ESP_LOGV(TAG, "Commit done\n");
+            ESP_LOGD(TAG, "Commit done\n");
         } else {
             ESP_LOGE(TAG, "An error occurred while committing changes");
         }
@@ -255,7 +261,7 @@ void setBool(const char *K, uint8_t value) {
 }
 
 void nvsTest() {
-    nvs_flash_erase();
+    //nvs_flash_erase();
     esp_err_t err;
 
     // Initialize NVS
@@ -274,7 +280,7 @@ void nvsTest() {
     bool mybool = getBool(NVS_BOOL_KEY);
     ESP_LOGI(__func__, "Boolean value from NVS: %i", mybool);
     // Attempting to update boleean value to NVS
-    setBool(NVS_BOOL_KEY, 0);
+    setBool(NVS_BOOL_KEY, 1);
     // =======================================================
     // Attempting to get int value from NVS
     int myint = getInt(NVS_INT_KEY);
@@ -283,10 +289,16 @@ void nvsTest() {
     setInt(NVS_INT_KEY, 2492);
     // =======================================================
     // Attempting to get const char array value from NVS
-    const char* mystr = getStr(NVS_STR_KEY);
-    ESP_LOGD(__func__, "String value from NVS: %s", mystr);
+    char* mystr = getStr(NVS_STR_KEY);
+    //char * mystr = NULL;
+    if (mystr != NULL) {
+        ESP_LOGD(__func__, "String value from NVS: %s", mystr);
+    } else {
+        ESP_LOGW(__func__, "NVS returned a NULL!");
+    }
+    //free(mystr);
     // Attempting to update int value to NVS
-    setStr(NVS_STR_KEY, "Hola que tal Luis!");
+    setStr(NVS_STR_KEY, "HOLA");
 }
 
 void setup() {
