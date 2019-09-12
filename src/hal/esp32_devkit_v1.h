@@ -22,7 +22,7 @@
  * @brief WiFi Station default params.
  * 
  */
-#define WST_SSID    "ESP32_DEVKIT_V1"
+#define WST_SSID    ""
 #define WST_PASS    ""
 
 /**
