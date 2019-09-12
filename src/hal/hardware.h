@@ -14,8 +14,8 @@
 
 #if defined(ARDUINO_HELTEC_WIFI_LORA_32_V2)
     #include "heltec_v2.h"
-#elif defined(ARDUINO_FEATHER_ESP32)
-    #include "featheresp32.h"
+#elif defined(ARDUINO_ESP32DOIT_DEVKIT_V1)
+    #include "esp32doit-devkit-v1.h"
 #endif
 
 #endif // HARDWARE_H_
