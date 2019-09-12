@@ -10,6 +10,7 @@
  */
 
 #include <Arduino.h>
+#include "hal/hardware.h"
 
 void setup(){
     //
