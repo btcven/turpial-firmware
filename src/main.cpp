@@ -12,6 +12,7 @@
 #include <Arduino.h>
 #include "nvs.h"
 #include "nvs_flash.h"
+#include "hal/hardware.h"
 
 // Defines for NVS
 #define NVS_VALUES_NAMESPACE "values"
