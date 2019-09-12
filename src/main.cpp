@@ -18,12 +18,14 @@ void setup()
     //
     Persistence nvs;
 
+    // open nvs
     bool isOpen = nvs.begin("namespace", false);
 
     if (isOpen)
     {
         ESP_LOGD("nvsOpen", "nvs is open");
-        // Save chars into theNVS
+
+        // Save chars into the NVS
         size_t str_saved = nvs.setString("key", "value");
         if (str_saved > 0)
         {
@@ -36,7 +38,6 @@ void setup()
             } else {
                 ESP_LOGE("nvs_get", "error reading value w/key");
             }
-
         }
         else
         {
@@ -45,7 +46,7 @@ void setup()
     }
     else
     {
-        ESP_LOGE("nvsOpen", "nvs is not open");
+        ESP_LOGE("nvsOpen", "Error opening the NVS");
     }
 }
 
