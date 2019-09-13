@@ -13,7 +13,7 @@
 #include "nvs.h"
 #include "nvs_flash.h"
 #include "hal/hardware.h"
-#include "NVS/persistence.h"
+#include "NVS/NVStorage.h"
 
 /*
 esp_err_t batteryTest() {
@@ -33,17 +33,36 @@ esp_err_t wifiTest() {
 */
 
 void nvsTest() {
-    Persistence nvs;
+    NVStorage nvs;
+
+    // Initialize the NVS flash storage
+    nvs.begin();
 
     // open nvs
-    bool isOpen = nvs.begin("namespace", false);
+    bool isOpen = nvs.open("namespace", false);
 
     if (isOpen)
     {
         ESP_LOGD("nvsOpen", "nvs is open");
 
         // Save chars into the NVS
-        size_t str_saved = nvs.setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
+        nvs.setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
+        //size_t str_saved = nvs.setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
+        //ESP_LOGD("nvs_set", "saved %d bytes", str_saved);
+
+        // Read chars from the NVS
+        char *readString = nvs.getString(NVS_STR_KEY, "ERROR");
+
+        if (readString != "ERROR" && readString)
+        {
+            ESP_LOGD("nvs_get", "have a key w/value %s", readString);
+            free(readString);
+        }
+        else
+        {
+            ESP_LOGE("nvs_get", "error reading value w/key");
+        }
+        /*
         if (str_saved > 0)
         {
             ESP_LOGD("nvs_set", "saved %d bytes", str_saved);
@@ -61,9 +80,10 @@ void nvsTest() {
         {
             ESP_LOGE("nvs_set", "Error saving into the nvs");
         }
+        */
 
         // Save int value into the NVS
-        nvs.setInt(NVS_INT_KEY, 16782);
+        nvs.setInt(NVS_INT_KEY, 23987);
         // Read int from the NVS
         int32_t readInt = nvs.getInt(NVS_INT_KEY, 0);
         ESP_LOGD(__func__, "Int value from NVS: %i", readInt);
