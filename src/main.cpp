@@ -13,6 +13,7 @@
 #include "nvs.h"
 #include "nvs_flash.h"
 #include "hal/hardware.h"
+#include "NVS/persistence.h"
 
 // Defines for NVS
 #define NVS_BOOL_NAMESPACE "booleans"
@@ -320,6 +321,51 @@ void setBool(const char *K, uint8_t value) {
 }
 
 void nvsTest() {
+    Persistence nvs;
+
+    // open nvs
+    bool isOpen = nvs.begin("namespace", false);
+
+    if (isOpen)
+    {
+        ESP_LOGD("nvsOpen", "nvs is open");
+
+        // Save chars into the NVS
+        size_t str_saved = nvs.setString(NVS_STR_KEY, "ANTONIO");
+        if (str_saved > 0)
+        {
+            ESP_LOGD("nvs_set", "saved %d bytes", str_saved);
+            // Read chars from the NVS
+            const char *readString = nvs.getString(NVS_STR_KEY, "ERROR");
+
+            if(readString != "ERROR") {
+                ESP_LOGD("nvs_get", "have a key w/value %s", readString);
+            } else {
+                ESP_LOGE("nvs_get", "error reading value w/key");
+            }
+        }
+        else
+        {
+            ESP_LOGE("nvs_set", "Error saving into the nvs");
+        }
+
+        // Save int value into the NVS
+        nvs.setInt(NVS_INT_KEY, 16782);
+        // Read int from the NVS
+        int32_t readInt = nvs.getInt(NVS_INT_KEY, 0);
+        ESP_LOGD(__func__, "Int value from NVS: %i", readInt);
+
+        // Save bool value into the NVS
+        nvs.setBool(NVS_BOOL_KEY, 1);
+        // Read int from the NVS
+        bool readBool = nvs.getBool(NVS_BOOL_KEY, 0);
+        ESP_LOGD(__func__, "Bool value from NVS: %i", readBool);
+    }
+    else
+    {
+        ESP_LOGE("nvsOpen", "Error opening the NVS");
+    }
+/*
     //nvs_flash_erase();
     esp_err_t err;
 
@@ -356,13 +402,15 @@ void nvsTest() {
         ESP_LOGD("nvs_get", "have a key w/value %s", readString);
     } else {
         ESP_LOGE("nvs_get", "error reading value w/key");
-    }
+    }*/
 }
 
-void setup() {
+void setup()
+{
     nvsTest();
 }
 
-void loop() {
-
+void loop()
+{
+    //
 }
