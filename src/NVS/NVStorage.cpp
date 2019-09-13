@@ -57,8 +57,15 @@ bool NVStorage::begin()
         // Retry nvs_flash_init
         ESP_ERROR_CHECK(nvs_flash_erase());
         err = nvs_flash_init();
+        return true;
+    }
+    else
+    {
+        return true;
     }
     ESP_ERROR_CHECK(err);
+
+    return false;
 }
 
 bool NVStorage::open(const char *name, bool readOnly)
@@ -208,116 +215,16 @@ void NVStorage::setParam(const char *key, nvs_param_t type, void *value)
 void NVStorage::setString(const char *key, const char *value)
 {
     setParam(key, NVS_STR, &value);
-    /*
-    const char *TAG = "nvs_setString";
-
-    if (!_started || !key || !value || _readOnly)
-    {
-        //return 0;
-        return;
-    }
-
-    ESP_LOGD(TAG, "Updating string value in NVS...\n");
-    esp_err_t err = nvs_set_str(_handle, key, value);
-
-    if (err)
-    {
-        ESP_LOGE(TAG, "nvs_set_str fail: %s %s", key, esp_err_to_name(err));
-        //return 0;
-        return;
-    }
-    else 
-    {
-        ESP_LOGD(TAG, "nvs_set_str write done\n");
-    } 
-
-    err = nvs_commit(_handle);
-
-    if (err)
-    {
-        ESP_LOGE(TAG, "nvs_commit fail: %s %s", key, esp_err_to_name(err));
-        //return 0;
-        return;
-    }
-    else
-    {
-        ESP_LOGD(TAG, "nvs_commit done\n");
-        //return strlen(value);
-        return;
-    }
-    */
 }
 
 void NVStorage::setInt(const char *key, int32_t value)
 {
     setParam(key, NVS_INT, &value);
-    /*
-    const char *TAG = "nvs_setInt";
-
-    if (!_started || !key || !value || _readOnly)
-    {
-        return;
-    }
-
-    ESP_LOGD(TAG, "Updating int value in NVS...\n");
-    esp_err_t err = nvs_set_i32(_handle, key, value);
-    if (err)
-    {
-        ESP_LOGE(TAG, "nvs_set_int fail: %s %s", key, esp_err_to_name(err));
-        return;
-    }
-    else
-    {
-        ESP_LOGD(TAG, "nvs_set_int write done\n");
-    }
-
-    err = nvs_commit(_handle);
-    if (err)
-    {
-        ESP_LOGE(TAG, "nvs_commit fail: %s %s", key, esp_err_to_name(err));
-        return;
-    }
-    else
-    {
-        ESP_LOGD(TAG, "nvs_commit done\n");
-    }
-    */
 }
 
 void NVStorage::setBool(const char *key, uint8_t value)
 {
     setParam(key, NVS_BOOL, &value);
-    /*
-    const char *TAG = "nvs_setBool";
-
-    if (!_started || !key || !value || _readOnly)
-    {
-        return;
-    }
-
-    ESP_LOGD(TAG, "Updating bool value in NVS...\n");
-    esp_err_t err = nvs_set_u8(_handle, key, value);
-    if (err)
-    {
-        ESP_LOGE(TAG, "nvs_set_int fail: %s %s", key, esp_err_to_name(err));
-        return;
-    }
-    else
-    {
-        ESP_LOGD(TAG, "nvs_set_int write done\n");
-    }
-
-    err = nvs_commit(_handle);
-    if (err)
-    {
-        ESP_LOGE(TAG, "nvs_commit fail: %s %s", key, esp_err_to_name(err));
-        return;
-    }
-    else
-    {
-        ESP_LOGD(TAG, "nvs_commit done\n");
-    }
-    */
 }
 
 /**
