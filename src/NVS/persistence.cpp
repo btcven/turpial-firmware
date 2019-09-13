@@ -240,10 +240,9 @@ void Persistence::setBool(const char *key, uint8_t value)
  * @param defaultValue 
  * @return const char* 
  */
-const char *Persistence::getString(const char *key, const char *defaultValue)
+char *Persistence::getString(const char *key, char *defaultValue)
 {
-    char *value = NULL;
-    size_t len = 0;
+    size_t required_size;
     const char* TAG = "nvs_getString";
 
     if (!_started || !key)
@@ -251,31 +250,41 @@ const char *Persistence::getString(const char *key, const char *defaultValue)
         return defaultValue;
     }
 
-    esp_err_t err = nvs_get_str(_handle, key, value, &len);
+    esp_err_t err = nvs_get_str(_handle, key, NULL, &required_size);
 
     if (err)
     {
-        ESP_LOGE(TAG, "nvs_get_str len fail: %s %s", key, esp_err_to_name(err));
+        ESP_LOGE(TAG, "nvs_get_str required_size fail: %s %s", key, esp_err_to_name(err));
         return defaultValue;
     }
     else
     {
-        char buf[len];
-        value = buf;
-        ESP_LOGD(TAG, "Reading string from NVS...");
-        err = nvs_get_str(_handle, key, value, &len);
-
-        if (err)
+        if (required_size == 0) 
         {
-            ESP_LOGE(TAG, "nvs_get_str fail: %s %s", key, esp_err_to_name(err));
+            ESP_LOGD(TAG, "No string saved yet!\n");
             return defaultValue;
-        }
+        } 
         else
         {
-            const char *toConstChar(buf);
-            return toConstChar;
+            // Reading the string...
+            ESP_LOGD(TAG, "Reading string from NVS...");
+            char* buff = (char*)malloc(required_size);
+            if (!buff)
+                return defaultValue;
+            err = nvs_get_str(_handle, key, buff, &required_size);
+            if (err)
+            {
+                ESP_LOGE(TAG, "nvs_get_str fail: %s %s", key, esp_err_to_name(err));
+                return defaultValue;
+            }
+            else
+            {
+                return buff;
+            }
         }
     }
+
+    return defaultValue; // ELIMINAR ESTO!
 }
 
 int32_t Persistence::getInt(const char *key, int32_t defaultValue)

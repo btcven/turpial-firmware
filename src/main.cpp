@@ -43,15 +43,16 @@ void nvsTest() {
         ESP_LOGD("nvsOpen", "nvs is open");
 
         // Save chars into the NVS
-        size_t str_saved = nvs.setString(NVS_STR_KEY, "ANTONIO");
+        size_t str_saved = nvs.setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
         if (str_saved > 0)
         {
             ESP_LOGD("nvs_set", "saved %d bytes", str_saved);
             // Read chars from the NVS
-            const char *readString = nvs.getString(NVS_STR_KEY, "ERROR");
+            char *readString = nvs.getString(NVS_STR_KEY, "ERROR");
 
-            if(readString != "ERROR") {
+            if(readString != "ERROR" && readString) {
                 ESP_LOGD("nvs_get", "have a key w/value %s", readString);
+                free(readString);
             } else {
                 ESP_LOGE("nvs_get", "error reading value w/key");
             }

@@ -37,7 +37,7 @@ public:
     void setInt(const char *key, int32_t value);
     void setBool(const char *key, uint8_t value);
     // GET values
-    const char *getString(const char *key, const char *defaultValue);
+    char *getString(const char *key, char *defaultValue);
     int32_t getInt(const char *key, int32_t defaultValue);
     uint8_t getBool(const char *key, uint8_t defaultValue);
 };
