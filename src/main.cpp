@@ -15,20 +15,6 @@
 #include "hal/hardware.h"
 #include "NVS/persistence.h"
 
-// Defines for NVS
-#define NVS_BOOL_NAMESPACE "booleans"
-#define NVS_INT_NAMESPACE "integers"
-#define NVS_STR_NAMESPACE "strings"
-#define NVS_BOOL_KEY "bool"
-#define NVS_INT_KEY "int"
-#define NVS_STR_KEY "str"
-
-typedef enum {
-    NVS_BOOL,
-    NVS_INT,
-    NVS_STR
-} nvs_params_t;
-
 /*
 esp_err_t batteryTest() {
     // Put the code here for battery test

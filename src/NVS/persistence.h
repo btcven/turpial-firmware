@@ -13,6 +13,10 @@
 #define PERSISTENCE_H
 #include "Arduino.h"
 
+#define NVS_BOOL_KEY "bool"
+#define NVS_INT_KEY "int"
+#define NVS_STR_KEY "str"
+
 class Persistence
 {
 protected:
