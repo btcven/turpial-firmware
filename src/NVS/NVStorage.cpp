@@ -309,47 +309,6 @@ char *NVStorage::getString(const char *key, char *defaultValue)
     mystr = getParam(key, NVS_STR, &defaultValue);
 
     return *((char **)mystr);
-    /*size_t required_size;
-    const char* TAG = "nvs_getString";
-
-    if (!_started || !key)
-    {
-        return defaultValue;
-    }
-
-    esp_err_t err = nvs_get_str(_handle, key, NULL, &required_size);
-
-    if (err)
-    {
-        ESP_LOGE(TAG, "nvs_get_str required_size fail: %s %s", key, esp_err_to_name(err));
-        return defaultValue;
-    }
-    else
-    {
-        if (required_size == 0) 
-        {
-            ESP_LOGD(TAG, "No string saved yet!\n");
-            return defaultValue;
-        } 
-        else
-        {
-            // Reading the string...
-            ESP_LOGD(TAG, "Reading string from NVS...");
-            char* buff = (char*)malloc(required_size);
-            if (!buff)
-                return defaultValue;
-            err = nvs_get_str(_handle, key, buff, &required_size);
-            if (err)
-            {
-                ESP_LOGE(TAG, "nvs_get_str fail: %s %s", key, esp_err_to_name(err));
-                return defaultValue;
-            }
-            else
-            {
-                return buff;
-            }
-        }
-    }*/
 }
 
 int32_t NVStorage::getInt(const char *key, int32_t defaultValue)
@@ -358,26 +317,6 @@ int32_t NVStorage::getInt(const char *key, int32_t defaultValue)
     myint = getParam(key, NVS_INT, &defaultValue);
 
     return *((int32_t *)myint);
-    /*int32_t myint = 0; // value will default to 0, if not set yet in NVS
-    const char *TAG = "nvs_getInt";
-
-    if (!_started || !key)
-    {
-        return defaultValue;
-    }
-
-    ESP_LOGD(TAG, "Reading int from NVS...");
-    esp_err_t err = nvs_get_i32(_handle, key, &myint);
-
-    if (err)
-    {
-        ESP_LOGE(TAG, "nvs_get_int fail: %s %s", key, esp_err_to_name(err));
-        return defaultValue;
-    }
-    else
-    {
-        return myint;
-    }*/
 }
 
 uint8_t NVStorage::getBool(const char *key, uint8_t defaultValue)
@@ -386,24 +325,4 @@ uint8_t NVStorage::getBool(const char *key, uint8_t defaultValue)
     mybool = getParam(key, NVS_BOOL, &defaultValue);
 
     return *((uint8_t *)mybool);
-    /*uint8_t mybool = 0; // value will default to 0, if not set yet in NVS
-    const char *TAG = "nvs_getBool";
-
-    if (!_started || !key)
-    {
-        return defaultValue;
-    }
-
-    ESP_LOGD(TAG, "Reading bool from NVS...");
-    esp_err_t err = nvs_get_u8(_handle, key, &mybool);
-
-    if (err)
-    {
-        ESP_LOGE(TAG, "nvs_get_bool fail: %s %s", key, esp_err_to_name(err));
-        return defaultValue;
-    }
-    else
-    {
-        return mybool;
-    }*/
 }
