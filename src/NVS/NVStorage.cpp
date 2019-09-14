@@ -227,6 +227,75 @@ void NVStorage::setBool(const char *key, uint8_t value)
     setParam(key, NVS_BOOL, &value);
 }
 
+void *NVStorage::getParam(const char *key, nvs_param_t type, void *defaultValue)
+{
+    if (!_started || !key)
+    {
+        return defaultValue;
+    }
+
+    esp_err_t err;
+    void *value;
+    char* param;
+    ESP_LOGD(__func__, "Reading value from NVS...\n");
+    switch (type)
+    { 
+        case NVS_STR:
+            param = "str";
+            size_t required_size;
+
+            err = nvs_get_str(_handle, key, NULL, &required_size);
+            if (err)
+            {
+                ESP_LOGE(TAG, "nvs_get_str required_size fail: %s %s", key, esp_err_to_name(err));
+                return defaultValue;
+            }
+            else
+            {
+                if (required_size == 0)
+                {
+                    ESP_LOGD(TAG, "No string saved yet!\n");
+                    return defaultValue;
+                }
+                else
+                {
+                    // Reading the string...
+                    char *buff = (char *)malloc(required_size);
+                    if (!buff)
+                        return defaultValue;
+                    err = nvs_get_str(_handle, key, buff, &required_size);
+                    value = &buff;
+                }
+            }
+            break;
+        case NVS_INT:
+            param = "int";
+            int32_t myint;
+            err = nvs_get_i32(_handle, key, &myint);
+            value = &myint;
+            break;
+        case NVS_BOOL:
+            param = "bool";
+            uint8_t mybool;
+            err = nvs_get_u8(_handle, key, &mybool);
+            value = &mybool;
+            break;
+        default:
+            ESP_LOGE(__func__, "The value type attempting to write on NVS does not exist!\n");
+            return defaultValue;
+    }
+
+    if (err)
+    {
+        ESP_LOGE(__func__, "nvs_get_%s fail: %s %s", param, key, esp_err_to_name(err));
+        return defaultValue;
+    }
+    else
+    {
+        return value;
+    }
+}
+
 /**
  * @brief Get string  
  * 
@@ -236,7 +305,11 @@ void NVStorage::setBool(const char *key, uint8_t value)
  */
 char *NVStorage::getString(const char *key, char *defaultValue)
 {
-    size_t required_size;
+    void *mystr;
+    mystr = getParam(key, NVS_STR, &defaultValue);
+
+    return *((char **)mystr);
+    /*size_t required_size;
     const char* TAG = "nvs_getString";
 
     if (!_started || !key)
@@ -276,14 +349,16 @@ char *NVStorage::getString(const char *key, char *defaultValue)
                 return buff;
             }
         }
-    }
-
-    return defaultValue; // ELIMINAR ESTO!
+    }*/
 }
 
 int32_t NVStorage::getInt(const char *key, int32_t defaultValue)
 {
-    int32_t myint = 0; // value will default to 0, if not set yet in NVS
+    void *myint;
+    myint = getParam(key, NVS_INT, &defaultValue);
+
+    return *((int32_t *)myint);
+    /*int32_t myint = 0; // value will default to 0, if not set yet in NVS
     const char *TAG = "nvs_getInt";
 
     if (!_started || !key)
@@ -302,12 +377,16 @@ int32_t NVStorage::getInt(const char *key, int32_t defaultValue)
     else
     {
         return myint;
-    }
+    }*/
 }
 
 uint8_t NVStorage::getBool(const char *key, uint8_t defaultValue)
 {
-    uint8_t mybool = 0; // value will default to 0, if not set yet in NVS
+    void *mybool;
+    mybool = getParam(key, NVS_BOOL, &defaultValue);
+
+    return *((uint8_t *)mybool);
+    /*uint8_t mybool = 0; // value will default to 0, if not set yet in NVS
     const char *TAG = "nvs_getBool";
 
     if (!_started || !key)
@@ -326,5 +405,5 @@ uint8_t NVStorage::getBool(const char *key, uint8_t defaultValue)
     else
     {
         return mybool;
-    }
+    }*/
 }

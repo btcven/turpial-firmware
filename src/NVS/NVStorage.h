@@ -48,7 +48,7 @@ class NVStorage
         void setInt(const char *key, int32_t value);
         void setBool(const char *key, uint8_t value);
         // GET values
-        void getParam();
+        void *getParam(const char *key, nvs_param_t type, void *defaultValue);
         char *getString(const char *key, char *defaultValue);
         int32_t getInt(const char *key, int32_t defaultValue);
         uint8_t getBool(const char *key, uint8_t defaultValue);
