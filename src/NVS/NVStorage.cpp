@@ -44,11 +44,9 @@ bool NVStorage::begin()
         return false;
     }
 
-    const char *TAG = "nvs_init";
-
     //nvs_flash_erase();
     // Initialize NVS
-    ESP_LOGD(TAG, "Initializing NVS...\n");
+    ESP_LOGD(__func__, "Initializing NVS...\n");
     esp_err_t err = nvs_flash_init();
 
     if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
@@ -79,7 +77,7 @@ bool NVStorage::open(const char *name, bool readOnly)
     esp_err_t err = nvs_open(name, readOnly ? NVS_READONLY : NVS_READWRITE, &_handle);
     if (err)
     {
-        ESP_LOGE("tag", "nvs_open failed: %s", esp_err_to_name(err));
+        ESP_LOGE(__func__, "nvs_open failed: %s", esp_err_to_name(err));
         return false;
     }
     else
@@ -247,14 +245,14 @@ void *NVStorage::getParam(const char *key, nvs_param_t type, void *defaultValue)
             err = nvs_get_str(_handle, key, NULL, &required_size);
             if (err)
             {
-                ESP_LOGE(TAG, "nvs_get_str required_size fail: %s %s", key, esp_err_to_name(err));
+                ESP_LOGE(__func__, "nvs_get_str required_size fail: %s %s", key, esp_err_to_name(err));
                 return defaultValue;
             }
             else
             {
                 if (required_size == 0)
                 {
-                    ESP_LOGD(TAG, "No string saved yet!\n");
+                    ESP_LOGD(__func__, "No string saved yet!\n");
                     return defaultValue;
                 }
                 else

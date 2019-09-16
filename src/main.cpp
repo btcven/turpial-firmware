@@ -43,42 +43,42 @@ void nvsTest() {
 
     if (isOpen)
     {
-        ESP_LOGD("nvsOpen", "nvs is open");
+        ESP_LOGD(__func__, "nvs is open");
 
         // Save chars into the NVS
         nvs.setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
         //size_t str_saved = nvs.setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
-        //ESP_LOGD("nvs_set", "saved %d bytes", str_saved);
+        //ESP_LOGD(__func__, "saved %d bytes", str_saved);
 
         // Read chars from the NVS
         char *readString = nvs.getString(NVS_STR_KEY, "ERROR");
 
         if (readString != "ERROR" && readString)
         {
-            ESP_LOGD("nvs_get", "have a key w/value %s", readString);
+            ESP_LOGD(__func__, "have a key w/value %s", readString);
             free(readString);
         }
         else
         {
-            ESP_LOGE("nvs_get", "error reading value w/key");
+            ESP_LOGE(__func__, "error reading value w/key");
         }
         /*
         if (str_saved > 0)
         {
-            ESP_LOGD("nvs_set", "saved %d bytes", str_saved);
+            ESP_LOGD(__func__, "saved %d bytes", str_saved);
             // Read chars from the NVS
             char *readString = nvs.getString(NVS_STR_KEY, "ERROR");
 
             if(readString != "ERROR" && readString) {
-                ESP_LOGD("nvs_get", "have a key w/value %s", readString);
+                ESP_LOGD(__func__, "have a key w/value %s", readString);
                 free(readString);
             } else {
-                ESP_LOGE("nvs_get", "error reading value w/key");
+                ESP_LOGE(__func__, "error reading value w/key");
             }
         }
         else
         {
-            ESP_LOGE("nvs_set", "Error saving into the nvs");
+            ESP_LOGE(__func__, "Error saving into the nvs");
         }
         */
 
@@ -96,7 +96,7 @@ void nvsTest() {
     }
     else
     {
-        ESP_LOGE("nvsOpen", "Error opening the NVS");
+        ESP_LOGE(__func__, "Error opening the NVS");
     }
 }
 
