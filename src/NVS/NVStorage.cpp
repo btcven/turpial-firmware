@@ -235,7 +235,7 @@ void *NVStorage::getParam(const char *key, nvs_param_t type, void *defaultValue)
     esp_err_t err;
     void *value;
     char* param;
-    ESP_LOGD(__func__, "Reading value from NVS...\n");
+    ESP_LOGD(__func__, "Reading value from NVS...");
     switch (type)
     { 
         case NVS_STR:

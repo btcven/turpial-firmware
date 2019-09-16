@@ -17,6 +17,16 @@
 #define BLE_ENABLED false
 #define WST_ENABLED false
 #define WAP_ENABLED false
+// NVS related defines
+#define NVS_WIFI_NAMESPACE "wifi_config"
+#define NVS_WAP_ENABLED_KEY "WAP_enabled"
+#define NVS_WST_ENABLED_KEY "WST_enabled"
+#define NVS_WAP_SSID_KEY "WAP_ssid"
+#define NVS_WAP_PASS_KEY "WAP_pass"
+#define NVS_WAP_CHANNEL_KEY "WAP_channel"
+#define NVS_WAP_MAXCONN_KEY "WAP_maxconn"
+#define NVS_WST_SSID_KEY "WST_ssid"
+#define NVS_WST_PASS_KEY "WST_pass"
 
 /**
  * @brief WiFi Station default params.
