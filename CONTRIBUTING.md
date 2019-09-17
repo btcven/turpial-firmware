@@ -2,7 +2,7 @@
 
 Thanks for taking the time to contribute!
 
-The following is a set of guidelines for contributing to [**Locha**](), [**Turpial**]() or [**Harpia**]().
+The following is a set of guidelines for contributing to [**Locha**](), [**Turpial**]() or .
 
 #### Table of contents
 
