@@ -66,6 +66,14 @@ bool NVStorage::begin()
     return false;
 }
 
+/**
+ * @brief 
+ * 
+ * @param name 
+ * @param readOnly 
+ * @return true 
+ * @return false 
+ */
 bool NVStorage::open(const char *name, bool readOnly)
 {
     if (_started)
@@ -152,6 +160,13 @@ bool NVStorage::remove(const char *key)
     }
 }
 
+/**
+ * @brief 
+ * 
+ * @param key 
+ * @param type 
+ * @param value 
+ */
 void NVStorage::setParam(const char *key, nvs_param_t type, void *value)
 {
     if (!_started || !key || !value || _readOnly)
@@ -215,16 +230,36 @@ void NVStorage::setString(const char *key, const char *value)
     setParam(key, NVS_STR, &value);
 }
 
+/**
+ * @brief 
+ * 
+ * @param key 
+ * @param value 
+ */
 void NVStorage::setInt(const char *key, int32_t value)
 {
     setParam(key, NVS_INT, &value);
 }
 
+/**
+ * @brief 
+ * 
+ * @param key 
+ * @param value 
+ */
 void NVStorage::setBool(const char *key, uint8_t value)
 {
     setParam(key, NVS_BOOL, &value);
 }
 
+/**
+ * @brief 
+ * 
+ * @param key 
+ * @param type 
+ * @param defaultValue 
+ * @return void* 
+ */
 void *NVStorage::getParam(const char *key, nvs_param_t type, void *defaultValue)
 {
     if (!_started || !key)
@@ -309,6 +344,13 @@ char *NVStorage::getString(const char *key, char *defaultValue)
     return *((char **)mystr);
 }
 
+/**
+ * @brief 
+ * 
+ * @param key 
+ * @param defaultValue 
+ * @return int32_t 
+ */
 int32_t NVStorage::getInt(const char *key, int32_t defaultValue)
 {
     void *myint;
@@ -317,6 +359,13 @@ int32_t NVStorage::getInt(const char *key, int32_t defaultValue)
     return *((int32_t *)myint);
 }
 
+/**
+ * @brief 
+ * 
+ * @param key 
+ * @param defaultValue 
+ * @return uint8_t 
+ */
 uint8_t NVStorage::getBool(const char *key, uint8_t defaultValue)
 {
     void *mybool;

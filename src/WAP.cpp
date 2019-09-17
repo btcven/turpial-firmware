@@ -48,7 +48,7 @@ esp_err_t WAP_INIT()
   {
       ESP_LOGE(__func__, "Error opening the NVS");
   }
-  
+
   bool initAP = WiFi.softAP(apSSID, apPassword, apChannel, 0, apMaxConn);
 
   if (initAP)

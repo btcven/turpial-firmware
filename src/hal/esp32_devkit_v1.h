@@ -17,6 +17,7 @@
 #define BLE_ENABLED false
 #define WST_ENABLED false
 #define WAP_ENABLED false
+
 // NVS related defines
 #define NVS_WIFI_NAMESPACE "wifi_config"
 #define NVS_WAP_ENABLED_KEY "WAP_enabled"

@@ -31,8 +31,8 @@ esp_err_t WST_INIT()
         // This is just for testing purposes
         //=========================================================
         // Change the Wi-Fi mode permanently here...
-        //nvs.setString(NVS_WST_SSID_KEY, "YOUR_SSID");
-        //nvs.setString(NVS_WST_PASS_KEY, "YOUR_PASS");
+        // nvs.setString(NVS_WST_SSID_KEY, "YOUR_SSID");
+        // nvs.setString(NVS_WST_PASS_KEY, "YOUR_PASS");
         //=========================================================
 
         // get values from nvs or set default values from hal/hardware.h

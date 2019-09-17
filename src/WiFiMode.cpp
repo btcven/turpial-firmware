@@ -141,7 +141,7 @@ esp_err_t WiFi_INIT()
 
     // Declare and define default values, before reading NVS
     bool WAP_enabled = WAP_ENABLED; // Default value
-    bool WST_enabled = WST_ENABLED;// Default value
+    bool WST_enabled = WST_ENABLED; // Default value
 
     // Create an instance of the NVS storage
     NVStorage nvs;
