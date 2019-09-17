@@ -11,7 +11,7 @@
 
 #include "WiFiMode.h"
 
-void WiFiMode::WiFiEvent(WiFiEvent_t evt)
+void WiFiEvent(WiFiEvent_t evt)
 {
     switch (evt)
     {

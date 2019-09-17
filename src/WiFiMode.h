@@ -46,7 +46,7 @@ class WiFiMode
          * 
          * @return wifi_mode_t
          */
-        void WiFiEvent(WiFiEvent_t evt);
+        //void WiFiEvent(WiFiEvent_t evt);
 
     private:
         /**
@@ -63,5 +63,6 @@ class WiFiMode
  * @return esp_err_t 
  */
 //esp_err_t WiFi_INIT();
+void WiFiEvent(WiFiEvent_t evt);
 
 #endif // WIFIMODE_H
