@@ -31,12 +31,13 @@ esp_err_t bleTest() {
 esp_err_t wifiTest() {
     // Put the code here for Wi-Fi test
     esp_err_t err;
+    WiFiMode wlan;
 
     /**
    * @brief WAP or WST ifaces enabled on boot?
    * 
    */
-    err = WiFi_INIT();
+    err = wlan.begin();
     if (err != ESP_OK)
     {
         //esp_restart();

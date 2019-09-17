@@ -12,7 +12,11 @@
 
 #ifndef WST_H
 #define WST_H
+
 #include <Arduino.h>
+#include <WiFi.h>
+#include "NVS/NVStorage.h"
+#include "hal/hardware.h"
 
 /**
  * @brief 

@@ -14,8 +14,9 @@
 #define WAP_H
 
 #include <Arduino.h>
-
-
+#include <WiFi.h>
+#include "NVS/NVStorage.h"
+#include "hal/hardware.h"
 
 /**
  * @brief Start the Wifi AP

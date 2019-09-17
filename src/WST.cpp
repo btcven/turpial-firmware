@@ -10,10 +10,7 @@
  * 
  */
 
-#include <WiFi.h>
 #include "WST.h"
-#include "NVS/NVStorage.h"
-#include "hal/hardware.h"
 
 esp_err_t WST_INIT()
 {

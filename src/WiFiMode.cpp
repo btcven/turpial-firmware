@@ -9,19 +9,9 @@
  * @license Apache 2.0, see LICENSE file for details
  */
 
-#include "WiFi.h"
 #include "WiFiMode.h"
-#include "WAP.h"
-#include "WST.h"
-#include "hal/hardware.h"
-#include "NVS/NVStorage.h"
 
-/**
- * @brief 
- * 
- * @param evt 
- */
-void WiFiEvent(WiFiEvent_t evt)
+void WiFiMode::WiFiEvent(WiFiEvent_t evt)
 {
     switch (evt)
     {
@@ -106,14 +96,7 @@ void WiFiEvent(WiFiEvent_t evt)
     }
 }
 
-/**
- * @brief 
- * 
- * @param AP 
- * @param ST 
- * @return wifi_mode_t 
- */
-wifi_mode_t select_WiFiMode(bool AP, bool ST)
+wifi_mode_t WiFiMode::selectMode(bool AP, bool ST)
 {
     if (!AP && ST)
         return WIFI_STA;
@@ -125,12 +108,7 @@ wifi_mode_t select_WiFiMode(bool AP, bool ST)
         return WIFI_MODE_NULL;
 }
 
-/**
- * @brief 
- * 
- * @return esp_err_t 
- */
-esp_err_t WiFi_INIT()
+esp_err_t WiFiMode::begin()
 {
     //
     // only in dev stage:
@@ -171,7 +149,7 @@ esp_err_t WiFi_INIT()
         ESP_LOGE(__func__, "Error opening the NVS");
     }
 
-    wifi_mode_t WIFI_MODE = select_WiFiMode(WAP_enabled, WST_enabled);
+    wifi_mode_t WIFI_MODE = selectMode(WAP_enabled, WST_enabled);
     ESP_LOGD(__func__, "Starting WiFi mode: %d", WIFI_MODE);
 
     WiFi.onEvent(WiFiEvent);

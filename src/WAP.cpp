@@ -9,10 +9,8 @@
  * @license Apache 2.0, see LICENSE file for details
  * 
  */
-#include <WiFi.h>
+
 #include "WAP.h"
-#include "NVS/NVStorage.h"
-#include "hal/hardware.h"
 
 esp_err_t WAP_INIT()
 {
