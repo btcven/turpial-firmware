@@ -10,6 +10,10 @@
  */
 
 #include "WiFiMode.h"
+#include "WAP.h"
+#include "WST.h"
+#include "hal/hardware.h"
+#include "NVS/NVStorage.h"
 
 void WiFiEvent(WiFiEvent_t evt)
 {
@@ -121,8 +125,10 @@ esp_err_t WiFiMode::begin()
     bool WAP_enabled = WAP_ENABLED; // Default value
     bool WST_enabled = WST_ENABLED; // Default value
 
-    // Create an instance of the NVS storage
+    // Creating instances of NVStorage, WAP and WST classes
     NVStorage nvs;
+    WAP wap;
+    WST wst;
     // Initialize the NVS flash storage
     nvs.begin();
 
@@ -153,22 +159,22 @@ esp_err_t WiFiMode::begin()
     ESP_LOGD(__func__, "Starting WiFi mode: %d", WIFI_MODE);
 
     WiFi.onEvent(WiFiEvent);
-
+    
     switch (WIFI_MODE)
     {
     case WIFI_STA:
         ESP_LOGD(__func__, "Starting WST iface only");
-        return WST_INIT();
+        return wap.begin();
         break;
     case WIFI_AP:
         ESP_LOGD(__func__, "Starting WAP iface only");
-        return WAP_INIT();
+        return wst.begin();
         break;
     case WIFI_AP_STA:
         ESP_LOGD(__func__, "Starting WAP and WST ifaces");
         esp_err_t WAP_isInit, WST_isInit;
-        WAP_isInit = WAP_INIT();
-        WST_isInit = WST_INIT();
+        WAP_isInit = wap.begin();
+        WST_isInit = wst.begin();
         if (WAP_isInit && WST_isInit)
         {
             return ESP_OK;

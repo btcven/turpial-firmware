@@ -12,12 +12,8 @@
 #ifndef WIFIMODE_H
 #define WIFIMODE_H
 
-#include <Arduino.h>
+#include "Arduino.h"
 #include "WiFi.h"
-#include "WAP.h"
-#include "WST.h"
-#include "hal/hardware.h"
-#include "NVS/NVStorage.h"
 
 class WiFiMode 
 {

@@ -11,9 +11,8 @@
 
 #ifndef NVSTORAGE_H
 #define NVSTORAGE_H
+
 #include "Arduino.h"
-#include "nvs_flash.h"
-#include "nvs.h"
 
 #define NVS_BOOL_KEY "bool"
 #define NVS_INT_KEY "int"

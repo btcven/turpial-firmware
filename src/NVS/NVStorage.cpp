@@ -10,6 +10,8 @@
  */
 
 #include "NVStorage.h"
+#include "nvs_flash.h"
+#include "nvs.h"
 
 /**
  * @brief Construct a new NVStorage:: NVStorage object

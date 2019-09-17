@@ -14,7 +14,7 @@
 #include "nvs_flash.h"
 #include "hal/hardware.h"
 #include "NVS/NVStorage.h"
-#include "WiFiMode.h"
+#include "WiFi/WiFiMode.h"
 
 /*
 esp_err_t batteryTest() {
