@@ -164,18 +164,18 @@ esp_err_t WiFiMode::begin()
     {
     case WIFI_STA:
         ESP_LOGD(__func__, "Starting WST iface only");
-        return wap.begin();
+        return wst.begin();
         break;
     case WIFI_AP:
         ESP_LOGD(__func__, "Starting WAP iface only");
-        return wst.begin();
+        return wap.begin();
         break;
     case WIFI_AP_STA:
         ESP_LOGD(__func__, "Starting WAP and WST ifaces");
         esp_err_t WAP_isInit, WST_isInit;
         WAP_isInit = wap.begin();
         WST_isInit = wst.begin();
-        if (WAP_isInit && WST_isInit)
+        if (WAP_isInit == ESP_OK && WST_isInit == ESP_OK)
         {
             return ESP_OK;
         }
