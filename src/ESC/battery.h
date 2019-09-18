@@ -22,7 +22,7 @@ class Battery
          * @brief Construct a new Battery object
          * 
          */
-        Battery(uint16_t capacity);
+        Battery(uint16_t capacity, uint16_t low_bat_threshold);
 
         /**
          * @brief This method will initialize I2C and the IC
@@ -36,7 +36,7 @@ class Battery
          * 
          * @return int16_t
          */
-        int16_t getBatteryLevel();
+        uint16_t getBatteryLevel();
 
         /**
          * @brief This method will read and return the battery voltage
@@ -67,14 +67,22 @@ class Battery
         bool isBatteryLow();
 
         /**
-         * @brief This method will read and return the IC temperature reading value in Degrees C
+         * @brief This method will read and return the battery temperature reading value in Degrees C
          * 
          * @return uint16_t
          */
         uint16_t getTemperature();
 
+        /**
+         * @brief This method will read and return the IC temperature reading value in Degrees C
+         * 
+         * @return uint16_t
+         */
+        uint16_t getICTemperature();
+
     private:
         uint16_t _capacity;
+        uint16_t _low_bat_threshold;
 };
 
 #endif // BATTERY_H

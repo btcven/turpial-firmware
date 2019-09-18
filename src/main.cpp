@@ -15,13 +15,27 @@
 #include "hal/hardware.h"
 #include "NVS/NVStorage.h"
 #include "WiFi/WiFiMode.h"
+#include "ESC/battery.h"
 
-/*
+
 esp_err_t batteryTest() {
     // Put the code here for battery test
     esp_err_t err;
+    Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD);
+
+    err = battery.begin();
+    if (err != ESP_OK)
+    {
+        //esp_restart();
+        ESP_LOGE(__func__, "Error starting battery IC module");
+    }
+
+    ESP_LOGD(__func__, "Battery level: %i%", battery.getBatteryLevel());
+    ESP_LOGD(__func__, "Battery voltage: %imV", battery.getBatteryVoltage());
+    ESP_LOGD(__func__, "Battery current: %iA", battery.getBatteryCurrent());
 }
 
+/*
 esp_err_t bleTest() {
     // Put the code here for BLE test
     esp_err_t err;
@@ -97,7 +111,8 @@ void nvsTest() {
 void setup()
 {
     //nvsTest();
-    wifiTest();
+    //wifiTest();
+    //batteryTest();
 }
 
 void loop()

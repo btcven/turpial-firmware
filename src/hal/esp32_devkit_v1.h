@@ -30,7 +30,8 @@
 #define NVS_WST_PASS_KEY "WST_pass"
 
 // Battery related defines
-#define BATTERY_CAPACITY 2200 // mAh
+#define BATTERY_CAPACITY 2200 // in mAh unit
+#define LOW_BAT_THRESHOLD 20 // in % unit
 
 /**
  * @brief WiFi Station default params.
