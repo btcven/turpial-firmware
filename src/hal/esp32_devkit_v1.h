@@ -29,6 +29,9 @@
 #define NVS_WST_SSID_KEY "WST_ssid"
 #define NVS_WST_PASS_KEY "WST_pass"
 
+// Battery related defines
+#define BATTERY_CAPACITY 2200 // mAh
+
 /**
  * @brief WiFi Station default params.
  * 

@@ -1,5 +1,5 @@
 /**
- * @file WAPST.cpp
+ * @file WiFiMode.cpp
  * @author Locha Mesh project developers (locha.io)
  * @brief 
  * @version 0.1.1
