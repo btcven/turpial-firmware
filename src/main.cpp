@@ -18,7 +18,7 @@
 #include "ESC/battery.h"
 
 // Creating instances of the classes
-Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD);
+Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
 NVStorage nvs;
 WiFiMode wlan;
 
@@ -27,8 +27,8 @@ esp_err_t err;
 esp_err_t batteryTest() 
 {
     // Put the code here for battery test
-    esp_err_t err;
-    Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
+    //esp_err_t err;
+    //Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
 
     err = battery.begin();
     if (err != ESP_OK)
@@ -52,8 +52,8 @@ esp_err_t bleTest() {
 esp_err_t wifiTest() 
 {
     // Put the code here for Wi-Fi test
-    esp_err_t err;
-    WiFiMode wlan;
+    //esp_err_t err;
+    //WiFiMode wlan;
 
     /**
    * @brief WAP or WST ifaces enabled on boot?
@@ -69,7 +69,7 @@ esp_err_t wifiTest()
 
 void nvsTest() 
 {
-    NVStorage nvs;
+    //NVStorage nvs;
 
     // Initialize the NVS flash storage
     nvs.begin();
