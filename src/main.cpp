@@ -25,7 +25,7 @@ WiFiMode wlan;
 esp_err_t batteryTest() {
     // Put the code here for battery test
     esp_err_t err;
-    Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD);
+    Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
 
     err = battery.begin();
     if (err != ESP_OK)
