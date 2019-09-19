@@ -22,7 +22,10 @@ Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD);
 NVStorage nvs;
 WiFiMode wlan;
 
-esp_err_t batteryTest() {
+esp_err_t err;
+
+esp_err_t batteryTest() 
+{
     // Put the code here for battery test
     esp_err_t err;
     Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
@@ -46,7 +49,8 @@ esp_err_t bleTest() {
 }
 */
 
-esp_err_t wifiTest() {
+esp_err_t wifiTest() 
+{
     // Put the code here for Wi-Fi test
     esp_err_t err;
     WiFiMode wlan;
@@ -63,7 +67,8 @@ esp_err_t wifiTest() {
     }
 }
 
-void nvsTest() {
+void nvsTest() 
+{
     NVStorage nvs;
 
     // Initialize the NVS flash storage
@@ -112,19 +117,47 @@ void nvsTest() {
     }
 }
 
-void checkForCriticalLevel()
+void checkForCriticalLevels()
 {
-    
+    if (battery.isBatteryCritical()) 
+    {
+        // Power off the device
+    }
 }
 
 void setup()
 {
-    checkForCriticalLevel();
-    //nvsTest();
-    //wifiTest();
-    //batteryTest();
+    // Initialize battery module
+    err = battery.begin();
+    if (err != ESP_OK)
+    {
+        //esp_restart();
+        ESP_LOGE(__func__, "Error starting battery IC module!");
+    }
+    // Check for critical levels
+    checkForCriticalLevels();
 
+    // Initialize Non-Volatile Storage
+    err = nvs.begin();
+    if (err != ESP_OK)
+    {
+        //esp_restart();
+        ESP_LOGE(__func__, "Error starting NVS!");
+    }
 
+    // Initialize BLE
+    // Put the code here...
+
+    // Initialize Wi-Fi module
+    err = wlan.begin();
+    if (err != ESP_OK)
+    {
+        //esp_restart();
+        ESP_LOGE(__func__, "Error starting WiFi modules!");
+    }
+
+    // Initialize Radio module
+    // Put the code here...
 }
 
 void loop()
