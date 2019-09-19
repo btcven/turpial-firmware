@@ -17,6 +17,10 @@
 #include "WiFi/WiFiMode.h"
 #include "ESC/battery.h"
 
+// Creating instances of the classes
+Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD);
+NVStorage nvs;
+WiFiMode wlan;
 
 esp_err_t batteryTest() {
     // Put the code here for battery test
@@ -108,11 +112,19 @@ void nvsTest() {
     }
 }
 
+void checkForCriticalLevel()
+{
+    
+}
+
 void setup()
 {
+    checkForCriticalLevel();
     //nvsTest();
     //wifiTest();
     //batteryTest();
+
+
 }
 
 void loop()
