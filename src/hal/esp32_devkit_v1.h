@@ -32,6 +32,7 @@
 // Battery related defines
 #define BATTERY_CAPACITY 2200 // in mAh unit
 #define LOW_BAT_THRESHOLD 20 // in % unit
+#define CRITICAL_BAT_THRESHOLD 7 // in % unit
 
 /**
  * @brief WiFi Station default params.

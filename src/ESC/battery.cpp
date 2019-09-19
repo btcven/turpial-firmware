@@ -13,10 +13,11 @@
 
 BQ27441 _battery; // Create instance of the BQ27441 class
 
-Battery::Battery(uint16_t capacity, uint16_t low_bat_threshold) 
+Battery::Battery(uint16_t capacity, uint16_t low_bat_threshold, uint16_t critical_bat_threshold)
 {
     _capacity = capacity;
     _low_bat_threshold = low_bat_threshold;
+    _critical_bat_threshold = critical_bat_threshold;
 }
 
 esp_err_t Battery::begin()
@@ -83,6 +84,18 @@ bool Battery::isBatteryLow()
     {
         return false; // Stil have a good charge
     }    
+}
+
+bool Battery::isBatteryCritical()
+{
+    if (getBatteryLevel() <= _critical_bat_threshold)
+    {
+        return true; // Battery is critical
+    }
+    else
+    {
+        return false;
+    }
 }
 
 uint16_t Battery::getTemperature()
