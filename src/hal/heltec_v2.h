@@ -29,6 +29,11 @@
 #define NVS_WST_SSID_KEY "WST_ssid"
 #define NVS_WST_PASS_KEY "WST_pass"
 
+// Battery related defines
+#define BATTERY_CAPACITY 2200 // in mAh unit
+#define LOW_BAT_THRESHOLD 20 // in % unit
+#define CRITICAL_BAT_THRESHOLD 7 // in % unit
+
 /**
  * @brief WiFi Station default params.
  * 
@@ -55,4 +60,4 @@
     #define ARDUINO_RUNNING_CORE 1
 #endif // CONFIG_FREERTOS_UNICORE
 
-#endif // HELTEC_V2_H
+#endif // ESP32_DEVKIT_V1
