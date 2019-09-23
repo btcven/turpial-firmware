@@ -16,6 +16,8 @@
     #include "heltec_v2.h"
 #elif defined(ARDUINO_ESP32_DEV)
     #include "esp32_devkit_v1.h"
+#elif defined(ARDUINO_Pocket32)
+    #include "esp32_wemos.h"
 #endif
 
 
