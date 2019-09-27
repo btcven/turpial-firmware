@@ -1,4 +1,4 @@
-[![Build Status](https://travis-ci.com/btcven/turpial-firmware.svg?branch=dev)](https://travis-ci.com/btcven/turpial-firmware)
+[![Build Status](https://travis-ci.com/btcven/turpial-firmware.svg?branch=master)](https://travis-ci.com/btcven/turpial-firmware)
 
 # Turpial firmware
 
