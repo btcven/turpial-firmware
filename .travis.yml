@@ -78,3 +78,8 @@ install:
     - platformio update
 script:
     - platformio run
+
+notifications:
+    slack:
+        rooms:
+            - [org_name]:[slack_token]#core-dev
