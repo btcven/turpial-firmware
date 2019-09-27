@@ -82,4 +82,4 @@ script:
 notifications:
     slack:
         rooms:
-            - [org_name]:[slack_token]#core-dev
+            - org_name:slack_token#core-dev
