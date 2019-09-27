@@ -27,7 +27,7 @@ The following is a set of guidelines for contributing to [**Locha**](), [**Turpi
 
 
 ## Before starting
-[Please read our conduct](CODE_OF_CONDUCT.md)
+Please read our [code of conduct](CODE_OF_CONDUCT.md)
 
 ## How can i contribute?
 
