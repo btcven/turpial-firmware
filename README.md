@@ -1,3 +1,5 @@
+[![Build Status](https://travis-ci.com/btcven/turpial-firmware.svg?branch=dev)](https://travis-ci.com/btcven/turpial-firmware)
+
 # Turpial firmware
 
 ## License
