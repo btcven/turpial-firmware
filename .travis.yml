@@ -78,6 +78,3 @@ install:
     - platformio update
 script:
     - platformio run
-
-notifications:
-    slack: org_name:slack_token
