@@ -65,13 +65,7 @@
 #
 # script:
 #     - platformio ci --lib="." --board=ID_1 --board=ID_2 --board=ID_N
-#
-#
-notifications:
-    slack:
-        rooms:
-            - org_name:slack_token#core-dev
-# 
+
 language: python
 python:
     - "2.7"
@@ -84,5 +78,3 @@ install:
     - platformio update
 script:
     - platformio run
-
-
