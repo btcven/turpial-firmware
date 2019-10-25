@@ -1,6 +1,6 @@
 #ifndef SERIALIZABLE_H
 #define SERIALIZABLE_H
-#include <stdio.h>
+#include <stddef.h> //to use size_t type
 
 // Interface class
 class Serializable
