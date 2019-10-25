@@ -16,6 +16,7 @@
 #include "NVS/NVStorage.h"
 #include "WiFi/WiFiMode.h"
 #include "ESC/battery.h"
+#include <WiFiDTO.h>
 
 // Creating instances of the classes
 Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
@@ -127,6 +128,8 @@ void checkForCriticalLevels()
 
 void setup()
 {
+    wifi_dto_config_t wifi_params;
+    WiFiDTO wifi_dto(wifi_params);
     // Initialize battery module
     status = battery.begin();
     if (status != ESP_OK)

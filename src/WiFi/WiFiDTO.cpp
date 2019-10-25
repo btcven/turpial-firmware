@@ -6,6 +6,11 @@
 
 //constructor 
 WiFiDTO::WiFiDTO(const wifi_dto_config_t& settings) {
+    std::cout<<"esto es una prueba mas"<<std::endl;
+    std::cout<<"constructor working fine"<<std::endl;
+}
+//default constructor
+WiFiDTO::WiFiDTO() { 
 
 }
 //implementation of all virtual methods from serializable interface
