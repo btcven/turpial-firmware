@@ -22,7 +22,7 @@ Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
 NVStorage nvs;
 WiFiMode wlan;
 
-esp_err_t err;
+esp_err_t status;
 
 esp_err_t batteryTest() 
 {
@@ -30,8 +30,8 @@ esp_err_t batteryTest()
     //esp_err_t err;
     //Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
 
-    err = battery.begin();
-    if (err != ESP_OK)
+    status = battery.begin();
+    if (status != ESP_OK)
     {
         //esp_restart();
         ESP_LOGE(__func__, "Error starting battery IC module");
@@ -59,8 +59,8 @@ esp_err_t wifiTest()
    * @brief WAP or WST ifaces enabled on boot?
    * 
    */
-    err = wlan.begin();
-    if (err != ESP_OK)
+    status = wlan.begin();
+    if (status != ESP_OK)
     {
         //esp_restart();
         ESP_LOGE(__func__, "Error starting WiFi modules");
@@ -128,8 +128,8 @@ void checkForCriticalLevels()
 void setup()
 {
     // Initialize battery module
-    err = battery.begin();
-    if (err != ESP_OK)
+    status = battery.begin();
+    if (status != ESP_OK)
     {
         //esp_restart();
         ESP_LOGE(__func__, "Error starting battery IC module!");
@@ -138,8 +138,8 @@ void setup()
     checkForCriticalLevels();
 
     // Initialize Non-Volatile Storage
-    err = nvs.begin();
-    if (err != ESP_OK)
+    status = nvs.begin();
+    if (status != ESP_OK)
     {
         //esp_restart();
         ESP_LOGE(__func__, "Error starting NVS!");
@@ -149,8 +149,8 @@ void setup()
     // Put the code here...
 
     // Initialize Wi-Fi module
-    err = wlan.begin();
-    if (err != ESP_OK)
+    status = wlan.begin();
+    if (status != ESP_OK)
     {
         //esp_restart();
         ESP_LOGE(__func__, "Error starting WiFi modules!");

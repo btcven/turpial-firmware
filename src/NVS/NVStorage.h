@@ -51,7 +51,7 @@ public:
      * @return true 
      * @return false 
      */
-    bool begin();
+    esp_err_t begin();
 
     /**
      * @brief 

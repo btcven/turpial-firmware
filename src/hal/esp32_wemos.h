@@ -15,8 +15,8 @@
 #define ESC_ENABLED true
 #define RAD_ENABLED false
 #define BLE_ENABLED false
-#define WST_ENABLED false
-#define WAP_ENABLED false
+#define WST_ENABLED true
+#define WAP_ENABLED true
 
 // NVS related defines
 #define NVS_WIFI_NAMESPACE "wifi_config"
@@ -38,8 +38,8 @@
  * @brief WiFi Station default params.
  * 
  */
-#define WST_SSID    ""
-#define WST_PASS    ""
+#define WST_SSID    "HOME-EB05"
+#define WST_PASS    "D8ED78ECC6372942"
 
 /**
  * @brief WiFi AP default params.

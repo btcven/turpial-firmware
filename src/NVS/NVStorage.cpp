@@ -36,36 +36,35 @@ NVStorage::~NVStorage()
  * 
  * @param name 
  * @param readOnly 
- * @return true 
- * @return false 
+ * @return status of nvs_flash_init 
+ * @return codes here https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/error-codes.html
  */
-bool NVStorage::begin()
+esp_err_t NVStorage::begin()
 {
     if (_started)
     {
-        return false;
+        return ESP_OK;
     }
 
-    //nvs_flash_erase();
     // Initialize NVS
     ESP_LOGD(__func__, "Initializing NVS...\n");
-    esp_err_t err = nvs_flash_init();
+    esp_err_t status = nvs_flash_init();
 
-    if (err == ESP_ERR_NVS_NO_FREE_PAGES || err == ESP_ERR_NVS_NEW_VERSION_FOUND)
+    if(status == ESP_OK) 
+    {
+        ESP_LOGE(__function__,"Se inicializo correctamente la NVS");
+        return status;
+    } else if (status == ESP_ERR_NVS_NO_FREE_PAGES || status == ESP_ERR_NVS_NEW_VERSION_FOUND)
     {
         // NVS partition was truncated and needs to be erased
         // Retry nvs_flash_init
         ESP_ERROR_CHECK(nvs_flash_erase());
-        err = nvs_flash_init();
-        return true;
+        status = nvs_flash_init();
+        return status;
     }
-    else
-    {
-        return true;
-    }
-    ESP_ERROR_CHECK(err);
 
-    return false;
+    ESP_ERROR_CHECK(status);
+    return ESP_FAIL;
 }
 
 /**
