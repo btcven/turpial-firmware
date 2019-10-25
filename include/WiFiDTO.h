@@ -1,6 +1,7 @@
-#include "Serializable.h"
+#include <Serializable.h>
 #include <iostream>
 #include <hal/hardware.h>
+#include "SerializablePOD.h"
 
 
 typedef struct wifi_dto_config_t {
@@ -19,7 +20,7 @@ public:
 
     WiFiDTO(const wifi_dto_config_t& settings);
 
-    virtual size_t serialize_size() const;
+    virtual void serialize_size() const;
     virtual void serialize(char* dataOut) const;
     virtual void deserialize(const char* dataIn);
 
