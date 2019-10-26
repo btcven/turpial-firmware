@@ -13,7 +13,8 @@
 #include "WAP.h"
 #include "WST.h"
 #include "hal/hardware.h"
-#include "NVS/NVStorage.h"
+#include "NVS/SingletonNVS.h"
+//#include "NVS/NVStorage.h"
 
 void WiFiEvent(WiFiEvent_t evt)
 {
@@ -126,14 +127,14 @@ esp_err_t WiFiMode::begin()
     bool WST_enabled = WST_ENABLED; // Default value
 
     // Creating instances of NVStorage, WAP and WST classes
-    NVStorage nvs;
+    SingletonNVS* nvs = SingletonNVS::getInstance();
     WAP wap;
     WST wst;
     // Initialize the NVS flash storage
-    nvs.begin();
+    //nvs.begin();
 
     // Open nvs
-    bool isOpen = nvs.open(NVS_WIFI_NAMESPACE, false);
+    bool isOpen = nvs->open(NVS_WIFI_NAMESPACE, false);
     // Verifying if opened
     if (isOpen)
     {
@@ -144,10 +145,10 @@ esp_err_t WiFiMode::begin()
         //nvs.setBool(NVS_WST_ENABLED_KEY, 1);
         //=========================================================
 
-        WAP_enabled = nvs.getBool(NVS_WAP_ENABLED_KEY, WAP_ENABLED);
+        WAP_enabled = nvs->getBool(NVS_WAP_ENABLED_KEY, WAP_ENABLED);
         ESP_LOGD(__func__, "WAP iface enabled: %d", WAP_enabled);
 
-        WST_enabled = nvs.getBool(NVS_WST_ENABLED_KEY, WST_ENABLED);
+        WST_enabled = nvs->getBool(NVS_WST_ENABLED_KEY, WST_ENABLED);
         ESP_LOGD(__func__, "WST iface enabled: %d", WST_enabled);
     }
     else

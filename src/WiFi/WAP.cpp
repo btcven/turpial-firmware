@@ -11,12 +11,12 @@
  */
 
 #include "WAP.h"
-#include "NVS/NVStorage.h"
+#include "NVS/SingletonNVS.h"
 #include "hal/hardware.h"
 
 esp_err_t WAP::begin()
 {
-    NVStorage nvs;
+    SingletonNVS* nvs = SingletonNVS::getInstance();
 
     // Declare and define default values, before reading NVS
     char *apSSID = WAP_SSID;
@@ -25,7 +25,7 @@ esp_err_t WAP::begin()
     int32_t apMaxConn = WAP_MAXCONN;
 
     // Open nvs
-    bool isOpen = nvs.open(NVS_WIFI_NAMESPACE, false);
+    bool isOpen = nvs->open(NVS_WIFI_NAMESPACE, false);
     // Verifying if opened
     if (isOpen)
     {
@@ -39,10 +39,10 @@ esp_err_t WAP::begin()
         //=========================================================
 
         // get values from nvs or set default values from hal/hardware.h
-        apSSID = nvs.getString(NVS_WAP_SSID_KEY, WAP_SSID);
-        apPassword = nvs.getString(NVS_WAP_PASS_KEY, WAP_PASS);
-        apChannel = nvs.getInt(NVS_WAP_CHANNEL_KEY, WAP_CHANNEL);
-        apMaxConn = nvs.getInt(NVS_WAP_MAXCONN_KEY, WAP_MAXCONN);
+        apSSID = nvs->getString(NVS_WAP_SSID_KEY, WAP_SSID);
+        apPassword = nvs->getString(NVS_WAP_PASS_KEY, WAP_PASS);
+        apChannel = nvs->getInt(NVS_WAP_CHANNEL_KEY, WAP_CHANNEL);
+        apMaxConn = nvs->getInt(NVS_WAP_MAXCONN_KEY, WAP_MAXCONN);
     }
     else
     {

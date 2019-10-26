@@ -11,19 +11,19 @@
  */
 
 #include "WST.h"
-#include "NVS/NVStorage.h"
+#include "NVS/SingletonNVS.h"
 #include "hal/hardware.h"
 
 esp_err_t WST::begin()
 {
-    NVStorage nvs;
+    SingletonNVS* nvs = SingletonNVS::getInstance();
 
     // Declare and define default values, before reading NVS
     char *wst_ssid = WST_SSID;
     char *wst_pass = WST_PASS;
 
     // Open nvs
-    bool isOpen = nvs.open(NVS_WIFI_NAMESPACE, false);
+    bool isOpen = nvs->open(NVS_WIFI_NAMESPACE, false);
     // Verifying if opened
     if (isOpen)
     {
@@ -35,8 +35,8 @@ esp_err_t WST::begin()
         //=========================================================
 
         // get values from nvs or set default values from hal/hardware.h
-        wst_ssid = nvs.getString(NVS_WST_SSID_KEY, WST_SSID);
-        wst_pass = nvs.getString(NVS_WST_PASS_KEY, WST_PASS);
+        wst_ssid = nvs->getString(NVS_WST_SSID_KEY, WST_SSID);
+        wst_pass = nvs->getString(NVS_WST_PASS_KEY, WST_PASS);
     }
     else
     {
