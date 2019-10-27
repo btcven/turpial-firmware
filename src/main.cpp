@@ -19,40 +19,30 @@
 #include "NVS/SingletonNVS.h"
 #include "SingularCallback.h"
 
+#include <iostream>
+#include <string>
+#include <vector>
 
-class A
+
+class AClass
 {
 public:
 
-   void output1()
+   AClass(unsigned int id) : id_(id) {}
+
+   bool AMethod(const std::string& str)
    {
-      std::cout << "I am class A :D executing output1 method" << std::endl;
+      std::cout << "AClass[" << id_ << "]: " << str << std::endl;
+      return true;
    }
-   void output2()
-   {
-      std::cout << "I am class A :D executing output2 method" << std::endl;
-   }
+
+private:
+
+   unsigned int id_;
 };
 
-//Class with callback functions
-class B
-{
-public:
-        //I suppouse this is my callback function returning vbool
-   bool methodB(A a)
-   {
-        std::cout << "methodB called" << std::endl;
-        a.output1();
-        return true;
-   }
-//other callback function returning int
-   int methodB_B(A a)
-   {
-      std::cout << "methodB_B called" << std::endl;
-      a.output2();
-      return 5;
-   }
-};
+typedef SingularCallBack <AClass, bool, const std::string&> ACallBack;
+
 
 
 // Creating instances of the classes
@@ -156,35 +146,26 @@ void checkForCriticalLevels(){
 
 void setup() {
 
-    A a;
-    B b;
+    std::vector<ACallBack> callback_list;
 
-    SingularCallBack<B,bool,A>* cb1;
-    cb1 = new SingularCallBack<B,bool,A>(&b,&B::methodB);
+   AClass a1(1);
+   AClass a2(2);
+   AClass a3(3);
 
-    SingularCallBack<B,int,A>* cb2;
-    cb2 = new SingularCallBack<B,int,A>(&b,&B::methodB_B);
+   callback_list.push_back(ACallBack(&a1, &AClass::AMethod));
+   callback_list.push_back(ACallBack(&a2, &AClass::AMethod));
+   callback_list.push_back(ACallBack(&a3, &AClass::AMethod));
 
+   for (unsigned int i = 0; i < callback_list.size(); ++i)
+   {
+      callback_list[i]("abc");
+   }
 
-    //dereferencing the object pointer
-    if((*cb1)(a)) {
-        std::cout << "Callback fired Successfully" << std::endl;
-    } else {
-        std::cout << "Callback Fired Unsuccessfully"<< std::endl;
-    }
+   for (unsigned int i = 0; i < callback_list.size(); ++i)
+   {
+      callback_list[i].execute("abc");
+   }
 
-    //Calling execute method to avoid dereferencing object pointer
-    //
-    if(cb2->execute(a) < 6)
-    {
-    std::cout << "CallBack Fired Successfully!" << std::endl;
-    }
-    else
-    {
-    std::cout << "CallBack Fired Unsuccessfully!" << std::endl;
-    } 
- 
-    //other example
 
 
 
