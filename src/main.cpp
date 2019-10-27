@@ -24,27 +24,6 @@
 #include <vector>
 
 
-class AClass
-{
-public:
-
-   AClass(unsigned int id) : id_(id) {}
-
-   bool AMethod(const std::string& str)
-   {
-      std::cout << "AClass[" << id_ << "]: " << str << std::endl;
-      return true;
-   }
-
-private:
-
-   unsigned int id_;
-};
-
-typedef SingularCallBack <AClass, bool, const std::string&> ACallBack;
-
-
-
 // Creating instances of the classes
 Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
 
@@ -145,30 +124,6 @@ void checkForCriticalLevels(){
 }
 
 void setup() {
-
-    std::vector<ACallBack> callback_list;
-
-   AClass a1(1);
-   AClass a2(2);
-   AClass a3(3);
-
-   callback_list.push_back(ACallBack(&a1, &AClass::AMethod));
-   callback_list.push_back(ACallBack(&a2, &AClass::AMethod));
-   callback_list.push_back(ACallBack(&a3, &AClass::AMethod));
-
-   for (unsigned int i = 0; i < callback_list.size(); ++i)
-   {
-      callback_list[i]("abc");
-   }
-
-   for (unsigned int i = 0; i < callback_list.size(); ++i)
-   {
-      callback_list[i].execute("abc");
-   }
-
-
-
-
 
     /* nvs->setValue(10);
     SingletonNVS* p2 = SingletonNVS::getInstance();
