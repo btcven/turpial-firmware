@@ -17,12 +17,49 @@
 #include "ESC/battery.h"
 #include <WiFiDTO.h>
 #include "NVS/SingletonNVS.h"
+#include "SingularCallback.h"
+
+
+class A
+{
+public:
+
+   void output1()
+   {
+      std::cout << "I am class A :D executing output1 method" << std::endl;
+   }
+   void output2()
+   {
+      std::cout << "I am class A :D executing output2 method" << std::endl;
+   }
+};
+
+//Class with callback functions
+class B
+{
+public:
+        //I suppouse this is my callback function returning vbool
+   bool methodB(A a)
+   {
+        std::cout << "methodB called" << std::endl;
+        a.output1();
+        return true;
+   }
+//other callback function returning int
+   int methodB_B(A a)
+   {
+      std::cout << "methodB_B called" << std::endl;
+      a.output2();
+      return 5;
+   }
+};
+
 
 // Creating instances of the classes
 Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
 
 //singleton instance
-SingletonNVS* nvs = SingletonNVS::getInstance();
+SingletonNVS* nvs = SingletonNVS::getInstance(); //create or recovery SingletonNVS instance as needed
 WiFiMode wlan;
 
 esp_err_t status;
@@ -77,7 +114,7 @@ void nvsTest() {
         nvs->setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
         //size_t str_saved = nvs.setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
         //ESP_LOGD(__func__, "saved %d bytes", str_saved);
-        
+
         // Read chars from the NVS
         char *readString = nvs->getString(NVS_STR_KEY, "ERROR");
 
@@ -117,16 +154,49 @@ void checkForCriticalLevels(){
     }
 }
 
-void setup()
-{
-    nvs->setValue(10);
+void setup() {
+
+    A a;
+    B b;
+
+    SingularCallBack<B,bool,A>* cb1;
+    cb1 = new SingularCallBack<B,bool,A>(&b,&B::methodB);
+
+    SingularCallBack<B,int,A>* cb2;
+    cb2 = new SingularCallBack<B,int,A>(&b,&B::methodB_B);
+
+
+    //dereferencing the object pointer
+    if((*cb1)(a)) {
+        std::cout << "Callback fired Successfully" << std::endl;
+    } else {
+        std::cout << "Callback Fired Unsuccessfully"<< std::endl;
+    }
+
+    //Calling execute method to avoid dereferencing object pointer
+    //
+    if(cb2->execute(a) < 6)
+    {
+    std::cout << "CallBack Fired Successfully!" << std::endl;
+    }
+    else
+    {
+    std::cout << "CallBack Fired Unsuccessfully!" << std::endl;
+    } 
+ 
+    //other example
+
+
+
+
+    /* nvs->setValue(10);
     SingletonNVS* p2 = SingletonNVS::getInstance();
     p2->setValue(150);
     std::cout<<"value = "<<nvs->getValue() << std::endl;
  
     wifi_dto_config_t wifi_params; //to interpolate information relate with wifi data stored
     WiFiDTO wifi_dto(wifi_params); //object to be serialized
-    
+     
    
     // Initialize battery module
     status = battery.begin();
@@ -137,26 +207,26 @@ void setup()
     }
     // Check for critical levels
     checkForCriticalLevels();
-    
+    */
     // Initialize Non-Volatile Storage
-    status = nvs->begin();
+    /* status = nvs->begin();
     if (status != ESP_OK)
     {
         //esp_restart();
         ESP_LOGE(__func__, "Error starting NVS!");
-    } 
+    }  */
 
     // Initialize BLE
     // Put the code here...
 
 
     // Initialize Wi-Fi module
-    status = wlan.begin();
+    /* status = wlan.begin();
     if (status != ESP_OK)
     {
         //esp_restart();
         ESP_LOGE(__func__, "Error starting WiFi modules!");
-    }
+    } */
 
     // Initialize Radio module
     // Put the code here...
