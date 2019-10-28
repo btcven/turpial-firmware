@@ -46,7 +46,7 @@
  * 
  */
 #define WAP_SSID "io.locha.ap"
-#define WAP_PASS ""
+#define WAP_PASS "the Password"
 #define WAP_CHANNEL 6
 #define WAP_MAXCONN 4
 

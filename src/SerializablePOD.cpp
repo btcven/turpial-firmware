@@ -1,4 +1,4 @@
-#include <SerializablePOD.h>
+/* #include "SerializablePOD.h"
 
 template <typename POD>
 size_t SerializablePOD<POD>::serialize_size(POD str){
@@ -49,4 +49,4 @@ char* SerializablePOD<char*>::serialize( char* target, char* value ){
     target = target + sizeof(size_t);
     std::cout<<target<<std::endl;
     return target + len;
-} 
+}   */

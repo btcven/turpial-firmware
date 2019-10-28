@@ -15,7 +15,7 @@
 #include "hal/hardware.h"
 #include "WiFi/WiFiMode.h"
 #include "ESC/battery.h"
-#include <WiFiDTO.h>
+#include  "WiFiDTO.h"
 #include "NVS/SingletonNVS.h"
 
 
@@ -26,7 +26,7 @@
 // Creating instances of the classes
 Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
 
-//singleton instance
+//singleton instance for all the application
 SingletonNVS* nvs = SingletonNVS::getInstance(); //create or recovery SingletonNVS instance as needed
 WiFiMode wlan;
 
@@ -126,15 +126,36 @@ void checkForCriticalLevels(){
 
 void setup() {
    
-    /* nvs->setValue(10);
+   /*  nvs->setValue(10);
     SingletonNVS* p2 = SingletonNVS::getInstance();
     p2->setValue(150);
-    std::cout<<"value = "<<nvs->getValue() << std::endl;
+    std::cout<<"value = "<<nvs->getValue() << std::endl; */
  
-    wifi_dto_config_t wifi_params; //to interpolate information relate with wifi data stored
+    //initial test object
+    wifi_dto_config_t wifi_params;  
+    size_t length;
+    char* buffer;
+    //to interpolate information relate with wifi data stored
+    wifi_params.WAP_enabled = WAP_ENABLED; // Default value
+    wifi_params.WST_enabled = WST_ENABLED; // Default value
+    wifi_params.isOpen = true;
+    wifi_params.apSSID = WAP_SSID;
+    wifi_params.apPassword = WAP_PASS;
+    wifi_params.apChannel = WAP_CHANNEL;
+    wifi_params.apMaxConn = WAP_MAXCONN;
+    
+    
     WiFiDTO wifi_dto(wifi_params); //object to be serialized
-     
-   
+    length = wifi_dto.serialize_size(); //get the length of the dto class
+    
+    //buffer to store the serialized data
+    buffer = (char*)malloc(sizeof(char)*length);
+    wifi_dto.serialize(buffer);
+
+    wifi_dto.deserialize(buffer);
+
+   std::cout<<"The length is :" << length << std::endl; 
+   /*
     // Initialize battery module
     status = battery.begin();
     if (status != ESP_OK)
