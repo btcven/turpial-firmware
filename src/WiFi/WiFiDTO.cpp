@@ -53,6 +53,29 @@ size_t WiFiDTO::serialize_size() const {
 }
 
 void WiFiDTO::serialize(char* dataOut) const {
+  
+  std::cout <<"Wap Enabled: bool------------->"<< static_cast<const void*>(dataOut)<<std::endl;
+  dataOut = SerializablePOD<bool>::serialize(dataOut, settings_.WAP_enabled);
+  dataOut = dataOut + sizeof(settings_.WAP_enabled);
+  
+  std::cout <<"WST_enabled(bool): ---------->"<< static_cast<const void*>(dataOut)<<std::endl;
+  SerializablePOD<bool>::serialize(dataOut, settings_.WST_enabled);
+  dataOut += sizeof(settings_.WST_enabled);
+
+  std::cout <<"isOpen: (bool)------------->"<< static_cast<const void*>(dataOut)<<std::endl;
+  SerializablePOD<bool>::serialize(dataOut, settings_.isOpen);
+  dataOut +=sizeof(bool);
+  
+  std::cout <<"apSSID: (char*) --------->"<< static_cast<const void*>(dataOut)<<std::endl;
+  SerializablePOD<char*>::serialize(dataOut, settings_.apSSID);
+  dataOut += strlen(settings_.apSSID);
+
+  std::cout <<"apPassword: (char*) -------->"<< static_cast<const void*>(dataOut)<<std::endl;
+  SerializablePOD<char*>::serialize(dataOut, settings_.apPassword);
+  dataOut += strlen(settings_.apPassword); 
+ 
+  //missin int32 type
+
 
 } 
 

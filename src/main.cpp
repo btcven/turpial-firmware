@@ -136,11 +136,12 @@ void setup() {
     size_t length;
     char* buffer;
     //to interpolate information relate with wifi data stored
+    //dta just for test serialized functionalities
     wifi_params.WAP_enabled = WAP_ENABLED; // Default value
     wifi_params.WST_enabled = WST_ENABLED; // Default value
     wifi_params.isOpen = true;
-    wifi_params.apSSID = WAP_SSID;
-    wifi_params.apPassword = WAP_PASS;
+    wifi_params.apSSID = "hello world";
+    wifi_params.apPassword = "mi password largo";
     wifi_params.apChannel = WAP_CHANNEL;
     wifi_params.apMaxConn = WAP_MAXCONN;
     
@@ -152,7 +153,7 @@ void setup() {
     buffer = (char*)malloc(sizeof(char)*length);
     wifi_dto.serialize(buffer);
 
-    wifi_dto.deserialize(buffer);
+   // wifi_dto.deserialize(buffer);
 
    std::cout<<"The length is :" << length << std::endl; 
    /*
