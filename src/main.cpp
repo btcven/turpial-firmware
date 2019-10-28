@@ -17,11 +17,12 @@
 #include "ESC/battery.h"
 #include <WiFiDTO.h>
 #include "NVS/SingletonNVS.h"
-#include "SingularCallback.h"
+
 
 #include <iostream>
 #include <string>
 #include <vector>
+#include "Callback.h"
 
 
 // Creating instances of the classes
