@@ -22,8 +22,8 @@
 #include <iostream>
 #include <string>
 #include <vector>
-#include "Callback.h"
-
+//#include "Callback.h"
+#include "TestClass.h"
 
 // Creating instances of the classes
 Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
@@ -124,8 +124,86 @@ void checkForCriticalLevels(){
     }
 }
 
+//define different callback type based on parameters number
+typedef CallBack<TestClass, bool, int, int ,int, int> callback_type4;
+typedef CallBack<TestClass, bool, int, int ,int>      callback_type3;
+typedef CallBack<TestClass, bool, int, int>           callback_type2;
+typedef CallBack<TestClass, bool, int>                callback_type1;
+typedef CallBack<TestClass, bool>                     callback_type0;
+typedef CallBack<TestClass, void>                     callback_typev;
+
+
 void setup() {
 
+TestClass aclass(1);
+
+   callback_type4 cb4(&aclass, &TestClass::method4);
+   callback_type3 cb3(&aclass, &TestClass::method3);
+   callback_type2 cb2(&aclass, &TestClass::method2);
+   callback_type1 cb1(&aclass, &TestClass::method1);
+   callback_type0 cb0(&aclass, &TestClass::method0);
+   callback_typev cbv(&aclass, &TestClass::methodv);
+
+   std::vector<std::pair<int,void*> > callback_list;
+
+   callback_list.push_back(std::pair<int,void*>( 4, static_cast<void*>(&cb4)));
+   callback_list.push_back(std::pair<int,void*>( 3, static_cast<void*>(&cb3)));
+   callback_list.push_back(std::pair<int,void*>( 2, static_cast<void*>(&cb2)));
+   callback_list.push_back(std::pair<int,void*>( 1, static_cast<void*>(&cb1)));
+   callback_list.push_back(std::pair<int,void*>( 0, static_cast<void*>(&cb0)));
+   callback_list.push_back(std::pair<int,void*>(-1, static_cast<void*>(&cbv)));
+
+    for (unsigned int i = 0; i < callback_list.size(); ++i)
+   {
+      switch (callback_list[i].first)
+      {
+         case  4: (*static_cast<callback_type4*>(callback_list[i].second))(1,2,3,4);
+                  break;
+
+         case  3: (*static_cast<callback_type3*>(callback_list[i].second))(1,2,3);
+                  break;
+
+         case  2: (*static_cast<callback_type2*>(callback_list[i].second))(1,2);
+                  break;
+
+         case  1: (*static_cast<callback_type1*>(callback_list[i].second))(1);
+                  break;
+
+         case  0: (*static_cast<callback_type0*>(callback_list[i].second))();
+                  break;
+
+         case -1: (*static_cast<callback_typev*>(callback_list[i].second))();
+                  break;
+      }
+   } 
+
+   for (unsigned int i = 0; i < callback_list.size(); ++i)
+   {
+      switch (callback_list[i].first)
+      {
+         case  4: static_cast<callback_type4*>(callback_list[i].second)->execute(1,2,3,4);
+                  break;
+
+         case  3: static_cast<callback_type3*>(callback_list[i].second)->execute(1,2,3);
+                  break;
+
+         case  2: static_cast<callback_type2*>(callback_list[i].second)->execute(1,2);
+                  break;
+
+         case  1: static_cast<callback_type1*>(callback_list[i].second)->execute(1);
+                  break;
+
+         case  0: static_cast<callback_type0*>(callback_list[i].second)->execute();
+                  break;
+
+         case -1: static_cast<callback_typev*>(callback_list[i].second)->execute();
+                  break;
+      }
+   }
+
+
+
+   
     /* nvs->setValue(10);
     SingletonNVS* p2 = SingletonNVS::getInstance();
     p2->setValue(150);
