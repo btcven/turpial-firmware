@@ -1,35 +1,18 @@
-/**
- * @file NVStorage.cpp
- * @author Locha Mesh Developers (contact@locha.io)
- * @brief 
- * @version 0.1
- * @date 2019-09-12
- * 
- * @copyright Copyright (c) 2019
- * 
- */
-
-#include "NVStorage.h"
+#include "SingletonNVS.h"
 #include "nvs_flash.h"
 #include "nvs.h"
+#include <iostream>
 
-/**
- * @brief Construct a new NVStorage:: NVStorage object
- * 
- */
-NVStorage::NVStorage()
-    : _handle(0), _started(false), _readOnly(false)
-{
+// Define the static Singleton pointer
+SingletonNVS* SingletonNVS::nvs_ = NULL;
+
+SingletonNVS* SingletonNVS::getInstance() {
+   if (nvs_ == NULL) {
+      nvs_ = new SingletonNVS();
+   }
+   return(nvs_);
 }
 
-/**
- * @brief Destroy the NVStorage:: NVStorage object
- * 
- */
-NVStorage::~NVStorage()
-{
-    close();
-}
 
 /**
  * @brief 
@@ -39,10 +22,12 @@ NVStorage::~NVStorage()
  * @return status of nvs_flash_init 
  * @return codes here https://docs.espressif.com/projects/esp-idf/en/latest/api-reference/error-codes.html
  */
-esp_err_t NVStorage::begin()
+
+esp_err_t SingletonNVS::begin()
 {
     if (_started)
     {
+        std::cout<<"retornando de la nvs.."<<std::endl;
         return ESP_OK;
     }
 
@@ -75,7 +60,8 @@ esp_err_t NVStorage::begin()
  * @return true 
  * @return false 
  */
-bool NVStorage::open(const char *name, bool readOnly)
+
+bool SingletonNVS::open(const char *name, bool readOnly)
 {
     if (_started)
     {
@@ -95,12 +81,7 @@ bool NVStorage::open(const char *name, bool readOnly)
         return true;
     }
 }
-
-/**
- * @brief 
- * 
- */
-void NVStorage::close()
+void SingletonNVS::close()
 {
     if (!_started)
     {
@@ -110,13 +91,8 @@ void NVStorage::close()
     _started = false;
 }
 
-/**
- * @brief Clear the entire NVS
- * 
- * @return true 
- * @return false 
- */
-bool NVStorage::clear()
+
+bool SingletonNVS::clear()
 {
     if (!_started || _readOnly)
     {
@@ -135,14 +111,8 @@ bool NVStorage::clear()
     }
 }
 
-/**
- * @brief 
- * 
- * @param key 
- * @return true 
- * @return false 
- */
-bool NVStorage::remove(const char *key)
+
+bool SingletonNVS::remove(const char *key)
 {
     if (!_started || !key || _readOnly)
     {
@@ -161,14 +131,8 @@ bool NVStorage::remove(const char *key)
     }
 }
 
-/**
- * @brief 
- * 
- * @param key 
- * @param type 
- * @param value 
- */
-void NVStorage::setParam(const char *key, nvs_param_t type, void *value)
+
+void SingletonNVS::setParam(const char *key, nvs_param_t type, void *value)
 {
     if (!_started || !key || !value || _readOnly)
     {
@@ -219,49 +183,23 @@ void NVStorage::setParam(const char *key, nvs_param_t type, void *value)
     }
 }
 
-/**
- * @brief Set key: value
- * 
- * @param key 
- * @param value 
- * @return size_t 
- */
-void NVStorage::setString(const char *key, const char *value)
+
+void SingletonNVS::setString(const char *key, const char *value)
 {
     setParam(key, NVS_STR, &value);
 }
 
-/**
- * @brief 
- * 
- * @param key 
- * @param value 
- */
-void NVStorage::setInt(const char *key, int32_t value)
+void SingletonNVS::setInt(const char *key, int32_t value)
 {
     setParam(key, NVS_INT, &value);
 }
 
-/**
- * @brief 
- * 
- * @param key 
- * @param value 
- */
-void NVStorage::setBool(const char *key, uint8_t value)
+void SingletonNVS::setBool(const char *key, uint8_t value)
 {
     setParam(key, NVS_BOOL, &value);
 }
 
-/**
- * @brief 
- * 
- * @param key 
- * @param type 
- * @param defaultValue 
- * @return void* 
- */
-void *NVStorage::getParam(const char *key, nvs_param_t type, void *defaultValue)
+void *SingletonNVS::getParam(const char *key, nvs_param_t type, void *defaultValue)
 {
     if (!_started || !key)
     {
@@ -330,14 +268,7 @@ void *NVStorage::getParam(const char *key, nvs_param_t type, void *defaultValue)
     }
 }
 
-/**
- * @brief Get string  
- * 
- * @param key 
- * @param defaultValue 
- * @return const char* 
- */
-char *NVStorage::getString(const char *key, char *defaultValue)
+char *SingletonNVS::getString(const char *key, char *defaultValue)
 {
     void *mystr;
     mystr = getParam(key, NVS_STR, &defaultValue);
@@ -345,14 +276,7 @@ char *NVStorage::getString(const char *key, char *defaultValue)
     return *((char **)mystr);
 }
 
-/**
- * @brief 
- * 
- * @param key 
- * @param defaultValue 
- * @return int32_t 
- */
-int32_t NVStorage::getInt(const char *key, int32_t defaultValue)
+int32_t SingletonNVS::getInt(const char *key, int32_t defaultValue)
 {
     void *myint;
     myint = getParam(key, NVS_INT, &defaultValue);
@@ -360,14 +284,7 @@ int32_t NVStorage::getInt(const char *key, int32_t defaultValue)
     return *((int32_t *)myint);
 }
 
-/**
- * @brief 
- * 
- * @param key 
- * @param defaultValue 
- * @return uint8_t 
- */
-uint8_t NVStorage::getBool(const char *key, uint8_t defaultValue)
+uint8_t SingletonNVS::getBool(const char *key, uint8_t defaultValue)
 {
     void *mybool;
     mybool = getParam(key, NVS_BOOL, &defaultValue);
