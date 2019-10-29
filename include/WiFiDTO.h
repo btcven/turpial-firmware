@@ -10,13 +10,15 @@ This class represent the data that need to travel throught:
 3. Serial communication
 */
 typedef struct wifi_dto_config_t {
-    bool WAP_enabled; // Default value
+    int apChannel;
+    int apMaxConn;
+     bool WAP_enabled; // Default value
     bool WST_enabled; // Default value
     bool isOpen;
     char* apSSID;
     char* apPassword;
-    int32_t apChannel;
-    int32_t apMaxConn;
+    
+   
 } wifi_dto_config_t;
 
 class WiFiDTO : public Serializable {

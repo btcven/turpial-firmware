@@ -132,18 +132,29 @@ void setup() {
     std::cout<<"value = "<<nvs->getValue() << std::endl; */
  
     //initial test object
-    wifi_dto_config_t wifi_params;  
+    wifi_dto_config_t wifi_params = {
+        wifi_params.apChannel = 8,
+        wifi_params.apMaxConn = 7,
+        wifi_params.WAP_enabled = 1, // Default value
+        wifi_params.WST_enabled = 1, // Default value
+        wifi_params.isOpen = true,
+        wifi_params.apSSID = "hello",
+        wifi_params.apPassword = "mi_password_largo",
+        
+    };  
     size_t length;
     char* buffer;
     //to interpolate information relate with wifi data stored
     //dta just for test serialized functionalities
-    wifi_params.WAP_enabled = WAP_ENABLED; // Default value
-    wifi_params.WST_enabled = WST_ENABLED; // Default value
-    wifi_params.isOpen = true;
-    wifi_params.apSSID = "hello world";
-    wifi_params.apPassword = "mi password largo";
-    wifi_params.apChannel = WAP_CHANNEL;
-    wifi_params.apMaxConn = WAP_MAXCONN;
+    /* wifi_params.apSSID = "hello";
+    wifi_params.apPassword = "mi_password_largo";
+    wifi_params.apChannel = 8;
+    wifi_params.apMaxConn = 7;
+    wifi_params.WAP_enabled = 1; // Default value
+    wifi_params.WST_enabled = 1; // Default value
+    wifi_params.isOpen = 1; */
+   
+    
     
     
     WiFiDTO wifi_dto(wifi_params); //object to be serialized
@@ -153,7 +164,10 @@ void setup() {
     buffer = (char*)malloc(sizeof(char)*length);
     wifi_dto.serialize(buffer);
 
-   // wifi_dto.deserialize(buffer);
+    std::cout << "<-------------------------> fin de la serializacion <-----------------> " << std::endl;
+    std::cout <<"------------------>>>" << static_cast<const void*>(buffer)<<""<<std::endl;
+
+   wifi_dto.deserialize(buffer);
 
    std::cout<<"The length is :" << length << std::endl; 
    /*

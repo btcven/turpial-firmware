@@ -33,7 +33,7 @@ esp_err_t WST::begin()
         // nvs.setString(NVS_WST_SSID_KEY, "YOUR_SSID");
         // nvs.setString(NVS_WST_PASS_KEY, "YOUR_PASS");
         //=========================================================
-
+        
         // get values from nvs or set default values from hal/hardware.h
         wst_ssid = nvs->getString(NVS_WST_SSID_KEY, WST_SSID);
         wst_pass = nvs->getString(NVS_WST_PASS_KEY, WST_PASS);
