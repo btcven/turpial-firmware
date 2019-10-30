@@ -23,10 +23,10 @@ public:
     
     static const char* deserialize( const char* source, POD& target ) {
         std::cout << "deserializando"<<std::endl;
-        memcpy( &target, source, sizeof(target) );
+        memcpy( &target, source, serialize_size(target) );
          std::cout << "el length es " <<sizeof(target)<<std::endl;
-        //return source + serialize_size(target); // //move the pointer to the next addres
-        return source + sizeof(target);
+        return source + serialize_size(target); // //move the pointer to the next addres
+        //return source + sizeof(target);
     }
 };
 
@@ -39,11 +39,14 @@ size_t SerializablePOD<char*>::serialize_size(char* str)
 template<>
 const char* SerializablePOD<char*>::deserialize( const char* source, char*& target )
 {
-    size_t length;
-    memcpy( &length, source, sizeof(size_t));
+    int length;
+  
+    memcpy( &length, source, sizeof(int));
     memcpy( &target, source , length);
-    std::cout << "el tamamno es " << length <<std::endl;  
-    return source + sizeof(size_t) + length; //point to the next data
+
+    //std::cout << std::string(source,length) << std::endl;
+    //std::cout << "el tamamno es "<<std::endl; 
+    return source + sizeof(int) + length; //point to the next data
 }
 
 template<>

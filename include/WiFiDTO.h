@@ -13,7 +13,7 @@ typedef struct wifi_dto_config_t {
     int apChannel;
     int apMaxConn;
     int WAP_enabled; // Default value
-    int WST_enabled; // Default value
+    int  WST_enabled; // Default value
     int isOpen;
     char* apSSID;
     char* apPassword;
@@ -31,6 +31,8 @@ public:
     virtual size_t serialize_size() const;
     virtual void serialize(char* dataOut) const;
     virtual void deserialize(const char* dataIn);
+    void setData(wifi_dto_config_t data);
+    void printData(void);
 
 private:
     wifi_dto_config_t settings_;

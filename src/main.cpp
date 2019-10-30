@@ -125,7 +125,7 @@ void checkForCriticalLevels(){
 
 
 void setup() {
-    int test = sizeof(float);
+
    /*  nvs->setValue(10);
     SingletonNVS* p2 = SingletonNVS::getInstance();
     p2->setValue(150);
@@ -155,7 +155,24 @@ void setup() {
     std::cout << "<-------------------------> fin de la serializacion <-----------------> " << std::endl;
     std::cout <<"------------------>>>" << static_cast<const void*>(buffer)<<""<<std::endl;
 
-   // wifi_dto.deserialize(buffer);
+  //change the data inside structure just to know if deserialization is able to recover the information and interpolate
+    wifi_params = {
+        wifi_params.apChannel = 10,
+        wifi_params.apMaxConn = 11,
+        wifi_params.WAP_enabled = 0, // Default value
+        wifi_params.WST_enabled = 0, // Default value
+        wifi_params.isOpen = 0,
+        wifi_params.apSSID = "hola",
+        wifi_params.apPassword = "mi_password_corto",
+        
+    };
+
+    wifi_dto.printData();
+    wifi_dto.setData(wifi_params);
+    wifi_dto.printData();
+    wifi_dto.deserialize(buffer);
+
+    wifi_dto.printData();
 
     std::cout<<"The length is :" << length << std::endl; 
    /*
