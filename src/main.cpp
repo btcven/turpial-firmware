@@ -125,7 +125,7 @@ void checkForCriticalLevels(){
 
 
 void setup() {
-   
+    int test = sizeof(float);
    /*  nvs->setValue(10);
     SingletonNVS* p2 = SingletonNVS::getInstance();
     p2->setValue(150);
@@ -137,25 +137,13 @@ void setup() {
         wifi_params.apMaxConn = 7,
         wifi_params.WAP_enabled = 1, // Default value
         wifi_params.WST_enabled = 1, // Default value
-        wifi_params.isOpen = true,
+        wifi_params.isOpen = 1,
         wifi_params.apSSID = "hello",
         wifi_params.apPassword = "mi_password_largo",
         
     };  
     size_t length;
     char* buffer;
-    //to interpolate information relate with wifi data stored
-    //dta just for test serialized functionalities
-    /* wifi_params.apSSID = "hello";
-    wifi_params.apPassword = "mi_password_largo";
-    wifi_params.apChannel = 8;
-    wifi_params.apMaxConn = 7;
-    wifi_params.WAP_enabled = 1; // Default value
-    wifi_params.WST_enabled = 1; // Default value
-    wifi_params.isOpen = 1; */
-   
-    
-    
     
     WiFiDTO wifi_dto(wifi_params); //object to be serialized
     length = wifi_dto.serialize_size(); //get the length of the dto class
@@ -167,9 +155,9 @@ void setup() {
     std::cout << "<-------------------------> fin de la serializacion <-----------------> " << std::endl;
     std::cout <<"------------------>>>" << static_cast<const void*>(buffer)<<""<<std::endl;
 
-   wifi_dto.deserialize(buffer);
+   // wifi_dto.deserialize(buffer);
 
-   std::cout<<"The length is :" << length << std::endl; 
+    std::cout<<"The length is :" << length << std::endl; 
    /*
     // Initialize battery module
     status = battery.begin();
