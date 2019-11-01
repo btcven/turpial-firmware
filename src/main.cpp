@@ -156,7 +156,7 @@ void setup() {
     std::cout <<"------------------>>>" << static_cast<const void*>(buffer)<<""<<std::endl;
 
   //change the data inside structure just to know if deserialization is able to recover the information and interpolate
-    wifi_params = {
+   /*  wifi_params = {
         wifi_params.apChannel = 10,
         wifi_params.apMaxConn = 11,
         wifi_params.WAP_enabled = 0, // Default value
@@ -165,14 +165,14 @@ void setup() {
         wifi_params.apSSID = "hola",
         wifi_params.apPassword = "mi_password_corto",
         
-    };
+    }; */
 
-    wifi_dto.printData();
+   /*  wifi_dto.printData();
     wifi_dto.setData(wifi_params);
-    wifi_dto.printData();
-    wifi_dto.deserialize(buffer);
+    wifi_dto.printData(); */
+   wifi_dto.deserialize(buffer);
 
-    wifi_dto.printData();
+   // wifi_dto.printData();
 
     std::cout<<"The length is :" << length << std::endl; 
    /*

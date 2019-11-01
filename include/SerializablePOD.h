@@ -16,47 +16,47 @@ public:
     }
 
     static char* serialize( char* target, POD value ) {
-        std::cout << "-->Serializando"<<std::endl;
-        (char*)memcpy( target, &value, serialize_size(value) );
-        return target + sizeof(value); //move the pointer to the next addres
+        memcpy( target, &value, serialize_size(value) );
+        std::cout<<"verificado"<<serialize_size(value)<<std::endl;
+        return target + sizeof(size_t);
     }
     
     static const char* deserialize( const char* source, POD& target ) {
-        std::cout << "deserializando"<<std::endl;
+        std::cout<<"Vamos a deserializar"<<std::endl;
         memcpy( &target, source, serialize_size(target) );
-         std::cout << "el length es " <<sizeof(target)<<std::endl;
-        return source + serialize_size(target); // //move the pointer to the next addres
-        //return source + sizeof(target);
+        return source + sizeof(target);
     }
 };
 
 template<>
 size_t SerializablePOD<char*>::serialize_size(char* str)
 {
+    /* return sizeof(size_t) + strlen(str); */
+    std::cout<<"el TAMANO del char* "<<sizeof(size_t) + strlen(str)<<std::endl;
     return sizeof(size_t) + strlen(str);
 }
 
 template<>
 const char* SerializablePOD<char*>::deserialize( const char* source, char*& target )
 {
-    int length;
-  
-    memcpy( &length, source, sizeof(int));
-    memcpy( &target, source , length);
+      //source = source + 8;
 
-    //std::cout << std::string(source,length) << std::endl;
-    //std::cout << "el tamamno es "<<std::endl; 
-    return source + sizeof(int) + length; //point to the next data
+     //size_t length;
+     //memcpy( &length, source, sizeof(size_t));
+    //size_t t = *(size_t*)length; 
+    //std::cout<<std::endl<<"--------------el tamano es :"<<length<<std::endl;
+    //std::cout << target << std::endl;
+   // memcpy( &target, source , length );
+    return source + sizeof(size_t) + 10;  //init 8 + 4
 }
 
 template<>
-char* SerializablePOD<char*>::serialize( char* target, char* value ){
-    size_t len = (size_t)strlen(value);
-    memcpy( target,&len , sizeof(size_t) );
-    memcpy(target,value,len);
-    //just for printing in stdout
-    //fwrite(target,len,1,stdout);
-    std::cout << std::string(target,len) << std::endl;
+char* SerializablePOD<char*>::serialize( char* target, char* value ) {
+    size_t l = strlen(value);
+    std::cout<<"vamos a serializar char*->"<<l<<std::endl;
+    memcpy( target,&l , sizeof(size_t) );
     target = target + sizeof(size_t);
-    return target + len;
+    memcpy( target, value, strlen(value) );
+     std::cout<<">>>>>>>>>>>>>>>>>>>>>>>>>>>>"<<std::string(target,l)<<std::endl;
+    return target + l;
 }

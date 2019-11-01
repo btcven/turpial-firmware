@@ -44,7 +44,7 @@ size_t WiFiDTO::serialize_size() const {
           SerializablePOD<int>::serialize_size(settings_.WST_enabled) +
           SerializablePOD<int>::serialize_size(settings_.isOpen) +
           SerializablePOD<char*>::serialize_size(settings_.apSSID)  + 
-          SerializablePOD<char*>::serialize_size(settings_.apPassword);
+          SerializablePOD<char*>::serialize_size(settings_.apPassword); 
           
                     
   return size; 
@@ -73,8 +73,8 @@ void WiFiDTO::serialize(char* dataOut) const {
 
   std::cout <<"apPassword: (char*) -------->"<< static_cast<const void*>(dataOut)<<std::endl;
   dataOut  = SerializablePOD<char*>::serialize(dataOut, settings_.apPassword); 
-
-
+ 
+ 
 } 
 
 void WiFiDTO::deserialize(const char* dataIn) { 
@@ -88,26 +88,26 @@ void WiFiDTO::deserialize(const char* dataIn) {
    dataIn = SerializablePOD<int>::deserialize(dataIn, settings_.apMaxConn); 
   std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"------->"<<static_cast<const void*>(dataIn)<<std::endl;
   
-  std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
+  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
   dataIn = SerializablePOD<int>::deserialize(dataIn, settings_.WAP_enabled);
   std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(dataIn)<<std::endl;
 
-  std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
+  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
   dataIn = SerializablePOD<int>::deserialize(dataIn, settings_.WST_enabled);
   std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(dataIn)<<std::endl;
 
-  std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
+  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
   dataIn = SerializablePOD<int>::deserialize(dataIn, settings_.isOpen); 
   std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(dataIn)<<std::endl;
-  /*
-  std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
+  
+  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
   dataIn = SerializablePOD<char*>::deserialize(dataIn, settings_.apSSID); 
   std::cout<<"dato deserializado en el metodo------------>"<<*(char*)dataIn<<"------->"<<static_cast<const void*>(dataIn)<<std::endl;
- *//*
-  std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
+ 
+  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
   dataIn = SerializablePOD<char*>::deserialize(dataIn, settings_.apPassword); 
-  std::cout<<"dato deserializado en el metodo------------>"<<*(char*)dataIn<<std::endl;
- */
+  std::cout<<"dato deserializado en el metodo------------>"<<*(char*)dataIn<<std::endl;  
+ 
 
 } 
 
