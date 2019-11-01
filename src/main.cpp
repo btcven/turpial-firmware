@@ -144,12 +144,14 @@ void setup() {
     };  
     size_t length;
     char* buffer;
+    char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
     
     WiFiDTO wifi_dto(wifi_params); //object to be serialized
     length = wifi_dto.serialize_size(); //get the length of the dto class
     
     //buffer to store the serialized data
     buffer = (char*)malloc(sizeof(char)*length);
+    
     wifi_dto.serialize(buffer);
 
     std::cout << "<-------------------------> fin de la serializacion <-----------------> " << std::endl;
@@ -170,11 +172,13 @@ void setup() {
    /*  wifi_dto.printData();
     wifi_dto.setData(wifi_params);
     wifi_dto.printData(); */
+    buffer = *pBuffer; //recover the initial address to deserialized information
+    std::cout <<"ADDRESS BUFFER TO DESERIALIZE>"<< static_cast<const void*>(buffer)<<"------>"<<std::endl;
    wifi_dto.deserialize(buffer);
 
    // wifi_dto.printData();
 
-    std::cout<<"The length is :" << length << std::endl; 
+   // std::cout<<"The length is :" << length << std::endl; 
    /*
     // Initialize battery module
     status = battery.begin();
