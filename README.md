@@ -6,6 +6,7 @@ We are happy of your visit and that you can read more about us. Here you can fin
 ## What's Locha Mesh
 The Locha Mesh network is a secure radio network for text messaging and bitcoin transactions. The main objetive is a long range network for everyone and everywhere, for this reason, we are working not only in a protocol, also the firmware for affordable devices like our "Turpial".
 
+If you want to learn more about Locha Mesh feel free to read [this repository](https://github.com/btcven/locha) or take a look at our website [locha.io](https://www.locha.io) 
 
 ## License
 Copyright (c) 2019 Bitcoin Venezuela and Locha Mesh developers.
