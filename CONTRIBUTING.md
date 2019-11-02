@@ -2,7 +2,7 @@
 
 Thanks for taking the time to contribute!
 
-The following is a set of guidelines for contributing to [**Locha**](), [**Turpial**]() or .
+The following is a set of guidelines for contributing to [**Locha**](), [**Turpial**]() or anything related to Locha Mesh Project.
 
 #### Table of contents
 
@@ -45,7 +45,7 @@ Please read our [code of conduct](CODE_OF_CONDUCT.md)
 ToDo
 
 ### I just have a question
-For any question you can send us a message via Twitter @Locha_io and soon through the form you will find on our website **locha.io**
+For any question you can send us a message via Twitter @Locha_io , email us at contacto@bitcoinvenezuela.com or through the contact form in [locha.io](https://www.locha.io)
 
 ### Suggesting enhancements
 ToDo
