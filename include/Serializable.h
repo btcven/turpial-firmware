@@ -1,12 +1,23 @@
+/**
+ * @file Serializable.h
+ * @author Locha Mesh project developers (locha.io)
+ * @brief 
+ * @version 0.1.1
+ * @date 2019-11-02
+ * @copyright Copyright (c) 2019 Locha Mesh project developers
+ * @license Apache 2.0, see LICENSE file for details
+ */
+
 #ifndef SERIALIZABLE_H
 #define SERIALIZABLE_H
-#include <stddef.h> //to use size_t type
+#include <stddef.h> // to use size_t type
 
 // Interface class
-/*
-This class is used as interface to be implemented by other 
-classes type data transfer object or DTO
-*/
+
+/**
+ * @brief This class is used as interface to be implemented by other classes type data transfer object or DTO
+ * 
+ */
 class Serializable
 {
 public:

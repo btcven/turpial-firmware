@@ -60,30 +60,7 @@ void WiFiDTO::serialize(char* dataOut) const {
   dataOut = SerializablePOD<char*>::serialize(dataOut, ptrSettings_->apSSID);
 
   std::cout <<"apPassword: (char*) -------->"<< static_cast<const void*>(ptrSettings_->apPassword)<<std::endl;
-  dataOut  = SerializablePOD<char*>::serialize(dataOut, ptrSettings_->apPassword); 
-  /* std::cout <<"--------------------SERIALIZATION ---------->"<<std::endl;
-
-  std::cout <<"apChannel: (int)------------->"<< static_cast<const void*>(dataOut)<<"------>"<<ptrSettings_->apChannel<<std::endl;
-  dataOut = SerializablePOD<int>::serialize(dataOut, ptrSettings_->apChannel);
-
-  std::cout <<"apMaxConn: (int)------------->"<< static_cast<const void*>(dataOut)<<"------->"<<ptrSettings_->apMaxConn<<std::endl;
-  dataOut = SerializablePOD<int>::serialize(dataOut, ptrSettings_->apMaxConn);
-
-   std::cout <<"Wap Enabled: bool------------->"<< static_cast<const void*>(dataOut)<<"------->"<<ptrSettings_->WAP_enabled<<std::endl;
-  dataOut = SerializablePOD<int>::serialize(dataOut, ptrSettings_->WAP_enabled);
-  
-  std::cout <<"WST_enabled(bool): ---------->"<< static_cast<const void*>(dataOut)<<"------->"<<ptrSettings_->WST_enabled<<std::endl;
-  dataOut = SerializablePOD<int>::serialize(dataOut, ptrSettings_->WST_enabled);
-
-  std::cout <<"isOpen: (bool)------------->"<< static_cast<const void*>(dataOut)<<"------->"<<ptrSettings_->isOpen<<std::endl;
-  dataOut = SerializablePOD<int>::serialize(dataOut, ptrSettings_->isOpen);
-
-  std::cout <<"apSSID: (char*) --------->"<< static_cast<const void*>(dataOut)<<std::endl;
-  dataOut = SerializablePOD<char*>::serialize(dataOut, ptrSettings_->apSSID);
-
-  std::cout <<"apPassword: (char*) -------->"<< static_cast<const void*>(dataOut)<<std::endl;
-  dataOut  = SerializablePOD<char*>::serialize(dataOut, ptrSettings_->apPassword);  */
-  
+  dataOut  = SerializablePOD<char*>::serialize(dataOut, ptrSettings_->apPassword);   
 } 
 
 void WiFiDTO::deserialize(const char* dataIn) { 
@@ -104,42 +81,11 @@ void WiFiDTO::deserialize(const char* dataIn) {
   dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->isOpen); 
   std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(&ptrSettings_->isOpen)<<std::endl;
 
-  dataIn = dataIn + 4;
-
+  dataIn = dataIn + 4; //ofset b/w type of data inside structure
   
   dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apSSID); 
   dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apPassword);  
- /*  std::cout <<"--------------------DESERIALIZATION ---------->"<<std::endl;
-
-  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
-  SerializablePOD<int>::deserialize(dataIn, ptrSettings_->apChannel); 
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"------->"<< static_cast<const void*>(dataIn)<<std::endl;
-
-  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
-   dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->apMaxConn); 
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"------->"<<static_cast<const void*>(dataIn)<<std::endl;
-  
-  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
-  dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->WAP_enabled);
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(dataIn)<<std::endl;
-
-  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
-  dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->WST_enabled);
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(dataIn)<<std::endl;
-
-  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
-  dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->isOpen); 
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(dataIn)<<std::endl;
-  dataIn = dataIn + 4;
-  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
-  dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apSSID); 
-  std::cout<<"dato deserializado en el metodo------------>"<<static_cast<const void*>(dataIn)<<std::endl;
-  std::cout <<": Last---------->"<< static_cast<const void*>(dataIn)<<std::endl;
-  //std::cout <<": ---------->"<< static_cast<const void*>(dataIn)<<std::endl;
-  dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apPassword); 
-  std::cout<<"dato deserializado en el metodo------------>"<<*(char*)dataIn<<std::endl;  */
  
-
 } 
 
 void WiFiDTO::setData(wifi_dto_config_t data) {
@@ -147,13 +93,28 @@ void WiFiDTO::setData(wifi_dto_config_t data) {
 }
 
 void WiFiDTO::printData(void) {
-  std::cout<<"el dato de test"<<ptrSettings_->apChannel <<std::endl;
+   std::cout<<std::endl;
+        std::cout<<"**************ADDRESSES STRUCT***********************************"<<std::endl;
+        std::cout <<"-----------------------------------------------"<<std::endl;
+        wifi_dto_config_t* ps = *initPtrSettings_; //get the initial structure address 
+        //this pointer is used to point to address structure but is able to increment addresses by 4 bytes with ptr_to_int++
+        std::cout << (*ps).apChannel << std::endl;
+        std::cout << (*ps).apMaxConn << std::endl;
+        std::cout << (*ps).WAP_enabled << std::endl;
+        std::cout << (*ps).WST_enabled << std::endl;
+        std::cout << (*ps).isOpen << std::endl;
+        std::cout << (*ps).apSSID << std::endl;
+        std::cout << (*ps).apPassword << std::endl;
+        
+        
+        
+  /* std::cout<<"el dato de test"<<ptrSettings_->apChannel <<std::endl;
   std::cout<<"el dato de test"<<ptrSettings_->apMaxConn<<std::endl;
   std::cout<<"el dato de test"<<ptrSettings_->isOpen <<std::endl;
   std::cout<<"el dato de test"<<ptrSettings_->WAP_enabled <<std::endl;
   std::cout<<"el dato de test"<<ptrSettings_->WST_enabled <<std::endl;
 
-  std::cout<<"*************************************************"<<std::endl;
+  std::cout<<"*************************************************"<<std::endl; */
 
   
 }

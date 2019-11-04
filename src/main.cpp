@@ -28,8 +28,8 @@
 SingletonNVS* nvs = SingletonNVS::getInstance(); //create or recovery SingletonNVS instance as needed
 
 void setup() {
-    char ssid[] = "miSSIDPersonal3";
-    char pass[] = "miPassword12345";
+    char ssid[] = "miSSIDPersona";
+    char pass[] = "miPassword123";
     size_t length;
     char* buffer;
     char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
@@ -55,7 +55,7 @@ void setup() {
 
 
   //change the data inside structure just to know if deserialization is able to recover the information and interpolate
-    wifi_params = {
+   /*  wifi_params = {
         wifi_params.apChannel = 10,
         wifi_params.apMaxConn = 11,
         wifi_params.WAP_enabled = 0, // Default value
@@ -64,10 +64,10 @@ void setup() {
         wifi_params.apSSID = "hola",
         wifi_params.apPassword = "mi_password_corto",
         
-    }; 
-
-    wifi_dto.setData(wifi_params);
-    wifi_dto.printData(); 
+    };  
+ */
+   // wifi_dto.setData(wifi_params);
+    //wifi_dto.printData();  
     buffer = *pBuffer; //recover the initial address to deserialized information
     wifi_dto.deserialize(buffer);
     //to check deserialization 
