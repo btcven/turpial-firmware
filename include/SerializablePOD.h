@@ -66,7 +66,6 @@ public:
 template <>
 size_t SerializablePOD<char *>::serialize_size(char *str)
 {
-    /* return sizeof(size_t) + strlen(str); */
     std::cout << "el TAMANO del char* " << sizeof(size_t) + strlen(str) << std::endl;
     return sizeof(size_t) + strlen(str);
 }

@@ -64,28 +64,27 @@ void WiFiDTO::serialize(char* dataOut) const {
 } 
 
 void WiFiDTO::deserialize(const char* dataIn) { 
-  std::cout <<"--------------------DESERIALIZATION ---------->"<<std::endl;
 
-  SerializablePOD<int>::deserialize(dataIn, ptrSettings_->apChannel); 
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"------->"<< static_cast<const void*>(&ptrSettings_->apChannel)<<std::endl;
+    std::cout <<"--------------------DESERIALIZATION ---------->"<<std::endl;
 
-  dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->apMaxConn); 
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"------->"<<static_cast<const void*>(&ptrSettings_->apMaxConn)<<std::endl;
-
-  dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->WAP_enabled);
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(&ptrSettings_->WAP_enabled)<<std::endl;
-
-  dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->WST_enabled);
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(&ptrSettings_->WST_enabled)<<std::endl;
-
-  dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->isOpen); 
-  std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(&ptrSettings_->isOpen)<<std::endl;
-
-  dataIn = dataIn + 4; //ofset b/w type of data inside structure
-  
-  dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apSSID); 
-  dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apPassword);  
+    std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"------->"<< static_cast<const void*>(&ptrSettings_->apChannel)<<std::endl;
+    SerializablePOD<int>::deserialize(dataIn, ptrSettings_->apChannel); 
+   
+    std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"------->"<<static_cast<const void*>(&ptrSettings_->apMaxConn)<<std::endl;
+    dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->apMaxConn); 
+    
+    std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(&ptrSettings_->WAP_enabled)<<std::endl;
+    dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->WAP_enabled);
+   
+    std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(&ptrSettings_->WST_enabled)<<std::endl;
+    dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->WST_enabled);
+    
+    std::cout<<"dato deserializado en el metodo------------>"<<*(int*)dataIn<<"-------->"<<static_cast<const void*>(&ptrSettings_->isOpen)<<std::endl;
+    dataIn = SerializablePOD<int>::deserialize(dataIn, ptrSettings_->isOpen); 
+   dataIn = dataIn + 4;
  
+    dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apSSID); 
+    dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apPassword);  
 } 
 
 void WiFiDTO::setData(wifi_dto_config_t data) {
@@ -107,14 +106,7 @@ void WiFiDTO::printData(void) {
         std::cout << (*ps).apPassword << std::endl;
         
         
-        
-  /* std::cout<<"el dato de test"<<ptrSettings_->apChannel <<std::endl;
-  std::cout<<"el dato de test"<<ptrSettings_->apMaxConn<<std::endl;
-  std::cout<<"el dato de test"<<ptrSettings_->isOpen <<std::endl;
-  std::cout<<"el dato de test"<<ptrSettings_->WAP_enabled <<std::endl;
-  std::cout<<"el dato de test"<<ptrSettings_->WST_enabled <<std::endl;
 
-  std::cout<<"*************************************************"<<std::endl; */
 
   
 }
