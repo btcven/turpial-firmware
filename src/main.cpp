@@ -57,7 +57,7 @@ void setup() {
   //change the data inside structure just to know if deserialization is able to recover the information and interpolate
 
     buffer = *pBuffer; //recover the initial address to deserialized information
-    wifi_dto.deserialize(buffer);
+    wifi_dto.deserialize(buffer);//buffer with initial address
     //to check deserialization 
     wifi_dto.printData();
 
