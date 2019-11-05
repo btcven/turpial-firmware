@@ -66,33 +66,41 @@ public:
 template <>
 size_t SerializablePOD<char *>::serialize_size(char *str)
 {
-    /* return sizeof(size_t) + strlen(str); */
     std::cout << "el TAMANO del char* " << sizeof(size_t) + strlen(str) << std::endl;
     return sizeof(size_t) + strlen(str);
 }
 
-template <>
-const char *SerializablePOD<char *>::deserialize(const char *source, char *&target)
+template<>
+const char* SerializablePOD<char*>::deserialize( const char* source, char*& target )
 {
-    //source = source + 8;
+    size_t length;
+    std::cout <<"Vamos a deserializar" << std::endl;
+    std::cout <<":----------address of char field in structure------------------------------->"<< static_cast<const void*>(&target)<<std::endl;
+    memcpy( &length, source, sizeof(size_t));
+    std::cout << "el length of string.."<< (size_t)length << std::endl;
+    source = source +sizeof(size_t);
+    //target = (char*)malloc(sizeof(char)*length); //error
+    memcpy( target, source, length);
+    std::cout << "salida: " << std::string(source,length) << std::endl;
+    std::cout << "dato en el field despues de deserializar: : " << target << std::endl;
+    std::cout <<":----------address->"<< static_cast<const void*>(target)<<std::endl;
 
-    //size_t length;
-    //memcpy( &length, source, sizeof(size_t));
-    //size_t t = *(size_t*)length;
-    //std::cout<<std::endl<<"--------------el tamano es :"<<length<<std::endl;
-    //std::cout << target << std::endl;
-    // memcpy( &target, source , length );
-    return source + sizeof(size_t) + 10; //init 8 + 4
+    return source + length;  
+
 }
 
-template <>
-char *SerializablePOD<char *>::serialize(char *target, char *value)
-{
+template<>
+char* SerializablePOD<char*>::serialize( char* target, char* value )
+{  
+    
     size_t l = strlen(value);
+    std::cout << ": dir buffer ---------->" << static_cast<const void*> (&target) << std::endl;
+    std::cout << ": dir inside pointer to put data ---------->" << static_cast<const void*> (value) << std::endl;
     std::cout << "vamos a serializar char*->" << l << std::endl;
-    memcpy(target, &l, sizeof(size_t));
+    memcpy( target, &l , sizeof(size_t) );
     target = target + sizeof(size_t);
-    memcpy(target, value, strlen(value));
-    std::cout << ">>>>>>>>>>>>>>>>>>>>>>>>>>>>" << std::string(target, l) << std::endl;
+    memcpy( target, value, strlen(value) );
+    std::cout << std::string(target,l) << std::endl;
     return target + l;
-}
+
+} 

@@ -86,5 +86,7 @@ public:
     void printData(void);
 
 private:
-    wifi_dto_config_t settings_;
+    //wifi_dto_config_t settings_;
+    wifi_dto_config_t* ptrSettings_;
+    wifi_dto_config_t** initPtrSettings_ = &ptrSettings_;
 };
