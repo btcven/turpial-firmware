@@ -28,8 +28,8 @@
 SingletonNVS* nvs = SingletonNVS::getInstance(); //create or recovery SingletonNVS instance as needed
 
 void setup() {
-    char ssid[] = "miSSIDPersona";
-    char pass[] = "miPassword123";
+    char ssid[] = "miSSIDPersona,text muy arog";
+    char pass[] = "miPassword123-gustavo gitskdlsdmksmdksmd,s";
     size_t length;
     char* buffer;
     char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
