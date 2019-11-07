@@ -1,13 +1,14 @@
 
-#include "hal/hardware.h"
+
 #include <stdio.h>
 #include <iostream>
 
 #include "WiFiDTO.h"
 #include "SerializablePOD.h"
 #include <iostream>
-#include<stdlib.h> 
+#include <stdlib.h> 
 
+#include "defaults.h"
 /**
  * @brief Construct a new Wi Fi D T O:: Wi Fi D T O object
  * 

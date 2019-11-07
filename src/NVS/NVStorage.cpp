@@ -52,7 +52,6 @@ esp_err_t NVStorage::begin()
 
     if(status == ESP_OK) 
     {
-        ESP_LOGE(__function__,"Se inicializo correctamente la NVS");
         return status;
     } else if (status == ESP_ERR_NVS_NO_FREE_PAGES || status == ESP_ERR_NVS_NEW_VERSION_FOUND)
     {

@@ -12,7 +12,7 @@
 #include "WiFiMode.h"
 #include "WAP.h"
 #include "WST.h"
-#include "hal/hardware.h"
+#include "defaults.h"
 #include "NVS/SingletonNVS.h"
 //#include "NVS/NVStorage.h"
 
@@ -103,14 +103,18 @@ void WiFiEvent(WiFiEvent_t evt)
 
 wifi_mode_t WiFiMode::selectMode(bool AP, bool ST)
 {
-    if (!AP && ST)
+    if (!AP && ST) {
         return WIFI_STA;
-    if (AP && !ST)
+    } else if (AP && !ST) {
         return WIFI_AP;
-    if (AP && ST)
+    } else if (AP && ST) {
         return WIFI_AP_STA;
-    if (!AP && !ST)
+    } else if (!AP && !ST) {
         return WIFI_MODE_NULL;
+    } else {
+        return WIFI_STA;
+    }    
+
 }
 
 esp_err_t WiFiMode::begin()

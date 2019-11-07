@@ -9,26 +9,24 @@
  * 
  */
 
+#include <stdio.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include "sdkconfig.h"
 #include <Arduino.h>
-#include "nvs.h"
-#include "nvs_flash.h"
-#include "hal/hardware.h"
-#include "WiFi/WiFiMode.h"
+
 #include "ESC/battery.h"
-#include  "WiFiDTO.h" //Data transfer object for wifi parameters
 #include "NVS/SingletonNVS.h"
-
-
-#include <iostream>
-#include <string>
-#include <vector>
+#include "WiFiDTO.h"
+#include "testRTOSCPP/Hello.hpp"
 
 
 //singleton instance for all the application
 SingletonNVS* nvs = SingletonNVS::getInstance(); //create or recovery SingletonNVS instance as needed
 
-void setup() {
-    char ssid[] = "miSSIDPersona,text muy arog";
+void loop_task(void *pvParameter)
+{   
+    /* char ssid[] = "miSSIDPersona,text muy arog";
     char pass[] = "miPassword123-gustavo gitskdlsdmksmdksmd,s";
     size_t length;
     char* buffer;
@@ -59,12 +57,41 @@ void setup() {
     buffer = *pBuffer; //recover the initial address to deserialized information
     wifi_dto.deserialize(buffer);//buffer with initial address
     //to check deserialization 
-    wifi_dto.printData();
+     wifi_dto.printData(); */
 
-   
+    char* pcTaskName;
+    pcTaskName = (char*)pvParameter;
+    for (int i = 10; i >= 0; i--)
+    {
+        std::cout << "reestarting in" << i << "seconds" << std::endl; 
+        std::cout << "the parameter is : " << pcTaskName<< std::endl;
+        //printf("Restarting in %d seconds...\n", i);
+        vTaskDelay(1000 / portTICK_RATE_MS);
+    }
+    printf("Restarting now.\n");
+    fflush(stdout);
+    esp_restart();
+    //free(buffer);
+    while(1){
+        vTaskDelay(1000 / portTICK_RATE_MS);
+    }
 }
 
-void loop()
+
+
+
+
+const char* pcTask1 = "Task1\n";
+const char* pcTask2 = "Task2\n";
+static Hello *helloTask;
+
+
+extern "C" void app_main()
 {
-    //
+
+    // iniciamos arduino como componente.
+    initArduino();
+    helloTask = new Hello();
+    helloTask->setStackSize(2048);
+    helloTask->start((void*)pcTask1);
 }
