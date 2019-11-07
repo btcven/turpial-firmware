@@ -12,7 +12,7 @@
 #include "WiFiMode.h"
 #include "WAP.h"
 #include "WST.h"
-#include "hal/hardware.h"
+#include "defaults.h"
 #include "NVS/SingletonNVS.h"
 //#include "NVS/NVStorage.h"
 

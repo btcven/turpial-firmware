@@ -12,7 +12,7 @@
 
 #include "WAP.h"
 #include "NVS/SingletonNVS.h"
-#include "hal/hardware.h"
+#include "defaults.h"
 
 esp_err_t WAP::begin()
 {
