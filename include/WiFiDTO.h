@@ -10,7 +10,7 @@
 
 #include "Serializable.h"
 #include <iostream>
-#include <hal/hardware.h>
+#include <defaults.h>
 
 /**
  * @brief This class represent the data that need to travel throught:
