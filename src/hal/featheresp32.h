@@ -9,9 +9,9 @@
  * 
  */
 
-#ifndef ESP32_DEVKIT_V1
-#define ESP32_DEVKIT_V1
-
+#ifndef FEATHERESP32
+#define FEATHERESP32
+//
 #define ESC_ENABLED true
 #define RAD_ENABLED false
 #define BLE_ENABLED false
@@ -60,4 +60,4 @@
     #define ARDUINO_RUNNING_CORE 1
 #endif // CONFIG_FREERTOS_UNICORE
 
-#endif // ESP32_DEVKIT_V1
+#endif // FEATHERESP32

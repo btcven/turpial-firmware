@@ -11,23 +11,24 @@
 
 #ifndef ESP32_WEMOS_H_
 #define ESP32_WEMOS_H_
-
+//
 #define ESC_ENABLED true
 #define RAD_ENABLED false
 #define BLE_ENABLED false
-#define WST_ENABLED true
-#define WAP_ENABLED true
+
+#define WST_ENABLED false
+#define WAP_ENABLED false
 
 // NVS related defines
-#define NVS_WIFI_NAMESPACE "wifi_config"
+#define NVS_WIFI_NAMESPACE  "wifi_config"
 #define NVS_WAP_ENABLED_KEY "WAP_enabled"
 #define NVS_WST_ENABLED_KEY "WST_enabled"
-#define NVS_WAP_SSID_KEY "WAP_ssid"
-#define NVS_WAP_PASS_KEY "WAP_pass"
+#define NVS_WAP_SSID_KEY    "WAP_ssid"
+#define NVS_WAP_PASS_KEY    "WAP_pass"
 #define NVS_WAP_CHANNEL_KEY "WAP_channel"
 #define NVS_WAP_MAXCONN_KEY "WAP_maxconn"
-#define NVS_WST_SSID_KEY "WST_ssid"
-#define NVS_WST_PASS_KEY "WST_pass"
+#define NVS_WST_SSID_KEY    "WST_ssid"
+#define NVS_WST_PASS_KEY    "WST_pass"
 
 // Battery related defines
 #define BATTERY_CAPACITY 2200 // in mAh unit
@@ -38,17 +39,21 @@
  * @brief WiFi Station default params.
  * 
  */
-#define WST_SSID    "HOME-EB05"
-#define WST_PASS    "D8ED78ECC6372942"
+#define WST_SSID    ""
+#define WST_PASS    ""
 
 /**
  * @brief WiFi AP default params.
  * 
  */
 #define WAP_SSID "io.locha.ap"
-#define WAP_PASS "the Password"
+#define WAP_PASS ""
 #define WAP_CHANNEL 6
 #define WAP_MAXCONN 4
+
+// <---- hasta aquí
+
+
 
 /**
  * @brief define where the Arduino loop is running.
@@ -60,4 +65,4 @@
     #define ARDUINO_RUNNING_CORE 1
 #endif // CONFIG_FREERTOS_UNICORE
 
-#endif // ESP32_DEVKIT_V1
+#endif // ESP32_WEMOS_H_

@@ -11,7 +11,7 @@
 
 #ifndef HELTEC_V2_H_
 #define HELTEC_V2_H_
-
+//
 #define ESC_ENABLED true
 #define RAD_ENABLED false
 #define BLE_ENABLED false
