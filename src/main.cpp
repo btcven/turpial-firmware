@@ -18,6 +18,7 @@
 #include "ESC/battery.h"
 #include "NVS/SingletonNVS.h"
 #include "WiFiDTO.h"
+#include "testRTOSCPP/Hello.hpp"
 
 
 //singleton instance for all the application
@@ -82,13 +83,15 @@ void loop_task(void *pvParameter)
 
 const char* pcTask1 = "Task1\n";
 const char* pcTask2 = "Task2\n";
+static Hello *helloTask;
+
 
 extern "C" void app_main()
 {
 
     // iniciamos arduino como componente.
     initArduino();
-    // creamos una tarea en bucle, emulando a void loop() de arduino
-    xTaskCreate(&loop_task, "loop_task1", 4096, (void*)pcTask1, 5, NULL);
-    xTaskCreate(&loop_task, "loop_task2", 4096, (void*)pcTask2, 2, NULL);
+    helloTask = new Hello();
+    helloTask->setStackSize(2048);
+    helloTask->start((void*)pcTask1);
 }
