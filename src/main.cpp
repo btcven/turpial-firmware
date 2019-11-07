@@ -15,23 +15,80 @@
 #include "sdkconfig.h"
 #include <Arduino.h>
 
-void loop_task(void *pvParameter)
-{
+#include "ESC/battery.h"
+#include "NVS/SingletonNVS.h"
+#include "WiFiDTO.h"
 
+
+//singleton instance for all the application
+SingletonNVS* nvs = SingletonNVS::getInstance(); //create or recovery SingletonNVS instance as needed
+
+void loop_task(void *pvParameter)
+{   
+    /* char ssid[] = "miSSIDPersona,text muy arog";
+    char pass[] = "miPassword123-gustavo gitskdlsdmksmdksmd,s";
+    size_t length;
+    char* buffer;
+    char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
+    
+ 
+    //initial test object
+    wifi_dto_config_t wifi_params = {
+        wifi_params.apChannel = 8,
+        wifi_params.apMaxConn = 7,
+        wifi_params.WAP_enabled = 1, // Default value
+        wifi_params.WST_enabled = 1, // Default value
+        wifi_params.isOpen = 1,
+        wifi_params.apSSID = ssid,
+        wifi_params.apPassword = pass, 
+    }; 
+ 
+    WiFiDTO wifi_dto(wifi_params); //object to be serialized
+    length = wifi_dto.serialize_size(); //get the length of the dto class
+    
+    //buffer to store the serialized data
+    buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
+    wifi_dto.serialize(buffer); //serialize data into the buffer
+
+
+  //change the data inside structure just to know if deserialization is able to recover the information and interpolate
+
+    buffer = *pBuffer; //recover the initial address to deserialized information
+    wifi_dto.deserialize(buffer);//buffer with initial address
+    //to check deserialization 
+     wifi_dto.printData(); */
+
+    char* pcTaskName;
+    pcTaskName = (char*)pvParameter;
     for (int i = 10; i >= 0; i--)
     {
-        printf("Restarting in %d seconds...\n", i);
+        std::cout << "reestarting in" << i << "seconds" << std::endl; 
+        std::cout << "the parameter is : " << pcTaskName<< std::endl;
+        //printf("Restarting in %d seconds...\n", i);
         vTaskDelay(1000 / portTICK_RATE_MS);
     }
     printf("Restarting now.\n");
     fflush(stdout);
     esp_restart();
+    //free(buffer);
+    while(1){
+        vTaskDelay(1000 / portTICK_RATE_MS);
+    }
 }
+
+
+
+
+
+const char* pcTask1 = "Task1\n";
+const char* pcTask2 = "Task2\n";
 
 extern "C" void app_main()
 {
+
     // iniciamos arduino como componente.
     initArduino();
     // creamos una tarea en bucle, emulando a void loop() de arduino
-    xTaskCreate(&loop_task, "loop_task", 2048, NULL, 5, NULL);
+    xTaskCreate(&loop_task, "loop_task1", 4096, (void*)pcTask1, 5, NULL);
+    xTaskCreate(&loop_task, "loop_task2", 4096, (void*)pcTask2, 2, NULL);
 }

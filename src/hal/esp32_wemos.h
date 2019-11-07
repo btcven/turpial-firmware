@@ -1,0 +1,63 @@
+/**
+ * @file heltec_v2.h
+ * @author Locha Mesh Developers (contact@locha.io)
+ * @brief 
+ * @version 0.1
+ * @date 2019-09-11
+ * 
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
+#ifndef ESP32_WEMOS_H_
+#define ESP32_WEMOS_H_
+
+#define ESC_ENABLED true
+#define RAD_ENABLED false
+#define BLE_ENABLED false
+#define WST_ENABLED true
+#define WAP_ENABLED true
+
+// NVS related defines
+#define NVS_WIFI_NAMESPACE "wifi_config"
+#define NVS_WAP_ENABLED_KEY "WAP_enabled"
+#define NVS_WST_ENABLED_KEY "WST_enabled"
+#define NVS_WAP_SSID_KEY "WAP_ssid"
+#define NVS_WAP_PASS_KEY "WAP_pass"
+#define NVS_WAP_CHANNEL_KEY "WAP_channel"
+#define NVS_WAP_MAXCONN_KEY "WAP_maxconn"
+#define NVS_WST_SSID_KEY "WST_ssid"
+#define NVS_WST_PASS_KEY "WST_pass"
+
+// Battery related defines
+#define BATTERY_CAPACITY 2200 // in mAh unit
+#define LOW_BAT_THRESHOLD 20 // in % unit
+#define CRITICAL_BAT_THRESHOLD 7 // in % unit
+
+/**
+ * @brief WiFi Station default params.
+ * 
+ */
+#define WST_SSID    "HOME-EB05"
+#define WST_PASS    "D8ED78ECC6372942"
+
+/**
+ * @brief WiFi AP default params.
+ * 
+ */
+#define WAP_SSID "io.locha.ap"
+#define WAP_PASS "the Password"
+#define WAP_CHANNEL 6
+#define WAP_MAXCONN 4
+
+/**
+ * @brief define where the Arduino loop is running.
+ * 
+ */
+#if CONFIG_FREERTOS_UNICORE
+    #define ARDUINO_RUNNING_CORE 0
+#else
+    #define ARDUINO_RUNNING_CORE 1
+#endif // CONFIG_FREERTOS_UNICORE
+
+#endif // ESP32_DEVKIT_V1
