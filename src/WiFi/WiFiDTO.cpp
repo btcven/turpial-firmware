@@ -8,7 +8,6 @@
 #include <iostream>
 #include <stdlib.h> 
 
-#include "defaults.h"
 /**
  * @brief Construct a new Wi Fi D T O:: Wi Fi D T O object
  * 

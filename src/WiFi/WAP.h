@@ -13,7 +13,7 @@
 #ifndef WAP_H
 #define WAP_H
 
-#include "Arduino.h"
+//#include "Arduino.h"
 #include "WiFi.h"
 
 class WAP 

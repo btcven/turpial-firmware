@@ -12,8 +12,6 @@
 #include "WiFiMode.h"
 #include "WAP.h"
 #include "WST.h"
-#include "defaults.h"
-
 
 WiFiMode::WiFiMode(wifi_dto_config_t& wifi_params) {
     wifi_config_ = &wifi_params;

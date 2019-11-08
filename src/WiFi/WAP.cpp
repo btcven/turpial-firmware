@@ -19,8 +19,8 @@ WAP::WAP(char* apSSID, char* apPass, int8_t apChannel, int8_t apMaxConn) {
   ESP_LOGI(__func__,"constructor WAP");
   apSSID_ = apSSID;
   apPassword_ = apPass;
-  apChannel_ = WAP_CHANNEL;
-  apMaxConn_ = WAP_MAXCONN;
+  apChannel_ = apChannel;
+  apMaxConn_ = apMaxConn;
 }
  
 esp_err_t WAP::begin()
@@ -29,7 +29,7 @@ esp_err_t WAP::begin()
 
     if (initAP)
     {
-        ESP_LOGD(__func__, "AP init OK");
+        ESP_LOGI(__func__, "AP init OK");
         return ESP_OK;
     }
     else

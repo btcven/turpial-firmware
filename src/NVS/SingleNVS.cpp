@@ -15,9 +15,6 @@ SingleNVS::~SingleNVS() {
     ::nvs_close(_handle);
 }
 
-
-
-
 SingleNVS* SingleNVS::getInstance() {
    if (nvs_ == NULL) {
       nvs_ = new SingleNVS();
@@ -92,6 +89,8 @@ bool SingleNVS::open(const char *name, nvs_open_mode openMode) {
         return true;
     }
 }
+
+
 void SingleNVS::close() {
     if (!_started)
     {
