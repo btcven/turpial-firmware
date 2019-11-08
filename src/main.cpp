@@ -15,14 +15,17 @@
 #include "sdkconfig.h"
 #include <Arduino.h>
 
+#include "WiFi/WiFiMode.h"
 #include "ESC/battery.h"
-#include "NVS/SingletonNVS.h"
-#include "WiFiDTO.h"
+#include "NVS/SingleNVS.h"
+//#include "WiFiDTO.h"
 #include "testRTOSCPP/Hello.hpp"
+
+#include "defaults.h"
 
 
 //singleton instance for all the application
-SingletonNVS* nvs = SingletonNVS::getInstance(); //create or recovery SingletonNVS instance as needed
+SingleNVS* nvs = SingleNVS::getInstance(); //create or recovery SingletonNVS instance as needed
 
 void loop_task(void *pvParameter)
 {   
@@ -81,17 +84,38 @@ void loop_task(void *pvParameter)
 
 
 
-const char* pcTask1 = "Task1\n";
+/* const char* pcTask1 = "Task1\n";
 const char* pcTask2 = "Task2\n";
 static Hello *helloTask;
+ */
 
+char ssid[] = "HOME-EB05";
+char pass[] = "D8ED78ECC7362942";
+wifi_dto_config_t wifi_params = {
+        wifi_params.apChannel = WAP_CHANNEL,
+        wifi_params.apMaxConn = WAP_MAXCONN,
+        wifi_params.WAP_enabled = WAP_ENABLED, // Default value
+        wifi_params.WST_enabled = WST_ENABLED, // Default value
+        wifi_params.isOpen = false,
+        wifi_params.apSSID = WST_SSID,
+        wifi_params.apPassword = WST_PASS, 
+}; 
 
 extern "C" void app_main()
 {
-
     // iniciamos arduino como componente.
     initArduino();
-    helloTask = new Hello();
+    nvs->begin();
+    WiFiMode* wlan = new WiFiMode(wifi_params);
+    wlan->begin();
+ 
+    
+    
+    //std::cout << "output NVS: " << nvs->open("test",NVS_READWRITE) << std::endl;
+    
+    //esp_err_t status = wlan->begin(wifi_params);
+
+   /*  helloTask = new Hello();
     helloTask->setStackSize(2048);
-    helloTask->start((void*)pcTask1);
-}
+    helloTask->start((void*)pcTask1);*/
+} 

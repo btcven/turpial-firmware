@@ -13,6 +13,7 @@
 #define WIFIMODE_H
 
 #include "Arduino.h"
+#include "WiFiDTO.h"
 #include "WiFi.h"
 
 class WiFiMode 
@@ -22,8 +23,7 @@ class WiFiMode
          * @brief Construct a new WiFiMode object
          * 
          */
-        //WiFiMode();
-
+        WiFiMode(wifi_dto_config_t& wifi_params);
         /**
          * @brief Destroy the WiFiMode object
          * 
@@ -50,6 +50,9 @@ class WiFiMode
          * 
          * @return wifi_mode_t
          */
+        bool WAP_enabled;
+        bool WST_enabled;
+        wifi_dto_config_t *wifi_config_;
         wifi_mode_t selectMode(bool AP, bool ST);
 };   
 
