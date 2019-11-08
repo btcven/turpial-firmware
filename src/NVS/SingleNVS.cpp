@@ -201,13 +201,13 @@ int SingleNVS::get(std::string key, uint8_t* result, size_t& length) {
  * @param [in] data The value to set for the key.
  */
 void SingleNVS::set(std::string key, std::string data, bool isBlob) {
-	ESP_LOGD(LOG_TAG, ">> set: key: %s, string: value=%s", key.c_str(), data.c_str());
+	ESP_LOGI(LOG_TAG, ">> set: key: %s, string: value=%s", key.c_str(), data.c_str());
 	if (isBlob) {
 		::nvs_set_blob(_handle, key.c_str(), data.data(), data.length());
 	} else {
 		::nvs_set_str(_handle, key.c_str(), data.c_str());
 	}
-	ESP_LOGD(LOG_TAG, "<< set");
+	ESP_LOGI(LOG_TAG, "<< set");
 } // set
 
 

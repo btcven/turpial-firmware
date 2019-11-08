@@ -19,7 +19,6 @@ class SingleNVS {
 
 
         void commit();
-
         void erase();
         void erase(std::string key);
         int get(std::string key, std::string* result, bool isBlob = false);

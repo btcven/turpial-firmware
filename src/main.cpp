@@ -62,35 +62,17 @@ void loop_task(void *pvParameter)
     //to check deserialization 
      wifi_dto.printData(); */
 
-    char* pcTaskName;
-    pcTaskName = (char*)pvParameter;
-    for (int i = 10; i >= 0; i--)
-    {
-        std::cout << "reestarting in" << i << "seconds" << std::endl; 
-        std::cout << "the parameter is : " << pcTaskName<< std::endl;
-        //printf("Restarting in %d seconds...\n", i);
-        vTaskDelay(1000 / portTICK_RATE_MS);
-    }
-    printf("Restarting now.\n");
-    fflush(stdout);
-    esp_restart();
-    //free(buffer);
-    while(1){
-        vTaskDelay(1000 / portTICK_RATE_MS);
-    }
 }
 
 
 
 
 
-/* const char* pcTask1 = "Task1\n";
+const char* pcTask1 = "Task1\n";
 const char* pcTask2 = "Task2\n";
 static Hello *helloTask;
- */
+ 
 
-char ssid[] = "HOME-EB05";
-char pass[] = "D8ED78ECC7362942";
 wifi_dto_config_t wifi_params = {
         wifi_params.apChannel = WAP_CHANNEL,
         wifi_params.apMaxConn = WAP_MAXCONN,
@@ -105,17 +87,55 @@ extern "C" void app_main()
 {
     // iniciamos arduino como componente.
     initArduino();
-    nvs->begin();
-    WiFiMode* wlan = new WiFiMode(wifi_params);
-    wlan->begin();
+    /* WiFiMode* wlan = new WiFiMode(wifi_params);//this parameters need to arrives from any storage system or socket
+    wlan->begin(); */
  
-    
-    
+    std::string value = "Hello world my friend";
+    std::string key = "test";
+    std::string *buff = new std::string();
+    std::string *buff2 = new std::string();
+    nvs->open(NVS_WIFI_NAMESPACE,NVS_READWRITE);
+    nvs->set(key,value,true);
     //std::cout << "output NVS: " << nvs->open("test",NVS_READWRITE) << std::endl;
-    
-    //esp_err_t status = wlan->begin(wifi_params);
+    nvs->get(key,buff,true);
+    std::cout <<"gettingResult: " << nvs->get(key,buff,true) << std::endl;
+    std::cout << *buff << std::endl;
 
-   /*  helloTask = new Hello();
+    delete buff;
+
+   
+    size_t length;
+    char* buffer;
+    char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
+    
+     //initial test object
+    wifi_dto_config_t wifi_params = {
+        wifi_params.apChannel = 8,
+        wifi_params.apMaxConn = 7,
+        wifi_params.WAP_enabled = 1, // Default value
+        wifi_params.WST_enabled = 1, // Default value
+        wifi_params.isOpen = 1,
+        wifi_params.apSSID = WST_SSID,
+        wifi_params.apPassword = WST_PASS, 
+    }; 
+ 
+    WiFiDTO wifi_dto(wifi_params); //object to be serialized
+    length = wifi_dto.serialize_size(); //get the length of the dto class
+    
+    //buffer to store the serialized data
+    buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
+    wifi_dto.serialize(buffer); //serialize data into the buffer
+
+    std::string str(buffer);
+    std::cout << "La salida es ::" << str << std::endl;
+    nvs->set(key,buffer,true);
+    nvs->get(key,buff2,true);
+    std::cout <<"gettingResult: " << nvs->get(key,buff2,true) << std::endl;
+    std::cout << *buff << std::endl;
+    std::cout << buff2->length() << std::endl;
+/*     helloTask = new Hello();
     helloTask->setStackSize(2048);
-    helloTask->start((void*)pcTask1);*/
+    helloTask->start((void*)pcTask1); */
+
+
 } 
