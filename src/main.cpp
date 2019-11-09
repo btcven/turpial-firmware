@@ -99,7 +99,7 @@ extern "C" void app_main()
     //std::cout << "output NVS: " << nvs->open("test",NVS_READWRITE) << std::endl;
     nvs->get(key,buff,true);
     std::cout <<"gettingResult: " << nvs->get(key,buff,true) << std::endl;
-    std::cout << *buff << std::endl;
+    std::cout <<"--------------------------" << *buff << "--------------------------" << std::endl;
 
     delete buff;
 
@@ -126,12 +126,12 @@ extern "C" void app_main()
     buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
     wifi_dto.serialize(buffer); //serialize data into the buffer
 
-    std::string str(buffer);
-    std::cout << "La salida es ::" << str << std::endl;
+   
     nvs->set(key,buffer,true);
+
     nvs->get(key,buff2,true);
     std::cout <<"gettingResult: " << nvs->get(key,buff2,true) << std::endl;
-    std::cout << *buff << std::endl;
+    std::cout << *buff2 << std::endl;
     std::cout << buff2->length() << std::endl;
 /*     helloTask = new Hello();
     helloTask->setStackSize(2048);

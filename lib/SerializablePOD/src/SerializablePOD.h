@@ -25,7 +25,7 @@ public:
     /**
      * @brief 
      * 
-     * @param str 
+     * @param any basic data type, for instance int, char, bool, float, double 
      * @return size_t 
      */
     static size_t serialize_size(POD str)
@@ -36,23 +36,22 @@ public:
     /**
      * @brief 
      * 
-     * @param target 
-     * @param value 
-     * @return char* 
+     * @param target target is a buffer to store the serialized data
+     * @param value  value could be any int,char,bool,float,double
+     * @return char* this return the next available address in the buffer
      */
     static char *serialize(char *target, POD value)
     {
         memcpy(target, &value, serialize_size(value));
-        std::cout << "verificado" << serialize_size(value) << std::endl;
         return target + sizeof(size_t);
     }
 
     /**
      * @brief 
      * 
-     * @param source 
-     * @param target 
-     * @return const char* 
+     * @param source //source is a buffer with serialized data to be deserialized
+     * @param target is the struct field address to interpolate the data
+     * @return const char* this return the address to the next available data space in the buffer
      */
     static const char *deserialize(const char *source, POD &target)
     {
@@ -62,6 +61,14 @@ public:
     }
 };
 
+/**
+* @brief
+* to be able to serialized any char* data we need to store the length of the string and the string itself, 
+* to be able to deserilized it
+* @param str pointer to char to know the length of the string
+* @return size_t this function return the length of the string plus 8 bytes to store the length of the string in serialized buffer 
+
+*/
 
 template <>
 size_t SerializablePOD<char *>::serialize_size(char *str)
@@ -70,6 +77,14 @@ size_t SerializablePOD<char *>::serialize_size(char *str)
     return sizeof(size_t) + strlen(str);
 }
 
+/**
+ * @brief 
+ * 
+ * @tparam  
+ * @param source  this is the buffer with serialized data to be deserialized 
+ * @param target  this is the structure field address to be interpolate with the deserialized data field
+ * @return const char* address of the next data inside buffer with serialized data
+ */
 template<>
 const char* SerializablePOD<char*>::deserialize( const char* source, char*& target )
 {
@@ -88,6 +103,16 @@ const char* SerializablePOD<char*>::deserialize( const char* source, char*& targ
     return source + length;  
 
 }
+
+
+/**
+ * @brief 
+ * 
+ * @tparam  
+ * @param target this is the buffer to store serialized data 
+ * @param value  data to be serialized 
+ * @return char* address of the next available address to store the new serialized data inside the buffer
+ */
 
 template<>
 char* SerializablePOD<char*>::serialize( char* target, char* value )
