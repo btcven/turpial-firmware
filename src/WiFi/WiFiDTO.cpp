@@ -25,6 +25,13 @@ WiFiDTO::WiFiDTO(wifi_dto_config_t& settings) {
   ptrSettings_ = &settings;
 } 
 
+WiFiDTO::WiFiDTO() {
+   ptrSettings_ = new wifi_dto_config_t;    
+  ptrSettings_->apSSID = new char[sizeof(char) * 2];  
+  ptrSettings_->apPassword = new char[sizeof(char) * 2];                         
+  
+}
+
 //implementation of all virtual methods from serializable interface
 
 size_t WiFiDTO::serialize_size() const {
@@ -134,7 +141,7 @@ void WiFiDTO::setData(void) {
  //just for testing   
 void WiFiDTO::printData(void) {
   std::cout<<std::endl;
-  std::cout<<"**************ADDRESSES STRUCT***********************************"<<std::endl;
+  std::cout<<"**************DATA STRUCT***********************************"<<std::endl;
   std::cout <<"-----------------------------------------------"<<std::endl;
   wifi_dto_config_t* ps = *initPtrSettings_; //get the initial structure address 
   //this pointer is used to point to address structure but is able to increment addresses by 4 bytes with ptr_to_int++
@@ -146,8 +153,7 @@ void WiFiDTO::printData(void) {
   std::cout << (*ps).apSSID << std::endl;
   std::cout << (*ps).apPassword << std::endl; 
 
-  std::cout << "SalidaMAS: " << ptrSettings_->apSSID << std::endl;
- /*  std::cout << "Salida: " << ptrSettings_->apChannel << std::endl;
+ /* std::cout <<"Salida: " << ptrSettings_->apChannel << std::endl;
    std::cout << "Salida: " << ptrSettings_->apMaxConn << std::endl;
    std::cout << "Salida: " << ptrSettings_->WAP_enabled << std::endl;
    std::cout << "Salida: " << ptrSettings_->apSSID << std::endl;
