@@ -89,36 +89,9 @@ extern "C" void app_main()
     initArduino();
     /* WiFiMode* wlan = new WiFiMode(wifi_params);//this parameters need to arrives from any storage system or socket
     wlan->begin(); */
-
-  /*   size_t length;
-    char* buffer;
-    char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
-    
-     //initial test object
-    wifi_dto_config_t wifi_params = {
-        wifi_params.apChannel = 8,
-        wifi_params.apMaxConn = 7,
-        wifi_params.WAP_enabled = 1, // Default value
-        wifi_params.WST_enabled = 1, // Default value
-        wifi_params.isOpen = 1,
-        wifi_params.apSSID = WST_SSID,
-        wifi_params.apPassword = WST_PASS, 
-    };  */
- 
-    
-
-   
-
     //nvs->set(key2,buffer,length);
-
     //nvs->get(key2,bufferTest,length);
     //std::cout <<"gettingResult: " << nvs->get(key,buff2,true) << std::endl;
-   
-    //std::cout << buff2->length() << std::endl; 
-
-    //wifi_dto.deserialize(buff2);
-
-
 
 /*     helloTask = new Hello();
     helloTask->setStackSize(2048);
@@ -158,11 +131,11 @@ extern "C" void app_main()
     //memcpy(wifi_paramsChange.apPassword, WST_PASS, strlen(WST_PASS));
 
   
-    WiFiDTO wifi_dto(wifi_params); //object to be serialized
-    WiFiDTO wifi_dto2;
+    WiFiDTO wifi_dto(wifi_params); //object to be serialized and simulated serialized buffer from external world
+    WiFiDTO wifi_dto2;  //object to get deserialized data from serialized buffer
     wifi_dto.printData();
-   wifi_dto.setData(wifi_paramsChange);
-    length = wifi_dto.serialize_size(); //get the length of the dto class
+    wifi_dto.setData(wifi_paramsChange); //just in order to modify the initial structure to demostrate the class has contemplated all possible cases
+    length = wifi_dto.serialize_size(); //get the length of the dto class data fields to calculate serialized buffer length
     //buffer to store the serialized data
     buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
     std::cout<< static_cast<const void*>(buffer)<<std::endl << std::endl;
@@ -171,17 +144,17 @@ extern "C" void app_main()
 
     std::cout<< static_cast<const void*>(buffer)<<std::endl << std::endl;
     
-    wifi_dto.setData(wifi_paramsChange);
-    wifi_dto.printData();
+    //wifi_dto.setData(wifi_paramsChange);
+    //wifi_dto.printData();
     //change the data inside structure just to know if deserialization is able to recover the information and interpolate
 
     //having a serialized buffer we can deserialize it with other different object  "wifi_dto2"
     //to demostrate deserialization working, just we need to fix the end of the string when print in stdout
     buffer = *pBuffer; //recover the initial address to deserialized information
     std::cout<< static_cast<const void*>(buffer)<<std::endl << std::endl;
-    wifi_dto.deserialize(buffer);//buffer with initial address 
+    wifi_dto2.deserialize(buffer); // getting deserialized data inside dto empty  object 
     //to check deserialization 
-    wifi_dto.printData(); //showing garbage data
+    wifi_dto2.printData(); //showing garbage data
 
     std::cout << "--------------------------------------------------------------------------------" << std::endl;
 

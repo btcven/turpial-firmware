@@ -43,8 +43,7 @@ size_t WiFiDTO::serialize_size() const {
           SerializablePOD<int>::serialize_size(ptrSettings_->isOpen)        +
           SerializablePOD<char*>::serialize_size(ptrSettings_->apSSID)      + 
           SerializablePOD<char*>::serialize_size(ptrSettings_->apPassword);  
-          
-                    
+             
   return size; 
 }
 
@@ -101,7 +100,7 @@ void WiFiDTO::deserialize(const char* dataIn) {
 void WiFiDTO::setData(wifi_dto_config_t& data) {
   //if data to replace is greather than data inside structure
   //we need to realocate memory to the field inside the structure
-   //ptrSettings_ = &data;
+  ptrSettings_ = &data;
   if( (size_t)strlen(data.apSSID) > (size_t)strlen(ptrSettings_->apSSID) ) {   
     ptrSettings_->apSSID = (char*)calloc(strlen(data.apSSID),1); 
   } 
@@ -152,10 +151,4 @@ void WiFiDTO::printData(void) {
   std::cout << (*ps).isOpen << std::endl;
   std::cout << (*ps).apSSID << std::endl;
   std::cout << (*ps).apPassword << std::endl; 
-
- /* std::cout <<"Salida: " << ptrSettings_->apChannel << std::endl;
-   std::cout << "Salida: " << ptrSettings_->apMaxConn << std::endl;
-   std::cout << "Salida: " << ptrSettings_->WAP_enabled << std::endl;
-   std::cout << "Salida: " << ptrSettings_->apSSID << std::endl;
-   std::cout << "Salida: " << ptrSettings_->apPassword << std::endl; */
 }
