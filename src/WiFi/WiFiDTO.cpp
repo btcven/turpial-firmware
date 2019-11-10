@@ -27,8 +27,8 @@ WiFiDTO::WiFiDTO(wifi_dto_config_t& settings) {
 
 WiFiDTO::WiFiDTO() {
    ptrSettings_ = new wifi_dto_config_t;    
-  ptrSettings_->apSSID = new char[sizeof(char) * 2];  
-  ptrSettings_->apPassword = new char[sizeof(char) * 2];                         
+  ptrSettings_->apSSID = new char[sizeof(char) * 1];  
+  ptrSettings_->apPassword = new char[sizeof(char) * 1];                         
   
 }
 
@@ -117,8 +117,8 @@ void WiFiDTO::setData(wifi_dto_config_t& data) {
 
 //just for testing
 void WiFiDTO::setData(void) {
-        char temp[] = "hel=";
-        char temp2[] = "Cam";
+        char temp[] = "hel=jhjsd,msndckjshdukshdkjsnc,mbkjhjkxhckjxhcj____";
+        char temp2[] = "Camttttttttttttttttttrrrrrrrrrrrrrrrgggggggg____";
         ptrSettings_->apChannel = 9;
         ptrSettings_->apMaxConn = 10;
         ptrSettings_->WAP_enabled = 0;
