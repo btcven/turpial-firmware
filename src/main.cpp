@@ -89,22 +89,8 @@ extern "C" void app_main()
     initArduino();
     /* WiFiMode* wlan = new WiFiMode(wifi_params);//this parameters need to arrives from any storage system or socket
     wlan->begin(); */
- 
-    std::string value = "Hello world my friend";
-    std::string key = "test";
-    std::string *buff = new std::string();
-    std::string *buff2 = new std::string();
-    nvs->open(NVS_WIFI_NAMESPACE,NVS_READWRITE);
-    nvs->set(key,value,true);
-    //std::cout << "output NVS: " << nvs->open("test",NVS_READWRITE) << std::endl;
-    nvs->get(key,buff,true);
-    std::cout <<"gettingResult: " << nvs->get(key,buff,true) << std::endl;
-    std::cout <<"--------------------------" << *buff << "--------------------------" << std::endl;
 
-    delete buff;
-
-   
-    size_t length;
+  /*   size_t length;
     char* buffer;
     char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
     
@@ -117,25 +103,92 @@ extern "C" void app_main()
         wifi_params.isOpen = 1,
         wifi_params.apSSID = WST_SSID,
         wifi_params.apPassword = WST_PASS, 
-    }; 
+    };  */
  
-    WiFiDTO wifi_dto(wifi_params); //object to be serialized
-    length = wifi_dto.serialize_size(); //get the length of the dto class
     
-    //buffer to store the serialized data
-    buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
-    wifi_dto.serialize(buffer); //serialize data into the buffer
 
    
-    nvs->set(key,buffer,true);
 
-    nvs->get(key,buff2,true);
-    std::cout <<"gettingResult: " << nvs->get(key,buff2,true) << std::endl;
-    std::cout << *buff2 << std::endl;
-    std::cout << buff2->length() << std::endl;
+    //nvs->set(key2,buffer,length);
+
+    //nvs->get(key2,bufferTest,length);
+    //std::cout <<"gettingResult: " << nvs->get(key,buff2,true) << std::endl;
+   
+    //std::cout << buff2->length() << std::endl; 
+
+    //wifi_dto.deserialize(buff2);
+
+
+
 /*     helloTask = new Hello();
     helloTask->setStackSize(2048);
     helloTask->start((void*)pcTask1); */
+
+
+    char ssid[] = "miSSIDPersona";
+    char pass[] = "miPassword";
+
+    char ssid2[] = "hellaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
+    char pass2[] = "Cambbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+    size_t length;
+    char* buffer;
+    char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
+    
+ 
+    //initial test object
+    wifi_dto_config_t wifi_params = {
+         8,
+        7,
+       1, // Default value
+         1, // Default value
+        1,
+        ssid,
+        pass, 
+    }; 
+
+
+      wifi_dto_config_t wifi_paramsChange = {
+         6,
+        4,
+        0, // Default value
+        0, // Default value
+        1,
+        ssid2,
+        pass2,
+        //"SSIDTEST",
+        //"PASSTEST",
+        //WST_SSID,
+        //WST_PASS, 
+    }; 
+    //memcpy(wifi_paramsChange.apSSID, WST_SSID, strlen(WST_SSID));
+    //memcpy(wifi_paramsChange.apPassword, WST_PASS, strlen(WST_PASS));
+
+  
+    WiFiDTO wifi_dto(wifi_params); //object to be serialized
+    
+    wifi_dto.printData();
+    //wifi_dto.setData(wifi_paramsChange);
+  
+    length = wifi_dto.serialize_size(); //get the length of the dto class
+    //buffer to store the serialized data
+    buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
+    std::cout<< static_cast<const void*>(buffer)<<std::endl << std::endl;
+    wifi_dto.serialize(buffer); //serialize data into the buffer
+    //wifi_dto.setData();
+    wifi_dto.setData(wifi_paramsChange);
+    std::cout<< static_cast<const void*>(buffer)<<std::endl << std::endl;
+    wifi_dto.printData();
+  
+    //change the data inside structure just to know if deserialization is able to recover the information and interpolate
+
+    buffer = *pBuffer; //recover the initial address to deserialized information
+    std::cout<< static_cast<const void*>(buffer)<<std::endl << std::endl;
+    wifi_dto.deserialize(buffer);//buffer with initial address 
+    //to check deserialization 
+    wifi_dto.printData(); 
+ 
+
+
 
 
 } 

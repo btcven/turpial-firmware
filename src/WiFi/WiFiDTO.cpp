@@ -91,10 +91,47 @@ void WiFiDTO::deserialize(const char* dataIn) {
   dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apPassword);  
 } 
 
-void WiFiDTO::setData(wifi_dto_config_t data) {
-  ptrSettings_= &data;
+void WiFiDTO::setData(wifi_dto_config_t& data) {
+  //if data to replace is greather than data inside structure
+  //we need to realocate memory to the field inside the structure
+   //ptrSettings_ = &data;
+  if( (size_t)strlen(data.apSSID) > (size_t)strlen(ptrSettings_->apSSID) ) {   
+    ptrSettings_->apSSID = (char*)calloc(strlen(data.apSSID),1); 
+  } 
+  
+  if( (size_t)strlen(data.apPassword) > (size_t)strlen(ptrSettings_->apPassword) ) { 
+    ptrSettings_->apPassword = (char*)calloc(strlen(data.apPassword),1);
+  }
+  
+     memcpy(ptrSettings_->apSSID,data.apSSID,strlen(data.apSSID)+1);
+     memcpy(ptrSettings_->apPassword,data.apPassword,strlen(data.apPassword)+1);
 }
 
+
+//just for testing
+void WiFiDTO::setData(void) {
+        char temp[] = "hel=";
+        char temp2[] = "Cam";
+        ptrSettings_->apChannel = 9;
+        ptrSettings_->apMaxConn = 10;
+        ptrSettings_->WAP_enabled = 0;
+        ptrSettings_->WST_enabled = 0;
+        
+        if( (size_t)strlen(temp) > (size_t)strlen(ptrSettings_->apSSID) ) { 
+          ptrSettings_->apSSID = (char*)calloc(strlen(temp),1);
+        }
+
+        if( (size_t)strlen(temp2) > (size_t)strlen(ptrSettings_->apPassword) ) { 
+          ptrSettings_->apSSID = (char*)calloc(strlen(temp),1);
+        }
+    
+        memcpy(ptrSettings_->apSSID,temp,strlen(temp)+1);
+        memcpy(ptrSettings_->apPassword,temp2,strlen(temp2)+1);
+     
+    }
+
+
+ //just for testing   
 void WiFiDTO::printData(void) {
   std::cout<<std::endl;
   std::cout<<"**************ADDRESSES STRUCT***********************************"<<std::endl;
@@ -107,6 +144,12 @@ void WiFiDTO::printData(void) {
   std::cout << (*ps).WST_enabled << std::endl;
   std::cout << (*ps).isOpen << std::endl;
   std::cout << (*ps).apSSID << std::endl;
-  std::cout << (*ps).apPassword << std::endl;
-  
+  std::cout << (*ps).apPassword << std::endl; 
+
+  std::cout << "SalidaMAS: " << ptrSettings_->apSSID << std::endl;
+ /*  std::cout << "Salida: " << ptrSettings_->apChannel << std::endl;
+   std::cout << "Salida: " << ptrSettings_->apMaxConn << std::endl;
+   std::cout << "Salida: " << ptrSettings_->WAP_enabled << std::endl;
+   std::cout << "Salida: " << ptrSettings_->apSSID << std::endl;
+   std::cout << "Salida: " << ptrSettings_->apPassword << std::endl; */
 }

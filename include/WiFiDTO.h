@@ -12,6 +12,8 @@
 #include <iostream>
 #include <defaults.h>
 
+#include <string.h>
+#include <stdlib.h>
 /**
  * @brief This class represent the data that need to travel throught:
  *          1. System storage
@@ -77,7 +79,9 @@ public:
      * 
      * @param data 
      */
-    void setData(wifi_dto_config_t data);
+    void setData(wifi_dto_config_t& data);
+    void setData(void);
+    
 
     /**
      * @brief 
