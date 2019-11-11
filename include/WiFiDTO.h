@@ -80,8 +80,10 @@ public:
      * @param data 
      */
     void setData(wifi_dto_config_t& data);
+
     void setData(void);
     
+    wifi_dto_config_t& getData(void);
 
     /**
      * @brief 

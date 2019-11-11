@@ -154,3 +154,8 @@ void WiFiDTO::printData(void) {
   std::cout << (*ps).apSSID << std::endl;
   std::cout << (*ps).apPassword << std::endl; 
 }
+
+
+wifi_dto_config_t& WiFiDTO::getData(void) {
+  return *ptrSettings_;
+}
