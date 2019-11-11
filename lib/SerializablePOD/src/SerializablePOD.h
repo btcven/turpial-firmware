@@ -79,7 +79,10 @@ size_t SerializablePOD<char *>::serialize_size(char *str)
 
 /**
  * @brief 
- * 
+ * deserializes a dynamically sized char string  (char*) that's null
+ * terminated. It returns a pointer trough the `target` argument to the buffer
+ * and you need to take ownership of it and `free()` it when necessary to
+ * evitate memory leaks.
  * @tparam  
  * @param source  this is the buffer with serialized data to be deserialized 
  * @param target  this is the structure field address to be interpolate with the deserialized data field
@@ -95,8 +98,7 @@ const char* SerializablePOD<char*>::deserialize( const char* source, char*& targ
     std::cout << "el length of string.."<< (size_t)length << std::endl;
     source = source +sizeof(size_t);
 
-    //target = (char*)malloc(sizeof(char)*length); //ok
-    target = (char*)calloc(sizeof(char)*(size_t)length + 1, 1); 
+    target = (char*)malloc((length + 1) * sizeof(char)); 
     memcpy( target, source, length);
     target[length] = '\0';
 
