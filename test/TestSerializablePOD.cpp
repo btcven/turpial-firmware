@@ -1,6 +1,7 @@
 #include <Arduino.h>
-#include <unity.h>
 #include <cstdint>
+
+#include "unity.h"
 
 #include "SerializablePOD.h"
 
@@ -64,12 +65,11 @@ void test_serialize_deserialize_integers(void) {
     TEST_ASSERT_EQUAL_UINT8(-65535, v5);
 }
 
-void setup() {
+extern "C" void app_main() {
+    // 2 s delay before starting
     delay(2000);
-    UNITY_BEGIN();
-}
 
-void loop(){
+    UNITY_BEGIN();
     RUN_TEST(test_serialize_deserialize_char);
     RUN_TEST(test_serialize_deserialize_integers);
     UNITY_END();
