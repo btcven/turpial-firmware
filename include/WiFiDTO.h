@@ -56,7 +56,7 @@ public:
      * 
      * @return size_t 
      */
-    virtual size_t serialize_size() const;
+    virtual std::size_t serialize_size() const;
 
     /**
      * @brief 
