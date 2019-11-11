@@ -46,8 +46,8 @@ class WAP
         //void responses_WAP(WiFiClient client);
 
     private:
-        char *apSSID_;
-        char *apPassword_;
+        char* apSSID_;
+        char* apPassword_;
         int8_t apChannel_;
         int8_t apMaxConn_;
 };   

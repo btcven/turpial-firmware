@@ -101,13 +101,15 @@ extern "C" void app_main()
     char ssid[] = "miSSIDPersona";
     char pass[] = "miPassword";
 
-    char ssid2[] = "hellaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa";
-    char pass2[] = "Cambbbbbbbbbbbbbbbbbbbbbbbbbbbbbbbb";
+    char ssid2[] = "hell";
+    char pass2[] = "Camb";
     size_t length;
     char* buffer;
     char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
     
- 
+    char* key = "blob";
+
+
     //initial test object
     wifi_dto_config_t wifi_params = {
          8,
@@ -127,41 +129,29 @@ extern "C" void app_main()
         ssid2,
         pass2, 
     }; 
-    //memcpy(wifi_paramsChange.apSSID, WST_SSID, strlen(WST_SSID));
-    //memcpy(wifi_paramsChange.apPassword, WST_PASS, strlen(WST_PASS));
 
-  
     WiFiDTO wifi_dto(wifi_params); //object to be serialized and simulated serialized buffer from external world
-    WiFiDTO wifi_dto2;  //object to get deserialized data from serialized buffer
-    wifi_dto.printData();
-    wifi_dto.setData(wifi_paramsChange); //just in order to modify the initial structure to demostrate the class has contemplated all possible cases
     length = wifi_dto.serialize_size(); //get the length of the dto class data fields to calculate serialized buffer length
-    //buffer to store the serialized data
     buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
-    std::cout<< static_cast<const void*>(buffer)<<std::endl << std::endl;
-   
     wifi_dto.serialize(buffer); //serialize data into the buffer
-
-    std::cout<< static_cast<const void*>(buffer)<<std::endl << std::endl;
     
+    nvs->begin();
+    nvs->open("blobtest",NVS_READWRITE);
+    nvs->set(key,buffer,length);
+    void* temp;
+    temp = malloc(sizeof(char)*length);
+    nvs->get(key,temp,length);
+    WiFiDTO wifi_dto2;
+    wifi_dto2.deserialize((char*)temp);
+
     //wifi_dto.setData(wifi_paramsChange);
-    //wifi_dto.printData();
+    wifi_dto2.printData();
     //change the data inside structure just to know if deserialization is able to recover the information and interpolate
 
     //having a serialized buffer we can deserialize it with other different object  "wifi_dto2"
     //to demostrate deserialization working, just we need to fix the end of the string when print in stdout
     buffer = *pBuffer; //recover the initial address to deserialized information
-    std::cout<< static_cast<const void*>(buffer)<<std::endl << std::endl;
-    wifi_dto2.deserialize(buffer); // getting deserialized data inside dto empty  object 
-    //to check deserialization 
-    wifi_dto2.printData(); //showing garbage data
 
-    std::cout << "--------------------------------------------------------------------------------" << std::endl;
-
-
- 
-
-
-
+  
 
 } 

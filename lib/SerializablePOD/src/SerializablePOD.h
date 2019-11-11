@@ -91,15 +91,12 @@ const char* SerializablePOD<char*>::deserialize( const char* source, char*& targ
     size_t length;
     std::cout <<"Vamos a deserializar" << std::endl;
     std::cout <<":----------address of char field in structure------------------------------->"<< static_cast<const void*>(&target)<<std::endl;
-    memcpy( &length, source, sizeof(size_t));
+    memcpy( &length, source, sizeof(size_t)); //Getting length
     std::cout << "el length of string.."<< (size_t)length << std::endl;
     source = source +sizeof(size_t);
 
-    //realloc(target,sizeof(char)*(size_t)length);
-
     //target = (char*)malloc(sizeof(char)*length); //ok
-   // target = nullptr;
-    target = (char*)calloc(sizeof(char)*(size_t)length+1,1); 
+    target = (char*)calloc(sizeof(char)*(size_t)length + 1, 1); 
     memcpy( target, source, length);
     std::cout << "salida: " << std::string(source,length) << std::endl;
     std::cout << "dato en el field despues de deserializar: : " << std::string(target,length) << std::endl;

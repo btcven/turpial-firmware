@@ -195,7 +195,7 @@ int SingleNVS::get(std::string key, uint8_t* result, size_t& length) {
 
 
 
-int SingleNVS::get(const char* key, char* result,size_t& length) {
+int SingleNVS::get(const char* key, void* result,size_t& length) {
     esp_err_t rc = nvs_get_blob(_handle, key, result, &length);
     std::cout << result << ":" << rc << std::endl;
     return rc;
@@ -238,7 +238,7 @@ void SingleNVS::set(std::string key, uint8_t* data, size_t length) {
 
 void SingleNVS::set(const char* key, char* data, size_t length) {
     std::cout << "vamos a guardar el blob" << std::endl;
-    esp_err_t rc = ::nvs_set_blob(_handle, key, data, length);
+    esp_err_t rc = ::nvs_set_blob(_handle, key, (void*)data, length);
     std::cout << rc << std::endl;
 }
 

@@ -72,6 +72,8 @@ void WiFiDTO::serialize(char* dataOut) const {
 
   std::cout <<"apPassword: (char*) -------->"<< static_cast<const void*>(ptrSettings_->apPassword)<<std::endl;
   dataOut  = SerializablePOD<char*>::serialize(dataOut, ptrSettings_->apPassword);   
+
+  std::cout << "----------------------------FIN--SERIALIZATION---------------------------------------------" <<std::endl;
 } 
 
 void WiFiDTO::deserialize(const char* dataIn) { 
