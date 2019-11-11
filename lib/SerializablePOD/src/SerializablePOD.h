@@ -98,6 +98,8 @@ const char* SerializablePOD<char*>::deserialize( const char* source, char*& targ
     //target = (char*)malloc(sizeof(char)*length); //ok
     target = (char*)calloc(sizeof(char)*(size_t)length + 1, 1); 
     memcpy( target, source, length);
+    target[length] = '\0';
+
     std::cout << "salida: " << std::string(source,length) << std::endl;
     std::cout << "dato en el field despues de deserializar: : " << std::string(target,length) << std::endl;
     std::cout <<":----------address->"<< static_cast<const void*>(target)<<std::endl;
