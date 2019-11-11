@@ -11,6 +11,7 @@
 #include <stdio.h>
 #include <iostream>
 #include <cstring>
+#include <cstdlib>
 
 /**
  * @brief This class is a static one to be used inside data transfer objects to reimplement 
@@ -63,18 +64,16 @@ public:
 
 /**
 * @brief
-* to be able to serialized any char* data we need to store the length of the string and the string itself, 
-* to be able to deserilized it
-* @param str pointer to char to know the length of the string
-* @return size_t this function return the length of the string plus 8 bytes to store the length of the string in serialized buffer 
-
+* to be able to serialized any char* data we need to store the length of the
+* string and the string itself, to be able to deserilized it.
+* @param str pointer to char to know the length of the string.
+* @return size_t this function return the length of the string plus 8 bytes to
+* store the length of the string in serialized buffer.
 */
-
 template <>
-size_t SerializablePOD<char *>::serialize_size(char *str)
+size_t SerializablePOD<char*>::serialize_size(char* str)
 {
-    std::cout << "el TAMANO del char* " << sizeof(size_t) + strlen(str) << std::endl;
-    return sizeof(size_t) + strlen(str);
+    return sizeof(std::size_t) + std::strlen(str);
 }
 
 /**
@@ -86,26 +85,15 @@ size_t SerializablePOD<char *>::serialize_size(char *str)
  * @return const char* address of the next data inside buffer with serialized data
  */
 template<>
-const char* SerializablePOD<char*>::deserialize( const char* source, char*& target )
+const char* SerializablePOD<char*>::deserialize(const char* source, char*& target)
 {
-    size_t length;
-    std::cout <<"Vamos a deserializar" << std::endl;
-    std::cout <<":----------address of char field in structure------------------------------->"<< static_cast<const void*>(&target)<<std::endl;
-    memcpy( &length, source, sizeof(size_t)); //Getting length
-    std::cout << "el length of string.."<< (size_t)length << std::endl;
-    source = source +sizeof(size_t);
+    std::size_t length;
+    std::memcpy(&length, source, sizeof(size_t));
+    target = static_cast<char*>(std::malloc((length + 1) * sizeof(char)));
+    std::memcpy(target, source + sizeof(size_t), length);
 
-    //target = (char*)malloc(sizeof(char)*length); //ok
-    target = (char*)calloc(sizeof(char)*(size_t)length + 1, 1); 
-    memcpy( target, source, length);
-    std::cout << "salida: " << std::string(source,length) << std::endl;
-    std::cout << "dato en el field despues de deserializar: : " << std::string(target,length) << std::endl;
-    std::cout <<":----------address->"<< static_cast<const void*>(target)<<std::endl;
-
-    return source + length;  
-
+    return source + (sizeof(std::size_t) + length);
 }
-
 
 /**
  * @brief 
@@ -115,19 +103,12 @@ const char* SerializablePOD<char*>::deserialize( const char* source, char*& targ
  * @param value  data to be serialized 
  * @return char* address of the next available address to store the new serialized data inside the buffer
  */
-
 template<>
-char* SerializablePOD<char*>::serialize( char* target, char* value )
-{  
-    
-    size_t l = strlen(value);
-    std::cout << ": dir buffer ---------->" << static_cast<const void*> (&target) << std::endl;
-    std::cout << ": dir inside pointer to put data ---------->" << static_cast<const void*> (value) << std::endl;
-    std::cout << "vamos a serializar char*->" << l << std::endl;
-    memcpy( target, &l , sizeof(size_t) );
-    target = target + sizeof(size_t);
-    memcpy( target, value, strlen(value) );
-    std::cout << std::string(target,l) << std::endl;
-    return target + l;
+char* SerializablePOD<char*>::serialize(char* target, char* value)
+{
+    std::size_t length = std::strlen(value);
 
-} 
+    std::memcpy(target, &length, sizeof(std::size_t));
+    std::memcpy(target + sizeof(std::size_t), value, length);
+    return target + (sizeof(std::size_t) + length);
+}
