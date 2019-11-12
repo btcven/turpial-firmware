@@ -13,22 +13,22 @@
 #include "WST.h"
 #include "NVS/SingleNVS.h"
 
-WST::WST(char* ssid, char* pass) {
-    wst_ssid_ = ssid;
-    wst_pass_ = pass;
-}
-esp_err_t WST::begin()
+namespace wst {
+
+esp_err_t begin(Config config)
 {
-    bool initST = WiFi.begin(wst_ssid_, wst_pass_);
+    bool initST = WiFi.begin(config.ssid, config.pass);
 
     if (initST)
     {
-        ESP_LOGD(__func__, "Connected to %s", wst_ssid_);
+        ESP_LOGD(__func__, "Connected to %s", config.ssid);
         return ESP_OK;
     }
     else
     {
-        ESP_LOGE(__func__, "Can't connect to %s", wst_ssid_);
+        ESP_LOGE(__func__, "Can't connect to %s", config.ssid);
         return ESP_FAIL;
     }
+}
+
 }

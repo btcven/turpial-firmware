@@ -13,11 +13,7 @@
 #include "WAP.h"
 #include "WST.h"
 
-WiFiMode::WiFiMode(wifi_dto_config_t& wifi_params) {
-    wifi_config_ = &wifi_params;
-    WAP_enabled = wifi_config_->WAP_enabled; // Default value
-    WST_enabled = wifi_config_->WST_enabled; // Default value
-}
+WiFiMode::WiFiMode(WiFiDTOConfig wifi_params) : _wifi_config(wifi_params) { }
 
 void WiFiEvent(WiFiEvent_t evt)
 {
@@ -117,21 +113,25 @@ wifi_mode_t WiFiMode::selectMode(bool AP, bool ST)
     } else {
         return WIFI_STA;
     }    
-
 }
 
 esp_err_t WiFiMode::begin()
 {
     ESP_LOGI(__func__,"initiating wlan**********************************");
 
-    WAP* wap =  new WAP(wifi_config_->apSSID, 
-                        wifi_config_->apPassword, 
-                        wifi_config_->apChannel, 
-                        wifi_config_->apMaxConn);
+    wap::Config wap_config = {
+        .apSSID = _wifi_config.apSSID.c_str(),
+        .apPass = _wifi_config.apPassword.c_str(), 
+        .apChannel = _wifi_config.apChannel,
+        .apMaxConn = _wifi_config.apMaxConn,
+    };
 
-    WST* wst = new WST(wifi_config_->apSSID, wifi_config_->apPassword);
+    wst::Config wst_config = {
+        .ssid = _wifi_config.apSSID.c_str(),
+        .pass = _wifi_config.apPassword.c_str(),
+    };
 
-    wifi_mode_t WIFI_MODE = selectMode(WAP_enabled, WST_enabled);
+    wifi_mode_t WIFI_MODE = selectMode(_wifi_config.WAP_enabled, _wifi_config.WST_enabled);
     ESP_LOGI(__func__, "Starting WiFi mode: %d", WIFI_MODE);
 
     WiFi.onEvent(WiFiEvent);
@@ -140,25 +140,25 @@ esp_err_t WiFiMode::begin()
     {
     case WIFI_STA:
         ESP_LOGI(__func__, "Starting WST iface only");
-        return wst->begin();
+        return wst::begin(wst_config);
         break;
     case WIFI_AP:
         ESP_LOGI(__func__, "Starting WAP iface only");
-        return wap->begin();
+        return wap::begin(wap_config);
         break;
     case WIFI_AP_STA:
-        ESP_LOGI(__func__, "Starting WAP and WST ifaces");
-        esp_err_t WAP_isInit; 
-        esp_err_t WST_isInit;
-        WAP_isInit = wap->begin();
-        WST_isInit = wst->begin();
-        if (WAP_isInit == ESP_OK && WST_isInit == ESP_OK)
         {
-            return ESP_OK;
-        }
-        else
-        {
-            return ESP_FAIL;
+            ESP_LOGI(__func__, "Starting WAP and WST ifaces");
+            auto WAP_isInit = wap::begin(wap_config);
+            auto WST_isInit = wst::begin(wst_config);
+            if (WAP_isInit == ESP_OK && WST_isInit == ESP_OK)
+            {
+                return ESP_OK;
+            }
+            else
+            {
+                return ESP_FAIL;
+            }
         }
         break;
     case WIFI_MODE_NULL:

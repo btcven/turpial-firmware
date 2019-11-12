@@ -9,11 +9,15 @@
  */
 
 #include "Serializable.h"
+#include "TinyString.h"
+
 #include <iostream>
 #include <defaults.h>
 
-#include <string.h>
-#include <stdlib.h>
+#include <cstring>
+#include <cstdlib>
+#include <cstdint>
+
 /**
  * @brief This class represent the data that need to travel throught:
  *          1. System storage
@@ -21,78 +25,50 @@
  *          3. Serial communication
  * 
  */
-typedef struct wifi_dto_config_t {
-    int apChannel;
-    int apMaxConn;
-    int WAP_enabled;    // Default value
-    int  WST_enabled;   // Default value
-    int isOpen;
-    char* apSSID;
-    char* apPassword;
-    
-   
-} wifi_dto_config_t;
+struct WiFiDTOConfig : public Serializable {
+public:
+    WiFiDTOConfig(int8_t channel,
+                  int8_t maxconn,
+                  bool is_ap,
+                  bool is_st,
+                  bool is_open,
+                  const char* ssid,
+                  const char* pass)
+        : apChannel(channel)
+        , apMaxConn(maxconn)
+        , WAP_enabled(is_ap)
+        , WST_enabled(is_st)
+        , isOpen(is_open)
+        , apSSID(ssid)
+        , apPassword(pass) { }
 
-/**
- * @brief 
- * 
- */
-class WiFiDTO : public Serializable {
+    /**
+     * @brief Returns the 
+     * 
+     * @return std::size_t 
+     */
+    virtual std::size_t serialize_size() const;
+
+    /**
+     * @brief Serializes this WiFiDTOConfig to the given buffer.
+     * 
+     * @param dataOut buffer where data is being serialized to.
+     */
+    virtual char* serialize(char* dataOut) const;
+
+    /**
+     * @brief Deserializes a WiFiDTOConfig from the given buffer.
+     * 
+     * @param dataIn the buffer from where the daa is being deserialized.
+     */
+    virtual const char* deserialize(const char* dataIn);
 
 public:
-    /**
-     * @brief Construct a new WiFi D T O object
-     * 
-     * @param settings 
-     */
-    WiFiDTO(wifi_dto_config_t& settings);
-
-    /**
-     * @brief Construct a new WiFi D T O object
-     * 
-     */
-    WiFiDTO();
-
-    /**
-     * @brief 
-     * 
-     * @return size_t 
-     */
-    virtual size_t serialize_size() const;
-
-    /**
-     * @brief 
-     * 
-     * @param dataOut 
-     */
-    virtual void serialize(char* dataOut) const;
-
-    /**
-     * @brief 
-     * 
-     * @param dataIn 
-     */
-    virtual void deserialize(const char* dataIn);
-
-    /**
-     * @brief Set the Data object
-     * 
-     * @param data 
-     */
-    void setData(wifi_dto_config_t& data);
-
-    void setData(void);
-    
-    wifi_dto_config_t& getData(void);
-
-    /**
-     * @brief 
-     * 
-     */
-    void printData(void);
-
-private:
-    //wifi_dto_config_t settings_;
-    wifi_dto_config_t* ptrSettings_;
-    wifi_dto_config_t** initPtrSettings_ = &ptrSettings_;
+    int8_t apChannel;
+    int8_t apMaxConn;
+    bool WAP_enabled;
+    bool WST_enabled;
+    bool isOpen;
+    tinystring::String apSSID;
+    tinystring::String apPassword;
 };

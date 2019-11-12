@@ -13,19 +13,10 @@
 #include "WAP.h"
 #include "defaults.h"
 
+namespace wap {
 
-WAP::WAP(char* apSSID, char* apPass, int8_t apChannel, int8_t apMaxConn) {
-  // Declare and define default values, before reading NVS inside constructor
-  ESP_LOGI(__func__,"constructor WAP");
-  apSSID_ = apSSID;
-  apPassword_ = apPass;
-  apChannel_ = apChannel;
-  apMaxConn_ = apMaxConn;
-}
- 
-esp_err_t WAP::begin()
-{
-    bool initAP = WiFi.softAP(apSSID_, apPassword_, apChannel_, 0, apMaxConn_);
+esp_err_t begin(Config config) {
+    bool initAP = WiFi.softAP(config.apSSID, config.apPass, config.apChannel, 0, config.apMaxConn);
 
     if (initAP)
     {
@@ -37,6 +28,8 @@ esp_err_t WAP::begin()
         ESP_LOGE(__func__, "AP init ERROR");
         return ESP_FAIL;
     }
+}
+
 }
 
 /*

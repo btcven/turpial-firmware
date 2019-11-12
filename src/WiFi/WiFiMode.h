@@ -23,7 +23,7 @@ class WiFiMode
          * @brief Construct a new WiFiMode object
          * 
          */
-        WiFiMode(wifi_dto_config_t& wifi_params);
+        WiFiMode(WiFiDTOConfig wifi_params);
         /**
          * @brief Destroy the WiFiMode object
          * 
@@ -45,15 +45,9 @@ class WiFiMode
         //void WiFiEvent(WiFiEvent_t evt);
 
     private:
-        /**
-         * @brief Select Wi-Fi Mode, analyzing its parameters
-         * 
-         * @return wifi_mode_t
-         */
-        bool WAP_enabled;
-        bool WST_enabled;
-        wifi_dto_config_t *wifi_config_;
         wifi_mode_t selectMode(bool AP, bool ST);
+
+        WiFiDTOConfig _wifi_config;
 };   
 
 /**
