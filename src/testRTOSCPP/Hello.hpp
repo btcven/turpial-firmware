@@ -2,7 +2,7 @@
 #include <WiFi.h>
 #include <FreeRTOS.h>
 #include <string>
-#include <stdio.h>
+#include <cstdio>
 #include <Task.h>
 #include "sdkconfig.h"
 #include <iostream>
@@ -22,8 +22,8 @@ class Hello: public Task {
             vTaskDelay(1000 / portTICK_RATE_MS);
         }
 
-        printf("Restarting now.\n");
-        fflush(stdout);
+        std::printf("Restarting now.\n");
+        std::fflush(stdout);
         esp_restart();
         return ;
     }
