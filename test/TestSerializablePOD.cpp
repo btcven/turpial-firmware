@@ -11,10 +11,15 @@
  */
 template<typename T>
 T serialize_deserialize_integer_roundtrip(T value) {
+    
+    std::cout << "TEST---serialize_deserialize_integer_roundtrip" << std::endl;
     size_t size = SerializablePOD<T>::serialize_size(value);
     char* dataOut = static_cast<char*>(std::malloc(size));
-    dataOut = SerializablePOD<T>::serialize(dataOut, value);
-
+    char** ptrDataOut = &dataOut;
+    std::cout << ": dir Buffer before serialized-1---------->" << static_cast<const void*> (dataOut) << std::endl;
+    SerializablePOD<T>::serialize(dataOut, value);
+    std::cout << ": dir Buffer after serialized-1---------->" << static_cast<const void*> (dataOut) << std::endl;
+    dataOut = *ptrDataOut;
     T dataIn;
     SerializablePOD<T>::deserialize(dataOut, dataIn);
 
@@ -30,11 +35,14 @@ T serialize_deserialize_integer_roundtrip(T value) {
 void test_serialize_deserialize_char(void) {
     // TODO(jeandudey): fix cast const char* cast to char*, this needs to be done because
     // SerializablePOD doesn't has specialization for const char*
+    std::cout << "TEST---serialize_deserialize_char" << std::endl;
     char* test_string = "WIFI_AP_SSID_EXAMPLE";
 
     std::size_t size = SerializablePOD<char*>::serialize_size(test_string);
     char* dataOut = static_cast<char*>(std::malloc(size));
-    dataOut = SerializablePOD<char*>::serialize(dataOut, test_string);
+    std::cout << ": dir Buffer before serialized-2--------->" << static_cast<const void*> (dataOut) << std::endl;
+    SerializablePOD<char*>::serialize(dataOut, test_string);
+    std::cout << ": dir Buffer after serialized--2-------->" << static_cast<const void*> (dataOut) << std::endl;
 
     char* dataIn = nullptr;
     SerializablePOD<char*>::deserialize(dataOut, dataIn);
@@ -50,6 +58,7 @@ void test_serialize_deserialize_char(void) {
  * 
  */
 void test_serialize_deserialize_integers(void) {
+    std::cout << "TEST---serialize_deserialize_integer" << std::endl;
     std::uint8_t v0 = serialize_deserialize_integer_roundtrip<std::uint8_t>(0xff);
     TEST_ASSERT_EQUAL_UINT8(0xff, v0);
     std::uint16_t v1 = serialize_deserialize_integer_roundtrip<std::uint16_t>(0xffff);
