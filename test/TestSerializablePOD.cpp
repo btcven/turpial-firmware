@@ -15,16 +15,12 @@ T serialize_deserialize_integer_roundtrip(T value) {
     std::cout << "TEST---serialize_deserialize_integer_roundtrip" << std::endl;
     size_t size = SerializablePOD<T>::serialize_size(value);
     char* dataOut = static_cast<char*>(std::malloc(size));
-    char** ptrDataOut = &dataOut;
     std::cout << ": dir Buffer before serialized-1---------->" << static_cast<const void*> (dataOut) << std::endl;
     SerializablePOD<T>::serialize(dataOut, value);
     std::cout << ": dir Buffer after serialized-1---------->" << static_cast<const void*> (dataOut) << std::endl;
-    dataOut = *ptrDataOut;
     T dataIn;
     SerializablePOD<T>::deserialize(dataOut, dataIn);
-
     std::free(dataOut);
-
     return dataIn;
 }
 
