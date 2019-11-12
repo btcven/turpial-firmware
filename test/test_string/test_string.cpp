@@ -1,8 +1,8 @@
-#include <Arduino.h>
 #include <cstdint>
 #include <sstream>
 
-#include "unity.h"
+#include <Arduino.h>
+#include <unity.h>
 
 #include "SerializablePOD.h"
 #include "TinyString.h"
@@ -66,8 +66,7 @@ void test_serialize_deserialize_string_with_operators(void) {
     TEST_ASSERT_EQUAL_STRING(test_string.c_str(), test_string_deserialized.c_str());
 }
 
-extern "C" void app_main() {
-    // 2 s delay before starting
+extern "C" app_main() {
     delay(2000);
 
     UNITY_BEGIN();
