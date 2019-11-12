@@ -9,7 +9,7 @@
  * 
  */
 
-#include <stdio.h>
+#include <cstdio>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include "sdkconfig.h"
