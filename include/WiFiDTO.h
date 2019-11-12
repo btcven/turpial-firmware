@@ -27,6 +27,15 @@
  */
 struct WiFiDTOConfig : public Serializable {
 public:
+    WiFiDTOConfig()
+        : apChannel(0)
+        , apMaxConn(0)
+        , WAP_enabled(false)
+        , WST_enabled(false)
+        , isOpen(false)
+        , apSSID(tinystring::String())
+        , apPassword(tinystring::String()) { }
+    
     WiFiDTOConfig(int8_t channel,
                   int8_t maxconn,
                   bool is_ap,
