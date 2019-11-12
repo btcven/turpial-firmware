@@ -1,5 +1,6 @@
 #include <Arduino.h>
 #include <cstdint>
+#include <sstream>
 
 #include "unity.h"
 
@@ -11,18 +12,14 @@
  */
 template<typename T>
 T serialize_deserialize_integer_roundtrip(T value) {
-    
-    std::cout << "TEST---serialize_deserialize_integer_roundtrip" << std::endl;
-    size_t size = pod::serialize_size<T>(value);
-    char* dataOut = new char[size];
-    std::cout << ": dir Buffer before serialized-1---------->" << static_cast<const void*> (dataOut) << std::endl;
-    pod::serialize<T>(dataOut, value);
-    std::cout << ": dir Buffer after serialized-1---------->" << static_cast<const void*> (dataOut) << std::endl;
-    T dataIn;
-    pod::deserialize<T>(dataOut, dataIn);
-    
-    delete[] dataOut;
-    return dataIn;
+    std::ostringstream stream_out;
+    pod::serialize<T>(stream_out, value);
+
+    T deserialized_value;
+    auto stream_in = std::istringstream(stream_out.str());
+    pod::deserialize<T>(stream_in, deserialized_value);
+
+    return deserialized_value;
 }
 
 /**
@@ -30,7 +27,6 @@ T serialize_deserialize_integer_roundtrip(T value) {
  * 
  */
 void test_serialize_deserialize_integers(void) {
-    std::cout << "TEST---serialize_deserialize_integer" << std::endl;
     std::uint8_t v0 = serialize_deserialize_integer_roundtrip<std::uint8_t>(0xff);
     TEST_ASSERT_EQUAL_UINT8(0xff, v0);
     std::uint16_t v1 = serialize_deserialize_integer_roundtrip<std::uint16_t>(0xffff);

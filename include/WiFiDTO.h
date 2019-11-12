@@ -63,14 +63,14 @@ public:
      * 
      * @param dataOut buffer where data is being serialized to.
      */
-    virtual char* serialize(char* dataOut) const;
+    virtual std::ostream& serialize(std::ostream& stream) const;
 
     /**
      * @brief Deserializes a WiFiDTOConfig from the given buffer.
      * 
      * @param dataIn the buffer from where the daa is being deserialized.
      */
-    virtual const char* deserialize(const char* dataIn);
+    virtual std::istream& deserialize(std::istream& stream);
 
 public:
     int8_t apChannel;

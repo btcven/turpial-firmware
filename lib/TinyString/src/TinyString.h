@@ -9,8 +9,8 @@
  * 
  */
 
-#ifndef STRING_H
-#define STRING_H
+#ifndef TINYSTRING_H
+#define TINYSTRING_H
 
 #include "SerializablePOD.h"
 #include "Serializable.h"
@@ -71,15 +71,15 @@ public:
         return sizeof(std::size_t) + length();
     }
 
-    virtual char* serialize(char* dataOut) const {
-        const auto length_ = length();
-        dataOut = pod::serialize<std::size_t>(dataOut, length_);
-        std::memcpy(dataOut, _buf, length_);
+    virtual std::ostream& serialize(std::ostream& stream) const {
+        auto const length_ = length();
+        pod::serialize<std::size_t>(stream, length_);
+        stream.write(_buf, length_);
 
-        return dataOut + length_; 
+        return stream;
     }
 
-    virtual const char* deserialize(const char* dataIn) {
+    virtual std::istream& deserialize(std::istream& stream) {
         // If this String is already being used with some data and has allocated
         // memory just free the memory, the buf_ isn't reused because it could
         // be bigger than the string to deserialize thus wasting memory. Here
@@ -90,14 +90,14 @@ public:
             delete[] _buf;
         }
 
-        std::size_t length;
-        dataIn = pod::deserialize(dataIn, length);
+        std::size_t length_;
+        pod::deserialize(stream, length_);
 
-        _buf = new char[length + 1];
-        std::memcpy(_buf, dataIn + sizeof(std::size_t), length);
-        _buf[length] = '\0';
+        _buf = new char[length_ + 1];
+        stream.read(_buf, length_);
+        _buf[length_] = '\0';
 
-        return dataIn + length;
+        return stream;
     }
 
 private:
@@ -106,4 +106,4 @@ private:
 
 }
 
-#endif // STRING_H
+#endif // TINYSTRING_H

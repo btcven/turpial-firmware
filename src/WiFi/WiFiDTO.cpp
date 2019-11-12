@@ -16,7 +16,7 @@
 
 // Implementation of all virtual methods from serializable interface.
 
-size_t WiFiDTOConfig::serialize_size() const {
+std::size_t WiFiDTOConfig::serialize_size() const {
     std::size_t size;
     size = pod::serialize_size<std::int8_t>(apChannel) + 
            pod::serialize_size<std::int8_t>(apMaxConn) + 
@@ -29,25 +29,24 @@ size_t WiFiDTOConfig::serialize_size() const {
     return size; 
 }
 
-char* WiFiDTOConfig::serialize(char* dataOut) const {
-    dataOut = pod::serialize<std::int8_t>(dataOut, apChannel);
-    dataOut = pod::serialize<std::int8_t>(dataOut, apMaxConn);
-    dataOut = pod::serialize<bool>(dataOut, WAP_enabled);
-    dataOut = pod::serialize<bool>(dataOut, WST_enabled);
-    dataOut = pod::serialize<bool>(dataOut, isOpen);
-    dataOut = apSSID.serialize(dataOut);
-    dataOut = apPassword.serialize(dataOut);
-    return dataOut;
+std::ostream& WiFiDTOConfig::serialize(std::ostream& stream) const {
+    pod::serialize<std::int8_t>(stream, apChannel);
+    pod::serialize<std::int8_t>(stream, apMaxConn);
+    pod::serialize<bool>(stream, WAP_enabled);
+    pod::serialize<bool>(stream, WST_enabled);
+    pod::serialize<bool>(stream, isOpen);
+    apSSID.serialize(stream);
+    apPassword.serialize(stream);
+    return stream;
 }
 
-const char* WiFiDTOConfig::deserialize(const char* dataIn) {
-    dataIn = pod::deserialize<std::int8_t>(dataIn, apChannel);
-    dataIn = pod::deserialize<std::int8_t>(dataIn, apMaxConn);
-    dataIn = pod::deserialize<bool>(dataIn, WAP_enabled);
-    dataIn = pod::deserialize<bool>(dataIn, WST_enabled);
-    dataIn = pod::deserialize<bool>(dataIn, isOpen);
-    dataIn = apSSID.deserialize(dataIn);
-    dataIn = apPassword.deserialize(dataIn);
-
-    return dataIn;
+std::istream& WiFiDTOConfig::deserialize(std::istream& stream) {
+    pod::deserialize<std::int8_t>(stream, apChannel);
+    pod::deserialize<std::int8_t>(stream, apMaxConn);
+    pod::deserialize<bool>(stream, WAP_enabled);
+    pod::deserialize<bool>(stream, WST_enabled);
+    pod::deserialize<bool>(stream, isOpen);
+    apSSID.deserialize(stream);
+    apPassword.deserialize(stream);
+    return stream;
 }

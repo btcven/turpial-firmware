@@ -27,21 +27,23 @@ std::size_t serialize_size(const T str) {
 }
 
 template<typename T>
-char* serialize(char* target, const T value) {
+std::ostream& serialize(std::ostream& stream, const T value) {
     static_assert(std::is_standard_layout<T>::value, "T needs to be POD");
-
+    
     const auto length = serialize_size(value);
-    std::memcpy(target, &value, length);
-    return target + length;
+    const char* value_str = reinterpret_cast<const char*>(&value);
+    return stream.write(value_str, length);
 }
 
 template<typename T>
-const char* deserialize(const char* source, T& target) {
+std::istream& deserialize(std::istream& stream, T& target) {
     static_assert(std::is_standard_layout<T>::value, "T needs to be POD");
 
     const auto length = serialize_size(target);
-    std::memcpy(&target, source, length);
-    return source + length;
+    T d;
+    stream.read(reinterpret_cast<char*>(&d), length);
+    target = d;
+    return stream;
 }
 
 }

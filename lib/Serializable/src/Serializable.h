@@ -12,18 +12,31 @@
 #define SERIALIZABLE_H
 
 #include <cstddef>
+#include <iostream>
 
 // Interface class
 
 /**
- * @brief This class is used as interface to be implemented by other classes type data transfer object or DTO
+ * @brief This class is used as interface to be implemented by other classes
+ * type data transfer object or DTO
  * 
  */
 class Serializable
 {
 public:
     virtual std::size_t serialize_size() const = 0;
-    virtual char* serialize(char* dataOut) const = 0;
-    virtual const char* deserialize(const char* dataIn) = 0;
+    virtual std::ostream& serialize(std::ostream& stream) const = 0;
+    virtual std::istream& deserialize(std::istream& stream) = 0;
+
+    friend std::ostream& operator<<(std::ostream& stream,
+                                    const Serializable& ser) {
+        return ser.serialize(stream);
+    }
+
+    friend std::istream& operator>>(std::istream& stream,
+                                    Serializable& ser) {
+        return ser.deserialize(stream);
+    }
 };
+
 #endif
