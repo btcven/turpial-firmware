@@ -11,48 +11,24 @@
  */
 
 #include "WST.h"
-#include "NVS/SingletonNVS.h"
-#include "defaults.h"
+#include "NVS/SingleNVS.h"
 
+WST::WST(char* ssid, char* pass) {
+    wst_ssid_ = ssid;
+    wst_pass_ = pass;
+}
 esp_err_t WST::begin()
 {
-    SingletonNVS* nvs = SingletonNVS::getInstance();
-
-    // Declare and define default values, before reading NVS
-    char *wst_ssid = WST_SSID;
-    char *wst_pass = WST_PASS;
-
-    // Open nvs
-    bool isOpen = nvs->open(NVS_WIFI_NAMESPACE, false);
-    // Verifying if opened
-    if (isOpen)
-    {
-        // This is just for testing purposes
-        //=========================================================
-        // Change the Wi-Fi mode permanently here...
-        // nvs.setString(NVS_WST_SSID_KEY, "YOUR_SSID");
-        // nvs.setString(NVS_WST_PASS_KEY, "YOUR_PASS");
-        //=========================================================
-        
-        // get values from nvs or set default values from hal/hardware.h
-        wst_ssid = nvs->getString(NVS_WST_SSID_KEY, WST_SSID);
-        wst_pass = nvs->getString(NVS_WST_PASS_KEY, WST_PASS);
-    }
-    else
-    {
-        ESP_LOGE(__func__, "Error opening the NVS");
-    }
-
-    bool initST = WiFi.begin(wst_ssid, wst_pass);
+    bool initST = WiFi.begin(wst_ssid_, wst_pass_);
 
     if (initST)
     {
-        ESP_LOGD(__func__, "Connected to %s", wst_ssid);
+        ESP_LOGD(__func__, "Connected to %s", wst_ssid_);
         return ESP_OK;
     }
     else
     {
-        ESP_LOGE(__func__, "Can't connect to %s", wst_ssid);
+        ESP_LOGE(__func__, "Can't connect to %s", wst_ssid_);
         return ESP_FAIL;
     }
 }

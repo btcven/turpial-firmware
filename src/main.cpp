@@ -15,83 +15,75 @@
 #include "sdkconfig.h"
 #include <Arduino.h>
 
+#include "WiFi/WiFiMode.h"
 #include "ESC/battery.h"
-#include "NVS/SingletonNVS.h"
-#include "WiFiDTO.h"
+#include "NVS/SingleNVS.h"
+//#include "WiFiDTO.h"
 #include "testRTOSCPP/Hello.hpp"
+
+#include "defaults.h"
 
 
 //singleton instance for all the application
-SingletonNVS* nvs = SingletonNVS::getInstance(); //create or recovery SingletonNVS instance as needed
-
-void loop_task(void *pvParameter)
-{   
-    /* char ssid[] = "miSSIDPersona,text muy arog";
-    char pass[] = "miPassword123-gustavo gitskdlsdmksmdksmd,s";
-    size_t length;
-    char* buffer;
-    char** pBuffer = &buffer; //when serialized buffer point to different address , that is why pBuffer can hold the initial address
-    
- 
-    //initial test object
-    wifi_dto_config_t wifi_params = {
-        wifi_params.apChannel = 8,
-        wifi_params.apMaxConn = 7,
-        wifi_params.WAP_enabled = 1, // Default value
-        wifi_params.WST_enabled = 1, // Default value
-        wifi_params.isOpen = 1,
-        wifi_params.apSSID = ssid,
-        wifi_params.apPassword = pass, 
-    }; 
- 
-    WiFiDTO wifi_dto(wifi_params); //object to be serialized
-    length = wifi_dto.serialize_size(); //get the length of the dto class
-    
-    //buffer to store the serialized data
-    buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
-    wifi_dto.serialize(buffer); //serialize data into the buffer
-
-
-  //change the data inside structure just to know if deserialization is able to recover the information and interpolate
-
-    buffer = *pBuffer; //recover the initial address to deserialized information
-    wifi_dto.deserialize(buffer);//buffer with initial address
-    //to check deserialization 
-     wifi_dto.printData(); */
-
-    char* pcTaskName;
-    pcTaskName = (char*)pvParameter;
-    for (int i = 10; i >= 0; i--)
-    {
-        std::cout << "reestarting in" << i << "seconds" << std::endl; 
-        std::cout << "the parameter is : " << pcTaskName<< std::endl;
-        //printf("Restarting in %d seconds...\n", i);
-        vTaskDelay(1000 / portTICK_RATE_MS);
-    }
-    printf("Restarting now.\n");
-    fflush(stdout);
-    esp_restart();
-    //free(buffer);
-    while(1){
-        vTaskDelay(1000 / portTICK_RATE_MS);
-    }
-}
-
-
-
-
+SingleNVS* nvs = SingleNVS::getInstance(); //create or recovery SingletonNVS instance as needed
 
 const char* pcTask1 = "Task1\n";
 const char* pcTask2 = "Task2\n";
 static Hello *helloTask;
+ 
 
+wifi_dto_config_t wifi_params = {
+        wifi_params.apChannel = WAP_CHANNEL,
+        wifi_params.apMaxConn = WAP_MAXCONN,
+        wifi_params.WAP_enabled = WAP_ENABLED, // Default value
+        wifi_params.WST_enabled = WST_ENABLED, // Default value
+        wifi_params.isOpen = false,
+        wifi_params.apSSID = WST_SSID,
+        wifi_params.apPassword = WST_PASS, 
+}; 
 
 extern "C" void app_main()
 {
-
     // iniciamos arduino como componente.
     initArduino();
-    helloTask = new Hello();
-    helloTask->setStackSize(2048);
-    helloTask->start((void*)pcTask1);
-}
+    size_t length;
+    char* buffer;
+    char* key = "blob";
+
+    /////////////////////////////////// SERIALIZATION////////////////////////////////////////
+
+    WiFiDTO wifi_dto(wifi_params); //object to be serialized and simulated serialized buffer from external world
+    length = wifi_dto.serialize_size(); //get the length of the dto class data fields to calculate serialized buffer length
+    buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
+    wifi_dto.serialize(buffer); //serialize data into the buffer
+    /////////////////////////////END SERIALIZATION/////////////////////////////////////////////////////////////////////
+    
+    /////////////////////////NVS///////////////////////////////////////
+    nvs->begin();
+    nvs->open(NVS_WIFI_NAMESPACE,NVS_READWRITE);
+    //nvs->set(key,buffer,length); //to store the serialized buffer
+    void* result_from_NVS; ///to recover the data blob from nvs
+    result_from_NVS = malloc(sizeof(char)*length);  //allocate memory
+    nvs->get(key,result_from_NVS,length);   //get the blob
+    ////////////////////////////////////////////////////////////////////////
+    /////////////////////END NVS//////////////////////////////////////////
+
+    //////////////////////////////////DESERIALIZE//////////////////////////////////////////////////////////////////////////
+     //new WiFiDTO object to deserialized the temp buffer and get the structure fields, we can use the same wifi_dto object 
+     //without needed to create new ones, this cases is just in order to emulate buffers from external world
+    WiFiDTO wifi_dto2; 
+    wifi_dto2.deserialize((char*)result_from_NVS);
+    wifi_dto2.printData();
+    ///////////////////////////////////FIN DESERIALIZE//////////////////////////////////////////////////////////////////////////////////////
+
+    wifi_dto_config_t data_to_config_wifi;
+    data_to_config_wifi = wifi_dto2.getData(); //return the struct inside DTO object
+
+    std::cout<< std::endl << "-------------------------WIFI CONFIGURATION-----------------------------------------------" << std::endl;
+    std::cout << data_to_config_wifi.apSSID << std::endl;    
+    std::cout << data_to_config_wifi.apPassword << std::endl; 
+    
+    WiFiMode* wlan = new WiFiMode(data_to_config_wifi);//this parameters need to arrives from any storage system or socket
+    wlan->begin();
+
+} 

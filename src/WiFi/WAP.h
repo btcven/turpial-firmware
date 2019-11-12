@@ -13,7 +13,7 @@
 #ifndef WAP_H
 #define WAP_H
 
-#include "Arduino.h"
+//#include "Arduino.h"
 #include "WiFi.h"
 
 class WAP 
@@ -23,7 +23,7 @@ class WAP
          * @brief Construct a new WiFiMode object
          * 
          */
-        //WAP();
+        WAP(char* apSSID, char* apPass, int8_t apChannel, int8_t apMaxConn);
 
         /**
          * @brief Destroy the WiFiMode object
@@ -46,6 +46,10 @@ class WAP
         //void responses_WAP(WiFiClient client);
 
     private:
+        char* apSSID_;
+        char* apPassword_;
+        int8_t apChannel_;
+        int8_t apMaxConn_;
 };   
 
 #endif // WAP_H

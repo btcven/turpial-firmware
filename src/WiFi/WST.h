@@ -23,7 +23,7 @@ class WST
          * @brief Construct a new WiFiMode object
          * 
          */
-        //WST();
+        WST(char* ssid, char* pass);
 
         /**
          * @brief Destroy the WiFiMode object
@@ -39,6 +39,9 @@ class WST
         esp_err_t begin();
 
     private:
+        char *wst_ssid_;
+        char *wst_pass_;
+
 };   
 
 /**

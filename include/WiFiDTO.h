@@ -12,6 +12,8 @@
 #include <iostream>
 #include <defaults.h>
 
+#include <string.h>
+#include <stdlib.h>
 /**
  * @brief This class represent the data that need to travel throught:
  *          1. System storage
@@ -27,8 +29,6 @@ typedef struct wifi_dto_config_t {
     int isOpen;
     char* apSSID;
     char* apPassword;
-    
-   
 } wifi_dto_config_t;
 
 /**
@@ -77,7 +77,11 @@ public:
      * 
      * @param data 
      */
-    void setData(wifi_dto_config_t data);
+    void setData(wifi_dto_config_t& data);
+
+    void setData(void);
+    
+    wifi_dto_config_t& getData(void);
 
     /**
      * @brief 

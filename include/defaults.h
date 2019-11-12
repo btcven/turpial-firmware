@@ -39,9 +39,9 @@
  * @brief WiFi AP/ST default params.
  * 
  */
-#define WST_ENABLED false
-#define WST_SSID    ""
-#define WST_PASS    ""
+#define WST_ENABLED true
+#define WST_SSID    "HOME-EB05"
+#define WST_PASS    "D8ED78ECC6372942"
 
 #define WAP_ENABLED false
 #define WAP_SSID    "io.locha.ap"

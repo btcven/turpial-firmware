@@ -8,7 +8,6 @@
 #include <iostream>
 #include <stdlib.h> 
 
-#include "defaults.h"
 /**
  * @brief Construct a new Wi Fi D T O:: Wi Fi D T O object
  * 
@@ -26,6 +25,13 @@ WiFiDTO::WiFiDTO(wifi_dto_config_t& settings) {
   ptrSettings_ = &settings;
 } 
 
+WiFiDTO::WiFiDTO() {
+   ptrSettings_ = new wifi_dto_config_t;    
+  ptrSettings_->apSSID = new char[sizeof(char) * 1];  
+  ptrSettings_->apPassword = new char[sizeof(char) * 1];                         
+  
+}
+
 //implementation of all virtual methods from serializable interface
 
 size_t WiFiDTO::serialize_size() const {
@@ -37,8 +43,7 @@ size_t WiFiDTO::serialize_size() const {
           SerializablePOD<int>::serialize_size(ptrSettings_->isOpen)        +
           SerializablePOD<char*>::serialize_size(ptrSettings_->apSSID)      + 
           SerializablePOD<char*>::serialize_size(ptrSettings_->apPassword);  
-          
-                    
+             
   return size; 
 }
 
@@ -67,6 +72,8 @@ void WiFiDTO::serialize(char* dataOut) const {
 
   std::cout <<"apPassword: (char*) -------->"<< static_cast<const void*>(ptrSettings_->apPassword)<<std::endl;
   dataOut  = SerializablePOD<char*>::serialize(dataOut, ptrSettings_->apPassword);   
+
+  std::cout << "----------------------------FIN--SERIALIZATION---------------------------------------------" <<std::endl;
 } 
 
 void WiFiDTO::deserialize(const char* dataIn) { 
@@ -92,13 +99,50 @@ void WiFiDTO::deserialize(const char* dataIn) {
   dataIn = SerializablePOD<char*>::deserialize(dataIn, ptrSettings_->apPassword);  
 } 
 
-void WiFiDTO::setData(wifi_dto_config_t data) {
-  ptrSettings_= &data;
+void WiFiDTO::setData(wifi_dto_config_t& data) {
+  //if data to replace is greather than data inside structure
+  //we need to realocate memory to the field inside the structure
+  ptrSettings_ = &data;
+  if( (size_t)strlen(data.apSSID) > (size_t)strlen(ptrSettings_->apSSID) ) {   
+    ptrSettings_->apSSID = (char*)calloc(strlen(data.apSSID),1); 
+  } 
+  
+  if( (size_t)strlen(data.apPassword) > (size_t)strlen(ptrSettings_->apPassword) ) { 
+    ptrSettings_->apPassword = (char*)calloc(strlen(data.apPassword),1);
+  }
+  
+     memcpy(ptrSettings_->apSSID,data.apSSID,strlen(data.apSSID)+1);
+     memcpy(ptrSettings_->apPassword,data.apPassword,strlen(data.apPassword)+1);
 }
 
+
+//just for testing
+void WiFiDTO::setData(void) {
+        char temp[] = "hel=jhjsd,msndckjshdukshdkjsnc,mbkjhjkxhckjxhcj____";
+        char temp2[] = "Camttttttttttttttttttrrrrrrrrrrrrrrrgggggggg____";
+        ptrSettings_->apChannel = 9;
+        ptrSettings_->apMaxConn = 10;
+        ptrSettings_->WAP_enabled = 0;
+        ptrSettings_->WST_enabled = 0;
+        
+        if( (size_t)strlen(temp) > (size_t)strlen(ptrSettings_->apSSID) ) { 
+          ptrSettings_->apSSID = (char*)calloc(strlen(temp),1);
+        }
+
+        if( (size_t)strlen(temp2) > (size_t)strlen(ptrSettings_->apPassword) ) { 
+          ptrSettings_->apSSID = (char*)calloc(strlen(temp),1);
+        }
+    
+        memcpy(ptrSettings_->apSSID,temp,strlen(temp)+1);
+        memcpy(ptrSettings_->apPassword,temp2,strlen(temp2)+1);
+     
+    }
+
+
+ //just for testing   
 void WiFiDTO::printData(void) {
   std::cout<<std::endl;
-  std::cout<<"**************ADDRESSES STRUCT***********************************"<<std::endl;
+  std::cout<<"**************DATA STRUCT***********************************"<<std::endl;
   std::cout <<"-----------------------------------------------"<<std::endl;
   wifi_dto_config_t* ps = *initPtrSettings_; //get the initial structure address 
   //this pointer is used to point to address structure but is able to increment addresses by 4 bytes with ptr_to_int++
@@ -108,6 +152,10 @@ void WiFiDTO::printData(void) {
   std::cout << (*ps).WST_enabled << std::endl;
   std::cout << (*ps).isOpen << std::endl;
   std::cout << (*ps).apSSID << std::endl;
-  std::cout << (*ps).apPassword << std::endl;
-  
+  std::cout << (*ps).apPassword << std::endl; 
+}
+
+
+wifi_dto_config_t& WiFiDTO::getData(void) {
+  return *ptrSettings_;
 }

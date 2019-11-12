@@ -11,49 +11,25 @@
  */
 
 #include "WAP.h"
-#include "NVS/SingletonNVS.h"
 #include "defaults.h"
 
+
+WAP::WAP(char* apSSID, char* apPass, int8_t apChannel, int8_t apMaxConn) {
+  // Declare and define default values, before reading NVS inside constructor
+  ESP_LOGI(__func__,"constructor WAP");
+  apSSID_ = apSSID;
+  apPassword_ = apPass;
+  apChannel_ = apChannel;
+  apMaxConn_ = apMaxConn;
+}
+ 
 esp_err_t WAP::begin()
 {
-    SingletonNVS* nvs = SingletonNVS::getInstance();
-
-    // Declare and define default values, before reading NVS
-    char *apSSID = WAP_SSID;
-    char *apPassword = WAP_PASS;
-    int32_t apChannel = WAP_CHANNEL;
-    int32_t apMaxConn = WAP_MAXCONN;
-
-    // Open nvs
-    bool isOpen = nvs->open(NVS_WIFI_NAMESPACE, false);
-    // Verifying if opened
-    if (isOpen)
-    {
-        // This is just for testing purposes
-        //=========================================================
-        // Change the Wi-Fi mode permanently here...
-        //nvs.setString(NVS_WAP_SSID_KEY, "Turpial");
-        //nvs.setString(NVS_WAP_PASS_KEY, "123456789");
-        //nvs.setInt(NVS_WAP_CHANNEL_KEY, 6);
-        //nvs.setInt(NVS_WAP_MAXCONN_KEY, 5);
-        //=========================================================
-
-        // get values from nvs or set default values from hal/hardware.h
-        apSSID = nvs->getString(NVS_WAP_SSID_KEY, WAP_SSID);
-        apPassword = nvs->getString(NVS_WAP_PASS_KEY, WAP_PASS);
-        apChannel = nvs->getInt(NVS_WAP_CHANNEL_KEY, WAP_CHANNEL);
-        apMaxConn = nvs->getInt(NVS_WAP_MAXCONN_KEY, WAP_MAXCONN);
-    }
-    else
-    {
-        ESP_LOGE(__func__, "Error opening the NVS");
-    }
-
-    bool initAP = WiFi.softAP(apSSID, apPassword, apChannel, 0, apMaxConn);
+    bool initAP = WiFi.softAP(apSSID_, apPassword_, apChannel_, 0, apMaxConn_);
 
     if (initAP)
     {
-        ESP_LOGD(__func__, "AP init OK");
+        ESP_LOGI(__func__, "AP init OK");
         return ESP_OK;
     }
     else
