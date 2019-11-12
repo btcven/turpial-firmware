@@ -16,6 +16,8 @@
 #include "Arduino.h"
 #include "WiFi.h"
 
+namespace wifi {
+
 namespace wst {
 
 struct Config {
@@ -25,6 +27,8 @@ struct Config {
 
 esp_err_t begin(Config config);
 
-}
+} // namespace wst
+
+} // namespace wifi
 
 #endif // WST_H

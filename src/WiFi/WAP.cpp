@@ -13,6 +13,8 @@
 #include "WAP.h"
 #include "defaults.h"
 
+namespace wifi {
+
 namespace wap {
 
 esp_err_t begin(Config config) {
@@ -30,7 +32,9 @@ esp_err_t begin(Config config) {
     }
 }
 
-}
+} // namespace wap
+
+} // namespace wifi
 
 /*
 void responses_WAP(WiFiClient client)

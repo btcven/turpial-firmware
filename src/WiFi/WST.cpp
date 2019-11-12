@@ -13,6 +13,8 @@
 #include "WST.h"
 #include "NVS/SingleNVS.h"
 
+namespace wifi {
+
 namespace wst {
 
 esp_err_t begin(Config config)
@@ -31,4 +33,6 @@ esp_err_t begin(Config config)
     }
 }
 
-}
+} // namespace wap
+
+} // namespace wifi

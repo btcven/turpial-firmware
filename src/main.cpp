@@ -36,14 +36,14 @@ extern "C" void app_main()
     // Initialize arduino as a component
     initArduino();
     
-    WiFiDTOConfig wifi_params = WiFiDTOConfig(WAP_CHANNEL,
-                                              WAP_MAXCONN,
-                                              WAP_ENABLED,
-                                              WST_ENABLED,
-                                              false,
-                                              WST_SSID,
-                                              WST_PASS);
 
-    WiFiMode* wlan = new WiFiMode(wifi_params);
-    wlan->begin();
+    auto wifi_params = wifi::DTOConfig(WAP_CHANNEL,
+                                       WAP_MAXCONN,
+                                       WAP_ENABLED,
+                                       WST_ENABLED,
+                                       false,
+                                       WST_SSID,
+                                       WST_PASS);
+
+    wifi::mode::begin(wifi_params);
 }

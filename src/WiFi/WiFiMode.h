@@ -16,46 +16,24 @@
 #include "WiFiDTO.h"
 #include "WiFi.h"
 
-class WiFiMode 
-{
-    public:
-        /**
-         * @brief Construct a new WiFiMode object
-         * 
-         */
-        WiFiMode(WiFiDTOConfig wifi_params);
-        /**
-         * @brief Destroy the WiFiMode object
-         * 
-         */
-        //~WiFiMode();
+namespace wifi {
 
-        /**
-         * @brief 
-         * 
-         * @return esp_err_t
-         */
-        esp_err_t begin();
+namespace mode {
 
-        /**
-         * @brief Select Wi-Fi Mode, analyzing its parameters
-         * 
-         * @return wifi_mode_t
-         */
-        //void WiFiEvent(WiFiEvent_t evt);
+enum class OperationMode {
+    Ap = WIFI_AP,
+    St = WIFI_STA,
+    ApSt = WIFI_AP_STA,
+    None = WIFI_MODE_NULL,
+};
 
-    private:
-        wifi_mode_t selectMode(bool AP, bool ST);
+OperationMode selectOperationMode(bool ap, bool st);
+void handleWiFiEvent(WiFiEvent_t evt);
 
-        WiFiDTOConfig _wifi_config;
-};   
+esp_err_t begin(DTOConfig wifi_params);
 
-/**
- * @brief Initialize WiFi ifaces
- * 
- * @return esp_err_t 
- */
-//esp_err_t WiFi_INIT();
-void WiFiEvent(WiFiEvent_t evt);
+} // namespace mode
+
+} // namespace wifi
 
 #endif // WIFIMODE_H
