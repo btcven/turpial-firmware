@@ -11,7 +11,6 @@
  */
 
 #include "WST.h"
-#include "NVS/SingleNVS.h"
 
 namespace wifi {
 

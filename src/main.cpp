@@ -9,7 +9,9 @@
  * 
  */
 
-#include <stdio.h>
+#include <sstream>
+#include <cstdio>
+
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include "sdkconfig.h"
@@ -17,33 +19,69 @@
 
 #include "WiFi/WiFiMode.h"
 #include "ESC/battery.h"
-#include "NVS/SingleNVS.h"
-//#include "WiFiDTO.h"
 #include "testRTOSCPP/Hello.hpp"
+
+#include "Namespace.h"
 
 #include "defaults.h"
 
+esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params) {
+    ESP_LOGD(__func__, "Reading WiFi configuration from NVS");
 
-//singleton instance for all the application
-SingleNVS* nvs = SingleNVS::getInstance(); //create or recovery SingletonNVS instance as needed
+    nvs::Namespace wifi_nvs;
+    auto err = wifi_nvs.open("wifi", nvs::OpenMode::ReadOnly);
+    if (err != ESP_OK) {
+        return err;
+    }
 
-const char* pcTask1 = "Task1\n";
-const char* pcTask2 = "Task2\n";
-static Hello *helloTask;
+    std::stringstream blob;
+    err = wifi_nvs.get_blob("wifi_dto_config", blob);
+    if (err != ESP_OK) {
+        return err;
+    }
+
+    wifi_params.deserialize(blob);
+
+    return ESP_OK;
+}
+
+void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
+    wifi_params.apChannel = WAP_CHANNEL;
+    wifi_params.apMaxConn = WAP_MAXCONN;
+    wifi_params.WAP_enabled = WAP_ENABLED;
+    wifi_params.WST_enabled = WST_ENABLED;
+    wifi_params.isOpen = false;
+    wifi_params.apSSID = tinystring::String(WAP_SSID);
+    wifi_params.apPassword = tinystring::String(WAP_PASS);
+}
 
 extern "C" void app_main()
 {
     // Initialize arduino as a component
     initArduino();
-    
 
-    auto wifi_params = wifi::DTOConfig(WAP_CHANNEL,
-                                       WAP_MAXCONN,
-                                       WAP_ENABLED,
-                                       WST_ENABLED,
-                                       false,
-                                       WST_SSID,
-                                       WST_PASS);
+    // Initialize NVS.
+    auto nvs_err = nvs::begin();
+
+    wifi::DTOConfig wifi_params;
+
+    if (nvs_err != ESP_OK) {
+        ESP_LOGE(__func__, "Couldn't initialize NVS, error %s", esp_err_to_name(nvs_err));
+        ESP_LOGD(__func__, "Using default WiFi parameters");
+        
+        setDefaultWiFiParams(wifi_params);
+    } else {
+        auto err = readWiFiParams(wifi_params);
+        if (err != ESP_OK) {
+            auto estr = esp_err_to_name(err);
+            ESP_LOGE(__func__, "Couldn't read WiFi parameters %s", estr);
+            ESP_LOGD(__func__, "Using default WiFi parameters");
+            
+            setDefaultWiFiParams(wifi_params);
+        }
+    }
 
     wifi::mode::begin(wifi_params);
+
+    // TODO: app loop
 }
