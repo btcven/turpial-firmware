@@ -152,7 +152,7 @@ void SingleNVS::erase(std::string key) {
  * @param [in] key The key to read from the namespace.
  * @param [out] result The string read from the %NVS storage.
  */
-int SingleNVS::get(std::string key, std::string* result, bool isBlob) {
+/* int SingleNVS::get(std::string key, std::string* result, bool isBlob) {
 	size_t length;
 	if (isBlob) {
 		esp_err_t rc = ::nvs_get_blob(_handle, key.c_str(), NULL, &length);
@@ -193,7 +193,7 @@ int SingleNVS::get(std::string key, uint8_t* result, size_t& length) {
 	return rc;
 } // get - blob
 
-
+ */
 
 int SingleNVS::get(const char* key, void* result,size_t& length) {
     esp_err_t rc = nvs_get_blob(_handle, key, result, &length);
@@ -208,7 +208,7 @@ int SingleNVS::get(const char* key, void* result,size_t& length) {
  * @param [in] key The key to set from the namespace.
  * @param [in] data The value to set for the key.
  */
-void SingleNVS::set(std::string key, std::string data, bool isBlob) {
+/* void SingleNVS::set(std::string key, std::string data, bool isBlob) {
 	ESP_LOGI(LOG_TAG, ">> set: key: %s, string: value=%s", key.c_str(), data.c_str());
 	if (isBlob) {
 		::nvs_set_blob(_handle, key.c_str(), data.data(), data.length());
@@ -234,7 +234,7 @@ void SingleNVS::set(std::string key, uint8_t* data, size_t length) {
 	}
 	ESP_LOGD(LOG_TAG, "<< set");
 } // set (BLOB)
-
+ */
 
 void SingleNVS::set(const char* key, char* data, size_t length) {
     std::cout << "vamos a guardar el blob" << std::endl;
