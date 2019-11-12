@@ -131,3 +131,5 @@ char* SerializablePOD<char*>::serialize( char* target, char* value )
     return target + l;
 
 } 
+
+

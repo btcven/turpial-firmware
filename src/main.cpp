@@ -57,11 +57,11 @@ extern "C" void app_main()
     buffer = (char*)malloc(sizeof(char)*length); //allocate memory to the buffer
     wifi_dto.serialize(buffer); //serialize data into the buffer
     /////////////////////////////END SERIALIZATION/////////////////////////////////////////////////////////////////////
-
+    
     /////////////////////////NVS///////////////////////////////////////
     nvs->begin();
     nvs->open(NVS_WIFI_NAMESPACE,NVS_READWRITE);
-    nvs->set(key,buffer,length); //to store the serialized buffer
+    //nvs->set(key,buffer,length); //to store the serialized buffer
     void* result_from_NVS; ///to recover the data blob from nvs
     result_from_NVS = malloc(sizeof(char)*length);  //allocate memory
     nvs->get(key,result_from_NVS,length);   //get the blob

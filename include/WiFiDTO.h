@@ -29,8 +29,6 @@ typedef struct wifi_dto_config_t {
     int isOpen;
     char* apSSID;
     char* apPassword;
-    
-   
 } wifi_dto_config_t;
 
 /**
