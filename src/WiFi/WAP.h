@@ -13,43 +13,19 @@
 #ifndef WAP_H
 #define WAP_H
 
-//#include "Arduino.h"
 #include "WiFi.h"
 
-class WAP 
-{
-    public:
-        /**
-         * @brief Construct a new WiFiMode object
-         * 
-         */
-        WAP(char* apSSID, char* apPass, int8_t apChannel, int8_t apMaxConn);
+namespace wap {
 
-        /**
-         * @brief Destroy the WiFiMode object
-         * 
-         */
-        //~WAP();
+struct Config {
+    const char* apSSID;
+    const char* apPass;
+    int8_t apChannel;
+    int8_t apMaxConn;
+};
 
-        /**
-         * @brief Start the Wifi AP
-         * 
-         * @return esp_err_t
-         */
-        esp_err_t begin();
+esp_err_t begin(Config config);
 
-        /**
-         * @brief 
-         * 
-         * @param client 
-         */
-        //void responses_WAP(WiFiClient client);
-
-    private:
-        char* apSSID_;
-        char* apPassword_;
-        int8_t apChannel_;
-        int8_t apMaxConn_;
-};   
+}
 
 #endif // WAP_H

@@ -16,39 +16,15 @@
 #include "Arduino.h"
 #include "WiFi.h"
 
-class WST 
-{
-    public:
-        /**
-         * @brief Construct a new WiFiMode object
-         * 
-         */
-        WST(char* ssid, char* pass);
+namespace wst {
 
-        /**
-         * @brief Destroy the WiFiMode object
-         * 
-         */
-        //~WST();
+struct Config {
+    const char* ssid;
+    const char* pass;
+};
 
-        /**
-         * @brief Start the Wifi AP
-         * 
-         * @return esp_err_t
-         */
-        esp_err_t begin();
+esp_err_t begin(Config config);
 
-    private:
-        char *wst_ssid_;
-        char *wst_pass_;
-
-};   
-
-/**
- * @brief 
- * 
- * @return esp_err_t 
- */
-//esp_err_t WST_INIT();
+}
 
 #endif // WST_H

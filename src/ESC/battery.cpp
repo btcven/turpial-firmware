@@ -22,8 +22,6 @@ Battery::Battery(uint16_t capacity, uint16_t low_bat_threshold, uint16_t critica
 
 esp_err_t Battery::begin()
 {
-    esp_err_t err;
-
     // Use lipo.begin() to initialize the BQ27441-G1A and confirm that it's
     // connected and communicating.
     if (!_battery.begin()) // begin() will return true if communication is successful
