@@ -11,7 +11,6 @@
  */
 
 #include "WAP.h"
-#include "defaults.h"
 
 namespace wifi {
 
