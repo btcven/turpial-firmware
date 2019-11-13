@@ -1,8 +1,8 @@
-#include <Arduino.h>
 #include <cstdint>
 #include <sstream>
 
-#include "unity.h"
+#include <Arduino.h>
+#include <unity.h>
 
 #include "SerializablePOD.h"
 
@@ -43,7 +43,6 @@ void test_serialize_deserialize_integers(void) {
 }
 
 extern "C" void app_main() {
-    // 2 s delay before starting
     delay(2000);
 
     UNITY_BEGIN();
