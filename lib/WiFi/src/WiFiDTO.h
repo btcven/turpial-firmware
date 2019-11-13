@@ -12,7 +12,6 @@
 #include "TinyString.h"
 
 #include <iostream>
-#include <defaults.h>
 
 #include <cstring>
 #include <cstdlib>

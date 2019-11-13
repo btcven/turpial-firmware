@@ -19,7 +19,7 @@
 #include "sdkconfig.h"
 #include <Arduino.h>
 
-#include "WiFi/WiFiMode.h"
+#include "WiFiMode.h"
 #include "ESC/battery.h"
 #include "testRTOSCPP/Hello.hpp"
 
