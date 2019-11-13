@@ -15,39 +15,31 @@
 #include "SerializablePOD.h"
 #include "Serializable.h"
 
+#include <algorithm>
 #include <cstring>
+#include <string>
 
 namespace tinystring {
 
+/**
+ * @brief
+ * A String that can be serialized and deserialized with the Serializable class
+ * 
+ */
 class String : public Serializable {
 public:
     /**
-     * @brief Construct a new String object without anything inside.
+     * @brief Construct a new empty String object
      * 
      */
-    String() : _buf(nullptr) {}
-
+    String() : _inner() {}
     /**
      * @brief Construct a new String object copying the supplied str allocating
      * new memory.
      * 
      * @param str The string to be copied.
      */
-    String(const char* str) : _buf(nullptr) {
-        const auto length = std::strlen(str);
-        _buf = new char[length + 1];
-        std::memcpy(_buf, str, length + 1);
-    }
-
-    /**
-     * @brief Destroy the String object, frees the internal buffer.
-     * 
-     */
-    ~String() {
-        if (_buf != nullptr) {
-            delete[] _buf;
-        }
-    }
+    String(const char* str) : _inner(str) { }
 
     /**
      * @brief Get the length of the string
@@ -55,16 +47,25 @@ public:
      * @return std::size_t the length
      */
     std::size_t length() const {
-        return std::strlen(_buf);
+        return _inner.length();
     }
 
     /**
-     * @brief Returns a pointer to the first character of the string.
+     * @brief Get the underlying string.
      * 
-     * @return const char* the pointer.
+     * @return The string.
+     */
+    const std::string& str() const {
+        return _inner;
+    }
+
+    /**
+     * @brief Get the underlying const char*.
+     * 
+     * @return The string.
      */
     const char* c_str() const {
-        return _buf;
+        return _inner.c_str();
     }
 
     virtual std::size_t serialize_size() const {
@@ -74,34 +75,29 @@ public:
     virtual std::ostream& serialize(std::ostream& stream) const {
         auto const length_ = length();
         pod::serialize<std::size_t>(stream, length_);
-        stream.write(_buf, length_);
+        stream.write(_inner.c_str(), length_);
 
         return stream;
     }
 
     virtual std::istream& deserialize(std::istream& stream) {
         // If this String is already being used with some data and has allocated
-        // memory just free the memory, the buf_ isn't reused because it could
-        // be bigger than the string to deserialize thus wasting memory. Here
-        // we exhange the speed trade-off with the memory trade-off. The
-        // performance penalty should be minimal because the go to use case for
-        // an String is to just create an empty one and then deserialize.
-        if (_buf != nullptr) {
-            delete[] _buf;
+        // memory just clear it.
+        if (!_inner.empty()) {
+            _inner.clear();
         }
 
         std::size_t length_;
         pod::deserialize(stream, length_);
 
-        _buf = new char[length_ + 1];
-        stream.read(_buf, length_);
-        _buf[length_] = '\0';
+        _inner.reserve(length_);
+        std::copy_n(std::istreambuf_iterator<char>(stream), length_, std::back_inserter(_inner));
 
         return stream;
     }
 
 private:
-    char* _buf;
+    std::string _inner;
 };
 
 }
