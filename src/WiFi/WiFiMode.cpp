@@ -13,9 +13,26 @@
 #include "WAP.h"
 #include "WST.h"
 
-WiFiMode::WiFiMode(WiFiDTOConfig wifi_params) : _wifi_config(wifi_params) { }
+namespace wifi {
 
-void WiFiEvent(WiFiEvent_t evt)
+namespace mode {
+
+OperationMode selectOperationMode(bool ap, bool st) {
+    if (!ap && st) {
+        return OperationMode::Ap;
+    } else if (ap && !st) {
+        return OperationMode::St;
+    } else if (ap && st) {
+        return OperationMode::ApSt;
+    } else if (!ap && !st) {
+        return OperationMode::None;
+    } else {
+        // unreachable condition
+        return OperationMode::St;
+    }
+}
+
+void handleWiFiEvent(WiFiEvent_t evt)
 {
     switch (evt)
     {
@@ -100,53 +117,40 @@ void WiFiEvent(WiFiEvent_t evt)
     }
 }
 
-wifi_mode_t WiFiMode::selectMode(bool AP, bool ST)
+esp_err_t begin(DTOConfig config)
 {
-    if (!AP && ST) {
-        return WIFI_STA;
-    } else if (AP && !ST) {
-        return WIFI_AP;
-    } else if (AP && ST) {
-        return WIFI_AP_STA;
-    } else if (!AP && !ST) {
-        return WIFI_MODE_NULL;
-    } else {
-        return WIFI_STA;
-    }    
-}
-
-esp_err_t WiFiMode::begin()
-{
-    ESP_LOGI(__func__,"initiating wlan**********************************");
+    ESP_LOGI(__func__,"WiFi Mode begin");
 
     wap::Config wap_config = {
-        .apSSID = _wifi_config.apSSID.c_str(),
-        .apPass = _wifi_config.apPassword.c_str(), 
-        .apChannel = _wifi_config.apChannel,
-        .apMaxConn = _wifi_config.apMaxConn,
+        .apSSID = config.apSSID.c_str(),
+        .apPass = config.apPassword.c_str(), 
+        .apChannel = config.apChannel,
+        .apMaxConn = config.apMaxConn,
     };
 
     wst::Config wst_config = {
-        .ssid = _wifi_config.apSSID.c_str(),
-        .pass = _wifi_config.apPassword.c_str(),
+        .ssid = config.apSSID.c_str(),
+        .pass = config.apPassword.c_str(),
     };
 
-    wifi_mode_t WIFI_MODE = selectMode(_wifi_config.WAP_enabled, _wifi_config.WST_enabled);
-    ESP_LOGI(__func__, "Starting WiFi mode: %d", WIFI_MODE);
-
-    WiFi.onEvent(WiFiEvent);
+    auto isAp = config.WAP_enabled;
+    auto isSt = config.WST_enabled;
+    auto op_mode = selectOperationMode(isAp, isSt);
     
-    switch (WIFI_MODE)
-    {
-    case WIFI_STA:
+    ESP_LOGI(__func__, "Starting WiFi mode: %d", static_cast<int>(op_mode));
+
+    WiFi.onEvent(handleWiFiEvent);
+    
+    switch (op_mode) {
+    case OperationMode::St:
         ESP_LOGI(__func__, "Starting WST iface only");
         return wst::begin(wst_config);
         break;
-    case WIFI_AP:
+    case OperationMode::Ap:
         ESP_LOGI(__func__, "Starting WAP iface only");
         return wap::begin(wap_config);
         break;
-    case WIFI_AP_STA:
+    case OperationMode::ApSt:
         {
             ESP_LOGI(__func__, "Starting WAP and WST ifaces");
             auto WAP_isInit = wap::begin(wap_config);
@@ -161,7 +165,7 @@ esp_err_t WiFiMode::begin()
             }
         }
         break;
-    case WIFI_MODE_NULL:
+    case OperationMode::None:
         ESP_LOGI(__func__, "WAP and WST ifaces are disabled");
         return ESP_OK;
         break;
@@ -171,3 +175,7 @@ esp_err_t WiFiMode::begin()
         break;
     }
 }
+
+} // namespace mode
+
+} // namespace wifi

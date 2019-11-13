@@ -15,6 +15,8 @@
 
 #include "WiFi.h"
 
+namespace wifi {
+
 namespace wap {
 
 struct Config {
@@ -26,6 +28,8 @@ struct Config {
 
 esp_err_t begin(Config config);
 
-}
+} // namespace wap
+
+} // namespace wifi
 
 #endif // WAP_H

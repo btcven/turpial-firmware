@@ -18,6 +18,8 @@
 #include <cstdlib>
 #include <cstdint>
 
+namespace wifi {
+
 /**
  * @brief This class represent the data that need to travel throught:
  *          1. System storage
@@ -25,9 +27,9 @@
  *          3. Serial communication
  * 
  */
-struct WiFiDTOConfig : public Serializable {
+struct DTOConfig : public Serializable {
 public:
-    WiFiDTOConfig()
+    DTOConfig()
         : apChannel(0)
         , apMaxConn(0)
         , WAP_enabled(false)
@@ -36,7 +38,7 @@ public:
         , apSSID(tinystring::String())
         , apPassword(tinystring::String()) { }
     
-    WiFiDTOConfig(int8_t channel,
+    DTOConfig(int8_t channel,
                   int8_t maxconn,
                   bool is_ap,
                   bool is_st,
@@ -81,3 +83,5 @@ public:
     tinystring::String apSSID;
     tinystring::String apPassword;
 };
+
+} // namespace wifi
