@@ -20,10 +20,10 @@
 #include <Arduino.h>
 
 #include "WiFiMode.h"
-#include "ESC/battery.h"
 #include "testRTOSCPP/Hello.hpp"
 
 #include "Namespace.h"
+#include "BQ27441.h"
 
 #include "defaults.h"
 
@@ -62,22 +62,6 @@ extern "C" void app_main()
     initArduino();
     // Initialize NVS.
     auto nvs_err = nvs::begin();
-    wifi::DTOConfig wifi_params;
-    nvs::Namespace wifi_nvs;
-    wifi_nvs.open("wifi",NVS_READWRITE);
-
-    wifi::DTOConfig wifi_params2;
-    setDefaultWiFiParams(wifi_params);
-    std::stringstream blob;
-    std::stringstream blob2;
-
-
-    auto err = wifi_nvs.get_blob("wifi", blob2);
-    wifi_params2.deserialize(blob2);
-
-
-
-    /*wifi::mode::begin(wifi_params); */
     // TODO: app loop
 }
 
