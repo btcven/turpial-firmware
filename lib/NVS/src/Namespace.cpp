@@ -59,12 +59,15 @@ esp_err_t Namespace::erase_all() {
 esp_err_t Namespace::erase_key(const char* key) {
     esp_err_t err;
 	if (!_isOpened) {
+        std::cout << "no esta abierto ahora ****************" << std:: endl;
         return ESP_FAIL;
     }
+    std::cout << "depronto elimina eso+++++++++NVS_ERASE_KEY FUNCTION ****************" << key <<std:: endl;
     err = nvs_erase_key(_handle, key);
     if (err != ESP_OK) {
         return err;
     }
+    std::cout << "vamos a hacer commit ****************" << std:: endl;
     return nvs_commit(_handle);
 }
 

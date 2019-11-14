@@ -11,8 +11,11 @@
  * Test WiFIDTO Class Serialization 
  * This test in in order to show and proof how to use serialized and deserialized 
  * methods inside DTO class.
+ *  to run test inside platform Core-cli the next command
+ * platformio test -e featheresp32 -f test_wifi_dto
  * 
  */
+
 void test_serialized_and_deserialized_wifi_dto(void) {
      wifi::DTOConfig wifi_params;  //to serialized object  declare and initialized this one to be serialized
      wifi_params.apChannel = 4;
@@ -37,15 +40,6 @@ void test_serialized_and_deserialized_wifi_dto(void) {
 
     //wifi_params2.deserialize(stream_in);
     wifi_params2.deserialize(blob);
-    /* std::cout << "<<<<<--------Showing deserialized data inside different object DTO------->>" << std::endl;
-    std::cout << "--------------PARAMETRO-1:  " << wifi_params2.apSSID.c_str() << std::endl;
-    std::cout << "--------------PARAMETRO-2:  " << wifi_params2.apPassword.c_str() << std::endl;
-    std::cout << "--------------PARAMETRO-3:  " << (int)wifi_params2.apChannel << std::endl;
-    std::cout << "--------------PARAMETRO-4:  " << (int)wifi_params2.apMaxConn << std::endl;
-    std::cout << "--------------PARAMETRO-5:  " << wifi_params2.isOpen << std::endl;
-    std::cout << "--------------PARAMETRO-6:  " << wifi_params2.WAP_enabled << std::endl;
-    std::cout << "--------------PARAMETRO-7:  " << wifi_params2.WST_enabled<< std::endl; */
-
 
     TEST_ASSERT_EQUAL_STRING(wifi_params.apPassword.c_str(), wifi_params2.apPassword.c_str());
     TEST_ASSERT_EQUAL_STRING(wifi_params.apSSID.c_str(),     wifi_params2.apSSID.c_str());
@@ -62,6 +56,6 @@ void test_serialized_and_deserialized_wifi_dto(void) {
 extern "C" void app_main() {
     delay(2000);
     UNITY_BEGIN();
-    RUN_TEST(test_serialized_and_deserialized_wifi_dto);
+        RUN_TEST(test_serialized_and_deserialized_wifi_dto);
     UNITY_END();
 }

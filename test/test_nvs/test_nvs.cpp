@@ -24,12 +24,9 @@ void test_open_namespace(void) {
     if (err != ESP_OK) {
         TEST_FAIL();  
     }
+    wifi_nvs.close();
 }
 
-void test_open_and_reopen_namespace(void) {
-    test_open_namespace();
-
-}
 
 void test_create_and_save_blob(void) {
     wifi::DTOConfig wifi_params;  //to serialized object  declare and initialized this one to be serialized
@@ -55,36 +52,49 @@ void test_create_and_save_blob(void) {
     if(nvs_err != ESP_OK) {
         TEST_FAIL();
     }
-
-
+    wifi_nvs.close();
 }
 
-void test_read_blob_and_deserialize_it(void) {
+void test_read_blob_and_deserialize(void) {
     std::stringstream blob_from_nvs;
-    wifi::DTOConfig wifi_params;  //object to deserialized stream
+    wifi::DTOConfig wifi_params;  //object to deserialized stream is empty
     nvs::Namespace wifi_nvs;  //object to recovery the blob from nvs
     auto nvs_err = nvs::begin();
-    auto err = wifi_nvs.open("TEST", NVS_READONLY);
-    err = wifi_nvs.get_blob("test_BLOB", blob_from_nvs);
+    nvs_err = wifi_nvs.open("TEST", NVS_READONLY);
+    nvs_err = wifi_nvs.get_blob("test_BLOB", blob_from_nvs);
     wifi_params.deserialize(blob_from_nvs);
 
-    std::cout << "SSID: " << wifi_params.apSSID.c_str() << std::endl;
-    std::cout << "PASSWORD: " << wifi_params.apPassword.c_str() << std::endl;
-    std::cout << "APCHANNEL " << (int)wifi_params.apChannel << std::endl;
-    std::cout << "apMACCONNECT " << (int)wifi_params.apMaxConn<< std::endl;
-    std::cout << "ISOPEN " << wifi_params.isOpen << std::endl;
-    std::cout << "WAPENABLED " << wifi_params.WAP_enabled << std::endl;
-    std::cout << "WST ENABLED " << wifi_params.WST_enabled << std::endl; 
+    TEST_ASSERT_EQUAL_STRING(wifi_params.apPassword.c_str(), "passwordTest");
+    TEST_ASSERT_EQUAL_STRING(wifi_params.apSSID.c_str(),  "ssidTest");
+    TEST_ASSERT_EQUAL_INT8(wifi_params.apChannel, 4);
+    TEST_ASSERT_EQUAL_INT8(wifi_params.apMaxConn, 3);
+    TEST_ASSERT_EQUAL_INT8(wifi_params.isOpen,   false);
+    TEST_ASSERT_EQUAL_INT8(wifi_params.WAP_enabled, true);
+    TEST_ASSERT_EQUAL_INT8(wifi_params.WST_enabled, false);
+
 }
+
+void test_remove_blob(void) {
+    nvs::Namespace wifi_nvs;  //object to recovery the blob from nvs
+    auto nvs_err = nvs::begin();
+    nvs_err = nvs::begin();
+    nvs_err = wifi_nvs.open("TEST", NVS_READONLY);
+    nvs_err = wifi_nvs.erase_key("test_BLOB");
+    if(nvs_err != ESP_OK) {
+        TEST_FAIL();
+    }
+    wifi_nvs.close();
+}
+
 
 
 
 extern "C" void app_main() {
     delay(2000);
     UNITY_BEGIN();
-    //
-    RUN_TEST(test_open_namespace);
-    RUN_TEST(test_create_and_save_blob);
-    RUN_TEST(test_read_blob_and_deserialize_it);
+        RUN_TEST(test_open_namespace);
+        RUN_TEST(test_create_and_save_blob);
+        RUN_TEST(test_read_blob_and_deserialize);
+       // RUN_TEST(test_remove_blob);
     UNITY_END();
 }

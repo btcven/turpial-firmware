@@ -35,7 +35,7 @@ esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params) {
     ESP_LOGI(__func__, "----------------------Reading WiFi configuration from NVS-------------------------------------");
 
     nvs::Namespace wifi_nvs;
-    auto err = wifi_nvs.open("wifi", nvs::OpenMode::ReadOnly);
+    auto err = wifi_nvs.open("wifi", NVS_READWRITE);
     if (err != ESP_OK) {
     ESP_LOGE(__func__, "---------------------------Erro abriendo el namespace---------------------------");
         return err;
@@ -80,7 +80,7 @@ extern "C" void app_main()
     auto nvs_err = nvs::begin();
     wifi::DTOConfig wifi_params;
     nvs::Namespace wifi_nvs;
-    wifi_nvs.open("wifi",nvs::OpenMode::ReadWrite);
+    wifi_nvs.open("wifi",NVS_READWRITE);
 
 
 
