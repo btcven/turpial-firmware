@@ -27,16 +27,6 @@ public:
     virtual std::size_t serialize_size() const = 0;
     virtual std::ostream& serialize(std::ostream& stream) const = 0;
     virtual std::istream& deserialize(std::istream& stream) = 0;
-
-    friend std::ostream& operator<<(std::ostream& stream,
-                                    const Serializable& ser) {
-        return ser.serialize(stream);
-    }
-
-    friend std::istream& operator>>(std::istream& stream,
-                                    Serializable& ser) {
-        return ser.deserialize(stream);
-    }
 };
 
 #endif
