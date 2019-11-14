@@ -40,6 +40,11 @@ esp_err_t BQ27441::begin(i2c_port_t port) {
     return ESP_OK;
 }
 
+esp_err_t voltage(std::uint16_t& voltage) {
+    return readWord(Command::VOLTAGE, voltage);
+}
+
+
 esp_err_t BQ27441::deviceType(std::uint16_t& result) {
     return readControlWord(Control::DEVICE_TYPE, result);
 }

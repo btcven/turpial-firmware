@@ -63,6 +63,8 @@ extern "C" void app_main()
     // Initialize NVS.
     auto nvs_err = nvs::begin();
     // TODO: app loop
+
+    bq27441::bq27441.begin();
 }
 
  
