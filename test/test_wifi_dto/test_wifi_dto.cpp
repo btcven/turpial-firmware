@@ -4,6 +4,7 @@
 #include <Arduino.h>
 #include <unity.h>
 #include "WiFiDTO.h"
+#include "Namespace.h"
 
 /**
  * @brief 
@@ -36,14 +37,14 @@ void test_serialized_and_deserialized_wifi_dto(void) {
 
     //wifi_params2.deserialize(stream_in);
     wifi_params2.deserialize(blob);
-    std::cout << "<<<<<--------Showing deserialized data inside different object DTO------->>" << std::endl;
+    /* std::cout << "<<<<<--------Showing deserialized data inside different object DTO------->>" << std::endl;
     std::cout << "--------------PARAMETRO-1:  " << wifi_params2.apSSID.c_str() << std::endl;
     std::cout << "--------------PARAMETRO-2:  " << wifi_params2.apPassword.c_str() << std::endl;
     std::cout << "--------------PARAMETRO-3:  " << (int)wifi_params2.apChannel << std::endl;
     std::cout << "--------------PARAMETRO-4:  " << (int)wifi_params2.apMaxConn << std::endl;
     std::cout << "--------------PARAMETRO-5:  " << wifi_params2.isOpen << std::endl;
     std::cout << "--------------PARAMETRO-6:  " << wifi_params2.WAP_enabled << std::endl;
-    std::cout << "--------------PARAMETRO-7:  " << wifi_params2.WST_enabled<< std::endl;
+    std::cout << "--------------PARAMETRO-7:  " << wifi_params2.WST_enabled<< std::endl; */
 
 
     TEST_ASSERT_EQUAL_STRING(wifi_params.apPassword.c_str(), wifi_params2.apPassword.c_str());

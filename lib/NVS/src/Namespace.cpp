@@ -20,18 +20,21 @@ Namespace::~Namespace() {
     }
 }
 
-esp_err_t Namespace::open(const char* name, OpenMode mode) {
+esp_err_t Namespace::open(const char* name, nvs_open_mode mode) {
     // A namespace is already opened in this instance.
     if (_isOpened) {
         return ESP_FAIL;
     }
-
+    ESP_LOGI(__func__,"-------------------------------vamos a abrie el namespacen\n");
     const auto mode_ = static_cast<nvs_open_mode>(mode);
-    const auto err = nvs_open(name, mode_, &_handle);
+    std::cout << mode_ << std::endl;
+    const auto err = nvs_open(name, mode, &_handle);
     
     if (err != ESP_OK) {
+         ESP_LOGI(__func__,"-------------------------------Erroral abrir el namespacen\n");
         return err;
     } else {
+         ESP_LOGI(__func__,"-------------------------------OKKKK namespacen\n");
         _isOpened = true;
         return err;
     }
@@ -54,11 +57,15 @@ esp_err_t Namespace::erase_all() {
 }
 
 esp_err_t Namespace::erase_key(const char* key) {
+    esp_err_t err;
 	if (!_isOpened) {
         return ESP_FAIL;
     }
-
-    return nvs_erase_key(_handle, key);
+    err = nvs_erase_key(_handle, key);
+    if (err != ESP_OK) {
+        return err;
+    }
+    return nvs_commit(_handle);
 }
 
 esp_err_t Namespace::get_blob(const char* key, std::ostream& result) {
@@ -89,11 +96,15 @@ esp_err_t Namespace::get_blob(const char* key, std::ostream& result) {
 }
 
 esp_err_t Namespace::set_blob(const char* key, const void* data, const std::size_t length) {
+    esp_err_t err;
     if (!_isOpened) {
         return ESP_FAIL;
     }
-
-    return nvs_set_blob(_handle, key, data, length);
+    err = nvs_set_blob(_handle, key, data, length);
+    if(err != ESP_OK) {
+        return err;
+    }
+    return nvs_commit(_handle);    
 }
 
 esp_err_t Namespace::commit() {
@@ -111,6 +122,8 @@ esp_err_t begin() {
 
     if (status == ESP_OK) {
         ESP_LOGD(__func__,"NVS has been initialized correctly");
+        std::cout << "******************************************************" << std::endl;
+        std::cout << "begin function"<< std::endl;
         return status;
     } else if (status == ESP_ERR_NVS_NO_FREE_PAGES || status == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         // NVS partition was truncated and needs to be erased
