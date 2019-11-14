@@ -12,8 +12,8 @@
 #ifndef BATTERY_H
 #define BATTERY_H
 
-#include "Arduino.h"
-#include "SparkFunBQ27441.h" // This is the library used for the battery energy management
+#include <Arduino.h>
+#include <SparkFunBQ27441.h> // This is the library used for the battery energy management
 
 class Battery
 {

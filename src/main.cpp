@@ -13,18 +13,13 @@
 #include <sstream>
 #include <cstdio>
 
-
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include "sdkconfig.h"
 #include <Arduino.h>
 
-#include "WiFiMode.h"
-#include "ESC/battery.h"
-#include "testRTOSCPP/Hello.hpp"
-
 #include "Namespace.h"
-
+#include "WiFiMode.h"
 #include "defaults.h"
 
 esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params) {
