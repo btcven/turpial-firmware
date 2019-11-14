@@ -40,10 +40,23 @@ esp_err_t BQ27441::begin(i2c_port_t port) {
     return ESP_OK;
 }
 
-esp_err_t voltage(std::uint16_t& voltage) {
+esp_err_t BQ27441::voltage(std::uint16_t& voltage) {
     return readWord(Command::VOLTAGE, voltage);
 }
 
+esp_err_t BQ27441::current(CurrentMeasure measure, std::uint16_t& current) {
+    switch (measure) {
+    case CurrentMeasure::Average:
+        return readWord(Command::AVG_CURRENT, current);
+        break;
+    case CurrentMeasure::StandBy:
+        return readWord(Command::STDBY_CURRENT, current);
+        break;
+    case CurrentMeasure::Max:
+        return readWord(Command::MAX_CURRENT, current)
+        break;
+    }
+}
 
 esp_err_t BQ27441::deviceType(std::uint16_t& result) {
     return readControlWord(Control::DEVICE_TYPE, result);

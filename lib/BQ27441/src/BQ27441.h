@@ -18,6 +18,12 @@
 
 namespace bq27441 {
 
+enum class CurrentMeasure {
+    Average,
+    StandBy,
+    Max,
+}
+
 /**
  * @brief BQ7411 Battery Fuel Gaugue
  * 
@@ -46,6 +52,15 @@ public:
      * @return esp_err_t ESP_OK on success
      */
     esp_err_t voltage(std::uint16_t& voltage);
+
+    /**
+     * @brief Get battery current
+     * 
+     * @param measure the way current is measured
+     * @param current the current return value
+     * @return esp_err_t ESP_OK on success
+     */
+    esp_err_t current(CurrentMeasure measure, std::uint16_t& current);
 
     /**
      * @brief Get the device type used to identify the IC.
