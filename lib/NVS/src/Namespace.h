@@ -4,6 +4,8 @@
 #include "Arduino.h"
 #include <nvs.h>
 #include <iostream>
+#include "nvs_flash.h"
+
 
 namespace nvs {
 
@@ -44,7 +46,7 @@ public:
      * @param mode open mode
      * @return esp_err_t NVS open error
      */
-    esp_err_t open(const char* name, OpenMode mode);
+    esp_err_t open(const char* name, nvs_open_mode mode);
 
     /**
      * @brief Closes this namespace, if opened
@@ -93,6 +95,7 @@ public:
 private:
     nvs_handle _handle;
     bool _isOpened;
+    bool _isStarted;
 };
 
 /**

@@ -20,14 +20,14 @@ Namespace::~Namespace() {
     }
 }
 
-esp_err_t Namespace::open(const char* name, OpenMode mode) {
+esp_err_t Namespace::open(const char* name, nvs_open_mode mode) {
     // A namespace is already opened in this instance.
     if (_isOpened) {
         return ESP_FAIL;
     }
-
     const auto mode_ = static_cast<nvs_open_mode>(mode);
-    const auto err = nvs_open(name, mode_, &_handle);
+    std::cout << mode_ << std::endl;
+    const auto err = nvs_open(name, mode, &_handle);
     
     if (err != ESP_OK) {
         return err;
@@ -54,11 +54,18 @@ esp_err_t Namespace::erase_all() {
 }
 
 esp_err_t Namespace::erase_key(const char* key) {
+    esp_err_t err;
 	if (!_isOpened) {
+        std::cout << "no esta abierto ahora ****************" << std:: endl;
         return ESP_FAIL;
     }
-
-    return nvs_erase_key(_handle, key);
+    std::cout << "Trying to delete Key:  ----> " << key <<std:: endl;
+    err = nvs_erase_key(_handle, key);
+    if (err != ESP_OK) {
+        return err;
+    }
+    std::cout << "Doing Commit for erase key" << std:: endl;
+    return nvs_commit(_handle);
 }
 
 esp_err_t Namespace::get_blob(const char* key, std::ostream& result) {
@@ -89,11 +96,15 @@ esp_err_t Namespace::get_blob(const char* key, std::ostream& result) {
 }
 
 esp_err_t Namespace::set_blob(const char* key, const void* data, const std::size_t length) {
+    esp_err_t err;
     if (!_isOpened) {
         return ESP_FAIL;
     }
-
-    return nvs_set_blob(_handle, key, data, length);
+    err = nvs_set_blob(_handle, key, data, length);
+    if(err != ESP_OK) {
+        return err;
+    }
+    return nvs_commit(_handle);    
 }
 
 esp_err_t Namespace::commit() {
