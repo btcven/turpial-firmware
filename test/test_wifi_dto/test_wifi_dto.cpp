@@ -22,20 +22,22 @@ void test_serialized_wifi_dto(void) {
      wifi_params.WAP_enabled = true;
      wifi_params.WST_enabled = false;
 
-    
+    std::cout << "---------------->>>>>PASSWORD"<< wifi_params.apPassword.c_str() << std::endl;
+    std::cout << "---------------->>>>>SSID"<< wifi_params.apSSID.c_str() << std::endl;
+    std::cout << "------------------------WIFI_PARMS WORKING AS A SERILIZER------------------------\n\n\n\n" << std::endl;
     wifi::DTOConfig wifi_params2; //to deserialized and  retrieve the information 
-    std::ostringstream blob;
-
+    //std::ostringstream blob;
+    std::stringstream blob;
     std::cout << "------------------------going to Serialized------------------------------" << std::endl;
     std::cout << "------------------------WIFI_PARMS WORKING AS A SERILIZER------------------------\n\n\n\n" << std::endl;
     wifi_params.serialize(blob);
-    auto stream_in = std::istringstream(blob.str());
+    //auto stream_in = std::istringstream(blob.str());
 
     std::cout << "------------------------going to Deserialized------------------------------" << std::endl;
     std::cout << "------------------------WIFI_PARMS-2 WORKING AS A DESERILIZER------------------------------" << std::endl;
 
-    wifi_params2.deserialize(stream_in);
-
+    //wifi_params2.deserialize(stream_in);
+    wifi_params2.deserialize(blob);
     std::cout << "--------------PARAMETRO1:  " << wifi_params2.apSSID.c_str() << std::endl;
     std::cout << "--------------PARAMETRO1:  " << wifi_params2.apPassword.c_str() << std::endl;
 
