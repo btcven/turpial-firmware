@@ -3,13 +3,10 @@
 
 #include <Arduino.h>
 #include <unity.h>
-
-/* #include "SerializablePOD.h"
-#include "TinyString.h" */
 #include "WiFiDTO.h"
 
 /**
- * @brief Test the String class constructors
+ * @brief Test WiFIDTO Class Serialization
  * 
  */
 void test_serialized_wifi_dto(void) {
@@ -55,8 +52,7 @@ void test_serialized_wifi_dto(void) {
     TEST_ASSERT_EQUAL_INT8(wifi_params.isOpen,      wifi_params2.isOpen);
     TEST_ASSERT_EQUAL_INT8(wifi_params.WAP_enabled, wifi_params2.WAP_enabled);
     TEST_ASSERT_EQUAL_INT8(wifi_params.WST_enabled, wifi_params2.WST_enabled);
-   /*  auto test_string_2 = tinystring::String();
-    TEST_ASSERT_EQUAL_PTR(nullptr, test_string_2.c_str());  */
+
 }
 
 
@@ -65,8 +61,5 @@ extern "C" void app_main() {
     delay(2000);
     UNITY_BEGIN();
     RUN_TEST(test_serialized_wifi_dto);
-    /*RUN_TEST(test_length_string);
-    RUN_TEST(test_serialize_deserialize_string);
-    RUN_TEST(test_serialize_deserialize_string_with_operators); */
     UNITY_END();
 }
