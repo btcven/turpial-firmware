@@ -42,6 +42,7 @@ void test_serialize_deserialize_integers(void) {
     TEST_ASSERT_EQUAL_UINT8(-65535, v5);
 }
 
+
 extern "C" void app_main() {
     delay(2000);
 
