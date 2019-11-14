@@ -20,7 +20,6 @@
 #include <Arduino.h>
 
 #include "WiFiMode.h"
-#include "ESC/battery.h"
 #include "testRTOSCPP/Hello.hpp"
 
 #include "Namespace.h"
