@@ -34,7 +34,7 @@ void test_serialize_deserialize_string(void) {
     TEST_ASSERT_EQUAL_STRING(test_string.c_str(), test_string_deserialized.c_str());
 }
 
-extern "C" app_main() {
+extern "C" void app_main() {
     delay(2000);
 
     UNITY_BEGIN();

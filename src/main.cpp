@@ -55,18 +55,58 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
     wifi_params.isOpen = false;
     wifi_params.apSSID = tinystring::String(WAP_SSID);
     wifi_params.apPassword = tinystring::String(WAP_PASS);
-}
+
+    /* std::cout << "out1: " << wifi_params.apSSID.c_str() << std::endl;
+    std::cout << "out2: " << wifi_params.apPassword.c_str()  << std::endl;
+    std::cout << "SSID: " << wifi_params.apSSID.c_str() << std::endl;
+    std::cout << "PASSWORD: " << wifi_params.apPassword.c_str() << std::endl;
+    std::cout << "APCHANNEL " << wifi_params.apChannel << std::endl;
+    std::cout << "apMACCONNECT " << wifi_params.apMaxConn<< std::endl;
+    std::cout << "ISOPEN " << wifi_params.isOpen << std::endl;
+    std::cout << "WAPENABLED " << wifi_params.WAP_enabled << std::endl;
+    std::cout << "WST ENABLED " << wifi_params.WST_enabled << std::endl; */
+} 
 
 extern "C" void app_main()
 {
     // Initialize arduino as a component
     initArduino();
-
     // Initialize NVS.
     auto nvs_err = nvs::begin();
 
     wifi::DTOConfig wifi_params;
+    wifi::DTOConfig wifi_params2;
+    setDefaultWiFiParams(wifi_params);
 
+
+
+    std::ostringstream blob;
+
+    std::cout << "------------------------going to Serialized------------------------------" << std::endl;
+    std::cout << "------------------------WIFI_PARMS WORKING AS A SERILIZER------------------------------" << std::endl;
+    wifi_params.serialize(blob);
+    auto stream_in = std::istringstream(blob.str());
+
+    std::cout << "------------------------going to Deserialized------------------------------" << std::endl;
+    std::cout << "------------------------WIFI_PARMS-2 WORKING AS A DESERILIZER------------------------------" << std::endl;
+
+    wifi_params2.deserialize(stream_in);
+
+    std::cout << "SSID: " << wifi_params2.apSSID.c_str() << std::endl;
+    std::cout << "PASSWORD: " << wifi_params2.apPassword.c_str() << std::endl;
+    std::cout << "APCHANNEL " << (int)wifi_params2.apChannel << std::endl;
+    std::cout << "apMACCONNECT " << (int)wifi_params2.apMaxConn<< std::endl;
+    std::cout << "ISOPEN " << wifi_params2.isOpen << std::endl;
+    std::cout << "WAPENABLED " << wifi_params2.WAP_enabled << std::endl;
+    std::cout << "WST ENABLED " << wifi_params2.WST_enabled << std::endl;
+  
+
+
+
+/* 
+    std::cout << "out1: " << wifi_params.apSSID.c_str() << std::endl;
+    std::cout << "out2: " << wifi_params.apPassword.str() << std::endl; */
+/*
     if (nvs_err != ESP_OK) {
         ESP_LOGE(__func__, "Couldn't initialize NVS, error %s", esp_err_to_name(nvs_err));
         ESP_LOGD(__func__, "Using default WiFi parameters");
@@ -83,7 +123,7 @@ extern "C" void app_main()
         }
     }
 
-    wifi::mode::begin(wifi_params);
+    wifi::mode::begin(wifi_params); */
 
     // TODO: app loop
 }

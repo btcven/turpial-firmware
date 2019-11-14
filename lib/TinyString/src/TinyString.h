@@ -91,8 +91,9 @@ public:
         pod::deserialize(stream, length_);
 
         _inner.reserve(length_);
-        std::copy_n(std::istreambuf_iterator<char>(stream), length_, std::back_inserter(_inner));
-
+        //std::copy_n(std::istreambuf_iterator<char>(stream), length_, std::back_inserter(_inner));
+         stream.read(&_inner[0], length_);
+        _inner[length_] = '\0';
         return stream;
     }
 
