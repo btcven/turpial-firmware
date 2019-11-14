@@ -27,7 +27,6 @@
 
 #include "defaults.h"
 
-
 esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params) {
     ESP_LOGD(__func__, "Reading WiFi configuration from NVS");
     nvs::Namespace wifi_nvs;
@@ -60,6 +59,10 @@ extern "C" void app_main()
 {
     // Initialize arduino as a component
     initArduino();
+
+    // Set logging level for all tags.
+    esp_log_level_set("*", ESP_LOG_VERBOSE);
+
     // Initialize NVS.
     auto nvs_err = nvs::begin();
     wifi::DTOConfig wifi_params;
