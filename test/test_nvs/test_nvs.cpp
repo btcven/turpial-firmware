@@ -86,9 +86,6 @@ void test_remove_blob(void) {
     wifi_nvs.close();
 }
 
-
-
-
 extern "C" void app_main() {
     delay(2000);
     UNITY_BEGIN();

@@ -27,18 +27,11 @@ void test_serialized_and_deserialized_wifi_dto(void) {
      wifi_params.WST_enabled = false;
     
     wifi::DTOConfig wifi_params2; //to deserialized and  retrieve the information 
-    
-    //std::ostringstream blob;
+    //std::ostringstream blob;  //ok 1
     std::stringstream blob;
-    std::cout << "------------------------going to Serialized------------------------------" << std::endl;
-    std::cout << "------------------------WIFI_PARMS WORKING AS A SERILIZER------------------------\n\n\n\n" << std::endl;
     wifi_params.serialize(blob);
-    //auto stream_in = std::istringstream(blob.str());
-
-    std::cout << "------------------------going to Deserialized------------------------------" << std::endl;
-    std::cout << "------------------------WIFI_PARAMS-2 WORKING AS A DESERILIZER------------------------------" << std::endl;
-
-    //wifi_params2.deserialize(stream_in);
+    //auto stream_in = std::istringstream(blob.str()); //ok 2
+    //wifi_params2.deserialize(stream_in); //ok   3
     wifi_params2.deserialize(blob);
 
     TEST_ASSERT_EQUAL_STRING(wifi_params.apPassword.c_str(), wifi_params2.apPassword.c_str());

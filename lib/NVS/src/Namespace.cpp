@@ -25,16 +25,13 @@ esp_err_t Namespace::open(const char* name, nvs_open_mode mode) {
     if (_isOpened) {
         return ESP_FAIL;
     }
-    ESP_LOGI(__func__,"-------------------------------vamos a abrie el namespacen\n");
     const auto mode_ = static_cast<nvs_open_mode>(mode);
     std::cout << mode_ << std::endl;
     const auto err = nvs_open(name, mode, &_handle);
     
     if (err != ESP_OK) {
-         ESP_LOGI(__func__,"-------------------------------Erroral abrir el namespacen\n");
         return err;
     } else {
-         ESP_LOGI(__func__,"-------------------------------OKKKK namespacen\n");
         _isOpened = true;
         return err;
     }
@@ -62,12 +59,12 @@ esp_err_t Namespace::erase_key(const char* key) {
         std::cout << "no esta abierto ahora ****************" << std:: endl;
         return ESP_FAIL;
     }
-    std::cout << "depronto elimina eso+++++++++NVS_ERASE_KEY FUNCTION ****************" << key <<std:: endl;
+    std::cout << "Trying to delete Key:  ----> " << key <<std:: endl;
     err = nvs_erase_key(_handle, key);
     if (err != ESP_OK) {
         return err;
     }
-    std::cout << "vamos a hacer commit ****************" << std:: endl;
+    std::cout << "Doing Commit for erase key" << std:: endl;
     return nvs_commit(_handle);
 }
 
@@ -125,8 +122,6 @@ esp_err_t begin() {
 
     if (status == ESP_OK) {
         ESP_LOGD(__func__,"NVS has been initialized correctly");
-        std::cout << "******************************************************" << std::endl;
-        std::cout << "begin function"<< std::endl;
         return status;
     } else if (status == ESP_ERR_NVS_NO_FREE_PAGES || status == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         // NVS partition was truncated and needs to be erased
