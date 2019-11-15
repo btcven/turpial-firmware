@@ -46,6 +46,14 @@ public:
     esp_err_t begin(i2c_port_t port);
 
     /**
+     * @brief Configures the battery capacity
+     * 
+     * @param capacity battery capacity measured in mAh
+     * @return esp_err_t ESP_OK on success
+     */
+    esp_err_t setCapacity(std::uint16_t capacity);
+
+    /**
      * @brief Get battery voltage
      * 
      * @param voltage The voltage in mV unit
@@ -87,6 +95,21 @@ public:
     esp_err_t status(std::uint16_t& result);
 
     /**
+     * @brief Enter configuration mode
+     * 
+     * @return esp_err_t ESP_OK on success.
+     */
+    esp_err_t enterConfig();
+
+    /**
+     * @brief Exit configuration mode
+     * 
+     * @param resim whether to resimulate or no
+     * @return esp_err_t ESP_OK on success.
+     */
+    esp_err_t exitConfig(bool resim = true);
+private:
+    /**
      * @brief Checks if the BQ27441 is sealed
      * 
      * @param is_sealed the return variable 
@@ -110,17 +133,25 @@ public:
      */
     esp_err_t unseal(std::uint16_t& result);
 
-    /**
-     * @brief Enter configuration mode
-     * 
-     * @return esp_err_t ESP_OK on success.
-     */
-    esp_err_t enterConfig();
-
-private:
+    esp_err_t softReset();
     esp_err_t readWord(std::uint16_t sub_address, std::uint16_t& result);
     esp_err_t readControlWord(std::uint16_t function, std::uint16_t& result);
     esp_err_t executeControlWord(std::uint16_t function);
+    esp_err_t blockDataControl();
+    esp_err_t blockDataClass(std::uint8_t id);
+    esp_err_t blockDataOffset(std::uint8_t offset);
+    esp_err_t blockDataChecksum(std::uint8_t& csum);
+    esp_err_t readBlockData(std::uint8_t offset, std::uint8_t& result);
+    esp_err_t writeBlockData(std::uint8_t offset, std::uint8_t data);
+    esp_err_t computeBlockChecksum(std::uint8_t& checksum);
+    esp_err_t writeBlockChecksum(std::uint8_t csum);
+    esp_err_t readExtendedData(std::uint8_t class_id,
+                               std::uint8_t offset,
+                               std::uint8_t& result);
+    esp_err_t writeExtendedData(std::uint8_t class_id,
+                                std::uint8_t offset,
+                                std::uint8_t* data,
+                                std::uint8_t len);
 
     esp_err_t i2cWriteBytes(std::uint8_t sub_address,
                             std::uint8_t* bytes,
@@ -131,6 +162,7 @@ private:
 
     std::uint8_t _device_address;
     i2c_port_t _port;
+    bool _seal_again;
 };
 
 extern BQ27441 bq27441;

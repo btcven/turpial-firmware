@@ -15,11 +15,20 @@
 #include <cstring>
 #include <esp_log.h>
 
+#define ESP_ERR_TRY(expr)         \
+do {                      \
+    esp_err_t err = expr; \
+    if (err != ESP_OK) {  \
+        return err;       \
+    }                     \
+} while (false)           \
+
 namespace bq27441 {
 
 BQ27441::BQ27441()
     : _device_address(I2C_ADDRESS)
-    , _port(I2C_NUM_0) {
+    , _port(I2C_NUM_0)
+    , _seal_again(false) {
 }
 
 esp_err_t BQ27441::begin(i2c_port_t port) {
@@ -38,6 +47,16 @@ esp_err_t BQ27441::begin(i2c_port_t port) {
     }
 
     return ESP_OK;
+}
+
+esp_err_t BQ27441::setCapacity(std::uint16_t capacity) {
+	// Write to STATE subclass (82) of BQ27441 extended memory.
+	// Offset 0x0A (10)
+	// Design capacity is a 2-byte piece of data - MSB first
+	uint8_t cap_msb = capacity >> 8;
+	uint8_t cap_lsb = capacity & 0x00FF;
+	uint8_t capacity_data[2] = {cap_msb, cap_lsb};
+	return writeExtendedData(ID_STATE, 10, capacity_data, 2);
 }
 
 esp_err_t BQ27441::voltage(std::uint16_t& voltage) {
@@ -78,10 +97,7 @@ esp_err_t BQ27441::status(std::uint16_t& result) {
 esp_err_t BQ27441::sealed(bool& is_sealed)
 {
 	std::uint16_t stat;
-    esp_err_t err = status(stat);
-    if (err != ESP_OK) {
-        return err;
-    }
+    ESP_ERR_TRY(status(stat));
 
     if (stat & STATUS_SS) {
         is_sealed = true;
@@ -100,10 +116,7 @@ esp_err_t BQ27441::unseal(std::uint16_t& result) {
 	// To unseal the BQ27441, write the key to the control
 	// command. Then immediately write the same key to control again.
 	
-    esp_err_t err = readControlWord(UNSEAL_KEY, result);
-    if (err != ESP_OK) {
-        return err;
-    }
+    ESP_ERR_TRY(readControlWord(UNSEAL_KEY, result));
     
     return readControlWord(UNSEAL_KEY, result);
 }
@@ -112,34 +125,77 @@ esp_err_t BQ27441::enterConfig() {
     esp_err_t err;
 
     bool is_sealed;
-    err = sealed(is_sealed);
+    ESP_ERR_TRY(sealed(is_sealed));
     if (is_sealed) {
         // Must be unsealed before making changes
         std::uint16_t res;
-        unseal(res);
+        ESP_ERR_TRY(unseal(res));
+        _seal_again = true;
     }
 
-    if (executeControlWord(Control::SET_CFG_UPDATE)) {
+    if (executeControlWord(Control::SET_CFG_UPDATE) == ESP_OK) {
         std::int16_t timeout = TIMEOUT;
         while (timeout--) {
             vTaskDelay(1);
             std::uint16_t flags_;
-            err = flags(flags_);
-            if (err != ESP_OK) {
-                return err;
-            }
+            ESP_ERR_TRY(flags(flags_));
 
             if (flags_ & FLAG_CFGUPMODE) {
                 return ESP_OK;
             }
         }
 
+        // Timeout wasn't reached, meaning that FLAG_CFGUPMODE is set.
 		if (timeout > 0) {
             return ESP_OK;
         }
     }
 	
     return ESP_FAIL;
+}
+
+// Exit configuration mode with the option to perform a resimulation
+esp_err_t BQ27441::exitConfig(bool resim) {
+    // There are two methods for exiting config mode:
+    //    1. Execute the EXIT_CFGUPDATE command
+    //    2. Execute the SOFT_RESET command
+    // EXIT_CFGUPDATE exits config mode _without_ an OCV (open-circuit voltage)
+    // measurement, and without resimulating to update unfiltered-SoC and SoC.
+    // If a new OCV measurement or resimulation is desired, SOFT_RESET or
+    // EXIT_RESIM should be used to exit config mode.
+    esp_err_t err;
+    if (resim) {
+        ESP_ERR_TRY(softReset());
+        std::int16_t timeout = TIMEOUT;
+		while (timeout--) {
+            vTaskDelay(1);
+                
+            std::uint16_t flags_;
+            ESP_ERR_TRY(flags(flags_));
+
+            if (!(flags_ & FLAG_CFGUPMODE)) {
+                return ESP_OK;
+            }
+
+            timeout--;
+        }
+
+		if (timeout > 0) {
+            if (_seal_again) {
+                // Seal back up if we IC was sealed coming in
+                std::uint16_t res1;
+                ESP_ERR_TRY(seal(res1));
+            }
+			return true;
+		}
+	} else {
+		return executeControlWord(Control::EXIT_CFGUPDATE);
+	}
+}
+
+// Issue a soft-reset to the BQ27441-G1A
+esp_err_t BQ27441::softReset() {
+	return executeControlWord(Control::SOFT_RESET);
 }
 
 esp_err_t BQ27441::readWord(std::uint16_t sub_address, std::uint16_t& result) {
@@ -188,6 +244,145 @@ esp_err_t BQ27441::executeControlWord(std::uint16_t function) {
 	std::uint8_t command[2] = {sub_command_lsb, sub_command_msb};
 
     return i2cWriteBytes(0, command, 2);
+}
+
+// Issue a BlockDataControl() command to enable BlockData access
+esp_err_t BQ27441::blockDataControl() {
+	std::uint8_t enable_byte = 0x00;
+	return i2cWriteBytes(EXTENDED_CONTROL, &enable_byte, 1);
+}
+
+// Issue a DataClass() command to set the data class to be accessed
+esp_err_t BQ27441::blockDataClass(std::uint8_t id) {
+	return i2cWriteBytes(EXTENDED_DATACLASS, &id, 1);
+}
+
+// Issue a DataBlock() command to set the data block to be accessed
+esp_err_t BQ27441::blockDataOffset(std::uint8_t offset) {
+	return i2cWriteBytes(EXTENDED_DATABLOCK, &offset, 1);
+}
+
+// Read the current checksum using BlockDataCheckSum()
+esp_err_t BQ27441::blockDataChecksum(std::uint8_t& csum) {
+	std::uint8_t new_csum;
+    esp_err_t err = i2cReadBytes(EXTENDED_CHECKSUM, &new_csum, 1);
+    if (err == ESP_OK) {
+        csum = new_csum;
+    }
+
+    return err;
+}
+
+// Use BlockData() to read a byte from the loaded extended data
+esp_err_t BQ27441::readBlockData(std::uint8_t offset, std::uint8_t& result) {
+    std::uint8_t ret;
+    std::uint8_t address = offset + EXTENDED_BLOCKDATA;
+    esp_err_t err = i2cReadBytes(address, &ret, 1);
+	if (err == ESP_OK) {
+        result = ret;
+    }
+
+    return err;
+}
+
+// Use BlockData() to write a byte to an offset of the loaded data
+esp_err_t BQ27441::writeBlockData(std::uint8_t offset, std::uint8_t data) {
+    std::uint8_t address = offset + EXTENDED_BLOCKDATA;
+    return i2cWriteBytes(address, &data, 1);
+}
+
+// Read all 32 bytes of the loaded extended data and compute a 
+// checksum based on the values.
+esp_err_t BQ27441::computeBlockChecksum(std::uint8_t& checksum) {
+    std::uint8_t data[32];
+    ESP_ERR_TRY(i2cReadBytes(EXTENDED_BLOCKDATA, data, 32));
+
+    std::uint8_t ret = 0;
+    for (int i = 0; i < 32; i++) {
+        ret += data[i];
+    }
+    ret = 255 - ret;
+    checksum = ret;
+	
+	return ESP_OK;
+}
+
+// Use the BlockDataCheckSum() command to write a checksum value
+esp_err_t BQ27441::writeBlockChecksum(std::uint8_t csum) {
+	return i2cWriteBytes(EXTENDED_CHECKSUM, &csum, 1);	
+}
+
+// Read a byte from extended data specifying a class ID and position offset
+esp_err_t BQ27441::readExtendedData(std::uint8_t class_id,
+                                    std::uint8_t offset,
+                                    std::uint8_t& result) {
+    ESP_ERR_TRY(enterConfig());
+
+    // Enable block data memory control
+    ESP_ERR_TRY(blockDataControl());
+    // Write class ID using DataBlockClass() 
+    ESP_ERR_TRY(blockDataClass(class_id));
+	
+    // Write 32-bit block offset (usually 0)
+	ESP_ERR_TRY(blockDataOffset(offset / 32));
+    
+    std::uint8_t new_csum;
+    // Compute checksum going in
+    ESP_ERR_TRY(computeBlockChecksum(new_csum));
+	
+    std::uint8_t old_csum;
+    ESP_ERR_TRY(blockDataChecksum(old_csum));
+	
+    // Read from offset (limit to 0-31)
+    ESP_ERR_TRY(readBlockData(offset % 32, result));
+	
+    return exitConfig();
+}
+
+// Write a specified number of bytes to extended data specifying a 
+// class ID, position offset.
+esp_err_t BQ27441::writeExtendedData(std::uint8_t class_id,
+                                     std::uint8_t offset,
+                                     std::uint8_t* data,
+                                     std::uint8_t len) {
+    if (len > 32) {
+        ESP_LOGD(__func__, "max write length is 32");
+        return ESP_FAIL;
+    }
+	
+    ESP_ERR_TRY(enterConfig());
+	
+    // Enable block data memory control
+    ESP_ERR_TRY(blockDataControl());
+
+    // Write class ID using DataBlockClass()
+    ESP_ERR_TRY(blockDataClass(class_id));
+
+    // Write 32-bit block offset (usually 0)
+    ESP_ERR_TRY(blockDataOffset(offset / 32));
+    
+    std::uint8_t computed_csum;
+    // Compute checksum going in
+    ESP_ERR_TRY(computeBlockChecksum(computed_csum));
+    
+    std::uint8_t old_csum;
+    ESP_ERR_TRY(blockDataChecksum(old_csum));
+
+	// Write data bytes:
+    for (int i = 0; i < len; i++) {
+		// Write to offset, mod 32 if offset is greater than 32
+		// The blockDataOffset above sets the 32-bit block
+		ESP_ERR_TRY(writeBlockData((offset % 32) + i, data[i]));
+	}
+	
+	// Write new checksum using BlockDataChecksum (0x60)
+	std::uint8_t new_csum;
+    ESP_ERR_TRY(computeBlockChecksum(new_csum));
+	ESP_ERR_TRY(writeBlockChecksum(new_csum));
+
+	ESP_ERR_TRY(exitConfig());
+	
+	return ESP_OK;
 }
 
 esp_err_t BQ27441::i2cWriteBytes(std::uint8_t sub_address,
