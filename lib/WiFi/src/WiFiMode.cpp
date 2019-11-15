@@ -129,8 +129,8 @@ esp_err_t begin(DTOConfig config)
     };
 
     wst::Config wst_config = {
-        .ssid = config.apSSID.c_str(),
-        .pass = config.apPassword.c_str(),
+        .wstssid = config.wstSSID.c_str(),
+        .wstpass = config.wstPassword.c_str(),
     };
 
     auto isAp = config.WAP_enabled;

@@ -18,16 +18,16 @@ namespace wst {
 
 esp_err_t begin(Config config)
 {
-    bool initST = WiFi.begin(config.ssid, config.pass);
+    bool initST = WiFi.begin(config.wstssid, config.wstpass);
 
     if (initST)
     {
-        ESP_LOGD(__func__, "Connected to %s", config.ssid);
+        ESP_LOGD(__func__, "Connected to %s", config.wstssid);
         return ESP_OK;
     }
     else
     {
-        ESP_LOGE(__func__, "Can't connect to %s", config.ssid);
+        ESP_LOGE(__func__, "Can't connect to %s", config.wstssid);
         return ESP_FAIL;
     }
 }

@@ -53,6 +53,8 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
     wifi_params.isOpen = false;
     wifi_params.apSSID = tinystring::String(WAP_SSID);
     wifi_params.apPassword = tinystring::String(WAP_PASS);
+    wifi_params.wstSSID = tinystring::String(WST_SSID);
+    wifi_params.wstPassword = tinystring::String(WST_PASS);
 } 
 
 extern "C" void app_main()

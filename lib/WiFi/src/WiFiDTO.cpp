@@ -26,7 +26,9 @@ std::size_t DTOConfig::serialize_size() const {
            pod::serialize_size<bool>(WST_enabled) +
            pod::serialize_size<bool>(isOpen) +
            apSSID.serialize_size() +
-           apPassword.serialize_size();  
+           apPassword.serialize_size() + 
+           wstSSID.serialize_size() + 
+           wstPassword.serialize_size();
 
     return size; 
 }
@@ -39,6 +41,8 @@ std::ostream& DTOConfig::serialize(std::ostream& stream) const {
     pod::serialize<bool>(stream, isOpen);
     apSSID.serialize(stream);
     apPassword.serialize(stream);
+    wstSSID.serialize(stream);
+    wstPassword.serialize(stream);
     return stream;
 }
 
@@ -50,6 +54,8 @@ std::istream& DTOConfig::deserialize(std::istream& stream) {
     pod::deserialize<bool>(stream, isOpen);
     apSSID.deserialize(stream);
     apPassword.deserialize(stream);
+    wstSSID.deserialize(stream);
+    wstPassword.deserialize(stream);
     return stream;
 }
 

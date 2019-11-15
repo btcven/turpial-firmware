@@ -21,8 +21,8 @@ namespace wifi {
 namespace wst {
 
 struct Config {
-    const char* ssid;
-    const char* pass;
+    const char* wstssid;
+    const char* wstpass;
 };
 
 esp_err_t begin(Config config);
