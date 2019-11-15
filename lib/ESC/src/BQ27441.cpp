@@ -15,7 +15,7 @@
 #include <cstring>
 #include <esp_log.h>
 
-#define ESP_ERR_TRY(expr)         \
+#define ESP_ERR_TRY(expr) \
 do {                      \
     esp_err_t err = expr; \
     if (err != ESP_OK) {  \
