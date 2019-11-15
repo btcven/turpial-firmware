@@ -21,7 +21,7 @@ The following is a set of guidelines for contributing to [**Locha**](), [**Turpi
     - [I just have a question](#i-just-have-a-question)
     - [Suggesting enhancements](#suggesting-enhancements)
     - [Reporting bugs](#reporting-bugs)
-    - [Pull request](#pull-request)
+    - [Pull requesst](#pull-requesst)
   - [Styleguide](#styleguide)
     - [Commit messages](#commit-messages)
     - [Code styleguide](#code-styleguide)
@@ -53,7 +53,7 @@ ToDo
 ### Reporting bugs
 ToDo
 
-### Pull request
+### Pull requesst
 ToDo
 
 ## Styleguide
@@ -63,6 +63,10 @@ A commit message must be short, clear and a general description of the changes o
 If a commit includes changes in several files or sections, we can include after the initial message a more extended description of each change.
 
 ### Code styleguide
+
+Actuually this project uses the [C++ bitcoin Style Guide](https://github.com/bitcoin/bitcoin/blob/master/doc/developer-notes.md#coding-style-c) for simplicty, it's already established and works very well there and doesn't change very often.
+
+We use the [.clang-format](https://github.com/bitcoin/bitcoin/blob/master/src/.clang-format) file that they provide for automatic code formatting. It's very recommended that you run `clang-format` before you submit a pull request, to make code reviews more easy.
 
 #### Include guards
 Local header files must contain an distinctly named include guard to avoid problems with including the same header multiple times, for example:
@@ -116,10 +120,10 @@ int snrLevel;
 **Classes** Use CamelCase
 ```cpp
 class SomeClass { 
-    public:
-        ...
-    private:
-        int foo_; // Private variables ends with an underscore
+public:
+    ...
+private:
+    int m_foo; // Private variables have the m_ prefix
 };
 ```
 ### Common statements
@@ -150,8 +154,7 @@ else
 }
 
 // only if statement
-if (foo)
-    bar = UP;
+if (foo) bar = UP;
 ```
 #### while / do-while loops
 
@@ -160,13 +163,13 @@ if (foo)
 // while statement
 while (foo > 0)
 {
-    bar++;
+    ++bar;
 }
 
 // do-while statement
 do
 {
-    bar++;
+    ++bar;
 }
 while (foo > 0);
 
