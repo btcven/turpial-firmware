@@ -19,9 +19,9 @@ namespace mode {
 
 OperationMode selectOperationMode(bool ap, bool st) {
     if (!ap && st) {
-        return OperationMode::Ap;
-    } else if (ap && !st) {
         return OperationMode::St;
+    } else if (ap && !st) {
+        return OperationMode::Ap;
     } else if (ap && st) {
         return OperationMode::ApSt;
     } else if (!ap && !st) {

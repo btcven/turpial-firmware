@@ -8,6 +8,15 @@
 #include "defaults.h"
 
 
+/**
+ * @brief 
+ * Test WiFiMode 
+ * This test in in order to show and proof how to use methods to init wifi in different modes
+ * to run test inside platform Core-cli the next command
+ * platformio test -e featheresp32 -f test_wifi_mode
+ * 
+ */
+
 void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
     wifi_params.apChannel = WAP_CHANNEL;
     wifi_params.apMaxConn = WAP_MAXCONN;
@@ -16,6 +25,8 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
     wifi_params.isOpen = false;
     wifi_params.apSSID = tinystring::String(WAP_SSID);
     wifi_params.apPassword = tinystring::String(WAP_PASS);
+    wifi_params.wstSSID = tinystring::String(WST_SSID);
+    wifi_params.wstPassword = tinystring::String(WST_PASS);
 } 
 
 void test_wifi_mode_with_default_values(void) {
@@ -28,6 +39,6 @@ void test_wifi_mode_with_default_values(void) {
 extern "C" void app_main() {
     delay(2000);
     UNITY_BEGIN();
-        //RUN_TEST();
+        RUN_TEST(test_wifi_mode_with_default_values);
     UNITY_END();
 }
