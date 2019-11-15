@@ -68,7 +68,7 @@ public:
      * @param current the current return value
      * @return esp_err_t ESP_OK on success
      */
-    esp_err_t current(CurrentMeasure measure, std::uint16_t& current);
+    esp_err_t current(CurrentMeasure measure, std::int16_t& current);
 
     /**
      * @brief Get the device type used to identify the IC.
