@@ -8,16 +8,6 @@
 
 
 namespace nvs {
-
-/**
- * @brief Namespace open mode
- * 
- */
-enum class OpenMode {
-    ReadOnly = NVS_READONLY,
-    ReadWrite = NVS_READONLY,
-};
-
 /**
  * @brief Represents a RAII version of a NVS namespace.
  * 

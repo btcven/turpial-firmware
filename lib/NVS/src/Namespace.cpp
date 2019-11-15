@@ -6,8 +6,6 @@
 #include <cstdlib>
 
 
-static const char LOG_TAG[] = "CPPNVS";
-
 namespace nvs {
 
 Namespace::Namespace()

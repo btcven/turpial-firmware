@@ -78,7 +78,7 @@ void test_remove_blob(void) {
     nvs::Namespace wifi_nvs;  //object to recovery the blob from nvs
     auto nvs_err = nvs::begin();
     nvs_err = nvs::begin();
-    nvs_err = wifi_nvs.open("TEST", NVS_READONLY);
+    nvs_err = wifi_nvs.open("TEST", NVS_READWRITE);
     nvs_err = wifi_nvs.erase_key("test_BLOB");
     if(nvs_err != ESP_OK) {
         TEST_FAIL();
@@ -92,6 +92,6 @@ extern "C" void app_main() {
         RUN_TEST(test_open_namespace);
         RUN_TEST(test_create_and_save_blob);
         RUN_TEST(test_read_blob_and_deserialize);
-       // RUN_TEST(test_remove_blob);
+        RUN_TEST(test_remove_blob);
     UNITY_END();
 }
