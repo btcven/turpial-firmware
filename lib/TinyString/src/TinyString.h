@@ -34,14 +34,14 @@ public:
      * @brief Construct a new empty String object
      * 
      */
-    String() : _inner() {}
+    String() : m_inner() {}
     /**
      * @brief Construct a new String object copying the supplied str allocating
      * new memory.
      * 
      * @param str The string to be copied.
      */
-    String(const char* str) : _inner(str) {}
+    String(const char* str) : m_inner(str) {}
 
     /**
      * @brief Get the length of the string
@@ -50,7 +50,7 @@ public:
      */
     std::size_t length() const
     {
-        return _inner.length();
+        return m_inner.length();
     }
 
     /**
@@ -60,7 +60,7 @@ public:
      */
     const std::string& str() const
     {
-        return _inner;
+        return m_inner;
     }
 
     /**
@@ -70,7 +70,7 @@ public:
      */
     const char* c_str() const
     {
-        return _inner.c_str();
+        return m_inner.c_str();
     }
 
     virtual std::size_t serialize_size() const
@@ -82,7 +82,7 @@ public:
     {
         auto const length_ = length();
         pod::serialize<std::size_t>(stream, length_);
-        stream.write(_inner.c_str(), length_);
+        stream.write(m_inner.c_str(), length_);
 
         return stream;
     }
@@ -91,22 +91,20 @@ public:
     {
         // If this String is already being used with some data and has allocated
         // memory just clear it.
-        if (!_inner.empty()) {
-            _inner.clear();
-        }
+        if (!m_inner.empty()) m_inner.clear();
 
         std::size_t length_;
         pod::deserialize(stream, length_);
 
-        _inner.reserve(length_);
-        //std::copy_n(std::istreambuf_iterator<char>(stream), length_, std::back_inserter(_inner));
-        stream.read(&_inner[0], length_);
-        _inner[length_] = '\0';
+        m_inner.reserve(length_);
+        //std::copy_n(std::istreambuf_iterator<char>(stream), length_, std::back_inserter(m_inner));
+        stream.read(&m_inner[0], length_);
+        m_inner[length_] = '\0';
         return stream;
     }
 
 private:
-    std::string _inner;
+    std::string m_inner;
 };
 
 } // namespace tinystring

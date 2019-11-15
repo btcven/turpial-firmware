@@ -29,17 +29,12 @@ namespace wifi {
  */
 struct DTOConfig : public Serializable {
 public:
+    /**
+     * @brief Construct a new empty DTOConfig object
+     * 
+     */
     DTOConfig()
-        : apChannel(0), apMaxConn(0), WAP_enabled(false), WST_enabled(false), isOpen(false), apSSID(tinystring::String()), apPassword(tinystring::String()) {}
-
-    DTOConfig(int8_t channel,
-        int8_t maxconn,
-        bool is_ap,
-        bool is_st,
-        bool is_open,
-        const char* ssid,
-        const char* pass)
-        : apChannel(channel), apMaxConn(maxconn), WAP_enabled(is_ap), WST_enabled(is_st), isOpen(is_open), apSSID(ssid), apPassword(pass) {}
+        : ap_channel(0), ap_max_conn(0), wap_enabled(false), wst_enabled(false), is_open(false), ap_ssid(tinystring::String()), ap_password(tinystring::String()) {}
 
     /**
      * @brief Returns the 
@@ -63,13 +58,13 @@ public:
     virtual std::istream& deserialize(std::istream& stream);
 
 public:
-    int8_t apChannel;
-    int8_t apMaxConn;
-    bool WAP_enabled;
-    bool WST_enabled;
-    bool isOpen;
-    tinystring::String apSSID;
-    tinystring::String apPassword;
+    int8_t ap_channel;
+    int8_t ap_max_conn;
+    bool wap_enabled;
+    bool wst_enabled;
+    bool is_open;
+    tinystring::String ap_ssid;
+    tinystring::String ap_password;
 };
 
 } // namespace wifi

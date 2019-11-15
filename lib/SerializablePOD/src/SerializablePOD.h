@@ -17,7 +17,6 @@
 #include <iostream>
 #include <type_traits>
 
-
 namespace pod {
 
 template <typename T>

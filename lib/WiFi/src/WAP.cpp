@@ -18,9 +18,9 @@ namespace wap {
 
 esp_err_t begin(Config config)
 {
-    bool initAP = WiFi.softAP(config.apSSID, config.apPass, config.apChannel, 0, config.apMaxConn);
+    bool init_ap = WiFi.softAP(config.ap_ssid, config.ap_pass, config.ap_channel, 0, config.ap_max_conn);
 
-    if (initAP) {
+    if (init_ap) {
         ESP_LOGI(__func__, "AP init OK");
         return ESP_OK;
     } else {

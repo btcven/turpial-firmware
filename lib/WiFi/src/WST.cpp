@@ -18,9 +18,9 @@ namespace wst {
 
 esp_err_t begin(Config config)
 {
-    bool initST = WiFi.begin(config.ssid, config.pass);
+    bool init_st = WiFi.begin(config.ssid, config.pass);
 
-    if (initST) {
+    if (init_st) {
         ESP_LOGD(__func__, "Connected to %s", config.ssid);
         return ESP_OK;
     } else {

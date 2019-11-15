@@ -20,11 +20,23 @@ namespace wifi {
 
 namespace wst {
 
+/**
+ * @brief Wireless ST configuration
+ * 
+ */
 struct Config {
+    /// The SSID to connect to
     const char* ssid;
+    /// The password
     const char* pass;
 };
 
+/**
+ * @brief Initializes WST wifi mode
+ * 
+ * @param config The WST configuration
+ * @return esp_err_t ESP_OK on success
+ */
 esp_err_t begin(Config config);
 
 } // namespace wst

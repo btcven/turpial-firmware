@@ -6,8 +6,6 @@
 #include <iostream>
 #include <nvs.h>
 
-
-
 namespace nvs {
 
 /**
@@ -95,9 +93,8 @@ public:
     esp_err_t commit();
 
 private:
-    nvs_handle _handle;
-    bool _isOpened;
-    bool _isStarted;
+    nvs_handle m_handle;
+    bool m_is_opened;
 };
 
 /**

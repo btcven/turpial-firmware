@@ -11,7 +11,8 @@
  * @brief Test the String class constructors
  * 
  */
-void test_construct_string(void) {
+void test_construct_string(void)
+{
     auto test_string_1 = tinystring::String("LOCHA.IO");
     TEST_ASSERT_EQUAL_STRING("LOCHA.IO", test_string_1.c_str());
 }
@@ -20,7 +21,8 @@ void test_construct_string(void) {
  * @brief Serialize and deserialize a String
  * 
  */
-void test_serialize_deserialize_string(void) {
+void test_serialize_deserialize_string(void)
+{
     auto test_string = tinystring::String("WIFI_AP_SSID_EXAMPLE");
 
     std::ostringstream stream_out;
@@ -34,7 +36,8 @@ void test_serialize_deserialize_string(void) {
     TEST_ASSERT_EQUAL_STRING(test_string.c_str(), test_string_deserialized.c_str());
 }
 
-extern "C" void app_main() {
+extern "C" void app_main()
+{
     delay(2000);
 
     UNITY_BEGIN();
