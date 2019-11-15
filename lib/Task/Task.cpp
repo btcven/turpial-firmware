@@ -24,16 +24,18 @@ static const char* LOG_TAG = "Task";
  * @param [in] stackSize The size of the stack.
  * @return N/A.
  */
-Task::Task(std::string taskName, uint16_t stackSize, uint8_t priority) {
-	m_taskName  = taskName;
-	m_stackSize = stackSize;
-	m_priority  = priority;
-	m_taskData  = nullptr;
-	m_handle    = nullptr;
-	m_coreId	= tskNO_AFFINITY;
+Task::Task(std::string taskName, uint16_t stackSize, uint8_t priority)
+{
+    m_taskName = taskName;
+    m_stackSize = stackSize;
+    m_priority = priority;
+    m_taskData = nullptr;
+    m_handle = nullptr;
+    m_coreId = tskNO_AFFINITY;
 } // Task
 
-Task::~Task() {
+Task::~Task()
+{
 } // ~Task
 
 /**
@@ -43,8 +45,9 @@ Task::~Task() {
  * @return N/A.
  */
 
-/* static */ void Task::delay(int ms) {
-	::vTaskDelay(ms / portTICK_PERIOD_MS);
+/* static */ void Task::delay(int ms)
+{
+    ::vTaskDelay(ms / portTICK_PERIOD_MS);
 } // delay
 
 /**
@@ -53,12 +56,13 @@ Task::~Task() {
  * The code here will run on the task thread.
  * @param [in] pTaskInstance The task to run.
  */
-void Task::runTask(void* pTaskInstance) {
-	Task* pTask = (Task*) pTaskInstance;
-	ESP_LOGD(LOG_TAG, ">> runTask: taskName=%s", pTask->m_taskName.c_str());
-	pTask->run(pTask->m_taskData);
-	ESP_LOGD(LOG_TAG, "<< runTask: taskName=%s", pTask->m_taskName.c_str());
-	pTask->stop();
+void Task::runTask(void* pTaskInstance)
+{
+    Task* pTask = (Task*)pTaskInstance;
+    ESP_LOGD(LOG_TAG, ">> runTask: taskName=%s", pTask->m_taskName.c_str());
+    pTask->run(pTask->m_taskData);
+    ESP_LOGD(LOG_TAG, "<< runTask: taskName=%s", pTask->m_taskName.c_str());
+    pTask->stop();
 } // runTask
 
 /**
@@ -67,12 +71,13 @@ void Task::runTask(void* pTaskInstance) {
  * @param [in] taskData Data to be passed into the task.
  * @return N/A.
  */
-void Task::start(void* taskData) {
-	if (m_handle != nullptr) {
-		ESP_LOGW(LOG_TAG, "Task::start - There might be a task already running!");
-	}
-	m_taskData = taskData;
-	::xTaskCreatePinnedToCore(&runTask, m_taskName.c_str(), m_stackSize, this, m_priority, &m_handle, m_coreId);
+void Task::start(void* taskData)
+{
+    if (m_handle != nullptr) {
+        ESP_LOGW(LOG_TAG, "Task::start - There might be a task already running!");
+    }
+    m_taskData = taskData;
+    ::xTaskCreatePinnedToCore(&runTask, m_taskName.c_str(), m_stackSize, this, m_priority, &m_handle, m_coreId);
 } // start
 
 
@@ -81,11 +86,12 @@ void Task::start(void* taskData) {
  *
  * @return N/A.
  */
-void Task::stop() {
-	if (m_handle == nullptr) return;
-	xTaskHandle temp = m_handle;
-	m_handle = nullptr;
-	::vTaskDelete(temp);
+void Task::stop()
+{
+    if (m_handle == nullptr) return;
+    xTaskHandle temp = m_handle;
+    m_handle = nullptr;
+    ::vTaskDelete(temp);
 } // stop
 
 /**
@@ -94,8 +100,9 @@ void Task::stop() {
  * @param [in] stackSize The size of the stack for the task.
  * @return N/A.
  */
-void Task::setStackSize(uint16_t stackSize) {
-	m_stackSize = stackSize;
+void Task::setStackSize(uint16_t stackSize)
+{
+    m_stackSize = stackSize;
 } // setStackSize
 
 /**
@@ -104,8 +111,9 @@ void Task::setStackSize(uint16_t stackSize) {
  * @param [in] priority The priority for the task.
  * @return N/A.
  */
-void Task::setPriority(uint8_t priority) {
-	m_priority = priority;
+void Task::setPriority(uint8_t priority)
+{
+    m_priority = priority;
 } // setPriority
 
 /**
@@ -114,8 +122,9 @@ void Task::setPriority(uint8_t priority) {
  * @param [in] name The name for the task.
  * @return N/A.
  */
-void Task::setName(std::string name) {
-	m_taskName = name;
+void Task::setName(std::string name)
+{
+    m_taskName = name;
 } // setName
 
 /**
@@ -125,6 +134,7 @@ void Task::setName(std::string name) {
  * @param [in] coreId The id of the core.
  * @return N/A.
  */
-void Task::setCore(BaseType_t coreId) {
-	m_coreId = coreId;
+void Task::setCore(BaseType_t coreId)
+{
+    m_coreId = coreId;
 }

@@ -16,16 +16,14 @@ namespace wifi {
 
 namespace wap {
 
-esp_err_t begin(Config config) {
+esp_err_t begin(Config config)
+{
     bool initAP = WiFi.softAP(config.apSSID, config.apPass, config.apChannel, 0, config.apMaxConn);
 
-    if (initAP)
-    {
+    if (initAP) {
         ESP_LOGI(__func__, "AP init OK");
         return ESP_OK;
-    }
-    else
-    {
+    } else {
         ESP_LOGE(__func__, "AP init ERROR");
         return ESP_FAIL;
     }

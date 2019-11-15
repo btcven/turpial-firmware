@@ -20,18 +20,15 @@ esp_err_t begin(Config config)
 {
     bool initST = WiFi.begin(config.ssid, config.pass);
 
-    if (initST)
-    {
+    if (initST) {
         ESP_LOGD(__func__, "Connected to %s", config.ssid);
         return ESP_OK;
-    }
-    else
-    {
+    } else {
         ESP_LOGE(__func__, "Can't connect to %s", config.ssid);
         return ESP_FAIL;
     }
 }
 
-} // namespace wap
+} // namespace wst
 
 } // namespace wifi

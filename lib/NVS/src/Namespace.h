@@ -2,9 +2,10 @@
 #define NVS_NAMESPACE_H
 
 #include "Arduino.h"
-#include <nvs.h>
-#include <iostream>
 #include "nvs_flash.h"
+#include <iostream>
+#include <nvs.h>
+
 
 
 namespace nvs {
@@ -22,7 +23,8 @@ enum class OpenMode {
  * @brief Represents a RAII version of a NVS namespace.
  * 
  */
-class Namespace {
+class Namespace
+{
 public:
     /**
      * @brief Construct a new Namespace object ready to be opened.

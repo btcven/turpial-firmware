@@ -13,8 +13,9 @@
 #define WIFIMODE_H
 
 #include "Arduino.h"
-#include "WiFiDTO.h"
 #include "WiFi.h"
+#include "WiFiDTO.h"
+
 
 namespace wifi {
 

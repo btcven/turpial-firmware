@@ -11,27 +11,30 @@
 
 #include "WiFiDTO.h"
 
-#include "SerializablePOD.h"
 #include "Serializable.h"
+#include "SerializablePOD.h"
+
 
 // Implementation of all virtual methods from serializable interface.
 
 namespace wifi {
 
-std::size_t DTOConfig::serialize_size() const {
+std::size_t DTOConfig::serialize_size() const
+{
     std::size_t size;
-    size = pod::serialize_size<std::int8_t>(apChannel) + 
-           pod::serialize_size<std::int8_t>(apMaxConn) + 
+    size = pod::serialize_size<std::int8_t>(apChannel) +
+           pod::serialize_size<std::int8_t>(apMaxConn) +
            pod::serialize_size<bool>(WAP_enabled) +
            pod::serialize_size<bool>(WST_enabled) +
            pod::serialize_size<bool>(isOpen) +
            apSSID.serialize_size() +
-           apPassword.serialize_size();  
+           apPassword.serialize_size();
 
-    return size; 
+    return size;
 }
 
-std::ostream& DTOConfig::serialize(std::ostream& stream) const {
+std::ostream& DTOConfig::serialize(std::ostream& stream) const
+{
     pod::serialize<std::int8_t>(stream, apChannel);
     pod::serialize<std::int8_t>(stream, apMaxConn);
     pod::serialize<bool>(stream, WAP_enabled);
@@ -42,7 +45,8 @@ std::ostream& DTOConfig::serialize(std::ostream& stream) const {
     return stream;
 }
 
-std::istream& DTOConfig::deserialize(std::istream& stream) {
+std::istream& DTOConfig::deserialize(std::istream& stream)
+{
     pod::deserialize<std::int8_t>(stream, apChannel);
     pod::deserialize<std::int8_t>(stream, apMaxConn);
     pod::deserialize<bool>(stream, WAP_enabled);

@@ -17,7 +17,8 @@ namespace wifi {
 
 namespace mode {
 
-OperationMode selectOperationMode(bool ap, bool st) {
+OperationMode selectOperationMode(bool ap, bool st)
+{
     if (!ap && st) {
         return OperationMode::Ap;
     } else if (ap && !st) {
@@ -34,8 +35,7 @@ OperationMode selectOperationMode(bool ap, bool st) {
 
 void handleWiFiEvent(WiFiEvent_t evt)
 {
-    switch (evt)
-    {
+    switch (evt) {
     case SYSTEM_EVENT_WIFI_READY:
         ESP_LOGI(__func__, "Event -> WiFi ready #%d", evt);
         break;
@@ -119,11 +119,11 @@ void handleWiFiEvent(WiFiEvent_t evt)
 
 esp_err_t begin(DTOConfig config)
 {
-    ESP_LOGI(__func__,"WiFi Mode begin");
+    ESP_LOGI(__func__, "WiFi Mode begin");
 
     wap::Config wap_config = {
         .apSSID = config.apSSID.c_str(),
-        .apPass = config.apPassword.c_str(), 
+        .apPass = config.apPassword.c_str(),
         .apChannel = config.apChannel,
         .apMaxConn = config.apMaxConn,
     };
@@ -136,11 +136,11 @@ esp_err_t begin(DTOConfig config)
     auto isAp = config.WAP_enabled;
     auto isSt = config.WST_enabled;
     auto op_mode = selectOperationMode(isAp, isSt);
-    
+
     ESP_LOGI(__func__, "Starting WiFi mode: %d", static_cast<int>(op_mode));
 
     WiFi.onEvent(handleWiFiEvent);
-    
+
     switch (op_mode) {
     case OperationMode::St:
         ESP_LOGI(__func__, "Starting WST iface only");
@@ -150,21 +150,16 @@ esp_err_t begin(DTOConfig config)
         ESP_LOGI(__func__, "Starting WAP iface only");
         return wap::begin(wap_config);
         break;
-    case OperationMode::ApSt:
-        {
-            ESP_LOGI(__func__, "Starting WAP and WST ifaces");
-            auto WAP_isInit = wap::begin(wap_config);
-            auto WST_isInit = wst::begin(wst_config);
-            if (WAP_isInit == ESP_OK && WST_isInit == ESP_OK)
-            {
-                return ESP_OK;
-            }
-            else
-            {
-                return ESP_FAIL;
-            }
+    case OperationMode::ApSt: {
+        ESP_LOGI(__func__, "Starting WAP and WST ifaces");
+        auto WAP_isInit = wap::begin(wap_config);
+        auto WST_isInit = wst::begin(wst_config);
+        if (WAP_isInit == ESP_OK && WST_isInit == ESP_OK) {
+            return ESP_OK;
+        } else {
+            return ESP_FAIL;
         }
-        break;
+    } break;
     case OperationMode::None:
         ESP_LOGI(__func__, "WAP and WST ifaces are disabled");
         return ESP_OK;

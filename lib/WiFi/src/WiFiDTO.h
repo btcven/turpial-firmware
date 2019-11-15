@@ -13,9 +13,10 @@
 
 #include <iostream>
 
-#include <cstring>
-#include <cstdlib>
 #include <cstdint>
+#include <cstdlib>
+#include <cstring>
+
 
 namespace wifi {
 
@@ -29,28 +30,16 @@ namespace wifi {
 struct DTOConfig : public Serializable {
 public:
     DTOConfig()
-        : apChannel(0)
-        , apMaxConn(0)
-        , WAP_enabled(false)
-        , WST_enabled(false)
-        , isOpen(false)
-        , apSSID(tinystring::String())
-        , apPassword(tinystring::String()) { }
-    
+        : apChannel(0), apMaxConn(0), WAP_enabled(false), WST_enabled(false), isOpen(false), apSSID(tinystring::String()), apPassword(tinystring::String()) {}
+
     DTOConfig(int8_t channel,
-                  int8_t maxconn,
-                  bool is_ap,
-                  bool is_st,
-                  bool is_open,
-                  const char* ssid,
-                  const char* pass)
-        : apChannel(channel)
-        , apMaxConn(maxconn)
-        , WAP_enabled(is_ap)
-        , WST_enabled(is_st)
-        , isOpen(is_open)
-        , apSSID(ssid)
-        , apPassword(pass) { }
+        int8_t maxconn,
+        bool is_ap,
+        bool is_st,
+        bool is_open,
+        const char* ssid,
+        const char* pass)
+        : apChannel(channel), apMaxConn(maxconn), WAP_enabled(is_ap), WST_enabled(is_st), isOpen(is_open), apSSID(ssid), apPassword(pass) {}
 
     /**
      * @brief Returns the 
