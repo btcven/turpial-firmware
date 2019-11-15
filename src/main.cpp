@@ -54,17 +54,50 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
     wifi_params.isOpen = false;
     wifi_params.apSSID = tinystring::String(WAP_SSID);
     wifi_params.apPassword = tinystring::String(WAP_PASS);
-} 
+}
+
+/**
+ * @brief Initializes the I2C_NUM_0 i2c port as master. It also initializes
+ * the BQ27441 object to manage battery status.
+ * 
+ * @return esp_err_t ESP_OK on success.
+ */
+esp_err_t initBatteryI2C() {
+    ESP_LOGI(__func__, "initializing battery I2C port");
+
+    i2c_config_t conf;
+    conf.mode = I2C_MODE_MASTER;
+    conf.scl_io_num = GPIO_NUM_22;
+    conf.sda_io_num = GPIO_NUM_23;
+    conf.scl_pullup_en = GPIO_PULLUP_ENABLE;
+    conf.sda_pullup_en = GPIO_PULLUP_ENABLE;
+    conf.master.clk_speed = 1000; // TODO: 1000?
+    i2c_param_config(I2C_NUM_0, &conf);
+
+    esp_err_t err = i2c_driver_install(I2C_NUM_0, conf.mode, 0, 0, 0);
+    if (err != ESP_OK) {
+        ESP_LOGE(__func__, "couldn't install master I2C driver");
+        return err;
+    }
+
+    return bq27441::bq27441.begin(I2C_NUM_0);
+}
 
 extern "C" void app_main()
 {
+    esp_err_t err;
+
     // Initialize arduino as a component
     initArduino();
+    
     // Initialize NVS.
-    auto nvs_err = nvs::begin();
-    // TODO: app loop
+    // TODO: check for error.
+    err = nvs::begin();
 
-    bq27441::bq27441.begin();
+    err = initBatteryI2C();
+    if (err != ESP_OK) {
+        const char* e = esp_err_to_name(err);
+        ESP_LOGE(__func__, "couldn't initialize battery I2C, err: %s", e);
+        return;
+    }
 }
-
- 

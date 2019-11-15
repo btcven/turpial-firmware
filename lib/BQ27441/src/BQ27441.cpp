@@ -53,9 +53,14 @@ esp_err_t BQ27441::current(CurrentMeasure measure, std::uint16_t& current) {
         return readWord(Command::STDBY_CURRENT, current);
         break;
     case CurrentMeasure::Max:
-        return readWord(Command::MAX_CURRENT, current)
+        return readWord(Command::MAX_CURRENT, current);
+        break;
+    default:
+        return ESP_FAIL;
         break;
     }
+
+    return ESP_OK;
 }
 
 esp_err_t BQ27441::deviceType(std::uint16_t& result) {

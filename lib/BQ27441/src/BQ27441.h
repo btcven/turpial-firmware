@@ -22,7 +22,7 @@ enum class CurrentMeasure {
     Average,
     StandBy,
     Max,
-}
+};
 
 /**
  * @brief BQ7411 Battery Fuel Gaugue
