@@ -28,6 +28,7 @@
 
 esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params) {
     ESP_LOGD(__func__, "Reading WiFi configuration from NVS");
+
     nvs::Namespace wifi_nvs;
     auto err = wifi_nvs.open("wifi", NVS_READWRITE);
     if (err != ESP_OK) {
@@ -56,30 +57,30 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
 
 extern "C" void app_main()
 {
-    // Initialize arduino as a component
     initArduino();
-
-    // Set logging level for all tags.
-    esp_log_level_set("*", ESP_LOG_VERBOSE);
 
     // Initialize NVS.
     auto nvs_err = nvs::begin();
+
     wifi::DTOConfig wifi_params;
-    nvs::Namespace wifi_nvs;
-    wifi_nvs.open("wifi",NVS_READWRITE);
 
-    wifi::DTOConfig wifi_params2;
-    setDefaultWiFiParams(wifi_params);
-    std::stringstream blob;
-    std::stringstream blob2;
+    if (nvs_err != ESP_OK) {
+        ESP_LOGE(__func__, "Couldn't initialize NVS, error %s", esp_err_to_name(nvs_err));
+        ESP_LOGD(__func__, "Using default WiFi parameters");
+        
+        setDefaultWiFiParams(wifi_params);
+    } else {
+        auto err = readWiFiParams(wifi_params);
+        if (err != ESP_OK) {
+            auto estr = esp_err_to_name(err);
+            ESP_LOGE(__func__, "Couldn't read WiFi parameters %s", estr);
+            ESP_LOGD(__func__, "Using default WiFi parameters");
+            
+            setDefaultWiFiParams(wifi_params);
+        }
+    }
 
-
-    auto err = wifi_nvs.get_blob("wifi", blob2);
-    wifi_params2.deserialize(blob2);
-
-
-
-    /*wifi::mode::begin(wifi_params); */
+    wifi::mode::begin(wifi_params);
     // TODO: app loop
 }
 
