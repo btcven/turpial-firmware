@@ -3,7 +3,7 @@
 
 #include <Arduino.h>
 #include <unity.h>
-#
+#include "sdkconfig.h"
 #include "WiFiMode.h"
 #include "defaults.h"
 
@@ -32,6 +32,10 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
 void test_wifi_mode_with_default_values(void) {
     wifi::DTOConfig wifi_parameters;
     setDefaultWiFiParams(wifi_parameters);
+    std::cout << "wst_ssid: " << wifi_parameters.wstSSID.c_str()  << std::endl;
+    std::cout << "wst_password: " << wifi_parameters.wstPassword.c_str()  << std::endl;
+    std::cout << "wap_enabled: " <<wifi_parameters.WAP_enabled << std::endl;
+    std::cout << "wst_enabled: " <<wifi_parameters.WST_enabled  << std::endl;
     wifi::mode::begin(wifi_parameters);
 }
 
