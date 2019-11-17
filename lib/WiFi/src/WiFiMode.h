@@ -13,8 +13,9 @@
 #define WIFIMODE_H
 
 #include "Arduino.h"
-#include "WiFiDTO.h"
 #include "WiFi.h"
+#include "WiFiDTO.h"
+
 
 namespace wifi {
 
@@ -30,6 +31,12 @@ enum class OperationMode {
 OperationMode selectOperationMode(bool ap, bool st);
 void handleWiFiEvent(WiFiEvent_t evt);
 
+/**
+ * @brief Initialize WiFi with the given modes specified in DTOConfig
+ * 
+ * @param wifi_params WiFi DTO configuration parameters
+ * @return esp_err_t ESP_OK on success
+ */
 esp_err_t begin(DTOConfig wifi_params);
 
 } // namespace mode

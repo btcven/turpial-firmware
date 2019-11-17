@@ -31,17 +31,66 @@
  *
  * implemented.
  */
-class Task {
+class Task
+{
 public:
-	Task(std::string taskName = "Task", uint16_t stackSize = 10000, uint8_t priority = 5);
-	virtual ~Task();
-	void setStackSize(uint16_t stackSize);
-	void setPriority(uint8_t priority);
-	void setName(std::string name);
-	void setCore(BaseType_t coreId);
-	void start(void* taskData = nullptr);
-	void stop();
-	/**
+    /**
+     * @brief Construct a new Task
+     * 
+     * @param task_name The task name
+     * @param stack_size The task stack size in bytes
+     * @param priority The task priority
+     */
+    Task(std::string task_name = "Task", uint16_t stack_size = 10000, uint8_t priority = 5);
+
+    /**
+     * @brief Destroy the Task object
+     * 
+     */
+    virtual ~Task();
+
+    /**
+     * @brief Set the task stack size
+     * 
+     * @param stack_size stack size in bytes
+     */
+    void setStackSize(uint16_t stack_size);
+
+    /**
+     * @brief Set the task priority
+     * 
+     * @param priority 
+     */
+    void setPriority(uint8_t priority);
+
+    /**
+     * @brief Set the task Name
+     * 
+     * @param name 
+     */
+    void setName(std::string name);
+
+    /**
+     * @brief Set the CoreID
+     * 
+     * @param core_id Core ID 
+     */
+    void setCore(BaseType_t core_id);
+
+    /**
+     * @brief Start task 
+     * 
+     * @param task_data data that's going to be passed to task handler
+     */
+    void start(void* task_data = nullptr);
+
+    /**
+     * @brief Stop this task
+     * 
+     */
+    void stop();
+
+    /**
 	 * @brief Body of the task to execute.
 	 *
 	 * This function must be implemented in the subclass that represents the actual task to run.
@@ -50,18 +99,17 @@ public:
 	 *
 	 * @param [in] data The data passed in to the newly started task.
 	 */
-	virtual void run(void* data) = 0; // Make run pure virtual
-	static void delay(int ms);
+    virtual void run(void* data) = 0; // Make run pure virtual
+    static void delay(int ms);
 
 private:
-	xTaskHandle m_handle;
-	void*       m_taskData;
-	static void runTask(void* data);
-	std::string m_taskName;
-	uint16_t    m_stackSize;
-	uint8_t     m_priority;
-	BaseType_t  m_coreId;
-
+    xTaskHandle m_handle;
+    void* m_task_data;
+    static void runTask(void* data);
+    std::string m_task_name;
+    uint16_t m_stack_size;
+    uint8_t m_priority;
+    BaseType_t m_core_id;
 };
 
 #endif /* COMPONENTS_CPP_UTILS_TASK_H_ */

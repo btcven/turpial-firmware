@@ -12,31 +12,34 @@
 #define SERIALIZABLEPOD_H
 
 #include <cstdio>
-#include <iostream>
-#include <cstring>
 #include <cstdlib>
+#include <cstring>
+#include <iostream>
 #include <type_traits>
 
 namespace pod {
 
-template<typename T>
-std::size_t serialize_size(const T str) {
+template <typename T>
+std::size_t serialize_size(const T str)
+{
     static_assert(std::is_standard_layout<T>::value, "T needs to be POD");
 
     return sizeof(str);
 }
 
-template<typename T>
-std::ostream& serialize(std::ostream& stream, const T value) {
+template <typename T>
+std::ostream& serialize(std::ostream& stream, const T value)
+{
     static_assert(std::is_standard_layout<T>::value, "T needs to be POD");
-    
+
     const auto length = serialize_size(value);
     const char* value_str = reinterpret_cast<const char*>(&value);
     return stream.write(value_str, length);
 }
 
-template<typename T>
-std::istream& deserialize(std::istream& stream, T& target) {
+template <typename T>
+std::istream& deserialize(std::istream& stream, T& target)
+{
     static_assert(std::is_standard_layout<T>::value, "T needs to be POD");
 
     const auto length = serialize_size(target);
@@ -46,6 +49,6 @@ std::istream& deserialize(std::istream& stream, T& target) {
     return stream;
 }
 
-}
+} // namespace pod
 
 #endif // SERIALIZABLEPOD_H
