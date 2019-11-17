@@ -1,21 +1,25 @@
+
+/**
+ * @file test_wifi_mode.cpp
+ * @author Locha Mesh Developers (contact@locha.io)
+ * @brief 
+ * @version 0.1
+ * @date 2019-09-17
+ * @copyright Copyright (c) 2019
+ * 
+ */
+
+
+
 #include <cstdint>
 #include <sstream>
-
 #include <Arduino.h>
-#include <unity.h>
 #include "sdkconfig.h"
 #include "WiFiMode.h"
 #include "defaults.h"
+#include <unity.h>
 
 
-/**
- * @brief 
- * Test WiFiMode 
- * This test in in order to show and proof how to use methods to init wifi in different modes
- * to run test inside platform Core-cli the next command
- * platformio test -e featheresp32 -f test_wifi_mode
- * 
- */
 
 void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
     wifi_params.apChannel = WAP_CHANNEL;
@@ -30,6 +34,7 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
 } 
 
 void test_wifi_mode_with_default_values(void) {
+    const TickType_t xDelay = 10000 / portTICK_PERIOD_MS;
     wifi::DTOConfig wifi_parameters;
     setDefaultWiFiParams(wifi_parameters);
     std::cout << "wst_ssid: " << wifi_parameters.wstSSID.c_str()  << std::endl;
@@ -37,12 +42,16 @@ void test_wifi_mode_with_default_values(void) {
     std::cout << "wap_enabled: " <<wifi_parameters.WAP_enabled << std::endl;
     std::cout << "wst_enabled: " <<wifi_parameters.WST_enabled  << std::endl;
     wifi::mode::begin(wifi_parameters);
+    vTaskDelay( xDelay );
 }
 
 
-extern "C" void app_main() {
-    delay(2000);
+extern "C" void app_main()
+{
+    initArduino();
     UNITY_BEGIN();
         RUN_TEST(test_wifi_mode_with_default_values);
     UNITY_END();
 }
+
+ 
