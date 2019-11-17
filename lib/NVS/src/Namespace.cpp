@@ -1,78 +1,82 @@
 #include "Namespace.h"
 
 #include "GeneralUtils.h"
-#include <nvs_flash.h>
-#include <iostream>
 #include <cstdlib>
+#include <iostream>
+#include <nvs_flash.h>
 
 
 namespace nvs {
 
 Namespace::Namespace()
-    : _handle(0)
-    , _isOpened(false) {}
+    : m_handle(0), m_is_opened(false) {}
 
-Namespace::~Namespace() {
-    if (_isOpened) {
-        nvs_close(_handle);
+Namespace::~Namespace()
+{
+    if (m_is_opened) {
+        nvs_close(m_handle);
     }
 }
 
-esp_err_t Namespace::open(const char* name, nvs_open_mode mode) {
+esp_err_t Namespace::open(const char* name, nvs_open_mode mode)
+{
     // A namespace is already opened in this instance.
-    if (_isOpened) {
+    if (m_is_opened) {
         return ESP_FAIL;
     }
     const auto mode_ = static_cast<nvs_open_mode>(mode);
     std::cout << mode_ << std::endl;
-    const auto err = nvs_open(name, mode, &_handle);
-    
+    const auto err = nvs_open(name, mode, &m_handle);
+
     if (err != ESP_OK) {
         return err;
     } else {
-        _isOpened = true;
+        m_is_opened = true;
         return err;
     }
 }
 
-void Namespace::close() {
-    if (_isOpened)
-    {
-        nvs_close(_handle);
-        _isOpened = false;
+void Namespace::close()
+{
+    if (m_is_opened) {
+        nvs_close(m_handle);
+        m_is_opened = false;
     }
 }
 
-esp_err_t Namespace::erase_all() {
-    if (!_isOpened) {
+esp_err_t Namespace::erase_all()
+{
+    if (!m_is_opened) {
         return ESP_FAIL;
     }
 
-    return nvs_erase_all(_handle);
+    return nvs_erase_all(m_handle);
 }
 
-esp_err_t Namespace::erase_key(const char* key) {
+esp_err_t Namespace::erase_key(const char* key)
+{
     esp_err_t err;
-	if (!_isOpened) {
-        std::cout << "no esta abierto ahora ****************" << std:: endl;
+    if (!m_is_opened) {
+        std::cout << "no esta abierto ahora ****************" << std::endl;
         return ESP_FAIL;
     }
-    std::cout << "Trying to delete Key:  ----> " << key <<std:: endl;
-    err = nvs_erase_key(_handle, key);
+    std::cout << "Trying to delete Key:  ----> " << key << std::endl;
+    err = nvs_erase_key(m_handle, key);
     if (err != ESP_OK) {
         return err;
     }
-    std::cout << "Doing Commit for erase key" << std:: endl;
-    return nvs_commit(_handle);
+    std::cout << "Doing Commit for erase key" << std::endl;
+    return nvs_commit(m_handle);
 }
 
-esp_err_t Namespace::get_blob(const char* key, std::ostream& result) {
-    if (!_isOpened) {
+esp_err_t Namespace::get_blob(const char* key, std::ostream& result)
+{
+    if (!m_is_opened) {
         return ESP_FAIL;
     }
 
     std::size_t length;
-    auto err = nvs_get_blob(_handle, key, nullptr, &length);
+    auto err = nvs_get_blob(m_handle, key, nullptr, &length);
     if (err != ESP_OK) {
         ESP_LOGE(__func__, "Can't get key \"%s\" blob length", key);
         return err;
@@ -80,7 +84,7 @@ esp_err_t Namespace::get_blob(const char* key, std::ostream& result) {
 
     auto buf = new char[length];
     auto out_data = reinterpret_cast<void*>(buf);
-    err = nvs_get_blob(_handle, key, out_data, &length);
+    err = nvs_get_blob(m_handle, key, out_data, &length);
 
     if (err != ESP_OK) {
         delete[] buf;
@@ -93,33 +97,36 @@ esp_err_t Namespace::get_blob(const char* key, std::ostream& result) {
     return ESP_OK;
 }
 
-esp_err_t Namespace::set_blob(const char* key, const void* data, const std::size_t length) {
+esp_err_t Namespace::set_blob(const char* key, const void* data, const std::size_t length)
+{
     esp_err_t err;
-    if (!_isOpened) {
+    if (!m_is_opened) {
         return ESP_FAIL;
     }
-    err = nvs_set_blob(_handle, key, data, length);
-    if(err != ESP_OK) {
+    err = nvs_set_blob(m_handle, key, data, length);
+    if (err != ESP_OK) {
         return err;
     }
-    return nvs_commit(_handle);    
+    return nvs_commit(m_handle);
 }
 
-esp_err_t Namespace::commit() {
-    if (!_isOpened) {
+esp_err_t Namespace::commit()
+{
+    if (!m_is_opened) {
         return ESP_FAIL;
     }
 
-	return nvs_commit(_handle);
+    return nvs_commit(m_handle);
 }
 
-esp_err_t begin() {
+esp_err_t begin()
+{
     // Initialize NVS
     ESP_LOGD(__func__, "Initializing NVS...\n");
     auto status = nvs_flash_init();
 
     if (status == ESP_OK) {
-        ESP_LOGD(__func__,"NVS has been initialized correctly");
+        ESP_LOGD(__func__, "NVS has been initialized correctly");
         return status;
     } else if (status == ESP_ERR_NVS_NO_FREE_PAGES || status == ESP_ERR_NVS_NEW_VERSION_FOUND) {
         // NVS partition was truncated and needs to be erased

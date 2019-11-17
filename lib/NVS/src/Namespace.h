@@ -2,17 +2,17 @@
 #define NVS_NAMESPACE_H
 
 #include "Arduino.h"
-#include <nvs.h>
-#include <iostream>
 #include "nvs_flash.h"
-
+#include <iostream>
+#include <nvs.h>
 
 namespace nvs {
 /**
  * @brief Represents a RAII version of a NVS namespace.
  * 
  */
-class Namespace {
+class Namespace
+{
 public:
     /**
      * @brief Construct a new Namespace object ready to be opened.
@@ -83,9 +83,8 @@ public:
     esp_err_t commit();
 
 private:
-    nvs_handle _handle;
-    bool _isOpened;
-    bool _isStarted;
+    nvs_handle m_handle;
+    bool m_is_opened;
 };
 
 /**

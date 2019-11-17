@@ -19,13 +19,27 @@ namespace wifi {
 
 namespace wap {
 
+/**
+ * @brief WAP interface configuration
+ * 
+ */
 struct Config {
-    const char* apSSID;
-    const char* apPass;
-    int8_t apChannel;
-    int8_t apMaxConn;
+    /// The AP SSID
+    const char* ap_ssid;
+    /// The AP passowrd
+    const char* ap_pass;
+    /// AP channel
+    int8_t ap_channel;
+    /// AP max conn
+    int8_t ap_max_conn;
 };
 
+/**
+ * @brief Initialize WAP interface
+ * 
+ * @param config WAP configuration
+ * @return esp_err_t ESP_OK on success
+ */
 esp_err_t begin(Config config);
 
 } // namespace wap
