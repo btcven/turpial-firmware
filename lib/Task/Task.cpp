@@ -16,25 +16,19 @@
 
 static const char* LOG_TAG = "Task";
 
+Task::Task(std::string task_name, uint16_t stack_size, uint8_t priority)
+{
+    m_task_name = task_name;
+    m_stack_size = stack_size;
+    m_priority = priority;
+    m_task_data = nullptr;
+    m_handle = nullptr;
+    m_core_id = tskNO_AFFINITY;
+}
 
-/**
- * @brief Create an instance of the task class.
- *
- * @param [in] taskName The name of the task to create.
- * @param [in] stackSize The size of the stack.
- * @return N/A.
- */
-Task::Task(std::string taskName, uint16_t stackSize, uint8_t priority) {
-	m_taskName  = taskName;
-	m_stackSize = stackSize;
-	m_priority  = priority;
-	m_taskData  = nullptr;
-	m_handle    = nullptr;
-	m_coreId	= tskNO_AFFINITY;
-} // Task
-
-Task::~Task() {
-} // ~Task
+Task::~Task()
+{
+}
 
 /**
  * @brief Suspend the task for the specified milliseconds.
@@ -43,9 +37,10 @@ Task::~Task() {
  * @return N/A.
  */
 
-/* static */ void Task::delay(int ms) {
-	::vTaskDelay(ms / portTICK_PERIOD_MS);
-} // delay
+void Task::delay(int ms)
+{
+    ::vTaskDelay(ms / portTICK_PERIOD_MS);
+}
 
 /**
  * Static class member that actually runs the target task.
@@ -53,78 +48,48 @@ Task::~Task() {
  * The code here will run on the task thread.
  * @param [in] pTaskInstance The task to run.
  */
-void Task::runTask(void* pTaskInstance) {
-	Task* pTask = (Task*) pTaskInstance;
-	ESP_LOGD(LOG_TAG, ">> runTask: taskName=%s", pTask->m_taskName.c_str());
-	pTask->run(pTask->m_taskData);
-	ESP_LOGD(LOG_TAG, "<< runTask: taskName=%s", pTask->m_taskName.c_str());
-	pTask->stop();
-} // runTask
+void Task::runTask(void* task_instance)
+{
+    Task* task = reinterpret_cast<Task*>(task_instance);
+    ESP_LOGD(LOG_TAG, ">> runTask: taskName=%s", task->m_task_name.c_str());
+    task->run(task->m_task_data);
+    ESP_LOGD(LOG_TAG, "<< runTask: taskName=%s", task->m_task_name.c_str());
+    task->stop();
+}
 
-/**
- * @brief Start an instance of the task.
- *
- * @param [in] taskData Data to be passed into the task.
- * @return N/A.
- */
-void Task::start(void* taskData) {
-	if (m_handle != nullptr) {
-		ESP_LOGW(LOG_TAG, "Task::start - There might be a task already running!");
-	}
-	m_taskData = taskData;
-	::xTaskCreatePinnedToCore(&runTask, m_taskName.c_str(), m_stackSize, this, m_priority, &m_handle, m_coreId);
-} // start
+void Task::start(void* task_data)
+{
+    if (m_handle != nullptr) {
+        ESP_LOGW(LOG_TAG, "Task::start - There might be a task already running!");
+    }
+    m_task_data = task_data;
+    ::xTaskCreatePinnedToCore(&runTask, m_task_name.c_str(), m_stack_size, this, m_priority, &m_handle, m_core_id);
+}
 
+void Task::stop()
+{
+    if (m_handle == nullptr) return;
+    xTaskHandle temp = m_handle;
+    m_handle = nullptr;
+    ::vTaskDelete(temp);
+}
 
-/**
- * @brief Stop the task.
- *
- * @return N/A.
- */
-void Task::stop() {
-	if (m_handle == nullptr) return;
-	xTaskHandle temp = m_handle;
-	m_handle = nullptr;
-	::vTaskDelete(temp);
-} // stop
+void Task::setStackSize(uint16_t stack_size)
+{
+    m_stack_size = stack_size;
+}
 
-/**
- * @brief Set the stack size of the task.
- *
- * @param [in] stackSize The size of the stack for the task.
- * @return N/A.
- */
-void Task::setStackSize(uint16_t stackSize) {
-	m_stackSize = stackSize;
-} // setStackSize
+void Task::setPriority(uint8_t priority)
+{
+    m_priority = priority;
+}
 
-/**
- * @brief Set the priority of the task.
- *
- * @param [in] priority The priority for the task.
- * @return N/A.
- */
-void Task::setPriority(uint8_t priority) {
-	m_priority = priority;
-} // setPriority
+void Task::setName(std::string name)
+{
+    m_task_name = name;
+}
 
-/**
- * @brief Set the name of the task.
- *
- * @param [in] name The name for the task.
- * @return N/A.
- */
-void Task::setName(std::string name) {
-	m_taskName = name;
-} // setName
-
-/**
- * @brief Set the core number the task has to be executed on.
- * If the core number is not set, tskNO_AFFINITY will be used
- *
- * @param [in] coreId The id of the core.
- * @return N/A.
- */
-void Task::setCore(BaseType_t coreId) {
-	m_coreId = coreId;
+void Task::setCore(BaseType_t core_id)
+{
+    m_core_id = core_id;
 }
