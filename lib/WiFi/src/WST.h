@@ -26,9 +26,9 @@ namespace wst {
  */
 struct Config {
     /// The SSID to connect to
-    const char* ssid;
+    const char* wst_ssid;
     /// The password
-    const char* pass;
+    const char* wst_pass;
 };
 
 /**
