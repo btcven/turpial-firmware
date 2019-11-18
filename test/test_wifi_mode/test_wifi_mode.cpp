@@ -21,7 +21,7 @@
 
 
 
-void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
+void set_default_wifi_params(wifi::DTOConfig& wifi_params) {
     wifi_params.ap_channel = WAP_CHANNEL;
     wifi_params.ap_max_conn = WAP_MAXCONN;
     wifi_params.wap_enabled = WAP_ENABLED;
@@ -36,7 +36,7 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
 void test_wifi_mode_with_default_values(void) {
     const TickType_t xDelay = 10000 / portTICK_PERIOD_MS;
     wifi::DTOConfig wifi_parameters;
-    setDefaultWiFiParams(wifi_parameters);
+    set_default_wifi_params(wifi_parameters);
     std::cout << "wst_ssid: " << wifi_parameters.wst_ssid.c_str()  << std::endl;
     std::cout << "wst_password: " << wifi_parameters.wst_password.c_str()  << std::endl;
     std::cout << "wap_enabled: " <<wifi_parameters.wap_enabled << std::endl;
