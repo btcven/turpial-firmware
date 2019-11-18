@@ -1,5 +1,5 @@
 /**
- * @file test_esc.cpp
+ * @file test_esc_bq27441.cpp
  * @author Locha Mesh project developers (locha.io)
  * @brief Test ESC library
  * @version 0.1
@@ -9,11 +9,8 @@
  * 
  */
 
-#include <cstdint>
-#include <sstream>
-
-#include "WiFiDTO.h"
-#include <Arduino.h>
+#include <cstdlib>
+#include <iostream>
 #include <unity.h>
 
 #include "BQ27441.h"
@@ -21,9 +18,11 @@
 
 #ifdef ESC_ENABLED
 
+using esc::BQ27441;
 using esc::CurrentMeasure;
-using esc::g_bq27441;
 using esc::SocMeasure;
+
+BQ27441 g_bq27441;
 
 /**
  * @brief Initialize Battery subsystem
@@ -47,7 +46,7 @@ void initBattery()
     err = i2c_driver_install(ESC_I2C_PORT, i2c_config.mode, 0, 0, 0);
     if (err != ESP_OK) std::abort();
 
-    esc::g_bq27441.begin(ESC_I2C_PORT);
+    g_bq27441.begin(ESC_I2C_PORT);
 }
 
 void testSetCapacity()
@@ -106,7 +105,6 @@ void testGPOUTPolarity()
 extern "C" void app_main()
 {
     initBattery();
-    delay(2000);
     UNITY_BEGIN();
     RUN_TEST(testSetCapacity);
     RUN_TEST(testVoltage);
