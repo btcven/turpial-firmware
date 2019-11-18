@@ -78,11 +78,6 @@ enum Control {
     EXIT_RESIM = 0x44
 };
 
-inline std::uint8_t raw_control(Control control)
-{
-    return static_cast<std::uint8_t>(control);
-}
-
 const std::uint16_t STATUS_SHUTDOWNEN = (1 << 15);
 const std::uint16_t STATUS_WDRESET = (1 << 14);
 const std::uint16_t STATUS_SS = (1 << 13);
