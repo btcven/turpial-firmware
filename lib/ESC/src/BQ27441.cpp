@@ -38,11 +38,11 @@ const T& constrain(const T& x, const T& a, const T& b)
 }
 
 BQ27441::BQ27441()
-    : _device_address(I2C_ADDRESS), _port(I2C_NUM_0), _seal_again(false) {}
+    : m_device_address(I2C_ADDRESS), m_port(I2C_NUM_0), m_seal_again(false) {}
 
 esp_err_t BQ27441::begin(i2c_port_t port)
 {
-    _port = port;
+    m_port = port;
 
     std::uint16_t type;
     esp_err_t err = deviceType(type);
@@ -211,7 +211,7 @@ esp_err_t BQ27441::enterConfig()
         // Must be unsealed before making changes
         std::uint16_t res;
         ESP_ERR_TRY(unseal(res));
-        _seal_again = true;
+        m_seal_again = true;
     }
 
     if (executeControlWord(Control::SET_CFG_UPDATE) == ESP_OK) {
@@ -262,7 +262,7 @@ esp_err_t BQ27441::exitConfig(bool resim)
         }
 
         if (timeout > 0) {
-            if (_seal_again) {
+            if (m_seal_again) {
                 // Seal back up if we IC was sealed coming in
                 std::uint16_t res1;
                 ESP_ERR_TRY(seal(res1));
@@ -501,13 +501,13 @@ esp_err_t BQ27441::i2cWriteBytes(std::uint8_t sub_address, std::uint8_t* bytes, 
 
     i2c_master_start(cmd);
 
-    i2c_master_write_byte(cmd, (_device_address << 1) | I2C_MASTER_WRITE,
+    i2c_master_write_byte(cmd, (m_device_address << 1) | I2C_MASTER_WRITE,
         I2C_MASTER_ACK);
     i2c_master_write(cmd, write_buf, count + 1, I2C_MASTER_ACK);
 
     i2c_master_stop(cmd);
 
-    esp_err_t err = i2c_master_cmd_begin(_port, cmd, TIMEOUT);
+    esp_err_t err = i2c_master_cmd_begin(m_port, cmd, TIMEOUT);
     i2c_cmd_link_delete(cmd);
     return err;
 }
@@ -522,7 +522,7 @@ esp_err_t BQ27441::i2cReadBytes(std::uint8_t sub_address, std::uint8_t* bytes, s
 
     i2c_master_start(cmd);
 
-    i2c_master_write_byte(cmd, (_device_address << 1) | I2C_MASTER_READ,
+    i2c_master_write_byte(cmd, (m_device_address << 1) | I2C_MASTER_READ,
         I2C_MASTER_ACK);
     i2c_master_write_byte(cmd, sub_address, I2C_MASTER_ACK);
 
@@ -531,7 +531,7 @@ esp_err_t BQ27441::i2cReadBytes(std::uint8_t sub_address, std::uint8_t* bytes, s
 
     i2c_master_stop(cmd);
 
-    esp_err_t err = i2c_master_cmd_begin(_port, cmd, TIMEOUT);
+    esp_err_t err = i2c_master_cmd_begin(m_port, cmd, TIMEOUT);
     i2c_cmd_link_delete(cmd);
     return err;
 }

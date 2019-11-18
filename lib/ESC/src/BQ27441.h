@@ -412,9 +412,9 @@ private:
         std::uint8_t* bytes,
         std::size_t count);
 
-    std::uint8_t _device_address;
-    i2c_port_t _port;
-    bool _seal_again;
+    std::uint8_t m_device_address;
+    i2c_port_t m_port;
+    bool m_seal_again;
 };
 
 /**
