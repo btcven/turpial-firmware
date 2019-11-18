@@ -14,7 +14,7 @@
 
 #include <cstdint>
 
-namespace bq27441 {
+namespace esc {
 
 /// Default I2C address for the BQ27441
 const std::uint8_t I2C_ADDRESS = 0x55;
@@ -133,6 +133,6 @@ const std::uint8_t ID_CC_CAL = 105;
 const std::uint8_t ID_CURRENT = 107;
 const std::uint8_t ID_CODES = 112;
 
-} // namespace bq27441
+} // namespace esc
 
 #endif // BQ27441_CONSTANTS_H

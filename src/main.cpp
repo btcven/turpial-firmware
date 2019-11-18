@@ -90,15 +90,15 @@ esp_err_t initBatteryI2C()
 void printBatteryInfo()
 {
     std::uint16_t voltage;
-    bq27441::bq27441.voltage(voltage);
+    esc::g_bq27441.voltage(voltage);
     std::cout << "voltage:" << voltage << "mV" << std::endl;
 
     std::int16_t current;
-    bq27441::bq27441.current(bq27441::CurrentMeasure::Average, current);
+    esc::g_bq27441.current(esc::CurrentMeasure::Average, current);
     std::cout << "current:" << voltage << "mA" << std::endl;
 
     std::uint16_t soc;
-    bq27441::bq27441.soc(bq27441::SocMeasure::Filtered, soc);
+    esc::g_bq27441.soc(esc::SocMeasure::Filtered, soc);
     std::cout << "soc:" << soc << "%" << std::endl;
 }
 

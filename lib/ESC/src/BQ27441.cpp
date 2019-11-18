@@ -23,7 +23,7 @@
         }                     \
     } while (false)
 
-namespace bq27441 {
+namespace esc {
 
 BQ27441::BQ27441()
     : _device_address(I2C_ADDRESS), _port(I2C_NUM_0), _seal_again(false) {}
@@ -480,6 +480,6 @@ esp_err_t BQ27441::i2cReadBytes(std::uint8_t sub_address, std::uint8_t* bytes, s
     return err;
 }
 
-BQ27441 bq27441;
+BQ27441 g_bq27441;
 
-} // namespace bq27441
+} // namespace esc

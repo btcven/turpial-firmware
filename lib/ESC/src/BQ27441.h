@@ -16,7 +16,7 @@
 
 #include "BQ27441_Constants.h"
 
-namespace bq27441 {
+namespace esc {
 
 /**
  * @brief Measuring mode of current
@@ -191,8 +191,8 @@ private:
     bool _seal_again;
 };
 
-extern BQ27441 bq27441;
+extern BQ27441 g_bq27441;
 
-} // namespace bq27441
+} // namespace esc
 
 #endif
