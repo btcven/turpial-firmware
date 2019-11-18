@@ -72,7 +72,7 @@ esp_err_t Battery::begin(BatteryConfig battery_config)
     void* arg = reinterpret_cast<void*>(this);
     gpio_isr_handler_add(battery_config.gpout, Battery::interrupt_handler, arg);
 
-    m_bq27441.enterConfig();
+    m_bq27441.enterConfig(true);
     m_bq27441.setCapacity(battery_config.capacity);
     m_bq27441.setGPOUTPolarity(ACTIVE_LOW);
     m_bq27441.setGPOUTFunction(SOC_INT);

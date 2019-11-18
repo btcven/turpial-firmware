@@ -244,7 +244,7 @@ esp_err_t BQ27441::unseal(std::uint16_t& result)
     return readControlWord(UNSEAL_KEY, result);
 }
 
-esp_err_t BQ27441::enterConfig()
+esp_err_t BQ27441::enterConfig(bool manual_config)
 {
     esp_err_t err;
 
@@ -265,12 +265,14 @@ esp_err_t BQ27441::enterConfig()
             ESP_ERR_TRY(flags(flags_));
 
             if (flags_ & BQ27441_FLAG_CFGUPMODE) {
+                m_manual_config = manual_config;
                 return ESP_OK;
             }
         }
 
         // Timeout wasn't reached, meaning that BQ27441_FLAG_CFGUPMODE is set.
         if (timeout > 0) {
+            m_manual_config = manual_config;
             return ESP_OK;
         }
     }
@@ -298,6 +300,7 @@ esp_err_t BQ27441::exitConfig(bool resim)
             ESP_ERR_TRY(flags(flags_));
 
             if (!(flags_ & BQ27441_FLAG_CFGUPMODE)) {
+                m_manual_config = false;
                 return ESP_OK;
             }
 
@@ -310,10 +313,13 @@ esp_err_t BQ27441::exitConfig(bool resim)
                 std::uint16_t res1;
                 ESP_ERR_TRY(seal(res1));
             }
+            m_manual_config = false;
             return ESP_OK;
         }
     } else {
-        return executeControlWord(Control::EXIT_CFGUPDATE);
+        m_manual_config = false;
+        ESP_ERR_TRY(executeControlWord(Control::EXIT_CFGUPDATE));
+        return ESP_OK;
     }
 
     return ESP_FAIL;
@@ -457,7 +463,7 @@ esp_err_t BQ27441::writeBlockChecksum(std::uint8_t csum)
 
 esp_err_t BQ27441::readExtendedData(std::uint8_t class_id, std::uint8_t offset, std::uint8_t& result)
 {
-    ESP_ERR_TRY(enterConfig());
+    if (!m_manual_config) ESP_ERR_TRY(enterConfig());
 
     // Enable block data memory control
     ESP_ERR_TRY(blockDataControl());
@@ -477,7 +483,7 @@ esp_err_t BQ27441::readExtendedData(std::uint8_t class_id, std::uint8_t offset, 
     // Read from offset (limit to 0-31)
     ESP_ERR_TRY(readBlockData(offset % 32, result));
 
-    return exitConfig();
+    if (!m_manual_config) ESP_ERR_TRY(exitConfig());
 }
 
 esp_err_t BQ27441::writeExtendedData(std::uint8_t class_id, std::uint8_t offset, std::uint8_t* data, std::uint8_t len)

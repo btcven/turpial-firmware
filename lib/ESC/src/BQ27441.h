@@ -219,7 +219,7 @@ public:
      * @return
      *      - ESP_OK: on success
      */
-    esp_err_t enterConfig();
+    esp_err_t enterConfig(bool manual_config = false);
 
     /**
      * @brief Exit configuration mode
@@ -462,6 +462,7 @@ private:
     std::uint8_t m_device_address;
     i2c_port_t m_port;
     bool m_seal_again;
+    bool m_manual_config;
 };
 
 } // namespace esc
