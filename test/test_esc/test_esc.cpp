@@ -65,9 +65,9 @@ void testVoltage()
 
 void testCurrent()
 {
-    std::uint16_t current_avg;
-    std::uint16_t current_stdby;
-    std::uint16_t current_max;
+    std::int16_t current_avg;
+    std::int16_t current_stdby;
+    std::int16_t current_max;
     esp_err_t err;
 
     err = g_bq27441.current(CurrentMeasure::Average, current_avg);
@@ -94,13 +94,13 @@ void testSoc()
     std::cout << "State Of Charge: " << soc << std::endl;
 }
 
-void testOpConfig()
+void testGPOUTPolarity()
 {
-    std::uint16_t op_config;
-    esp_err_t err = g_bq27441.opConfig(op_config);
+    bool polarity;
+    esp_err_t err = g_bq27441.GPOUTPolarity(polarity);
     TEST_ASSERT_EQUAL(ESP_OK, err);
 
-    std::cout << "State Of Charge: " << op_config << std::endl;
+    std::cout << "GPOUT Polarity: " << polarity << std::endl;
 }
 
 extern "C" void app_main()
@@ -112,7 +112,7 @@ extern "C" void app_main()
     RUN_TEST(testVoltage);
     RUN_TEST(testCurrent);
     RUN_TEST(testSoc);
-    RUN_TEST(testOpConfig)
+    RUN_TEST(testGPOUTPolarity);
     UNITY_END();
 }
 

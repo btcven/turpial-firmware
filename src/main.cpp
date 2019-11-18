@@ -69,7 +69,7 @@ extern "C" void app_main()
     wifi::DTOConfig wifi_params;
 
     if (err != ESP_OK) {
-        ESP_LOGE(__func__, "Couldn't initialize NVS, error %s", esp_err_to_name(nvs_err));
+        ESP_LOGE(__func__, "Couldn't initialize NVS, error %s", esp_err_to_name(err));
         ESP_LOGD(__func__, "Using default WiFi parameters");
 
         setDefaultWiFiParams(wifi_params);
