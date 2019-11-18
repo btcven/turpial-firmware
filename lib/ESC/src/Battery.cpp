@@ -11,8 +11,8 @@
 
 #include "Battery.h"
 
+#include "driver/gpio.h"
 #include <esp_log.h>
-#include <gpio/driver.h>
 
 namespace esc {
 
@@ -32,19 +32,19 @@ esp_err_t Battery::begin(BatteryConfig battery_config)
 
     err = i2c_param_config(battery_config.port, &i2c_config);
     if (err != ESP_OK) {
-        ESP_LOGD("can't configure I2C configuration parameters");
+        ESP_LOGD(__func__, "can't configure I2C configuration parameters");
         return err;
     }
 
     err = i2c_driver_install(battery_config.port, i2c_config.mode, 0, 0, 0);
     if (err != ESP_OK) {
-        ESP_LOGD("can't install I2C driver")
+        ESP_LOGD(__func__, "can't install I2C driver");
         return err;
     }
 
     err = m_bq27441.begin(battery_config.port);
     if (err != ESP_OK) {
-        ESP_LOGD("couldn't init BQ27441");
+        ESP_LOGD(__func__, "couldn't init BQ27441");
         return err;
     }
 
@@ -59,13 +59,13 @@ esp_err_t Battery::begin(BatteryConfig battery_config)
 
     err = gpio_config(&gpout_config);
     if (err != ESP_OK) {
-        ESP_LOGD("couldn't configure GPOUT input pin");
+        ESP_LOGD(__func__, "couldn't configure GPOUT input pin");
         return err;
     }
 
-    err = gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
+    err = gpio_install_isr_service(0);
     if (err != ESP_OK) {
-        ESP_LOGD("couldn't install GPIO ISR handler");
+        ESP_LOGD(__func__, "couldn't install GPIO ISR handler");
         return err;
     }
 

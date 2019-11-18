@@ -124,8 +124,7 @@ esp_err_t BQ27441::soc(SocMeasure type, std::uint16_t& soc)
 esp_err_t BQ27441::GPOUTPolarity(bool& polarity)
 {
     std::uint16_t op_config_register;
-    esp_err_t err = opConfig(op_config_register);
-    if (err != ESP_OK) return err;
+    ESP_ERR_TRY(opConfig(op_config_register));
 
     polarity = !!(op_config_register & BQ27441_OPCONFIG_GPIOPOL);
     return ESP_OK;
@@ -134,8 +133,7 @@ esp_err_t BQ27441::GPOUTPolarity(bool& polarity)
 esp_err_t BQ27441::setGPOUTPolarity(bool active_high)
 {
     std::uint16_t old_op_config;
-    esp_err_t err = opConfig(old_op_config);
-    if (err != ESP_OK) return err;
+    ESP_ERR_TRY(opConfig(old_op_config));
 
     // Check to see if we need to update opConfig:
     bool alrdy_act_high = active_high && (old_op_config & BQ27441_OPCONFIG_GPIOPOL);
@@ -155,8 +153,7 @@ esp_err_t BQ27441::setGPOUTPolarity(bool active_high)
 esp_err_t BQ27441::GPOUTFunction(bool& batlow_en)
 {
     std::uint16_t op_config_register;
-    esp_err_t err = opConfig(op_config_register);
-    if (err != ESP_OK) return err;
+    ESP_ERR_TRY(opConfig(op_config_register));
 
     batlow_en = !!(op_config_register & BQ27441_OPCONFIG_BATLOWEN);
 
@@ -166,7 +163,7 @@ esp_err_t BQ27441::GPOUTFunction(bool& batlow_en)
 esp_err_t BQ27441::setGPOUTFunction(bool batlow_en)
 {
     std::uint16_t old_op_config;
-    esp_err_t err = opConfig(old_op_config);
+    ESP_ERR_TRY(opConfig(old_op_config));
 
     // Check to see if we need to update opConfig:
     bool is_batlow = batlow_en && (old_op_config & BQ27441_OPCONFIG_BATLOWEN);
@@ -246,8 +243,6 @@ esp_err_t BQ27441::unseal(std::uint16_t& result)
 
 esp_err_t BQ27441::enterConfig(bool manual_config)
 {
-    esp_err_t err;
-
     bool is_sealed;
     ESP_ERR_TRY(sealed(is_sealed));
     if (is_sealed) {
@@ -257,24 +252,25 @@ esp_err_t BQ27441::enterConfig(bool manual_config)
         m_seal_again = true;
     }
 
-    if (executeControlWord(Control::SET_CFG_UPDATE) == ESP_OK) {
-        std::int16_t timeout = TIMEOUT;
-        while (timeout--) {
-            vTaskDelay(1);
-            std::uint16_t flags_;
-            ESP_ERR_TRY(flags(flags_));
+    esp_err_t err = executeControlWord(Control::SET_CFG_UPDATE);
+    if (err != ESP_OK) return err;
 
-            if (flags_ & BQ27441_FLAG_CFGUPMODE) {
-                m_manual_config = manual_config;
-                return ESP_OK;
-            }
-        }
+    std::int16_t timeout = TIMEOUT;
+    while (timeout--) {
+        vTaskDelay(1);
+        std::uint16_t flags_;
+        ESP_ERR_TRY(flags(flags_));
 
-        // Timeout wasn't reached, meaning that BQ27441_FLAG_CFGUPMODE is set.
-        if (timeout > 0) {
+        if (flags_ & BQ27441_FLAG_CFGUPMODE) {
             m_manual_config = manual_config;
             return ESP_OK;
         }
+    }
+
+    // Timeout wasn't reached, meaning that BQ27441_FLAG_CFGUPMODE is set.
+    if (timeout > 0) {
+        m_manual_config = manual_config;
+        return ESP_OK;
     }
 
     return ESP_FAIL;
@@ -289,7 +285,6 @@ esp_err_t BQ27441::exitConfig(bool resim)
     // measurement, and without resimulating to update unfiltered-SoC and SoC.
     // If a new OCV measurement or resimulation is desired, SOFT_RESET or
     // EXIT_RESIM should be used to exit config mode.
-    esp_err_t err;
     if (resim) {
         ESP_ERR_TRY(softReset());
         std::int16_t timeout = TIMEOUT;
@@ -484,6 +479,8 @@ esp_err_t BQ27441::readExtendedData(std::uint8_t class_id, std::uint8_t offset, 
     ESP_ERR_TRY(readBlockData(offset % 32, result));
 
     if (!m_manual_config) ESP_ERR_TRY(exitConfig());
+
+    return ESP_OK;
 }
 
 esp_err_t BQ27441::writeExtendedData(std::uint8_t class_id, std::uint8_t offset, std::uint8_t* data, std::uint8_t len)
