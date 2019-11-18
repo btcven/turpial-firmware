@@ -67,7 +67,7 @@ esp_err_t BQ27441::setCapacity(std::uint16_t capacity)
     uint8_t cap_msb = capacity >> 8;
     uint8_t cap_lsb = capacity & 0x00FF;
     uint8_t capacity_data[2] = {cap_msb, cap_lsb};
-    return writeExtendedData(ID_STATE, 10, capacity_data, 2);
+    return writeExtendedData(BQ27441_ID_STATE, 10, capacity_data, 2);
 }
 
 esp_err_t BQ27441::voltage(std::uint16_t& voltage)
@@ -127,7 +127,7 @@ esp_err_t BQ27441::GPOUTPolarity(bool& polarity)
     esp_err_t err = opConfig(op_config_register);
     if (err != ESP_OK) return err;
 
-    polarity = (op_config_register & OPCONFIG_GPIOPOL);
+    polarity = (op_config_register & BQ27441_OPCONFIG_GPIOPOL);
     return ESP_OK;
 }
 
@@ -138,15 +138,15 @@ esp_err_t BQ27441::setGPOUTPolarity(bool active_high)
     if (err != ESP_OK) return err;
 
     // Check to see if we need to update opConfig:
-    bool alrdy_act_high = active_high && (old_op_config & OPCONFIG_GPIOPOL);
-    bool alrdy_act_low = !active_high && !(old_op_config & OPCONFIG_GPIOPOL);
+    bool alrdy_act_high = active_high && (old_op_config & BQ27441_OPCONFIG_GPIOPOL);
+    bool alrdy_act_low = !active_high && !(old_op_config & BQ27441_OPCONFIG_GPIOPOL);
     if (alrdy_act_high || alrdy_act_low) return ESP_OK;
 
     std::uint16_t new_op_config = old_op_config;
     if (active_high) {
-        new_op_config |= OPCONFIG_GPIOPOL;
+        new_op_config |= BQ27441_OPCONFIG_GPIOPOL;
     } else {
-        new_op_config &= ~(OPCONFIG_GPIOPOL);
+        new_op_config &= ~(BQ27441_OPCONFIG_GPIOPOL);
     }
 
     return writeOpConfig(new_op_config);
@@ -177,7 +177,7 @@ esp_err_t BQ27441::sealed(bool& is_sealed)
     std::uint16_t stat;
     ESP_ERR_TRY(status(stat));
 
-    if (stat & STATUS_SS) {
+    if (stat & BQ27441_STATUS_SS) {
         is_sealed = true;
     } else {
         is_sealed = false;
@@ -221,12 +221,12 @@ esp_err_t BQ27441::enterConfig()
             std::uint16_t flags_;
             ESP_ERR_TRY(flags(flags_));
 
-            if (flags_ & FLAG_CFGUPMODE) {
+            if (flags_ & BQ27441_FLAG_CFGUPMODE) {
                 return ESP_OK;
             }
         }
 
-        // Timeout wasn't reached, meaning that FLAG_CFGUPMODE is set.
+        // Timeout wasn't reached, meaning that BQ27441_FLAG_CFGUPMODE is set.
         if (timeout > 0) {
             return ESP_OK;
         }
@@ -235,7 +235,6 @@ esp_err_t BQ27441::enterConfig()
     return ESP_FAIL;
 }
 
-// Exit configuration mode with the option to perform a resimulation
 esp_err_t BQ27441::exitConfig(bool resim)
 {
     // There are two methods for exiting config mode:
@@ -255,7 +254,7 @@ esp_err_t BQ27441::exitConfig(bool resim)
             std::uint16_t flags_;
             ESP_ERR_TRY(flags(flags_));
 
-            if (!(flags_ & FLAG_CFGUPMODE)) {
+            if (!(flags_ & BQ27441_FLAG_CFGUPMODE)) {
                 return ESP_OK;
             }
 
@@ -279,7 +278,7 @@ esp_err_t BQ27441::exitConfig(bool resim)
 
 esp_err_t BQ27441::opConfig(std::uint16_t& result)
 {
-    return readWord(EXTENDED_OPCONFIG, result);
+    return readWord(BQ27441_EXTENDED_OPCONFIG, result);
 }
 
 esp_err_t BQ27441::writeOpConfig(std::uint16_t value)
@@ -288,8 +287,8 @@ esp_err_t BQ27441::writeOpConfig(std::uint16_t value)
     uint8_t op_config_lsb = value & 0x00FF;
     uint8_t op_config_data[2] = {op_config_msb, op_config_lsb};
 
-    // OpConfig register location: ID_REGISTERS id, offset 0
-    return writeExtendedData(ID_REGISTERS, 0, op_config_data, 2);
+    // OpConfig register location: BQ27441_ID_REGISTERS id, offset 0
+    return writeExtendedData(BQ27441_ID_REGISTERS, 0, op_config_data, 2);
 }
 
 esp_err_t BQ27441::softReset()
@@ -352,59 +351,51 @@ esp_err_t BQ27441::executeControlWord(std::uint16_t function)
     return i2cWriteBytes(0, command, 2);
 }
 
-// Issue a BlockDataControl() command to enable BlockData access
 esp_err_t BQ27441::blockDataControl()
 {
     std::uint8_t enable_byte = 0x00;
-    return i2cWriteBytes(EXTENDED_CONTROL, &enable_byte, 1);
+    return i2cWriteBytes(BQ27441_EXTENDED_CONTROL, &enable_byte, 1);
 }
 
-// Issue a DataClass() command to set the data class to be accessed
 esp_err_t BQ27441::blockDataClass(std::uint8_t id)
 {
-    return i2cWriteBytes(EXTENDED_DATACLASS, &id, 1);
+    return i2cWriteBytes(BQ27441_EXTENDED_DATACLASS, &id, 1);
 }
 
-// Issue a DataBlock() command to set the data block to be accessed
 esp_err_t BQ27441::blockDataOffset(std::uint8_t offset)
 {
-    return i2cWriteBytes(EXTENDED_DATABLOCK, &offset, 1);
+    return i2cWriteBytes(BQ27441_EXTENDED_DATABLOCK, &offset, 1);
 }
 
-// Read the current checksum using BlockDataCheckSum()
 esp_err_t BQ27441::blockDataChecksum(std::uint8_t& csum)
 {
     std::uint8_t new_csum;
-    esp_err_t err = i2cReadBytes(EXTENDED_CHECKSUM, &new_csum, 1);
+    esp_err_t err = i2cReadBytes(BQ27441_EXTENDED_CHECKSUM, &new_csum, 1);
     if (err == ESP_OK) csum = new_csum;
 
     return err;
 }
 
-// Use BlockData() to read a byte from the loaded extended data
 esp_err_t BQ27441::readBlockData(std::uint8_t offset, std::uint8_t& result)
 {
     std::uint8_t ret;
-    std::uint8_t address = offset + EXTENDED_BLOCKDATA;
+    std::uint8_t address = offset + BQ27441_EXTENDED_BLOCKDATA;
     esp_err_t err = i2cReadBytes(address, &ret, 1);
     if (err == ESP_OK) result = ret;
 
     return err;
 }
 
-// Use BlockData() to write a byte to an offset of the loaded data
 esp_err_t BQ27441::writeBlockData(std::uint8_t offset, std::uint8_t data)
 {
-    std::uint8_t address = offset + EXTENDED_BLOCKDATA;
+    std::uint8_t address = offset + BQ27441_EXTENDED_BLOCKDATA;
     return i2cWriteBytes(address, &data, 1);
 }
 
-// Read all 32 bytes of the loaded extended data and compute a
-// checksum based on the values.
 esp_err_t BQ27441::computeBlockChecksum(std::uint8_t& checksum)
 {
     std::uint8_t data[32];
-    ESP_ERR_TRY(i2cReadBytes(EXTENDED_BLOCKDATA, data, 32));
+    ESP_ERR_TRY(i2cReadBytes(BQ27441_EXTENDED_BLOCKDATA, data, 32));
 
     std::uint8_t ret = 0;
     for (int i = 0; i < 32; i++) {
@@ -416,13 +407,11 @@ esp_err_t BQ27441::computeBlockChecksum(std::uint8_t& checksum)
     return ESP_OK;
 }
 
-// Use the BlockDataCheckSum() command to write a checksum value
 esp_err_t BQ27441::writeBlockChecksum(std::uint8_t csum)
 {
-    return i2cWriteBytes(EXTENDED_CHECKSUM, &csum, 1);
+    return i2cWriteBytes(BQ27441_EXTENDED_CHECKSUM, &csum, 1);
 }
 
-// Read a byte from extended data specifying a class ID and position offset
 esp_err_t BQ27441::readExtendedData(std::uint8_t class_id, std::uint8_t offset, std::uint8_t& result)
 {
     ESP_ERR_TRY(enterConfig());
@@ -448,14 +437,14 @@ esp_err_t BQ27441::readExtendedData(std::uint8_t class_id, std::uint8_t offset, 
     return exitConfig();
 }
 
-// Write a specified number of bytes to extended data specifying a
-// class ID, position offset.
 esp_err_t BQ27441::writeExtendedData(std::uint8_t class_id, std::uint8_t offset, std::uint8_t* data, std::uint8_t len)
 {
+    if (len == 0) return ESP_FAIL;
     if (len > 32) {
         ESP_LOGD(__func__, "max write length is 32");
         return ESP_FAIL;
     }
+    if (data == nullptr) return ESP_FAIL;
 
     ESP_ERR_TRY(enterConfig());
 
@@ -492,22 +481,29 @@ esp_err_t BQ27441::writeExtendedData(std::uint8_t class_id, std::uint8_t offset,
     return ESP_OK;
 }
 
-esp_err_t BQ27441::i2cWriteBytes(std::uint8_t sub_address, std::uint8_t* bytes, std::size_t length)
+esp_err_t BQ27441::i2cWriteBytes(std::uint8_t sub_address, std::uint8_t* bytes, std::size_t count)
 {
-    ESP_LOGD(__func__, "writing %d bytes to I2C BQ27441", length);
+    ESP_LOGD(__func__, "writing %d bytes to I2C BQ27441", count);
+
+    if (bytes == nullptr) return ESP_FAIL;
+    if (count == 0) return ESP_FAIL;
+
+    // In case of this ever happens, use a higher write_buf array number
+    // or use an allocated buffer (not necessary by the moment).
+    if (count >= 5) return ESP_FAIL;
+
+    std::uint8_t write_buf[5];
 
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
 
-    // TODO(jeandudey): can't this allocation be removed?
-    std::unique_ptr<std::uint8_t[]> buf(new std::uint8_t[length + 1]);
-    buf.get()[0] = sub_address;
-    std::memcpy(&buf.get()[1], bytes, length);
+    write_buf[0] = sub_address;
+    std::memcpy(&write_buf[1], bytes, count);
 
     i2c_master_start(cmd);
 
     i2c_master_write_byte(cmd, (_device_address << 1) | I2C_MASTER_WRITE,
         I2C_MASTER_ACK);
-    i2c_master_write(cmd, buf.get(), length + 1, I2C_MASTER_ACK);
+    i2c_master_write(cmd, write_buf, count + 1, I2C_MASTER_ACK);
 
     i2c_master_stop(cmd);
 
@@ -519,6 +515,8 @@ esp_err_t BQ27441::i2cWriteBytes(std::uint8_t sub_address, std::uint8_t* bytes, 
 esp_err_t BQ27441::i2cReadBytes(std::uint8_t sub_address, std::uint8_t* bytes, std::size_t count)
 {
     ESP_LOGD(__func__, "reading %d bytes from BQ27441", count);
+
+    if (bytes == nullptr) return ESP_FAIL;
 
     i2c_cmd_handle_t cmd = i2c_cmd_link_create();
 
