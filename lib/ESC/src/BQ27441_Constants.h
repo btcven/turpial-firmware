@@ -128,6 +128,14 @@ const std::uint8_t ID_CC_CAL = 105;
 const std::uint8_t ID_CURRENT = 107;
 const std::uint8_t ID_CODES = 112;
 
+const std::uint16_t OPCONFIG_BIE = (1 << 13);
+const std::uint16_t OPCONFIG_BI_PU_EN = (1 << 12);
+const std::uint16_t OPCONFIG_GPIOPOL = (1 << 11);
+const std::uint16_t OPCONFIG_SLEEP = (1 << 5);
+const std::uint16_t OPCONFIG_RMFCC = (1 << 4);
+const std::uint16_t OPCONFIG_BATLOWEN = (1 << 2);
+const std::uint16_t OPCONFIG_TEMPS = (1 << 0);
+
 } // namespace esc
 
 #endif // BQ27441_CONSTANTS_H

@@ -96,6 +96,28 @@ public:
     esp_err_t soc(SocMeasure type, std::uint16_t& soc);
 
     /**
+     * @brief Get GPOUT pin polarity
+     * 
+     * @return esp_err_t ESP_OK on success
+     */
+    esp_err_t GPOUTPolarity(bool& polarity);
+
+    /**
+     * @brief Set GPUT pin polarity
+     * 
+     * @param active_high Active-high or active-low
+     * @return esp_err_t ESP_OK on success
+     */
+    esp_err_t setGPOUTPolarity(bool active_high);
+
+    /**
+     * @brief Pulse GPOUT
+     * 
+     * @return esp_err_t ESP_OK on success
+     */
+    esp_err_t pulseGPOUT();
+
+    /**
      * @brief Get the device type used to identify the IC.
      * 
      * @param result The actual device ID
@@ -158,6 +180,22 @@ private:
      * @return esp_err_t ESP_OK on success
      */
     esp_err_t unseal(std::uint16_t& result);
+
+    /**
+     * @brief Read OpConfig value
+     *
+     * @param result return value
+     * @return esp_err_t ESP_OK on success
+     */
+    esp_err_t opConfig(std::uint16_t& result);
+
+    /**
+     * @brief Write OpConfig
+     * 
+     * @param value the actual value
+     * @return esp_err_t ESP_OK on success
+     */
+    esp_err_t writeOpConfig(std::uint16_t value);
 
     esp_err_t softReset();
     esp_err_t readWord(std::uint16_t sub_address, std::uint16_t& result);

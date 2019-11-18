@@ -66,7 +66,7 @@ extern "C" void app_main()
     esp_log_level_set("*", ESP_LOG_VERBOSE);
 
     // Initialize NVS.
-    auto nvs_err = nvs::begin();
+    err = nvs::begin();
     wifi::DTOConfig wifi_params;
     nvs::Namespace wifi_nvs;
     wifi_nvs.open("wifi", NVS_READWRITE);
@@ -77,7 +77,7 @@ extern "C" void app_main()
     std::stringstream blob2;
 
 
-    auto err = wifi_nvs.get_blob("wifi", blob2);
+    err = wifi_nvs.get_blob("wifi", blob2);
     wifi_params2.deserialize(blob2);
 
 

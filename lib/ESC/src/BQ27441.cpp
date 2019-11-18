@@ -25,6 +25,18 @@
 
 namespace esc {
 
+template <class T>
+const T& constrain(const T& x, const T& a, const T& b)
+{
+    if (x < a) {
+        return a;
+    } else if (b < x) {
+        return b;
+    } else {
+        return x;
+    }
+}
+
 BQ27441::BQ27441()
     : _device_address(I2C_ADDRESS), _port(I2C_NUM_0), _seal_again(false) {}
 
@@ -107,6 +119,42 @@ esp_err_t BQ27441::soc(SocMeasure type, std::uint16_t& soc)
     }
 
     return ESP_OK;
+}
+
+esp_err_t BQ27441::GPOUTPolarity(bool& polarity)
+{
+    std::uint16_t op_config_register;
+    esp_err_t err = opConfig(op_config_register);
+    if (err != ESP_OK) return err;
+
+    polarity = (op_config_register & OPCONFIG_GPIOPOL);
+    return ESP_OK;
+}
+
+esp_err_t BQ27441::setGPOUTPolarity(bool active_high)
+{
+    std::uint16_t old_op_config;
+    esp_err_t err = opConfig(old_op_config);
+    if (err != ESP_OK) return err;
+
+    // Check to see if we need to update opConfig:
+    bool alrdy_act_high = active_high && (old_op_config & OPCONFIG_GPIOPOL);
+    bool alrdy_act_low = !active_high && !(old_op_config & OPCONFIG_GPIOPOL);
+    if (alrdy_act_high || alrdy_act_low) return ESP_OK;
+
+    std::uint16_t new_op_config = old_op_config;
+    if (active_high) {
+        new_op_config |= OPCONFIG_GPIOPOL;
+    } else {
+        new_op_config &= ~(OPCONFIG_GPIOPOL);
+    }
+
+    return writeOpConfig(new_op_config);
+}
+
+esp_err_t BQ27441::pulseGPOUT()
+{
+    return executeControlWord(Control::PULSE_SOC_INT);
 }
 
 esp_err_t BQ27441::deviceType(std::uint16_t& result)
@@ -229,7 +277,21 @@ esp_err_t BQ27441::exitConfig(bool resim)
     return ESP_FAIL;
 }
 
-// Issue a soft-reset to the BQ27441-G1A
+esp_err_t BQ27441::opConfig(std::uint16_t& result)
+{
+    return readWord(EXTENDED_OPCONFIG, result);
+}
+
+esp_err_t BQ27441::writeOpConfig(std::uint16_t value)
+{
+    uint8_t op_config_msb = value >> 8;
+    uint8_t op_config_lsb = value & 0x00FF;
+    uint8_t op_config_data[2] = {op_config_msb, op_config_lsb};
+
+    // OpConfig register location: ID_REGISTERS id, offset 0
+    return writeExtendedData(ID_REGISTERS, 0, op_config_data, 2);
+}
+
 esp_err_t BQ27441::softReset()
 {
     return executeControlWord(Control::SOFT_RESET);
@@ -314,9 +376,7 @@ esp_err_t BQ27441::blockDataChecksum(std::uint8_t& csum)
 {
     std::uint8_t new_csum;
     esp_err_t err = i2cReadBytes(EXTENDED_CHECKSUM, &new_csum, 1);
-    if (err == ESP_OK) {
-        csum = new_csum;
-    }
+    if (err == ESP_OK) csum = new_csum;
 
     return err;
 }
@@ -327,9 +387,7 @@ esp_err_t BQ27441::readBlockData(std::uint8_t offset, std::uint8_t& result)
     std::uint8_t ret;
     std::uint8_t address = offset + EXTENDED_BLOCKDATA;
     esp_err_t err = i2cReadBytes(address, &ret, 1);
-    if (err == ESP_OK) {
-        result = ret;
-    }
+    if (err == ESP_OK) result = ret;
 
     return err;
 }
