@@ -12,7 +12,7 @@ The following is a set of guidelines for contributing to [**Locha**](), [**Turpi
     * [I just have a question](#i-just-have-a-question)
     * [Suggesting **enhancements**](#suggesting-enhancements)
     * [Reporting **bugs**](#reporting-bugs)
-    * [Pull request](#pull-request)
+    * [Como hacer un Pull Request](#Como-hacer-un-Pull-Request)
 
 - [Contributing to Turpial firmware](#contributing-to-turpial-firmware)
       - [Table of contents](#table-of-contents)
@@ -20,8 +20,10 @@ The following is a set of guidelines for contributing to [**Locha**](), [**Turpi
   - [How can i contribute?](#how-can-i-contribute)
     - [I just have a question](#i-just-have-a-question)
     - [Suggesting enhancements](#suggesting-enhancements)
-    - [Reporting bugs](#reporting-bugs)
-    - [Pull requesst](#pull-requesst)
+    - [Reportando un bug](#reportando-un-bug)
+  - [Como hacer un Pull Request](#como-hacer-un-pull-request)
+    - [Empezar un nuevo cambio](#empezar-un-nuevo-cambio)
+    - [Subir tus cambios y hacer Pull Request](#subir-tus-cambios-y-hacer-pull-request)
   - [Styleguide](#styleguide)
     - [Commit messages](#commit-messages)
     - [Code styleguide](#code-styleguide)
@@ -50,11 +52,53 @@ For any question you can send us a message via Twitter @Locha_io and soon throug
 ### Suggesting enhancements
 ToDo
 
-### Reporting bugs
-ToDo
+### Reportando un bug
 
-### Pull requesst
-ToDo
+Puedes abrir un nuevo issue o bug desde una linea o lineas especificas de codigo en un archivo o pull request.
+
+Cuando abrimos un issue o bug desde el codigo , el issue contiene una linea o porcion de codigo que usted seleccione.
+
+Para hacer esto tan solo debera seguir estos pasos:
+
+1. Dentro de GitHub ir hasta la paguina principal del proyecto
+2. abrir el branch y archivo al que quiere hacer referencia 
+3. para referenciar la linea o lineas de codigo tan solo mantenga presionada la tecla ctrl + click en la linea que desea seleccionar.
+4. Cuando termine de seleccionar el codigo que quiere referenciar, click sobre cualquier numero de linea, lo que hara visible un menu de tres puntos, luego seleccionamos referenciar en una nueva issue
+5. Le asignamos un titulo al issue y hacemos submit al issue.
+
+
+## Como hacer un Pull Request
+
+Para cada Pull Request que vayas a realizar tienes que hacer lo siguiente.
+### Empezar un nuevo cambio
+Antes de empezar a hacer modificaciones ejecuta estos comandos para crear una nueva rama que esté sincronizada con dev:
+
+    git fetch --all # descarga los branch en el repositorio.
+    git checkout dev # te cambia a la rama dev en caso de no estar en ella.
+    git pull origin dev # para sincronizar el branch dev en local.
+    git checkout -b nombredelfeaturequequiereshacer # crea una branch nueva sincronizada con dev.
+    git push pr nombredelfeaturequequiereshacer # avienta tu cambio a GitHub
+
+hacer algunos cambios
+
+### Subir tus cambios y hacer Pull Request
+Una vez que hiciste los cambios que quieres proponer, realiza los siguientes pasos:
+    
+    git add .
+    git commit -m "Aqui una descripcion de tus cambios".
+
+Configura tus datos de usuario (Sólo necesitas ingresar esta información la primera vez que haces un push):
+
+    git config --global user.email "tu-email@gmail.com"
+    git config --global user.name "<tu-usuario>"
+
+Haz push de tu commit a tu fork del repositorio: 
+    
+    git push nombredelfeaturequequiereshacer # avienta tu cambio a GitHub
+    git push -u pr
+
+Ve a la página de GitHub, si vas a tu fork del repositorio, haz clic en el botón Branch y selecciona la rama en que realizaste los cambios nombredelfeaturequequiereshacer. Después presiona el botón Pull request.
+
 
 ## Styleguide
 

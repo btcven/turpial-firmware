@@ -22,10 +22,10 @@ namespace wifi {
 namespace mode {
 
 enum class OperationMode {
-    Ap = WIFI_AP,
-    St = WIFI_STA,
-    ApSt = WIFI_AP_STA,
     None = WIFI_MODE_NULL,
+    St = WIFI_STA,
+    Ap = WIFI_AP,
+    ApSt = WIFI_AP_STA,
 };
 
 OperationMode selectOperationMode(bool ap, bool st);

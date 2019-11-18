@@ -20,9 +20,9 @@ namespace mode {
 OperationMode selectOperationMode(bool ap, bool st)
 {
     if (!ap && st) {
-        return OperationMode::Ap;
-    } else if (ap && !st) {
         return OperationMode::St;
+    } else if (ap && !st) {
+        return OperationMode::Ap;
     } else if (ap && st) {
         return OperationMode::ApSt;
     } else if (!ap && !st) {
@@ -129,8 +129,8 @@ esp_err_t begin(DTOConfig config)
     };
 
     wst::Config wst_config = {
-        .ssid = config.ap_ssid.c_str(),
-        .pass = config.ap_password.c_str(),
+        .wst_ssid = config.wst_ssid.c_str(),
+        .wst_pass = config.wst_password.c_str(),
     };
 
     bool is_ap = config.wap_enabled;

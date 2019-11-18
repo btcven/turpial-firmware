@@ -6,8 +6,6 @@
 #include <nvs_flash.h>
 
 
-static const char LOG_TAG[] = "CPPNVS";
-
 namespace nvs {
 
 Namespace::Namespace()

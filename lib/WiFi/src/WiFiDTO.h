@@ -34,7 +34,7 @@ public:
      * 
      */
     DTOConfig()
-        : ap_channel(0), ap_max_conn(0), wap_enabled(false), wst_enabled(false), is_open(false), ap_ssid(tinystring::String()), ap_password(tinystring::String()) {}
+        : ap_channel(0), ap_max_conn(0), wap_enabled(false), wst_enabled(false), is_open(false), ap_ssid(tinystring::String()), ap_password(tinystring::String()), wst_ssid(tinystring::String()), wst_password(tinystring::String()) {}
 
     /**
      * @brief Returns the 
@@ -65,6 +65,8 @@ public:
     bool is_open;
     tinystring::String ap_ssid;
     tinystring::String ap_password;
+    tinystring::String wst_ssid;
+    tinystring::String wst_password;
 };
 
 } // namespace wifi
