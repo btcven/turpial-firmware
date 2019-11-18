@@ -11,45 +11,49 @@
 
 #include "WiFiDTO.h"
 
-#include "SerializablePOD.h"
 #include "Serializable.h"
+#include "SerializablePOD.h"
+
 
 // Implementation of all virtual methods from serializable interface.
 
 namespace wifi {
 
-std::size_t DTOConfig::serialize_size() const {
+std::size_t DTOConfig::serialize_size() const
+{
     std::size_t size;
-    size = pod::serialize_size<std::int8_t>(apChannel) + 
-           pod::serialize_size<std::int8_t>(apMaxConn) + 
-           pod::serialize_size<bool>(WAP_enabled) +
-           pod::serialize_size<bool>(WST_enabled) +
-           pod::serialize_size<bool>(isOpen) +
-           apSSID.serialize_size() +
-           apPassword.serialize_size();  
+    size = pod::serialize_size<std::int8_t>(ap_channel) +
+           pod::serialize_size<std::int8_t>(ap_max_conn) +
+           pod::serialize_size<bool>(wap_enabled) +
+           pod::serialize_size<bool>(wst_enabled) +
+           pod::serialize_size<bool>(is_open) +
+           ap_ssid.serialize_size() +
+           ap_password.serialize_size();
 
-    return size; 
+    return size;
 }
 
-std::ostream& DTOConfig::serialize(std::ostream& stream) const {
-    pod::serialize<std::int8_t>(stream, apChannel);
-    pod::serialize<std::int8_t>(stream, apMaxConn);
-    pod::serialize<bool>(stream, WAP_enabled);
-    pod::serialize<bool>(stream, WST_enabled);
-    pod::serialize<bool>(stream, isOpen);
-    apSSID.serialize(stream);
-    apPassword.serialize(stream);
+std::ostream& DTOConfig::serialize(std::ostream& stream) const
+{
+    pod::serialize<std::int8_t>(stream, ap_channel);
+    pod::serialize<std::int8_t>(stream, ap_max_conn);
+    pod::serialize<bool>(stream, wap_enabled);
+    pod::serialize<bool>(stream, wst_enabled);
+    pod::serialize<bool>(stream, is_open);
+    ap_ssid.serialize(stream);
+    ap_password.serialize(stream);
     return stream;
 }
 
-std::istream& DTOConfig::deserialize(std::istream& stream) {
-    pod::deserialize<std::int8_t>(stream, apChannel);
-    pod::deserialize<std::int8_t>(stream, apMaxConn);
-    pod::deserialize<bool>(stream, WAP_enabled);
-    pod::deserialize<bool>(stream, WST_enabled);
-    pod::deserialize<bool>(stream, isOpen);
-    apSSID.deserialize(stream);
-    apPassword.deserialize(stream);
+std::istream& DTOConfig::deserialize(std::istream& stream)
+{
+    pod::deserialize<std::int8_t>(stream, ap_channel);
+    pod::deserialize<std::int8_t>(stream, ap_max_conn);
+    pod::deserialize<bool>(stream, wap_enabled);
+    pod::deserialize<bool>(stream, wst_enabled);
+    pod::deserialize<bool>(stream, is_open);
+    ap_ssid.deserialize(stream);
+    ap_password.deserialize(stream);
     return stream;
 }
 
