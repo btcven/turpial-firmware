@@ -12,7 +12,7 @@ The following is a set of guidelines for contributing to [**Locha**](), [**Turpi
     * [I just have a question](#i-just-have-a-question)
     * [Suggesting **enhancements**](#suggesting-enhancements)
     * [Reporting **bugs**](#reporting-bugs)
-    * [Pull request](#pull-request)
+    * [Como hacer un Pull Request](#Como-hacer-un-Pull-Request)
 
 - [Contributing to Turpial firmware](#contributing-to-turpial-firmware)
       - [Table of contents](#table-of-contents)
@@ -21,7 +21,9 @@ The following is a set of guidelines for contributing to [**Locha**](), [**Turpi
     - [I just have a question](#i-just-have-a-question)
     - [Suggesting enhancements](#suggesting-enhancements)
     - [Reporting bugs](#reporting-bugs)
-    - [Pull requesst](#pull-requesst)
+  - [Como hacer un Pull Request](#como-hacer-un-pull-request)
+    - [Empezar un nuevo cambio](#empezar-un-nuevo-cambio)
+    - [Subir tus cambios y hacer Pull Request](#subir-tus-cambios-y-hacer-pull-request)
   - [Styleguide](#styleguide)
     - [Commit messages](#commit-messages)
     - [Code styleguide](#code-styleguide)
@@ -53,8 +55,38 @@ ToDo
 ### Reporting bugs
 ToDo
 
-### Pull requesst
-ToDo
+## Como hacer un Pull Request
+
+Para cada Pull Request que vayas a realizar tienes que hacer lo siguiente.
+### Empezar un nuevo cambio
+Antes de empezar a hacer modificaciones ejecuta estos comandos para crear una nueva rama que esté sincronizada con dev:
+
+    git fetch --all # descarga los branch en el repositorio.
+    git checkout dev # te cambia a la rama dev en caso de no estar en ella.
+    git pull origin dev # para sincronizar el branch dev en local.
+    git checkout -b nombredelfeaturequequiereshacer # crea una branch nueva sincronizada con dev.
+    git push pr nombredelfeaturequequiereshacer # avienta tu cambio a GitHub
+
+hacer algunos cambios
+
+### Subir tus cambios y hacer Pull Request
+Una vez que hiciste los cambios que quieres proponer, realiza los siguientes pasos:
+    
+    git add .
+    git commit -m "Aqui una descripcion de tus cambios".
+
+Configura tus datos de usuario (Sólo necesitas ingresar esta información la primera vez que haces un push):
+
+    git config --global user.email "tu-email@gmail.com"
+    git config --global user.name "<tu-usuario>"
+
+Haz push de tu commit a tu fork del repositorio: 
+    
+    git push nombredelfeaturequequiereshacer # avienta tu cambio a GitHub
+    git push -u pr
+
+Ve a la página de GitHub, si vas a tu fork del repositorio, haz clic en el botón Branch y selecciona la rama en que realizaste los cambios nombredelfeaturequequiereshacer. Después presiona el botón Pull request.
+
 
 ## Styleguide
 
