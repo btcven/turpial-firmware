@@ -10,24 +10,27 @@
  */
 
 
-#include <sstream>
 #include <cstdio>
+#include <sstream>
 
 
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
 #include "sdkconfig.h"
 #include <Arduino.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+
 
 #include "WiFiMode.h"
 #include "testRTOSCPP/Hello.hpp"
 
-#include "Namespace.h"
 #include "BQ27441.h"
+#include "Namespace.h"
+
 
 #include "defaults.h"
 
-esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params) {
+esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params)
+{
     ESP_LOGD(__func__, "Reading WiFi configuration from NVS");
     nvs::Namespace wifi_nvs;
     auto err = wifi_nvs.open("wifi", NVS_READWRITE);
@@ -45,7 +48,8 @@ esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params) {
     return ESP_OK;
 }
 
-void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
+void setDefaultWiFiParams(wifi::DTOConfig& wifi_params)
+{
     wifi_params.apChannel = WAP_CHANNEL;
     wifi_params.apMaxConn = WAP_MAXCONN;
     wifi_params.WAP_enabled = WAP_ENABLED;
@@ -61,7 +65,8 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params) {
  * 
  * @return esp_err_t ESP_OK on success.
  */
-esp_err_t initBatteryI2C() {
+esp_err_t initBatteryI2C()
+{
     ESP_LOGI(__func__, "initializing battery I2C port");
 
     i2c_config_t conf;
@@ -82,13 +87,28 @@ esp_err_t initBatteryI2C() {
     return bq27441::bq27441.begin(I2C_NUM_0);
 }
 
+void printBatteryInfo()
+{
+    std::uint16_t voltage;
+    bq27441::bq27441.voltage(voltage);
+    std::cout << "voltage:" << voltage << "mV" << std::endl;
+
+    std::int16_t current;
+    bq27441::bq27441.current(bq27441::CurrentMeasure::Average, current);
+    std::cout << "current:" << voltage << "mA" << std::endl;
+
+    std::uint16_t soc;
+    bq27441::bq27441.soc(bq27441::SocMeasure::Filtered, soc);
+    std::cout << "soc:" << soc << "%" << std::endl;
+}
+
 extern "C" void app_main()
 {
     esp_err_t err;
 
     // Initialize arduino as a component
     initArduino();
- 
+
     // Set logging level for all tags.
     esp_log_level_set("*", ESP_LOG_VERBOSE);
 
@@ -102,4 +122,6 @@ extern "C" void app_main()
         ESP_LOGE(__func__, "couldn't initialize battery I2C, err: %s", e);
         return;
     }
+
+    printBatteryInfo();
 }

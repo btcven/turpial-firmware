@@ -49,7 +49,7 @@ enum Command {
     REM_CAP_FIL = 0x2A,
     FULL_CAP_UNFL = 0x2C,
     FULL_CAP_FIL = 0x2E,
-    SPC_UNFL = 0x30
+    SOC_UNFL = 0x30
 };
 
 /**
@@ -78,60 +78,61 @@ enum Control {
     EXIT_RESIM = 0x44
 };
 
-inline std::uint8_t raw_control(Control control) {
+inline std::uint8_t raw_control(Control control)
+{
     return static_cast<std::uint8_t>(control);
 }
 
 const std::uint16_t STATUS_SHUTDOWNEN = (1 << 15);
-const std::uint16_t STATUS_WDRESET    = (1 << 14);
-const std::uint16_t STATUS_SS         = (1 << 13);
-const std::uint16_t STATUS_CALMODE    = (1 << 12);
-const std::uint16_t STATUS_CCA        = (1 << 11);
-const std::uint16_t STATUS_BCA        = (1 << 10);
-const std::uint16_t STATUS_QMAX_UP    = (1 << 9);
-const std::uint16_t STATUS_RES_UP     = (1 << 8);
-const std::uint16_t STATUS_INITCOMP   = (1 << 7);
-const std::uint16_t STATUS_HIBERNATE  = (1 << 6);
-const std::uint16_t STATUS_SLEEP      = (1 << 4);
-const std::uint16_t STATUS_LDMD       = (1 << 3);
-const std::uint16_t STATUS_RUP_DIS    = (1 << 2);
-const std::uint16_t STATUS_VOK        = (1 << 1);
+const std::uint16_t STATUS_WDRESET = (1 << 14);
+const std::uint16_t STATUS_SS = (1 << 13);
+const std::uint16_t STATUS_CALMODE = (1 << 12);
+const std::uint16_t STATUS_CCA = (1 << 11);
+const std::uint16_t STATUS_BCA = (1 << 10);
+const std::uint16_t STATUS_QMAX_UP = (1 << 9);
+const std::uint16_t STATUS_RES_UP = (1 << 8);
+const std::uint16_t STATUS_INITCOMP = (1 << 7);
+const std::uint16_t STATUS_HIBERNATE = (1 << 6);
+const std::uint16_t STATUS_SLEEP = (1 << 4);
+const std::uint16_t STATUS_LDMD = (1 << 3);
+const std::uint16_t STATUS_RUP_DIS = (1 << 2);
+const std::uint16_t STATUS_VOK = (1 << 1);
 
-const std::uint16_t FLAG_OT           = (1 << 15);
-const std::uint16_t FLAG_UT           = (1 << 14);
-const std::uint16_t FLAG_FC           = (1 << 9);
-const std::uint16_t FLAG_CHG	      = (1 << 8);
-const std::uint16_t FLAG_OCVTAKEN     = (1 << 7);
-const std::uint16_t FLAG_ITPOR	      = (1 << 5);
-const std::uint16_t FLAG_CFGUPMODE    = (1 << 4);
-const std::uint16_t FLAG_BAT_DET      = (1 << 3);
-const std::uint16_t FLAG_SOC1         = (1 << 2);
-const std::uint16_t FLAG_SOCF         = (1 << 1);
-const std::uint16_t FLAG_DSG          = (1 << 0);
+const std::uint16_t FLAG_OT = (1 << 15);
+const std::uint16_t FLAG_UT = (1 << 14);
+const std::uint16_t FLAG_FC = (1 << 9);
+const std::uint16_t FLAG_CHG = (1 << 8);
+const std::uint16_t FLAG_OCVTAKEN = (1 << 7);
+const std::uint16_t FLAG_ITPOR = (1 << 5);
+const std::uint16_t FLAG_CFGUPMODE = (1 << 4);
+const std::uint16_t FLAG_BAT_DET = (1 << 3);
+const std::uint16_t FLAG_SOC1 = (1 << 2);
+const std::uint16_t FLAG_SOCF = (1 << 1);
+const std::uint16_t FLAG_DSG = (1 << 0);
 
-const std::uint8_t EXTENDED_OPCONFIG  = 0x3A;
-const std::uint8_t EXTENDED_CAPACITY  = 0x3C;
+const std::uint8_t EXTENDED_OPCONFIG = 0x3A;
+const std::uint8_t EXTENDED_CAPACITY = 0x3C;
 const std::uint8_t EXTENDED_DATACLASS = 0x3E;
 const std::uint8_t EXTENDED_DATABLOCK = 0x3F;
 const std::uint8_t EXTENDED_BLOCKDATA = 0x40;
-const std::uint8_t EXTENDED_CHECKSUM  = 0x60;
-const std::uint8_t EXTENDED_CONTROL   = 0x61;
+const std::uint8_t EXTENDED_CHECKSUM = 0x60;
+const std::uint8_t EXTENDED_CONTROL = 0x61;
 
-const std::uint8_t ID_SAFETY          = 2;
+const std::uint8_t ID_SAFETY = 2;
 const std::uint8_t ID_CHG_TERMINATION = 36;
-const std::uint8_t ID_CONFIG_DATA     = 48;
-const std::uint8_t ID_DISCHARGE       = 49;
-const std::uint8_t ID_REGISTERS       = 64;
-const std::uint8_t ID_POWER           = 68;
-const std::uint8_t ID_IT_CFG          = 80;
-const std::uint8_t ID_CURRENT_THRESH  = 81;
-const std::uint8_t ID_STATE           = 82;
-const std::uint8_t ID_R_A_RAM         = 89;
-const std::uint8_t ID_CALIB_DATA      = 104;
-const std::uint8_t ID_CC_CAL          = 105;
-const std::uint8_t ID_CURRENT         = 107;
-const std::uint8_t ID_CODES           = 112;
+const std::uint8_t ID_CONFIG_DATA = 48;
+const std::uint8_t ID_DISCHARGE = 49;
+const std::uint8_t ID_REGISTERS = 64;
+const std::uint8_t ID_POWER = 68;
+const std::uint8_t ID_IT_CFG = 80;
+const std::uint8_t ID_CURRENT_THRESH = 81;
+const std::uint8_t ID_STATE = 82;
+const std::uint8_t ID_R_A_RAM = 89;
+const std::uint8_t ID_CALIB_DATA = 104;
+const std::uint8_t ID_CC_CAL = 105;
+const std::uint8_t ID_CURRENT = 107;
+const std::uint8_t ID_CODES = 112;
 
-} // bq27441
+} // namespace bq27441
 
 #endif // BQ27441_CONSTANTS_H

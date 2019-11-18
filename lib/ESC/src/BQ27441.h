@@ -18,6 +18,10 @@
 
 namespace bq27441 {
 
+/**
+ * @brief Measuring mode of current
+ * 
+ */
 enum class CurrentMeasure {
     Average,
     StandBy,
@@ -25,10 +29,22 @@ enum class CurrentMeasure {
 };
 
 /**
+ * @brief 
+ * 
+ */
+enum class SocMeasure {
+    // State of Charge Filtered
+    Filtered,
+    // State of Charge Unfiltered
+    Unfiltered
+};
+
+/**
  * @brief BQ7411 Battery Fuel Gaugue
  * 
  */
-class BQ27441 {
+class BQ27441
+{
 public:
     /**
      * @brief Construct a new BQ27441
@@ -65,10 +81,19 @@ public:
      * @brief Get battery current
      * 
      * @param measure the way current is measured
-     * @param current the current return value
+     * @param current the current return value, >0 mAh means charging 
      * @return esp_err_t ESP_OK on success
      */
     esp_err_t current(CurrentMeasure measure, std::int16_t& current);
+
+    /**
+     * @brief Get the battery State-Of-Charge
+     * 
+     * @param type Measuring mode
+     * @param soc return State-Of-Charge
+     * @return esp_err_t ESP_OK on success
+     */
+    esp_err_t soc(SocMeasure type, std::uint16_t& soc);
 
     /**
      * @brief Get the device type used to identify the IC.
@@ -108,6 +133,7 @@ public:
      * @return esp_err_t ESP_OK on success.
      */
     esp_err_t exitConfig(bool resim = true);
+
 private:
     /**
      * @brief Checks if the BQ27441 is sealed
@@ -146,19 +172,19 @@ private:
     esp_err_t computeBlockChecksum(std::uint8_t& checksum);
     esp_err_t writeBlockChecksum(std::uint8_t csum);
     esp_err_t readExtendedData(std::uint8_t class_id,
-                               std::uint8_t offset,
-                               std::uint8_t& result);
+        std::uint8_t offset,
+        std::uint8_t& result);
     esp_err_t writeExtendedData(std::uint8_t class_id,
-                                std::uint8_t offset,
-                                std::uint8_t* data,
-                                std::uint8_t len);
+        std::uint8_t offset,
+        std::uint8_t* data,
+        std::uint8_t len);
 
     esp_err_t i2cWriteBytes(std::uint8_t sub_address,
-                            std::uint8_t* bytes,
-                            std::size_t length);
+        std::uint8_t* bytes,
+        std::size_t length);
     esp_err_t i2cReadBytes(std::uint8_t sub_addres,
-                           std::uint8_t* bytes,
-                           std::size_t count);
+        std::uint8_t* bytes,
+        std::size_t count);
 
     std::uint8_t _device_address;
     i2c_port_t _port;
@@ -167,6 +193,6 @@ private:
 
 extern BQ27441 bq27441;
 
-}
+} // namespace bq27441
 
 #endif
