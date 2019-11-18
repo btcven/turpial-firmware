@@ -26,14 +26,15 @@
 
 // ESC enabled?
 #define ESC_ENABLED true
-#define ESC_MAX_BATTERY_CAPACITY 2200 // in mAh unit
-#define ESC_LOW_BATTTERY_THRESHOLD 20 // in % unit
-#define ESC_CRITICAL_BAT_THRESHOLD 7  // in % unit
-#define ESC_I2C_CLOCK_FREQ 100000     // in Hz, default is 100 kHz, TODO: sdkconfig.h?
+#define ESC_PERCENTAGE_CHANGE_INTERVAL 1 // in % unit
+#define ESC_MAX_BATTERY_CAPACITY 2200    // in mAh unit
+#define ESC_LOW_BATTTERY_THRESHOLD 20    // in % unit
+#define ESC_CRITICAL_BAT_THRESHOLD 7     // in % unit
+#define ESC_I2C_CLOCK_FREQ 100000        // in Hz, default is 100 kHz, TODO: sdkconfig.h?
 #define ESC_I2C_PORT I2C_NUM_0
 #define ESC_I2C_SDA GPIO_NUM_23
 #define ESC_I2C_SCL GPIO_NUM_22
-#define ESC_I2C_GPOUT GPIO_NUM_14
+#define ESC_GPIO_GPOUT GPIO_NUM_14
 
 // BLE enabled?
 #define BLE_ENABLED false

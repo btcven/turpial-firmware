@@ -18,6 +18,12 @@
 
 namespace esc {
 
+const bool ACTIVE_LOW = false;
+const bool ACTIVE_HIGH = true;
+
+const bool BAT_LOW = true;
+const bool SOC_INT = false;
+
 /**
  * @brief Measuring mode of current
  * 
@@ -128,6 +134,47 @@ public:
      *      - ESP_OK: on success
      */
     esp_err_t setGPOUTPolarity(bool active_high);
+
+    /**
+     * @brief Get GPOUT pin function
+     * 
+     * @param[out] batlow_en: if true "BAT_LOW" is enabled, on false "SOC_INT"
+     * is enabled
+     * 
+     * @return
+     *      - ESP_OK: on success 
+     */
+    esp_err_t GPOUTFunction(bool& batlow_en);
+
+    /**
+     * @brief Set GPOUT pin function
+     * 
+     * @param[in] batlow_en: "BAT_LOW" or "SOC_INT"
+     * 
+     * @return
+     *      - ESP_OK: on success 
+     */
+    esp_err_t setGPOUTFunction(bool batlow_en);
+
+    /**
+     * @brief Get SOCI Delta value
+     * 
+     * @param[out] delta: SOCI delta value 
+     * 
+     * @return
+     *      - ESP_OK: on success
+     */
+    esp_err_t sociDelta(std::uint8_t& delta);
+
+    /**
+     * @brief Set SOCI Delta value
+     * 
+     * @param[in] delta: SOCI delta 
+     * 
+     * @return
+     *      - ESP_OK: on success 
+     */
+    esp_err_t setSOCIDelta(std::uint8_t delta);
 
     /**
      * @brief Pulse GPOUT
@@ -416,12 +463,6 @@ private:
     i2c_port_t m_port;
     bool m_seal_again;
 };
-
-/**
- * @brief Global instance of BQ27441.
- * 
- */
-extern BQ27441 g_bq27441;
 
 } // namespace esc
 

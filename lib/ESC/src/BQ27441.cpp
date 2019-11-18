@@ -127,7 +127,7 @@ esp_err_t BQ27441::GPOUTPolarity(bool& polarity)
     esp_err_t err = opConfig(op_config_register);
     if (err != ESP_OK) return err;
 
-    polarity = (op_config_register & BQ27441_OPCONFIG_GPIOPOL);
+    polarity = !!(op_config_register & BQ27441_OPCONFIG_GPIOPOL);
     return ESP_OK;
 }
 
@@ -150,6 +150,49 @@ esp_err_t BQ27441::setGPOUTPolarity(bool active_high)
     }
 
     return writeOpConfig(new_op_config);
+}
+
+esp_err_t BQ27441::GPOUTFunction(bool& batlow_en)
+{
+    std::uint16_t op_config_register;
+    esp_err_t err = opConfig(op_config_register);
+    if (err != ESP_OK) return err;
+
+    batlow_en = !!(op_config_register & BQ27441_OPCONFIG_BATLOWEN);
+
+    return ESP_OK;
+}
+
+esp_err_t BQ27441::setGPOUTFunction(bool batlow_en)
+{
+    std::uint16_t old_op_config;
+    esp_err_t err = opConfig(old_op_config);
+
+    // Check to see if we need to update opConfig:
+    bool is_batlow = batlow_en && (old_op_config & BQ27441_OPCONFIG_BATLOWEN);
+    bool is_socint = !batlow_en && !(old_op_config & BQ27441_OPCONFIG_BATLOWEN);
+    if (is_batlow || is_socint) return ESP_OK;
+
+    // Modify BATLOWN_EN bit of opConfig:
+    uint16_t new_op_config = old_op_config;
+    if (batlow_en)
+        new_op_config |= BQ27441_OPCONFIG_BATLOWEN;
+    else
+        new_op_config &= ~(BQ27441_OPCONFIG_BATLOWEN);
+
+    // Write new opConfig
+    return writeOpConfig(new_op_config);
+}
+
+esp_err_t BQ27441::sociDelta(std::uint8_t& delta)
+{
+    return readExtendedData(BQ27441_ID_STATE, 26, delta);
+}
+
+esp_err_t BQ27441::setSOCIDelta(std::uint8_t delta)
+{
+    std::uint8_t soci = constrain<std::uint8_t>(delta, 0, 100);
+    return writeExtendedData(BQ27441_ID_STATE, 26, &soci, 1);
 }
 
 esp_err_t BQ27441::pulseGPOUT()
@@ -535,7 +578,5 @@ esp_err_t BQ27441::i2cReadBytes(std::uint8_t sub_address, std::uint8_t* bytes, s
     i2c_cmd_link_delete(cmd);
     return err;
 }
-
-BQ27441 g_bq27441;
 
 } // namespace esc
