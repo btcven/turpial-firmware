@@ -20,7 +20,7 @@ The following is a set of guidelines for contributing to [**Locha**](), [**Turpi
   - [How can i contribute?](#how-can-i-contribute)
     - [I just have a question](#i-just-have-a-question)
     - [Suggesting enhancements](#suggesting-enhancements)
-    - [Reporting bugs](#reporting-bugs)
+    - [Reportando un bug](#reportando-un-bug)
   - [Como hacer un Pull Request](#como-hacer-un-pull-request)
     - [Empezar un nuevo cambio](#empezar-un-nuevo-cambio)
     - [Subir tus cambios y hacer Pull Request](#subir-tus-cambios-y-hacer-pull-request)
@@ -52,8 +52,20 @@ For any question you can send us a message via Twitter @Locha_io and soon throug
 ### Suggesting enhancements
 ToDo
 
-### Reporting bugs
-ToDo
+### Reportando un bug
+
+Puedes abrir un nuevo issue o bug desde una linea o lineas especificas de codigo en un archivo o pull request.
+
+Cuando abrimos un issue o bug desde el codigo , el issue contiene una linea o porcion de codigo que usted seleccione.
+
+Para hacer esto tan solo debera seguir estos pasos:
+
+1. Dentro de GitHub ir hasta la paguina principal del proyecto
+2. abrir el branch y archivo al que quiere hacer referencia 
+3. para referenciar la linea o lineas de codigo tan solo mantenga presionada la tecla ctrl + click en la linea que desea seleccionar.
+4. Cuando termine de seleccionar el codigo que quiere referenciar, click sobre cualquier numero de linea, lo que hara visible un menu de tres puntos, luego seleccionamos referenciar en una nueva issue
+5. Le asignamos un titulo al issue y hacemos submit al issue.
+
 
 ## Como hacer un Pull Request
 
