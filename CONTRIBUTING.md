@@ -1,12 +1,12 @@
 # Contributing to Turpial firmware
 
-Thanks for taking the time to contribute!
+Gracias por tomarte el tiempo de contribuir!.
 
-The following is a set of guidelines for contributing to [**Locha**](), [**Turpial**]() or .
+El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpial**]().
 
 #### Table of contents
 
-* [Before starting](#before-starting)
+* [Antes de empezar](#antes-de-empezar)
 
 * [How can i contribute?](#how-can-i-contribute)
     * [I just have a question](#i-just-have-a-question)
@@ -16,38 +16,49 @@ The following is a set of guidelines for contributing to [**Locha**](), [**Turpi
 
 - [Contributing to Turpial firmware](#contributing-to-turpial-firmware)
       - [Table of contents](#table-of-contents)
-  - [Before starting](#before-starting)
-  - [How can i contribute?](#how-can-i-contribute)
+  - [Antes de empezar](#antes-de-empezar)
+  - [Como puedo contribuir?](#como-puedo-contribuir)
     - [I just have a question](#i-just-have-a-question)
     - [Suggesting enhancements](#suggesting-enhancements)
     - [Reportando un bug](#reportando-un-bug)
   - [Como hacer un Pull Request](#como-hacer-un-pull-request)
     - [Empezar un nuevo cambio](#empezar-un-nuevo-cambio)
     - [Subir tus cambios y hacer Pull Request](#subir-tus-cambios-y-hacer-pull-request)
-  - [Styleguide](#styleguide)
+  - [Guia de estilos para el codigo fuente](#guia-de-estilos-para-el-codigo-fuente)
     - [Commit messages](#commit-messages)
-    - [Code styleguide](#code-styleguide)
-      - [Include guards](#include-guards)
-      - [Include statements](#include-statements)
-      - [Naming rules](#naming-rules)
-    - [Common statements](#common-statements)
+    - [Include guards](#include-guards)
+      - [Las declaraciones de inclusion](#las-declaraciones-de-inclusion)
+      - [Reglas de nomenclatura](#reglas-de-nomenclatura)
+    - [Sentencias de control](#sentencias-de-control)
       - [if / if-else](#if--if-else)
       - [while / do-while loops](#while--do-while-loops)
+    - [Forward Declarations](#forward-declarations)
+    - [Funciones Inline](#funciones-inline)
+    - [Orden en los que se deben incluir los archivos header](#orden-en-los-que-se-deben-incluir-los-archivos-header)
+    - [Namespaces](#namespaces)
+    - [Variables locales](#variables-locales)
+    - [Trabajando con clases](#trabajando-con-clases)
+    - [Trabajando en constructores](#trabajando-en-constructores)
+    - [estructuras vs clases](#estructuras-vs-clases)
     - [Indentation](#indentation)
     - [Documentation styleguide](#documentation-styleguide)
 
 
 
 
-## Before starting
+## Antes de empezar 
 Please read our [code of conduct](CODE_OF_CONDUCT.md)
 
-## How can i contribute?
+## Como puedo contribuir?
 
-ToDo
+
+Nos encantaría aceptar sus parches y contribuciones a este proyecto. Solo hay algunas pautas pequeñas que debes seguir.
+
+
 
 ### I just have a question
-For any question you can send us a message via Twitter @Locha_io and soon through the form you will find on our website **locha.io**
+Para alguna pregunta o duda puede escribirnos via Twitter @Locha_io 
+a traves del formulario que encontrara en nuestro sitio web **locha.io**
 
 ### Suggesting enhancements
 ToDo
@@ -100,20 +111,19 @@ Haz push de tu commit a tu fork del repositorio:
 Ve a la página de GitHub, si vas a tu fork del repositorio, haz clic en el botón Branch y selecciona la rama en que realizaste los cambios nombredelfeaturequequiereshacer. Después presiona el botón Pull request.
 
 
-## Styleguide
+## Guia de estilos para el codigo fuente
+
+Actualmente este proyecto utiliza la guia de stilos de [google](https://google.github.io/styleguide/cppguide.html) y [.clang-format](https://github.com/bitcoin/bitcoin/blob/master/src/.clang-format) para formatear el documento.
+
+Es altamente recomendado que ejecute [.clang-format] para dar formato al documento antes de hacer un pull request, para hacer la revision del codigo mas facil.
 
 ### Commit messages
-A commit message must be short, clear and a general description of the changes or improvements.
-If a commit includes changes in several files or sections, we can include after the initial message a more extended description of each change.
+Un mensaje de commit debe ser corto, claro y con una descripcion de los cambios o mejoras propuestos.
+Si el commit incluye cambios en varios archivos o secciones, deberemos incluir un mensaje extendido con una descripcion de los cambios propuestos uno a uno.
 
-### Code styleguide
 
-Actuually this project uses the [C++ bitcoin Style Guide](https://github.com/bitcoin/bitcoin/blob/master/doc/developer-notes.md#coding-style-c) for simplicty, it's already established and works very well there and doesn't change very often.
-
-We use the [.clang-format](https://github.com/bitcoin/bitcoin/blob/master/src/.clang-format) file that they provide for automatic code formatting. It's very recommended that you run `clang-format` before you submit a pull request, to make code reviews more easy.
-
-#### Include guards
-Local header files must contain an distinctly named include guard to avoid problems with including the same header multiple times, for example:
+### Include guards
+Todos los archivos de encabezado deben tener **#define** guardias para evitar la inclusión múltiple. El formato del nombre del símbolo debe ser:
 ```cpp
 // file: foo.h
 #ifndef FOO_H
@@ -122,22 +132,28 @@ Local header files must contain an distinctly named include guard to avoid probl
 #endif // FOO_H
 ```
 
-#### Include statements
+#### Las declaraciones de inclusion
+Las declaraciones de inclusion deben ubicarse **unicamente** en la parte superior del archivo de manera predeterminada, esta declaración irá en los archivos .cpp, no en los archivos de encabezado (.h), excepto cuando sea necesario y debe clasificarse y agruparse.
 
-Include statements must be located at the top of the file **only**. By default this statement will go in the .cpp files, not in header files (.h), except when necessary and it should be sorted and grouped.
 
-#### Naming rules
+#### Reglas de nomenclatura
 
-- Use a descriptive name and be consistent in style when write code
-- All names should be written in English
+- Use un nombre descriptivo y que sea coherente con el estilo cuando escriba código.
+- todos los nombres deberan ser escritos en **ingles**.
 
-**Macros** Use uppercase and underscore
+**Macros** Realmente no vas a definir una macro, ¿verdad? Si lo hace, son así: MY_MACRO_THAT_SCARES_SMALL_CHILDREN_AND_ADULTS_ALIKE.
+
+Por favor vea la descripción de macros; en general no se deben usar macros. Sin embargo, si son absolutamente necesarios, deben nombrarse con todas las mayúsculas y guiones bajos.
+
+
 ```cpp
-
+#define ROUND(x) ...
+#define PI_ROUNDED 3.0
 #define LOW_NIBBLE(x) (x & 0xf)
 ```
 
-**Variable names** Use underscore, dont't group variables by types
+**Nombres de variable** Usar guion bajo, no agrupar variables por tipo
+
 ```cpp
 // GOOD, underscore
 int rssi_level;
@@ -155,13 +171,15 @@ int rssiLevel;
 int snrLevel;
 ```
 
-**Methods or functions**  Use descriptive verbs and mixed case starting with lower case.
+**Metodos o funciones** Use verbos descriptivos y sus nombres empezando con minusculas, si el nombre es compuesto se continua con mayusculas.
 
  ```cpp
  int getTotalNearestNodes();
+ void getData();
+ int getFirstItem();
 ```
+**Classes** Para el nombre de las clases usamos unicamente mayusculas en el inicio de cada palabra, si el nombre es compuesto.
 
-**Classes** Use CamelCase
 ```cpp
 class SomeClass { 
 public:
@@ -170,7 +188,7 @@ private:
     int m_foo; // Private variables have the m_ prefix
 };
 ```
-### Common statements
+### Sentencias de control
 
 #### if / if-else
 
@@ -202,7 +220,7 @@ if (foo) bar = UP;
 ```
 #### while / do-while loops
 
-- Put space between `while` and `()`
+- Poner espacios entre `while` and `()`
 ```cpp
 // while statement
 while (foo > 0)
@@ -218,6 +236,147 @@ do
 while (foo > 0);
 
 ```
+### Forward Declarations
+Evitar usar declaraciones forward, en lo posible incluya los headers que necesite.
+
+- cuando utilice una funcion declarada dentro de un archivo header, siempre incluya este header
+- Cuando utilice una clase template, preferiblemente incluya su archivo header.
+
+### Funciones Inline
+Defina funciones inline solo cuando sean de 10 o menos lineas de codigo.
+
+### Orden en los que se deben incluir los archivos header
+Incluya los archivos header en el siguiente orden: 
+- C system headers
+- C++ standard library headers
+- headers de librerias
+- headers del proyecto
+
+Todos los archivos headers deben aparecer de forma descendente 
+
+```cpp
+    C system headers //(para ser precisos archivos que se llaman con < >), <stdlib.h>.
+    A blank line
+    C++ standard library headers // (sin la extension del archivo), e.g. <algorithm>, <cstddef>.
+    A blank line
+    Otras librerias .h // archivos dentro de lib e include
+    el proyecto  .h files. 
+
+```
+
+### Namespaces
+Los namespaces proveen un metodo para prevenir conflictos de nombres en programas grandes.
+
+Los namespaces deberan ser usados siguiendo las siguientes reglas: 
+
+- Los nombres de los espacios de nombres son en minúsculas. 
+- Los nombres de espacios de nombres de nivel superior se basan en el nombre del proyecto. 
+- Evite colisiones entre espacios de nombres anidados y espacios de nombres de nivel superior bien conocidos.
+- El nombre de un espacio de nombres de nivel superior generalmente debe ser el nombre del proyecto o equipo cuyo código está contenido en ese espacio de nombres. 
+- Terminar los namespaces con comentarios como se muestra a continuacion.
+
+```cpp
+// In the .h file
+namespace mynamespace {
+
+// All declarations are within the namespace scope.
+// Notice the lack of indentation.
+class MyClass {
+ public:
+  ...
+  void Foo();
+};
+
+}  // namespace mynamespace
+
+```
+
+```cpp
+// In the .cc file
+namespace mynamespace {
+
+// Definition of functions is within scope of the namespace.
+void MyClass::Foo() {
+  ...
+}
+
+}  // namespace mynamespace
+```
+
+### Variables locales
+
+Coloque las variables de una función en el alcance más estrecho posible e inicialice las variables en la declaración.
+
+
+```cpp
+int i;
+i = f();   // Bad -- initialization separate from declaration.
+
+```
+
+```cpp
+int j = g();  // Good -- declaration has initialization.
+```
+
+```cpp
+std::vector<int> v;
+v.push_back(1);  // Prefer initializing using brace initialization.
+v.push_back(2);
+```
+
+```cpp
+std::vector<int> v = {1, 2};  // Good -- v starts initialized.
+
+```
+
+Las variables necesarias para las declaraciones if, while y for normalmente deberían declararse dentro de esas declaraciones, de modo que dichas variables se limiten a esos ámbitos. P.ej.:
+
+```cpp
+while (const char* p = strchr(str, '/')) str = p + 1;
+```
+
+Hay una advertencia: si la variable es un objeto, su constructor se invoca cada vez que entra en el ámbito y se crea, y su destructor se invoca cada vez que sale del ámbito.
+```cpp
+for(int i = 0; i < 10000000; i++) {
+    Foo f;  // My ctor and dtor get called 1000000 times each.
+    f.DoSomething(i);
+}
+```
+Puede ser más eficiente declarar dicha variable utilizada fuera del ciclo
+
+```cpp
+Foo f;  // My ctor and dtor get called once each.
+for (int i = 0; i < 1000000; ++i) {
+  f.DoSomething(i);
+}
+```
+
+### Trabajando con clases
+
+Las clases son la unidad fundamental de código en C ++; Naturalmente, los usamos ampliamente;Esta sección enumera los principales y qué no debe hacer al escribir una clase.
+
+### Trabajando en constructores
+
+- Evite llamadas a métodos virtuales en constructores.
+
+- Es posible realizar una inicialización arbitraria en el cuerpo del constructor.
+
+- No hay que preocuparse por si la clase se ha inicializado o no; Los objetos que se inicializan completamente mediante una llamada de constructor pueden ser constantes y también pueden ser más fáciles de usar con contenedores o algoritmos estándar.
+
+- No puede tomar la dirección de un constructor, por lo que cualquier trabajo que se realice en el constructor no puede transferirse fácilmente a, por ejemplo, otro hilo.
+
+### estructuras vs clases
+Use estructuras solo para objetos pasivos que portan datos, todo lo demas es una clase.
+
+- Las palabras clave struct y class se comportan casi de manera idéntica en C ++. Agregamos nuestros propios significados semánticos a cada palabra clave, por lo que debe usar la palabra clave adecuada para el tipo de datos que está definiendo.
+
+- Las estructuras deben usarse para objetos pasivos que transportan datos y pueden tener constantes asociadas, pero carecen de cualquier otra funcionalidad que no sea acceder / configurar los miembros de datos. Todos los campos deben ser públicos y acceder directamente en lugar de a través de métodos getter / setter. La estructura no debe tener invariantes que impliquen relaciones entre diferentes campos, ya que el acceso directo del usuario a esos campos puede romper esos invariantes. Los métodos no deberían proporcionar comportamiento, sino que solo deberían usarse para configurar los miembros de datos, por ejemplo, constructor, destructor, Initialize (), Reset ().
+
+- Si se requiere más funcionalidad o invariantes, una clase es más apropiada. En caso de duda, conviértalo en una clase.
+
+- Para mantener la coherencia con STL, puede usar struct en lugar de class para tipos sin estado, como rasgos, metafunciones de plantilla.
+
+- Tenga en cuenta que las variables miembro en estructuras y clases tienen diferentes reglas de nomenclatura.
 ### Indentation
 
 - Do not use tabs
@@ -225,3 +384,5 @@ while (foo > 0);
 
 ### Documentation styleguide
 ToDo
+
+
