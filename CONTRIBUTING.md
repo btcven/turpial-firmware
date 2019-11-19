@@ -4,27 +4,20 @@ Gracias por tomarte el tiempo de contribuir!.
 
 El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpial**]().
 
-#### Table of contents
-
-* [Antes de empezar](#antes-de-empezar)
-
-* [How can i contribute?](#how-can-i-contribute)
-    * [I just have a question](#i-just-have-a-question)
-    * [Suggesting **enhancements**](#suggesting-enhancements)
-    * [Reporting **bugs**](#reporting-bugs)
-    * [Como hacer un Pull Request](#Como-hacer-un-Pull-Request)
+#### Table de contenido
 
 - [Contributing to Turpial firmware](#contributing-to-turpial-firmware)
-      - [Table of contents](#table-of-contents)
+      - [Table de contenido](#table-de-contenido)
   - [Antes de empezar](#antes-de-empezar)
   - [Como puedo contribuir?](#como-puedo-contribuir)
-    - [I just have a question](#i-just-have-a-question)
-    - [Suggesting enhancements](#suggesting-enhancements)
+    - [Tengo una pregunta](#tengo-una-pregunta)
+    - [Sugerencia de mejoras](#sugerencia-de-mejoras)
     - [Reportando un bug](#reportando-un-bug)
   - [Como hacer un Pull Request](#como-hacer-un-pull-request)
     - [Empezar un nuevo cambio](#empezar-un-nuevo-cambio)
     - [Subir tus cambios y hacer Pull Request](#subir-tus-cambios-y-hacer-pull-request)
 - [Guia de estilos para el codigo fuente](#guia-de-estilos-para-el-codigo-fuente)
+  - [Objetivos de la guia de estilos](#objetivos-de-la-guia-de-estilos)
   - [Commit messages](#commit-messages)
   - [Include guards](#include-guards)
   - [Las declaraciones de inclusion](#las-declaraciones-de-inclusion)
@@ -41,17 +34,81 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
     - [Trabajando en constructores](#trabajando-en-constructores)
     - [estructuras vs clases](#estructuras-vs-clases)
     - [Herencia](#herencia)
-      - [Pros](#pros)
-      - [Cons](#cons)
-      - [decision](#decision)
+      - [Ventajas](#ventajas)
+      - [Desventajas](#desventajas)
+      - [Decision](#decision)
+      - [Orden en la declaracion](#orden-en-la-declaracion)
+    - [Funciones](#funciones)
+    - [Parametros de salida](#parametros-de-salida)
+    - [Escribir funciones cortas](#escribir-funciones-cortas)
+    - [Argumentos como referencia](#argumentos-como-referencia)
+      - [Ventajas](#ventajas-1)
+      - [Desventajas](#desventajas-1)
+      - [Decision](#decision-1)
+    - [Donde poner la palabra clave **const**](#donde-poner-la-palabra-clave-const)
+    - [Indentation](#indentation)
+    - [Documentation styleguide](#documentation-styleguide)
+    
+    - [Orden en los que se deben incluir los archivos header](#orden-en-los-que-se-deben-incluir-los-archivos-header)
+  - [Namespaces](#namespaces)
+  - [Variables locales](#variables-locales)
+  - [Trabajando con clases](#trabajando-con-clases)
+    - [Trabajando en constructores](#trabajando-en-constructores)
+    - [estructuras vs clases](#estructuras-vs-clases)
+    - [Herencia](#herencia)
+      - [Ventajas](#ventajas)
+      - [Desventajas](#desventajas)
+      - [Decision](#decision)
       - [Orden en la declaracion](#orden-en-la-declaracion)
   - [Funciones](#funciones)
     - [Parametros de salida](#parametros-de-salida)
     - [Escribir funciones cortas](#escribir-funciones-cortas)
     - [Argumentos como referencia](#argumentos-como-referencia)
-      - [Pros](#pros-1)
-      - [Cons](#cons-1)
+      - [Ventajas](#ventajas-1)
+      - [Desventajas](#desventajas-1)
+      - [Decision](#decision-1)
+  - [Preincremento y Predecremento](#preincremento-y-predecremento)
+    - [Indentation](#indentation)
+    - [Documentation styleguide](#documentation-styleguide)
+  -[Orden en los que se deben incluir los archivos header](#orden-en-los-que-se-deben-incluir-los-archivos-header)
+  - [Namespaces](#namespaces)
+  - [Variables locales](#variables-locales)
+  - [Trabajando con clases](#trabajando-con-clases)
+    - [Trabajando en constructores](#trabajando-en-constructores)
+    - [estructuras vs clases](#estructuras-vs-clases)
+    - [Herencia](#herencia)
+      - [Ventajas](#ventajas)
+      - [Desventajas](#desventajas)
       - [Decision](#decision)
+      - [Orden en la declaracion](#orden-en-la-declaracion)
+  - [Funciones](#funciones)
+    - [Parametros de salida](#parametros-de-salida)
+    - [Escribir funciones cortas](#escribir-funciones-cortas)
+    - [Argumentos como referencia](#argumentos-como-referencia)
+      - [Ventajas](#ventajas-1)
+      - [Desventajas](#desventajas-1)
+      - [Decision](#decision-1)
+  - [Preincremento y Predecremento](#preincremento-y-predecremento)
+    - [Indentation](#indentation)
+    - [Documentation styleguide](#documentation-styleguide)
+     [Orden en los que se deben incluir los archivos header](#orden-en-los-que-se-deben-incluir-los-archivos-header)
+  - [Namespaces](#namespaces)
+  - [Variables locales](#variables-locales)
+  - [Trabajando con clases](#trabajando-con-clases)
+    - [Trabajando en constructores](#trabajando-en-constructores)
+    - [estructuras vs clases](#estructuras-vs-clases)
+    - [Herencia](#herencia)
+      - [Ventajas](#ventajas)
+      - [Desventajas](#desventajas)
+      - [Decision](#decision)
+      - [Orden en la declaracion](#orden-en-la-declaracion)
+  - [Funciones](#funciones)
+    - [Parametros de salida](#parametros-de-salida)
+    - [Escribir funciones cortas](#escribir-funciones-cortas)
+    - [Argumentos como referencia](#argumentos-como-referencia)
+      - [Ventajas](#ventajas-1)
+      - [Desventajas](#desventajas-1)
+      - [Decision](#decision-1)
   - [Preincremento y Predecremento](#preincremento-y-predecremento)
     - [Indentation](#indentation)
     - [Documentation styleguide](#documentation-styleguide)
@@ -63,17 +120,13 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
 Please read our [code of conduct](CODE_OF_CONDUCT.md)
 
 ## Como puedo contribuir?
-
-
 Nos encantaría aceptar sus parches y contribuciones a este proyecto. Solo hay algunas pautas pequeñas que debes seguir.
 
-
-
-### I just have a question
+### Tengo una pregunta
 Para alguna pregunta o duda puede escribirnos via Twitter @Locha_io 
 a traves del formulario que encontrara en nuestro sitio web **locha.io**
 
-### Suggesting enhancements
+### Sugerencia de mejoras
 ToDo
 
 ### Reportando un bug
@@ -129,6 +182,18 @@ Ve a la página de GitHub, si vas a tu fork del repositorio, haz clic en el bot�
 Actualmente este proyecto utiliza la guia de stilos de [google](https://google.github.io/styleguide/cppguide.html) y [.clang-format](https://github.com/bitcoin/bitcoin/blob/master/src/.clang-format) para formatear el documento.
 
 Es altamente recomendado que ejecute [.clang-format] para dar formato al documento antes de hacer un pull request, para hacer la revision del codigo mas facil.
+
+## Objetivos de la guia de estilos
+
+Los objetivos de la guía de estilo tal como los vemos actualmente se basan en optimizar para el lector y no para el escritor; Se espera que nuestra base de codigo (y la mayoria de los componentes individuales) continuen durante bastante tiempo
+
+- Optimizar para el lector, no para el escritor
+Se espera que nuestra base de código (y la mayoría de los componentes individuales que se le envíen) continúe durante bastante tiempo. Como resultado, se dedicará más tiempo a leer la mayor parte de nuestro código que a escribirlo. Elegimos explícitamente optimizar la experiencia de nuestro ingeniero de software promedio leyendo, manteniendo y depurando código en nuestra base de código en lugar de facilitar la escritura de dicho código. "Dejar un rastro para el lector" es un subpunto particularmente común de este principio: cuando algo sorprendente o inusual está sucediendo en un fragmento de código (por ejemplo, transferencia de propiedad del puntero), dejando pistas textuales para el lector en el punto de uso es valioso (std :: unique_ptr demuestra la transferencia de propiedad sin ambigüedades en el sitio de la llamada).
+
+- Sea consistente con el código existente
+El uso de un estilo consistentemente a través de nuestra base de código nos permite enfocarnos en otros problemas (más importantes). La consistencia también permite la automatización: las herramientas que formatean su código o ajustan sus #incluye solo funcionan correctamente cuando su código es consistente con las expectativas de las herramientas. En muchos casos, las reglas que se atribuyen a "Sea coherente" se reducen a "Simplemente elija una y deje de preocuparse por eso"; El valor potencial de permitir flexibilidad en estos puntos se ve compensado por el costo de hacer que las personas discutan sobre ellos.
+
+
 
 ## Commit messages
 Un mensaje de commit debe ser corto, claro y con una descripcion de los cambios o mejoras propuestos.
@@ -205,8 +270,8 @@ private:
 
 ### if / if-else
 
-- Always put braces around the if-else statement or when is nested in another if statement
-- Put space between `if` and `()`
+- Siempre ponga llaves alrededor de la instruccion **if-else** o cuando este anidada en otra instruccion **if**
+- Puonga espacion entre  **`if`** y **`()`**
 
 
 ```cpp
@@ -231,9 +296,10 @@ else
 // only if statement
 if (foo) bar = UP;
 ```
+
 ## while / do-while loops
 
-- Poner espacios entre `while` and `()`
+- Poner espacios entre `while` y `()`
 ```cpp
 // while statement
 while (foo > 0)
@@ -320,11 +386,9 @@ void MyClass::Foo() {
 
 Coloque las variables de una función en el alcance más estrecho posible e inicialice las variables en la declaración.
 
-
 ```cpp
 int i;
 i = f();   // Bad -- initialization separate from declaration.
-
 ```
 
 ```cpp
@@ -342,7 +406,7 @@ std::vector<int> v = {1, 2};  // Good -- v starts initialized.
 
 ```
 
-Las variables necesarias para las declaraciones if, while y for normalmente deberían declararse dentro de esas declaraciones, de modo que dichas variables se limiten a esos ámbitos. P.ej.:
+Las variables necesarias para las declaraciones **if**, **while** y **for** normalmente deberían declararse dentro de esas declaraciones, de modo que dichas variables se limiten a esos ámbitos. P.ej.:
 
 ```cpp
 while (const char* p = strchr(str, '/')) str = p + 1;
@@ -398,15 +462,15 @@ La composicion es mas apropiada que la herencia. Cuando use la herencia hagala p
 Cuando una subclase hereda de una clase base, incluya las definiciones de todos los datos y operaciones que define la clase base. 
 "Herencia de interfaz" es herencia de una clase base abstracta pura (una sin estado o métodos definidos); toda otra herencia es "herencia de implementación".
 
-#### Pros
+#### Ventajas
 La herencia de implementación reduce el tamaño del código al reutilizar el código de la clase base, ya que se especializa en un tipo existente. Como la herencia es una declaración en tiempo de compilación, usted y el compilador pueden comprender la operación y detectar errores. La herencia de interfaz se puede utilizar para exigir mediante programación que una clase exponga una API particular. Nuevamente, el compilador puede detectar errores, en este caso, cuando una clase no define un método necesario de la API.
 
-#### Cons
+#### Desventajas
 Para la herencia de implementación, debido a que el código que implementa una subclase se distribuye entre la base y la subclase, puede ser más difícil entender una implementación. La subclase no puede anular funciones que no son virtuales, por lo que la subclase no puede cambiar la implementación.
 
 La herencia múltiple es especialmente problemática, ya que a menudo impone una sobrecarga de rendimiento más alta (de hecho, la caída del rendimiento de la herencia única a la herencia múltiple a menudo puede ser mayor que la caída del rendimiento del despacho ordinario a virtual), y porque corre el riesgo de llevar a "diamante" "patrones de herencia, que son propensos a la ambigüedad, la confusión y los errores directos.
 
-#### decision 
+#### Decision 
 Toda herencia debe ser pública. Si desea hacer una herencia privada, debe incluir una instancia de la clase base como miembro en su lugar.
 
 No abusar de la herencia de implementación. La composición es a menudo más apropiada. Trate de restringir el uso de la herencia.
@@ -424,7 +488,7 @@ Limite el uso de protegido a las funciones miembro a las que se deba acceder des
 - No coloque definiciones de métodos grandes **inline** en la definición de clase. Por lo general, solo los métodos triviales o críticos para el rendimiento, y muy cortos, se pueden definir **inline**. Ver Funciones [Inline](#funciones-inline) para más detalles.
 
 
-## Funciones
+### Funciones
 
 ### Parametros de salida
 
@@ -450,14 +514,14 @@ Esta no es una regla estricta. Los parámetros que son tanto de entrada como de 
 
 ### Argumentos como referencia
 
-- Todos los parámetros pasados por referencia deben etiquetarse const.
+- Todos los parámetros pasados por referencia deben etiquetarse **const**.
 - En C, si una función necesita modificar una variable, el parámetro debe usar un puntero, por ejemplo, ```int foo (int * pval); ```
 En C ++, la función puede declarar alternativamente un parámetro de referencia: int foo (int & val).
 
-#### Pros
+#### Ventajas
 Definir un parámetro como referencia evita un código feo como ```(* pval) ++```. Necesario para algunas aplicaciones, como los constructores de copias. Deja en claro, a diferencia de los punteros, que un puntero nulo no es un valor posible.
 
-#### Cons
+#### Desventajas
 Las referencias pueden ser confusas, ya que tienen una sintaxis de valor pero una semántica de puntero.
 
 #### Decision
@@ -472,7 +536,7 @@ Sin embargo, hay algunos casos en los que es preferible usar const T * a const T
 
 Recuerde que la mayoría de las veces los parámetros de entrada se especificarán como const T &. El uso de const T * en su lugar comunica al lector que la entrada se trata de alguna manera de manera diferente. Entonces, si elige const T * en lugar de const T &, hágalo por una razón concreta; de lo contrario, probablemente confundirá a los lectores haciéndolos buscar una explicación que no existe.
 
-## Sobre carga de funciones
+### Sobre carga de funciones
 
 - Use funciones sobrecargadas (incluidos los constructores) solo si un lector que mira un sitio de llamada puede tener una buena idea de lo que está sucediendo sin tener que averiguar primero qué sobrecarga se está llamando.
 
@@ -493,7 +557,7 @@ class MyClass {
 Puede sobrecargar una función cuando no hay diferencias semánticas entre las variantes. Estas sobrecargas pueden variar en tipos, calificadores o recuento de argumentos. Sin embargo, un lector de dicha llamada no necesita saber qué miembro del conjunto de sobrecarga se elige, solo que se está llamando a algo del conjunto. Si puede documentar todas las entradas en el conjunto de sobrecarga con un solo comentario en el encabezado, es una buena señal de que es un conjunto de sobrecarga bien diseñado.
 
 
-## Casting
+### Casting
 
 Use conversiones de estilo C++ como 
 ```cpp 
@@ -520,7 +584,7 @@ int y = int (x) //pero este último está bien cuando se invoca un constructor d
 - Use const_cast para eliminar el calificador const.
 
 
-## Preincremento y Predecremento
+### Preincremento y Predecremento
 
 Utilice la forma de prefijo ``` (++ i) ``` de los operadores de incremento y decremento con iteradores y otros objetos de plantilla.
 
@@ -531,6 +595,67 @@ Cuando se ignora el valor de retorno, la forma "pre" (++ i) nunca es menos efici
 La tradición se desarrolló, en C, de usar post-incremento cuando no se usa el valor de expresión, especialmente en for loops. Algunos encuentran que el incremento posterior es más fácil de leer, ya que el "asunto" (i) precede al "verbo" (++), al igual que en inglés.
 
 Para valores escalares simples (no objeto) no hay razón para preferir una forma y permitimos cualquiera. Para iteradores y otros tipos de plantillas, use pre-incremento.
+
+### No miembros, miembros estaticos y funciones globales
+
+- Se prefiere colocar funciones que no sean miembros en un espacio de nombres; usar funciones completamente globales raramente. 
+
+- No use una clase simplemente para agrupar funciones estáticas. Los métodos estáticos de una clase generalmente deben estar estrechamente relacionados con las instancias de la clase o los datos estáticos de la clase.
+
+#### Ventajas
+Las funciones de miembro no miembro y estático pueden ser útiles en algunas situaciones. Poner funciones que no sean miembros en un espacio de nombres evita contaminar el espacio de nombres global.
+
+#### Desventajas
+- Las funciones de miembro no miembro y estático pueden tener más sentido como miembros de una nueva clase, especialmente si acceden a recursos externos o tienen dependencias significativas.
+
+#### Decision
+- A veces es útil definir una función no vinculada a una instancia de clase. Tal función puede ser un miembro estático o una función no miembro. 
+
+- Las funciones que no son miembros no deben depender de variables externas, y casi siempre deben existir en un espacio de nombres. 
+
+- No cree clases solo para agrupar funciones miembro estáticas; Esto no es diferente a simplemente dar a los nombres de funciones un prefijo común, y tal agrupación generalmente es innecesaria de todos modos.
+
+Si define una función que no es miembro y solo es necesaria en su archivo .cc, use un enlace interno para limitar su alcance.
+
+
+## Control de acceso
+Haga que los miembros de datos de las clases sean privados, a menos que sean constantes. Esto simplifica el razonamiento sobre invariantes.
+
+
+### Uso de constantes
+
+- En las API, use **const** siempre que tenga sentido. **constexpr** es una mejor opción para algunos usos de const.
+
+- Las variables y parámetros declarados pueden ir precedidos por la palabra clave **const** para indicar que las variables no se modifican por ejemplo, ```const int foo```. 
+- Las funciones de clase pueden tener el calificador const para indicar que la función no cambia el estado de las variables miembro de la clase por ejemplo, 
+```cpp
+class Foo {
+    int Bar (char c) const;
+};
+```
+- Es más fácil para las personas entender cómo se utilizan las variables. 
+- Permite al compilador hacer una mejor verificación de tipo y posiblemente, generar un mejor código.
+- Ayuda a las personas a convencerse de la corrección del programa porque saben que las funciones que llaman están limitadas en cómo pueden modificar sus variables. 
+- Ayuda a las personas a saber qué funciones son seguras de usar sin bloqueos en programas multiproceso.
+
+**const** es viral: si pasa una variable const a una función, esa función debe tener const en su prototipo (o la variable necesitará un const_cast). Esto puede ser un problema particular al llamar a funciones de biblioteca.
+
+Recomendamos encarecidamente utilizar const en las API (es decir, en parámetros de función, métodos y variables no locales) siempre que sea significativo y preciso. Esto proporciona documentación consistente, mayormente verificada por el compilador, de qué objetos puede mutar una operación. Tener una forma consistente y confiable de distinguir las lecturas de las escrituras es fundamental para escribir código seguro para subprocesos, y también es útil en muchos otros contextos. En particular:
+
+- Si una función garantiza que no modificará un argumento pasado por referencia o por puntero, el parámetro de función correspondiente debe ser una referencia a const (const T &) o un puntero a const (const T *), respectivamente.
+
+- Para un parámetro de función pasado por valor, const no tiene efecto en el llamador, por lo tanto, no se recomienda en las declaraciones de función. 
+
+- Declare que los métodos son constantes a menos que alteren el estado lógico del objeto (o permitan que el usuario modifique ese estado, por ejemplo, devolviendo una referencia no constante, pero eso es raro), o no se pueden invocar de manera segura al mismo tiempo.
+
+- El uso de const en variables locales no se recomienda ni se desaconseja.
+
+### Donde poner la palabra clave **const**
+
+Algunas personas prefieren la forma ```int const * foo``` a ```const int * foo```. Argumentan que esto es más legible porque es más consistente: mantiene la regla de que const siempre sigue el objeto que está describiendo. Sin embargo, este argumento de coherencia no se aplica en bases de código con pocas expresiones de puntero profundamente anidadas, ya que la mayoría de las expresiones constantes tienen solo una constante, y se aplica al valor subyacente. En tales casos, no hay consistencia para mantener. Poner el const primero es posiblemente más legible, ya que sigue el inglés al poner el "adjetivo" (const) antes del "sustantivo" (int).
+
+Dicho esto, si bien alentamos a poner const primero, no lo requerimos. ¡Pero sea consistente con el código que lo rodea!
+
 
 ### Indentation
 
