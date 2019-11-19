@@ -34,16 +34,16 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
     - [Trabajando en constructores](#trabajando-en-constructores)
     - [estructuras vs clases](#estructuras-vs-clases)
     - [Herencia](#herencia)
-      - [Pros](#pros)
-      - [Cons](#cons)
+      - [Ventajas](#ventajas)
+      - [Desventajas](#desventajas)
       - [Decision](#decision)
       - [Orden en la declaracion](#orden-en-la-declaracion)
     - [Funciones](#funciones)
     - [Parametros de salida](#parametros-de-salida)
     - [Escribir funciones cortas](#escribir-funciones-cortas)
     - [Argumentos como referencia](#argumentos-como-referencia)
-      - [Pros](#pros-1)
-      - [Cons](#cons-1)
+      - [Ventajas](#ventajas-1)
+      - [Desventajas](#desventajas-1)
       - [Decision](#decision-1)
     - [Donde poner la palabra clave **const**](#donde-poner-la-palabra-clave-const)
     - [Indentation](#indentation)
@@ -56,16 +56,16 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
     - [Trabajando en constructores](#trabajando-en-constructores)
     - [estructuras vs clases](#estructuras-vs-clases)
     - [Herencia](#herencia)
-      - [Pros](#pros)
-      - [Cons](#cons)
+      - [Ventajas](#ventajas)
+      - [Desventajas](#desventajas)
       - [Decision](#decision)
       - [Orden en la declaracion](#orden-en-la-declaracion)
   - [Funciones](#funciones)
     - [Parametros de salida](#parametros-de-salida)
     - [Escribir funciones cortas](#escribir-funciones-cortas)
     - [Argumentos como referencia](#argumentos-como-referencia)
-      - [Pros](#pros-1)
-      - [Cons](#cons-1)
+      - [Ventajas](#ventajas-1)
+      - [Desventajas](#desventajas-1)
       - [Decision](#decision-1)
   - [Preincremento y Predecremento](#preincremento-y-predecremento)
     - [Indentation](#indentation)
@@ -77,16 +77,16 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
     - [Trabajando en constructores](#trabajando-en-constructores)
     - [estructuras vs clases](#estructuras-vs-clases)
     - [Herencia](#herencia)
-      - [Pros](#pros)
-      - [Cons](#cons)
+      - [Ventajas](#ventajas)
+      - [Desventajas](#desventajas)
       - [Decision](#decision)
       - [Orden en la declaracion](#orden-en-la-declaracion)
   - [Funciones](#funciones)
     - [Parametros de salida](#parametros-de-salida)
     - [Escribir funciones cortas](#escribir-funciones-cortas)
     - [Argumentos como referencia](#argumentos-como-referencia)
-      - [Pros](#pros-1)
-      - [Cons](#cons-1)
+      - [Ventajas](#ventajas-1)
+      - [Desventajas](#desventajas-1)
       - [Decision](#decision-1)
   - [Preincremento y Predecremento](#preincremento-y-predecremento)
     - [Indentation](#indentation)
@@ -98,16 +98,16 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
     - [Trabajando en constructores](#trabajando-en-constructores)
     - [estructuras vs clases](#estructuras-vs-clases)
     - [Herencia](#herencia)
-      - [Pros](#pros)
-      - [Cons](#cons)
+      - [Ventajas](#ventajas)
+      - [Desventajas](#desventajas)
       - [Decision](#decision)
       - [Orden en la declaracion](#orden-en-la-declaracion)
   - [Funciones](#funciones)
     - [Parametros de salida](#parametros-de-salida)
     - [Escribir funciones cortas](#escribir-funciones-cortas)
     - [Argumentos como referencia](#argumentos-como-referencia)
-      - [Pros](#pros-1)
-      - [Cons](#cons-1)
+      - [Ventajas](#ventajas-1)
+      - [Desventajas](#desventajas-1)
       - [Decision](#decision-1)
   - [Preincremento y Predecremento](#preincremento-y-predecremento)
     - [Indentation](#indentation)
@@ -462,10 +462,10 @@ La composicion es mas apropiada que la herencia. Cuando use la herencia hagala p
 Cuando una subclase hereda de una clase base, incluya las definiciones de todos los datos y operaciones que define la clase base. 
 "Herencia de interfaz" es herencia de una clase base abstracta pura (una sin estado o métodos definidos); toda otra herencia es "herencia de implementación".
 
-#### Pros
+#### Ventajas
 La herencia de implementación reduce el tamaño del código al reutilizar el código de la clase base, ya que se especializa en un tipo existente. Como la herencia es una declaración en tiempo de compilación, usted y el compilador pueden comprender la operación y detectar errores. La herencia de interfaz se puede utilizar para exigir mediante programación que una clase exponga una API particular. Nuevamente, el compilador puede detectar errores, en este caso, cuando una clase no define un método necesario de la API.
 
-#### Cons
+#### Desventajas
 Para la herencia de implementación, debido a que el código que implementa una subclase se distribuye entre la base y la subclase, puede ser más difícil entender una implementación. La subclase no puede anular funciones que no son virtuales, por lo que la subclase no puede cambiar la implementación.
 
 La herencia múltiple es especialmente problemática, ya que a menudo impone una sobrecarga de rendimiento más alta (de hecho, la caída del rendimiento de la herencia única a la herencia múltiple a menudo puede ser mayor que la caída del rendimiento del despacho ordinario a virtual), y porque corre el riesgo de llevar a "diamante" "patrones de herencia, que son propensos a la ambigüedad, la confusión y los errores directos.
@@ -518,10 +518,10 @@ Esta no es una regla estricta. Los parámetros que son tanto de entrada como de 
 - En C, si una función necesita modificar una variable, el parámetro debe usar un puntero, por ejemplo, ```int foo (int * pval); ```
 En C ++, la función puede declarar alternativamente un parámetro de referencia: int foo (int & val).
 
-#### Pros
+#### Ventajas
 Definir un parámetro como referencia evita un código feo como ```(* pval) ++```. Necesario para algunas aplicaciones, como los constructores de copias. Deja en claro, a diferencia de los punteros, que un puntero nulo no es un valor posible.
 
-#### Cons
+#### Desventajas
 Las referencias pueden ser confusas, ya que tienen una sintaxis de valor pero una semántica de puntero.
 
 #### Decision
@@ -602,10 +602,10 @@ Para valores escalares simples (no objeto) no hay razón para preferir una forma
 
 - No use una clase simplemente para agrupar funciones estáticas. Los métodos estáticos de una clase generalmente deben estar estrechamente relacionados con las instancias de la clase o los datos estáticos de la clase.
 
-#### Pros
+#### Ventajas
 Las funciones de miembro no miembro y estático pueden ser útiles en algunas situaciones. Poner funciones que no sean miembros en un espacio de nombres evita contaminar el espacio de nombres global.
 
-#### Cons
+#### Desventajas
 - Las funciones de miembro no miembro y estático pueden tener más sentido como miembros de una nueva clase, especialmente si acceden a recursos externos o tienen dependencias significativas.
 
 #### Decision
