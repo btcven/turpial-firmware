@@ -65,10 +65,12 @@ private:
     /**
      * @brief Handle WiFi events
      * 
-     * @param[in] arg: custom argument passed to event handler 
-     * @param[in] event_base: event base
-     * @param[in] event_id: the ID of the event
-     * @param[in] event_data: data contained in the event
+     * @param[in] ctx: custom argument passed to event handler, currently this
+     * is a poiner to WiFiMode 
+     * @param[in] event: the event
+     * 
+     * @return
+     *      - ESP_OK: succeed
      */
     static esp_err_t eventHandler(void* ctx, system_event_t* event);
 };
