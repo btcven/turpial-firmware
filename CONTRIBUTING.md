@@ -46,6 +46,71 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
       - [Cons](#cons-1)
       - [Decision](#decision-1)
   - [Preincremento y Predecremento](#preincremento-y-predecremento)
+    - [No miembros, miembros estaticos y funciones globales](#no-miembros-miembros-estaticos-y-funciones-globales)
+    - [Indentation](#indentation)
+    - [Documentation styleguide](#documentation-styleguide)
+    
+    - [Orden en los que se deben incluir los archivos header](#orden-en-los-que-se-deben-incluir-los-archivos-header)
+  - [Namespaces](#namespaces)
+  - [Variables locales](#variables-locales)
+  - [Trabajando con clases](#trabajando-con-clases)
+    - [Trabajando en constructores](#trabajando-en-constructores)
+    - [estructuras vs clases](#estructuras-vs-clases)
+    - [Herencia](#herencia)
+      - [Pros](#pros)
+      - [Cons](#cons)
+      - [Decision](#decision)
+      - [Orden en la declaracion](#orden-en-la-declaracion)
+  - [Funciones](#funciones)
+    - [Parametros de salida](#parametros-de-salida)
+    - [Escribir funciones cortas](#escribir-funciones-cortas)
+    - [Argumentos como referencia](#argumentos-como-referencia)
+      - [Pros](#pros-1)
+      - [Cons](#cons-1)
+      - [Decision](#decision-1)
+  - [Preincremento y Predecremento](#preincremento-y-predecremento)
+    - [Indentation](#indentation)
+    - [Documentation styleguide](#documentation-styleguide)
+  -[Orden en los que se deben incluir los archivos header](#orden-en-los-que-se-deben-incluir-los-archivos-header)
+  - [Namespaces](#namespaces)
+  - [Variables locales](#variables-locales)
+  - [Trabajando con clases](#trabajando-con-clases)
+    - [Trabajando en constructores](#trabajando-en-constructores)
+    - [estructuras vs clases](#estructuras-vs-clases)
+    - [Herencia](#herencia)
+      - [Pros](#pros)
+      - [Cons](#cons)
+      - [Decision](#decision)
+      - [Orden en la declaracion](#orden-en-la-declaracion)
+  - [Funciones](#funciones)
+    - [Parametros de salida](#parametros-de-salida)
+    - [Escribir funciones cortas](#escribir-funciones-cortas)
+    - [Argumentos como referencia](#argumentos-como-referencia)
+      - [Pros](#pros-1)
+      - [Cons](#cons-1)
+      - [Decision](#decision-1)
+  - [Preincremento y Predecremento](#preincremento-y-predecremento)
+    - [Indentation](#indentation)
+    - [Documentation styleguide](#documentation-styleguide)
+     [Orden en los que se deben incluir los archivos header](#orden-en-los-que-se-deben-incluir-los-archivos-header)
+  - [Namespaces](#namespaces)
+  - [Variables locales](#variables-locales)
+  - [Trabajando con clases](#trabajando-con-clases)
+    - [Trabajando en constructores](#trabajando-en-constructores)
+    - [estructuras vs clases](#estructuras-vs-clases)
+    - [Herencia](#herencia)
+      - [Pros](#pros)
+      - [Cons](#cons)
+      - [Decision](#decision)
+      - [Orden en la declaracion](#orden-en-la-declaracion)
+  - [Funciones](#funciones)
+    - [Parametros de salida](#parametros-de-salida)
+    - [Escribir funciones cortas](#escribir-funciones-cortas)
+    - [Argumentos como referencia](#argumentos-como-referencia)
+      - [Pros](#pros-1)
+      - [Cons](#cons-1)
+      - [Decision](#decision-1)
+  - [Preincremento y Predecremento](#preincremento-y-predecremento)
     - [Indentation](#indentation)
     - [Documentation styleguide](#documentation-styleguide)
 
@@ -206,8 +271,8 @@ private:
 
 ### if / if-else
 
-- Always put braces around the if-else statement or when is nested in another if statement
-- Put space between `if` and `()`
+- Siempre ponga llaves alrededor de la instruccion **if-else** o cuando este anidada en otra instruccion **if**
+- Puonga espacion entre  **`if`** y **`()`**
 
 
 ```cpp
@@ -232,9 +297,10 @@ else
 // only if statement
 if (foo) bar = UP;
 ```
+
 ## while / do-while loops
 
-- Poner espacios entre `while` and `()`
+- Poner espacios entre `while` y `()`
 ```cpp
 // while statement
 while (foo > 0)
@@ -321,11 +387,9 @@ void MyClass::Foo() {
 
 Coloque las variables de una función en el alcance más estrecho posible e inicialice las variables en la declaración.
 
-
 ```cpp
 int i;
 i = f();   // Bad -- initialization separate from declaration.
-
 ```
 
 ```cpp
@@ -343,7 +407,7 @@ std::vector<int> v = {1, 2};  // Good -- v starts initialized.
 
 ```
 
-Las variables necesarias para las declaraciones if, while y for normalmente deberían declararse dentro de esas declaraciones, de modo que dichas variables se limiten a esos ámbitos. P.ej.:
+Las variables necesarias para las declaraciones **if**, **while** y **for** normalmente deberían declararse dentro de esas declaraciones, de modo que dichas variables se limiten a esos ámbitos. P.ej.:
 
 ```cpp
 while (const char* p = strchr(str, '/')) str = p + 1;
@@ -451,7 +515,7 @@ Esta no es una regla estricta. Los parámetros que son tanto de entrada como de 
 
 ### Argumentos como referencia
 
-- Todos los parámetros pasados por referencia deben etiquetarse const.
+- Todos los parámetros pasados por referencia deben etiquetarse **const**.
 - En C, si una función necesita modificar una variable, el parámetro debe usar un puntero, por ejemplo, ```int foo (int * pval); ```
 En C ++, la función puede declarar alternativamente un parámetro de referencia: int foo (int & val).
 
@@ -532,6 +596,24 @@ Cuando se ignora el valor de retorno, la forma "pre" (++ i) nunca es menos efici
 La tradición se desarrolló, en C, de usar post-incremento cuando no se usa el valor de expresión, especialmente en for loops. Algunos encuentran que el incremento posterior es más fácil de leer, ya que el "asunto" (i) precede al "verbo" (++), al igual que en inglés.
 
 Para valores escalares simples (no objeto) no hay razón para preferir una forma y permitimos cualquiera. Para iteradores y otros tipos de plantillas, use pre-incremento.
+
+### No miembros, miembros estaticos y funciones globales
+
+- Se prefiere colocar funciones que no sean miembros en un espacio de nombres; usar funciones completamente globales raramente. 
+
+- No use una clase simplemente para agrupar funciones estáticas. Los métodos estáticos de una clase generalmente deben estar estrechamente relacionados con las instancias de la clase o los datos estáticos de la clase.
+
+- Las funciones de miembro no miembro y estático pueden ser útiles en algunas situaciones. Poner funciones que no sean miembros en un espacio de nombres evita contaminar el espacio de nombres global.
+
+- Las funciones de miembro no miembro y estático pueden tener más sentido como miembros de una nueva clase, especialmente si acceden a recursos externos o tienen dependencias significativas.
+
+- A veces es útil definir una función no vinculada a una instancia de clase. Tal función puede ser un miembro estático o una función no miembro. 
+
+- Las funciones que no son miembros no deben depender de variables externas, y casi siempre deben existir en un espacio de nombres. 
+
+- No cree clases solo para agrupar funciones miembro estáticas; Esto no es diferente a simplemente dar a los nombres de funciones un prefijo común, y tal agrupación generalmente es innecesaria de todos modos.
+
+Si define una función que no es miembro y solo es necesaria en su archivo .cc, use un enlace interno para limitar su alcance.
 
 ### Indentation
 
