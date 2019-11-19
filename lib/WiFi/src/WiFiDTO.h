@@ -8,15 +8,15 @@
  * @license Apache 2.0, see LICENSE file for details
  */
 
-#include "Serializable.h"
-#include "TinyString.h"
-
-#include <iostream>
-
 #include <cstdint>
 #include <cstdlib>
 #include <cstring>
+#include <iostream>
 
+#include "esp_wifi.h"
+
+#include "Serializable.h"
+#include "TinyString.h"
 
 namespace wifi {
 
@@ -34,7 +34,9 @@ public:
      * 
      */
     DTOConfig()
-        : ap_channel(0), ap_max_conn(0), wap_enabled(false), wst_enabled(false), is_open(false), ap_ssid(tinystring::String()), ap_password(tinystring::String()), wst_ssid(tinystring::String()), wst_password(tinystring::String()) {}
+        : ap_channel(0), ap_max_conn(0), wifi_mode(WIFI_MODE_NULL), is_open(false), ap_ssid(tinystring::String()), ap_password(tinystring::String()), wst_ssid(tinystring::String()), wst_password(tinystring::String()) {}
+
+    wifi_auth_mode_t auth_mode() const;
 
     /**
      * @brief Returns the 
@@ -60,8 +62,7 @@ public:
 public:
     int8_t ap_channel;
     int8_t ap_max_conn;
-    bool wap_enabled;
-    bool wst_enabled;
+    wifi_mode_t wifi_mode;
     bool is_open;
     tinystring::String ap_ssid;
     tinystring::String ap_password;

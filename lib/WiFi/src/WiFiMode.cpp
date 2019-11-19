@@ -10,167 +10,119 @@
  */
 
 #include "WiFiMode.h"
-#include "WAP.h"
-#include "WST.h"
+
+#include <cstring>
+
+#include "sdkconfig.h"
+
+#include "esp_event.h"
+#include "esp_log.h"
+#include "esp_wifi.h"
 
 namespace wifi {
 
-namespace mode {
+WiFiMode::WiFiMode() {}
 
-OperationMode selectOperationMode(bool ap, bool st)
+esp_err_t WiFiMode::begin(const DTOConfig& dto_config)
 {
-    if (!ap && st) {
-        return OperationMode::St;
-    } else if (ap && !st) {
-        return OperationMode::Ap;
-    } else if (ap && st) {
-        return OperationMode::ApSt;
-    } else if (!ap && !st) {
-        return OperationMode::None;
-    } else {
-        // unreachable condition
-        return OperationMode::St;
+    ESP_LOGI(__func__, "WiFiMode begin");
+
+    esp_err_t err;
+
+    wifi_init_config_t wifi_init_config = WIFI_INIT_CONFIG_DEFAULT();
+
+    ESP_LOGD(__func__, "init WiFi");
+    err = esp_wifi_init(&wifi_init_config);
+    if (err != ESP_OK) return err;
+
+    ESP_LOGD(__func__, "set WiFi mode %d", dto_config.wifi_mode);
+    err = esp_wifi_set_mode(dto_config.wifi_mode);
+    if (err != ESP_OK) return err;
+
+    ESP_LOGD(__func__, "register default WiFi event handler");
+    return esp_event_handler_register(
+        WIFI_EVENT,
+        ESP_EVENT_ANY_ID,
+        &WiFiMode::eventHandler,
+        reinterpret_cast<void*>(this));
+
+    bool should_init_sta = (dto_config.wifi_mode == WIFI_MODE_APSTA) ||
+                           (dto_config.wifi_mode == WIFI_MODE_STA);
+    bool should_init_ap = (dto_config.wifi_mode == WIFI_MODE_APSTA) ||
+                          (dto_config.wifi_mode == WIFI_MODE_AP);
+
+    if (should_init_sta) {
+        err = setSTAConfig(dto_config);
+        if (err != ESP_OK) return err;
     }
+
+    if (should_init_ap) {
+        err = setAPConfig(dto_config);
+        if (err != ESP_OK) return err;
+    }
+
+    ESP_LOGD(__func__, "Start WiFi (and AP if enabled)");
+
+    err = esp_wifi_start();
+    if (err != ESP_OK) return err;
+
+    if (should_init_sta) {
+        ESP_LOGD(__func__, "connecting WiFi STA");
+
+        err = esp_wifi_connect();
+        if (err != ESP_OK) return err;
+    }
+
+    return ESP_OK;
 }
 
-void handleWiFiEvent(WiFiEvent_t evt)
+esp_err_t WiFiMode::setSTAConfig(const DTOConfig& dto_config)
 {
-    switch (evt) {
-    case SYSTEM_EVENT_WIFI_READY:
-        ESP_LOGI(__func__, "Event -> WiFi ready #%d", evt);
-        break;
-    case SYSTEM_EVENT_SCAN_DONE:
-        ESP_LOGI(__func__, "Event -> Scann done #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_START:
-        ESP_LOGI(__func__, "Event -> WST start #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_STOP:
-        ESP_LOGI(__func__, "Event -> WST stop #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_CONNECTED:
-        ESP_LOGI(__func__, "Event -> WST connected #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_DISCONNECTED:
-        ESP_LOGI(__func__, "Event -> WST disconnected #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_AUTHMODE_CHANGE:
-        ESP_LOGI(__func__, "Event -> WST auth mode change #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_GOT_IP:
-        ESP_LOGI(__func__, "Event -> WST got IP #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_LOST_IP:
-        ESP_LOGI(__func__, "Event -> WST lost IP #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_WPS_ER_SUCCESS:
-        ESP_LOGI(__func__, "Event -> WST WPS er success #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_WPS_ER_FAILED:
-        ESP_LOGI(__func__, "Event -> WST WPS er failed #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_WPS_ER_TIMEOUT:
-        ESP_LOGI(__func__, "Event -> WST er timeout #%d", evt);
-        break;
-    case SYSTEM_EVENT_STA_WPS_ER_PIN:
-        ESP_LOGI(__func__, "Event -> WST er pin #%d", evt);
-        break;
-    case SYSTEM_EVENT_AP_START:
-        ESP_LOGI(__func__, "Event -> AP start #%d", evt);
-        break;
-    case SYSTEM_EVENT_AP_STOP:
-        ESP_LOGI(__func__, "Event -> AP stop #%d", evt);
-        break;
-    case SYSTEM_EVENT_AP_STACONNECTED:
-        ESP_LOGI(__func__, "Event -> Client connected #%d", evt);
-        break;
-    case SYSTEM_EVENT_AP_STADISCONNECTED:
-        ESP_LOGI(__func__, "Event -> Client disconnected #%d", evt);
-        break;
-    case SYSTEM_EVENT_AP_STAIPASSIGNED:
-        ESP_LOGI(__func__, "Event -> IP assigned to client #%d", evt);
-        break;
-    case SYSTEM_EVENT_AP_PROBEREQRECVED:
-        ESP_LOGI(__func__, "Event -> PROBEREQRECVED #%d", evt);
-        break;
-    case SYSTEM_EVENT_GOT_IP6:
-        ESP_LOGI(__func__, "Event -> got ipv6 #%d", evt);
-        break;
-    case SYSTEM_EVENT_ETH_START:
-        ESP_LOGI(__func__, "Event -> ETH start #%d", evt);
-        break;
-    case SYSTEM_EVENT_ETH_STOP:
-        ESP_LOGI(__func__, "Event -> ETH stop #%d", evt);
-        break;
-    case SYSTEM_EVENT_ETH_CONNECTED:
-        ESP_LOGI(__func__, "Event -> ETH connected #%d", evt);
-        break;
-    case SYSTEM_EVENT_ETH_DISCONNECTED:
-        ESP_LOGI(__func__, "Event -> ETH disconnected #%d", evt);
-        break;
-    case SYSTEM_EVENT_ETH_GOT_IP:
-        ESP_LOGI(__func__, "Event -> ETH got ip #%d", evt);
-        break;
-    default:
-        ESP_LOGI(__func__, "Event -> Unknow event  #%d", evt);
-        break;
-    }
+    // TODO(jeandudey): use fixed size arrays allocated on the stack
+    if (dto_config.wst_ssid.length() >= 32) return ESP_FAIL;
+    if (dto_config.wst_password.length() >= 64) return ESP_FAIL;
+
+    // Zero-out the wifi_config_t structure before using it
+    wifi_config_t sta_config;
+    std::memset(reinterpret_cast<void*>(&sta_config), 0, sizeof(wifi_config_t));
+
+    dto_config.wst_ssid.copy_to(reinterpret_cast<char*>(sta_config.sta.ssid));
+    dto_config.wst_password.copy_to(reinterpret_cast<char*>(sta_config.sta.password));
+    sta_config.sta.scan_method = WIFI_ALL_CHANNEL_SCAN;
+    sta_config.sta.bssid_set = false;
+    sta_config.sta.channel = 0;
+    sta_config.sta.sort_method = WIFI_CONNECT_AP_BY_SIGNAL;
+
+    return esp_wifi_set_config(WIFI_IF_STA, &sta_config);
 }
 
-esp_err_t begin(DTOConfig config)
+esp_err_t WiFiMode::setAPConfig(const DTOConfig& dto_config)
 {
-    ESP_LOGI(__func__, "WiFi Mode begin");
+    // TODO(jeandudey): use fixed size arrays allocated on the stack
+    if (dto_config.ap_ssid.length() >= 32) return ESP_FAIL;
+    if (dto_config.ap_password.length() >= 64) return ESP_FAIL;
+    if (dto_config.ap_max_conn > 4) return ESP_FAIL;
 
-    wap::Config wap_config = {
-        .ap_ssid = config.ap_ssid.c_str(),
-        .ap_pass = config.ap_password.c_str(),
-        .ap_channel = config.ap_channel,
-        .ap_max_conn = config.ap_max_conn,
-    };
+    // Zero-out the wifi_config_t structure before using it
+    wifi_config_t ap_config;
+    std::memset(reinterpret_cast<void*>(&ap_config), 0, sizeof(wifi_config_t));
 
-    wst::Config wst_config = {
-        .wst_ssid = config.wst_ssid.c_str(),
-        .wst_pass = config.wst_password.c_str(),
-    };
+    dto_config.ap_ssid.copy_to(reinterpret_cast<char*>(ap_config.ap.ssid));
+    dto_config.ap_password.copy_to(reinterpret_cast<char*>(ap_config.ap.password));
 
-    bool is_ap = config.wap_enabled;
-    bool is_st = config.wst_enabled;
-    OperationMode op_mode = selectOperationMode(is_ap, is_st);
+    ap_config.ap.ssid_len = 0;
+    ap_config.ap.channel = dto_config.ap_channel;
+    ap_config.ap.authmode = dto_config.auth_mode();
+    ap_config.ap.ssid_hidden = 0;
+    ap_config.ap.max_connection = dto_config.ap_max_conn;
 
-    ESP_LOGI(__func__, "Starting WiFi mode: %d", static_cast<int>(op_mode));
-
-    WiFi.onEvent(handleWiFiEvent);
-
-    switch (op_mode) {
-    case OperationMode::St:
-        ESP_LOGI(__func__, "Starting WST iface only");
-        return wst::begin(wst_config);
-        break;
-    case OperationMode::Ap:
-        ESP_LOGI(__func__, "Starting WAP iface only");
-        return wap::begin(wap_config);
-        break;
-    case OperationMode::ApSt: {
-        ESP_LOGI(__func__, "Starting WAP and WST ifaces");
-        bool is_wap_ok = wap::begin(wap_config) == ESP_OK;
-        bool is_wst_ok = wst::begin(wst_config) == ESP_OK;
-        if (is_wap_ok && is_wst_ok) {
-            return ESP_OK;
-        } else {
-            return ESP_FAIL;
-        }
-    } break;
-    case OperationMode::None:
-        ESP_LOGI(__func__, "WAP and WST ifaces are disabled");
-        return ESP_OK;
-        break;
-    default:
-        ESP_LOGI(__func__, "Unknow error starting WiFi");
-        return ESP_FAIL;
-        break;
-    }
+    return esp_wifi_set_config(WIFI_IF_AP, &ap_config);
 }
 
-} // namespace mode
+void WiFiMode::eventHandler(void* arg, esp_event_base_t event_base, std::int32_t event_id, void* event_data)
+{
+    ESP_LOGD(__func__, "eventHandler called");
+    WiFiMode* wifi_mode = reinterpret_cast<WiFiMode*>(arg);
+}
 
 } // namespace wifi

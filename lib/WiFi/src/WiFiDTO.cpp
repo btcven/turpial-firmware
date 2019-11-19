@@ -14,21 +14,28 @@
 #include "Serializable.h"
 #include "SerializablePOD.h"
 
-
 // Implementation of all virtual methods from serializable interface.
 
 namespace wifi {
+
+wifi_auth_mode_t DTOConfig::auth_mode() const
+{
+    if (ap_password.length() >= 1) {
+        return WIFI_AUTH_WPA_WPA2_PSK;
+    } else {
+        return WIFI_AUTH_OPEN;
+    }
+}
 
 std::size_t DTOConfig::serialize_size() const
 {
     std::size_t size;
     size = pod::serialize_size<std::int8_t>(ap_channel) +
            pod::serialize_size<std::int8_t>(ap_max_conn) +
-           pod::serialize_size<bool>(wap_enabled) +
-           pod::serialize_size<bool>(wst_enabled) +
+           pod::serialize_size<wifi_mode_t>(wifi_mode) +
            pod::serialize_size<bool>(is_open) +
            ap_ssid.serialize_size() +
-           ap_password.serialize_size() + 
+           ap_password.serialize_size() +
            wst_ssid.serialize_size() +
            wst_password.serialize_size();
 
@@ -39,8 +46,7 @@ std::ostream& DTOConfig::serialize(std::ostream& stream) const
 {
     pod::serialize<std::int8_t>(stream, ap_channel);
     pod::serialize<std::int8_t>(stream, ap_max_conn);
-    pod::serialize<bool>(stream, wap_enabled);
-    pod::serialize<bool>(stream, wst_enabled);
+    pod::serialize<wifi_mode_t>(stream, wifi_mode);
     pod::serialize<bool>(stream, is_open);
     ap_ssid.serialize(stream);
     ap_password.serialize(stream);
@@ -53,8 +59,7 @@ std::istream& DTOConfig::deserialize(std::istream& stream)
 {
     pod::deserialize<std::int8_t>(stream, ap_channel);
     pod::deserialize<std::int8_t>(stream, ap_max_conn);
-    pod::deserialize<bool>(stream, wap_enabled);
-    pod::deserialize<bool>(stream, wst_enabled);
+    pod::deserialize<wifi_mode_t>(stream, wifi_mode);
     pod::deserialize<bool>(stream, is_open);
     ap_ssid.deserialize(stream);
     ap_password.deserialize(stream);
