@@ -23,6 +23,16 @@
 
 #include "defaults.h"
 
+/**
+ * @brief Read WiFi initialization parameters from the NVS (persistent
+ * storage)
+ * 
+ * @param[out] wifi_params: "DTOConfig" structure where the parameters are
+ * going to be readed.
+ * 
+ * @return
+ *      - ESP_OK: on success 
+ */
 esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params)
 {
     ESP_LOGD(__func__, "Reading WiFi configuration from NVS");
@@ -39,6 +49,11 @@ esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params)
     return ESP_OK;
 }
 
+/**
+ * @brief Set the default WiFi initialization parameters
+ * 
+ * @param[out] wifi_params: the structure used to set the parameters
+ */
 void setDefaultWiFiParams(wifi::DTOConfig& wifi_params)
 {
     wifi_params.ap_channel = WAP_CHANNEL;
@@ -59,17 +74,15 @@ extern "C" void app_main()
     err = nvs::begin();
     wifi::DTOConfig wifi_params;
 
-    if (err != ESP_OK) {
-        auto estr = esp_err_to_name(err);
-        ESP_LOGE(__func__, "Couldn't initialize NVS, error %s", estr);
-        ESP_LOGI(__func__, "Using default WiFi parameters");
+    if (nvs_err != ESP_OK) {
+        ESP_LOGE(__func__, "Couldn't initialize NVS, error %s", esp_err_to_name(err));
+        ESP_LOGD(__func__, "Using default WiFi parameters");
 
         setDefaultWiFiParams(wifi_params);
     } else {
         err = readWiFiParams(wifi_params);
         if (err != ESP_OK) {
-            auto estr = esp_err_to_name(err);
-            ESP_LOGE(__func__, "Couldn't read WiFi parameters (%s)", estr);
+            ESP_LOGE(__func__, "Couldn't read WiFi parameters (%s)", esp_err_to_name(err));
             ESP_LOGI(__func__, "Using default WiFi parameters");
 
             setDefaultWiFiParams(wifi_params);
@@ -79,8 +92,7 @@ extern "C" void app_main()
     /// Create default event loop (needed by WiFiMode)
     err = esp_event_loop_create_default();
     if (err != ESP_OK) {
-        auto estr = esp_err_to_name(err);
-        ESP_LOGE(__func__, "couldn't create event loop (%s)", estr);
+        ESP_LOGE(__func__, "couldn't create event loop (%s)", esp_err_to_name(err));
         return;
     }
 
@@ -88,8 +100,7 @@ extern "C" void app_main()
 
     err = wifi_mode.begin(wifi_params);
     if (err != ESP_OK) {
-        auto estr = esp_err_to_name(err);
-        ESP_LOGE(__func__, "Couldn't start WiFi interface (%s)", estr);
+        ESP_LOGE(__func__, "Couldn't start WiFi interface (%s)", esp_err_to_name(err));
         return;
     }
 

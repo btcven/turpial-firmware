@@ -36,23 +36,27 @@ public:
         : ap_channel(0), ap_max_conn(0), wifi_mode(WIFI_MODE_NULL), is_open(false), ap_ssid(), ap_password(), wst_ssid(), wst_password() {}
 
     /**
-     * @brief Returns the 
+     * @brief Returns the serialize size
      * 
-     * @return std::size_t 
+     * @return std::size_t size in bytes
      */
     virtual std::size_t serialize_size() const;
 
     /**
      * @brief Serializes this WiFiDTOConfig to the given buffer.
      * 
-     * @param dataOut buffer where data is being serialized to.
+     * @param[in] stream: buffer where data is being serialized to.
+     * 
+     * @return std::ostream& a reference to the stream we wrote to
      */
     virtual std::ostream& serialize(std::ostream& stream) const;
 
     /**
      * @brief Deserializes a WiFiDTOConfig from the given buffer.
      * 
-     * @param dataIn the buffer from where the daa is being deserialized.
+     * @param[in] stream: the stream from where the data is being deserialized.
+     * 
+     * @return std::istream& a reference to the stream we readed from
      */
     virtual std::istream& deserialize(std::istream& stream);
 
