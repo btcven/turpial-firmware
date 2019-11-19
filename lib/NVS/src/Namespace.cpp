@@ -20,12 +20,12 @@ Namespace::~Namespace()
 
 esp_err_t Namespace::open(const char* name, nvs_open_mode mode)
 {
-    // A namespace is already opened in this instance.
+    // A Namespace is already opened in this instance.
     if (m_is_opened) {
         return ESP_FAIL;
     }
+
     const auto mode_ = static_cast<nvs_open_mode>(mode);
-    std::cout << mode_ << std::endl;
     const auto err = nvs_open(name, mode, &m_handle);
 
     if (err != ESP_OK) {
@@ -55,17 +55,10 @@ esp_err_t Namespace::erase_all()
 
 esp_err_t Namespace::erase_key(const char* key)
 {
-    esp_err_t err;
-    if (!m_is_opened) {
-        std::cout << "no esta abierto ahora ****************" << std::endl;
-        return ESP_FAIL;
-    }
-    std::cout << "Trying to delete Key:  ----> " << key << std::endl;
-    err = nvs_erase_key(m_handle, key);
-    if (err != ESP_OK) {
-        return err;
-    }
-    std::cout << "Doing Commit for erase key" << std::endl;
+    if (!m_is_opened) return ESP_FAIL;
+
+    esp_err_t err = nvs_erase_key(m_handle, key);
+    if (err != ESP_OK) return err;
     return nvs_commit(m_handle);
 }
 

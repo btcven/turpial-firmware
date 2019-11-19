@@ -37,8 +37,10 @@ struct Config {
 /**
  * @brief Initialize WAP interface
  * 
- * @param config WAP configuration
- * @return esp_err_t ESP_OK on success
+ * @param[in] config: WAP configuration
+ * 
+ * @return
+ *      - ESP_OK: on success
  */
 esp_err_t begin(Config config);
 

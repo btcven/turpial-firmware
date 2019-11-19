@@ -34,8 +34,10 @@ struct Config {
 /**
  * @brief Initializes WST wifi mode
  * 
- * @param config The WST configuration
- * @return esp_err_t ESP_OK on success
+ * @param[in] config: The WST configuration
+ * 
+ * @return
+ *      - ESP_OK: on success
  */
 esp_err_t begin(Config config);
 

@@ -21,21 +21,45 @@ namespace wifi {
 
 namespace mode {
 
+/**
+ * @brief WAP/WST operation modes
+ * 
+ */
 enum class OperationMode {
+    /// No operation mode selected
     None = WIFI_MODE_NULL,
+    /// WST only
     St = WIFI_STA,
+    /// WAP onyly
     Ap = WIFI_AP,
+    // Both WAP/WST
     ApSt = WIFI_AP_STA,
 };
 
+/**
+ * @brief Select the WiFi operation mode
+ * 
+ * @param[in] ap: AP mode.
+ * @param[in] st: ST mode.
+ *  
+ * @return OperationMode the selected operation mode 
+ */
 OperationMode selectOperationMode(bool ap, bool st);
+
+/**
+ * @brief Handle WiFi interface events
+ * 
+ * @param[in] evt: a WiFi event 
+ */
 void handleWiFiEvent(WiFiEvent_t evt);
 
 /**
- * @brief Initialize WiFi with the given modes specified in DTOConfig
+ * @brief Initialize WiFi with the given modes specified in "DTOConfig"
  * 
- * @param wifi_params WiFi DTO configuration parameters
- * @return esp_err_t ESP_OK on success
+ * @param[in] wifi_params: WiFi DTO configuration parameters
+ * 
+ * @return
+ *      - ESP_OK: on success
  */
 esp_err_t begin(DTOConfig wifi_params);
 
