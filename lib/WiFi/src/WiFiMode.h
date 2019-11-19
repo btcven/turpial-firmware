@@ -70,11 +70,7 @@ private:
      * @param[in] event_id: the ID of the event
      * @param[in] event_data: data contained in the event
      */
-    static void eventHandler(
-        void* arg,
-        esp_event_base_t event_base,
-        std::int32_t event_id,
-        void* event_data);
+    static esp_err_t eventHandler(void* ctx, system_event_t* event)
 };
 
 

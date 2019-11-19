@@ -17,6 +17,7 @@
 
 #include "esp_event.h"
 #include "esp_log.h"
+#include "esp_system.h"
 #include "esp_wifi.h"
 
 namespace wifi {
@@ -48,12 +49,12 @@ esp_err_t WiFiMode::begin(const DTOConfig& dto_config)
     err = esp_wifi_set_mode(dto_config.wifi_mode);
     if (err != ESP_OK) return err;
 
-    ESP_LOGD(__func__, "register default WiFi event handler");
-    return esp_event_handler_register(
-        WIFI_EVENT,
-        ESP_EVENT_ANY_ID,
+    ESP_LOGD(__func__, "init WiFi event loop");
+    err = esp_event_loop_init(
         &WiFiMode::eventHandler,
         reinterpret_cast<void*>(this));
+    if (err != ESP_OK) return err;
+
 
     bool should_init_sta = (dto_config.wifi_mode == WIFI_MODE_APSTA) ||
                            (dto_config.wifi_mode == WIFI_MODE_STA);
@@ -122,10 +123,11 @@ esp_err_t WiFiMode::setAPConfig(const DTOConfig& dto_config)
     return esp_wifi_set_config(WIFI_IF_AP, &ap_config);
 }
 
-void WiFiMode::eventHandler(void* arg, esp_event_base_t event_base, std::int32_t event_id, void* event_data)
+esp_err_t WiFiMode::eventHandler(void* ctx, system_event_t* event)
 {
     ESP_LOGD(__func__, "eventHandler called");
-    WiFiMode* wifi_mode = reinterpret_cast<WiFiMode*>(arg);
+    //WiFiMode* wifi_mode = reinterpret_cast<WiFiMode*>(ctx);
+    return ESP_OK;
 }
 
 } // namespace wifi
