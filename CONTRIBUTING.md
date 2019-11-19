@@ -4,27 +4,20 @@ Gracias por tomarte el tiempo de contribuir!.
 
 El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpial**]().
 
-#### Table of contents
-
-* [Antes de empezar](#antes-de-empezar)
-
-* [How can i contribute?](#how-can-i-contribute)
-    * [I just have a question](#i-just-have-a-question)
-    * [Suggesting **enhancements**](#suggesting-enhancements)
-    * [Reporting **bugs**](#reporting-bugs)
-    * [Como hacer un Pull Request](#Como-hacer-un-Pull-Request)
+#### Table de contenido
 
 - [Contributing to Turpial firmware](#contributing-to-turpial-firmware)
-      - [Table of contents](#table-of-contents)
+      - [Table de contenido](#table-de-contenido)
   - [Antes de empezar](#antes-de-empezar)
   - [Como puedo contribuir?](#como-puedo-contribuir)
-    - [I just have a question](#i-just-have-a-question)
-    - [Suggesting enhancements](#suggesting-enhancements)
+    - [Tengo una pregunta](#tengo-una-pregunta)
+    - [Sugerencia de mejoras](#sugerencia-de-mejoras)
     - [Reportando un bug](#reportando-un-bug)
   - [Como hacer un Pull Request](#como-hacer-un-pull-request)
     - [Empezar un nuevo cambio](#empezar-un-nuevo-cambio)
     - [Subir tus cambios y hacer Pull Request](#subir-tus-cambios-y-hacer-pull-request)
 - [Guia de estilos para el codigo fuente](#guia-de-estilos-para-el-codigo-fuente)
+  - [Objetivos de la guia de estilos](#objetivos-de-la-guia-de-estilos)
   - [Commit messages](#commit-messages)
   - [Include guards](#include-guards)
   - [Las declaraciones de inclusion](#las-declaraciones-de-inclusion)
@@ -43,7 +36,7 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
     - [Herencia](#herencia)
       - [Pros](#pros)
       - [Cons](#cons)
-      - [decision](#decision)
+      - [Decision](#decision)
       - [Orden en la declaracion](#orden-en-la-declaracion)
   - [Funciones](#funciones)
     - [Parametros de salida](#parametros-de-salida)
@@ -51,7 +44,7 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
     - [Argumentos como referencia](#argumentos-como-referencia)
       - [Pros](#pros-1)
       - [Cons](#cons-1)
-      - [Decision](#decision)
+      - [Decision](#decision-1)
   - [Preincremento y Predecremento](#preincremento-y-predecremento)
     - [Indentation](#indentation)
     - [Documentation styleguide](#documentation-styleguide)
@@ -63,17 +56,13 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
 Please read our [code of conduct](CODE_OF_CONDUCT.md)
 
 ## Como puedo contribuir?
-
-
 Nos encantaría aceptar sus parches y contribuciones a este proyecto. Solo hay algunas pautas pequeñas que debes seguir.
 
-
-
-### I just have a question
+### Tengo una pregunta
 Para alguna pregunta o duda puede escribirnos via Twitter @Locha_io 
 a traves del formulario que encontrara en nuestro sitio web **locha.io**
 
-### Suggesting enhancements
+### Sugerencia de mejoras
 ToDo
 
 ### Reportando un bug
@@ -129,6 +118,18 @@ Ve a la página de GitHub, si vas a tu fork del repositorio, haz clic en el bot�
 Actualmente este proyecto utiliza la guia de stilos de [google](https://google.github.io/styleguide/cppguide.html) y [.clang-format](https://github.com/bitcoin/bitcoin/blob/master/src/.clang-format) para formatear el documento.
 
 Es altamente recomendado que ejecute [.clang-format] para dar formato al documento antes de hacer un pull request, para hacer la revision del codigo mas facil.
+
+## Objetivos de la guia de estilos
+
+Los objetivos de la guía de estilo tal como los vemos actualmente se basan en optimizar para el lector y no para el escritor; Se espera que nuestra base de codigo (y la mayoria de los componentes individuales) continuen durante bastante tiempo
+
+- Optimizar para el lector, no para el escritor
+Se espera que nuestra base de código (y la mayoría de los componentes individuales que se le envíen) continúe durante bastante tiempo. Como resultado, se dedicará más tiempo a leer la mayor parte de nuestro código que a escribirlo. Elegimos explícitamente optimizar la experiencia de nuestro ingeniero de software promedio leyendo, manteniendo y depurando código en nuestra base de código en lugar de facilitar la escritura de dicho código. "Dejar un rastro para el lector" es un subpunto particularmente común de este principio: cuando algo sorprendente o inusual está sucediendo en un fragmento de código (por ejemplo, transferencia de propiedad del puntero), dejando pistas textuales para el lector en el punto de uso es valioso (std :: unique_ptr demuestra la transferencia de propiedad sin ambigüedades en el sitio de la llamada).
+
+- Sea consistente con el código existente
+El uso de un estilo consistentemente a través de nuestra base de código nos permite enfocarnos en otros problemas (más importantes). La consistencia también permite la automatización: las herramientas que formatean su código o ajustan sus #incluye solo funcionan correctamente cuando su código es consistente con las expectativas de las herramientas. En muchos casos, las reglas que se atribuyen a "Sea coherente" se reducen a "Simplemente elija una y deje de preocuparse por eso"; El valor potencial de permitir flexibilidad en estos puntos se ve compensado por el costo de hacer que las personas discutan sobre ellos.
+
+
 
 ## Commit messages
 Un mensaje de commit debe ser corto, claro y con una descripcion de los cambios o mejoras propuestos.
@@ -406,7 +407,7 @@ Para la herencia de implementación, debido a que el código que implementa una 
 
 La herencia múltiple es especialmente problemática, ya que a menudo impone una sobrecarga de rendimiento más alta (de hecho, la caída del rendimiento de la herencia única a la herencia múltiple a menudo puede ser mayor que la caída del rendimiento del despacho ordinario a virtual), y porque corre el riesgo de llevar a "diamante" "patrones de herencia, que son propensos a la ambigüedad, la confusión y los errores directos.
 
-#### decision 
+#### Decision 
 Toda herencia debe ser pública. Si desea hacer una herencia privada, debe incluir una instancia de la clase base como miembro en su lugar.
 
 No abusar de la herencia de implementación. La composición es a menudo más apropiada. Trate de restringir el uso de la herencia.
