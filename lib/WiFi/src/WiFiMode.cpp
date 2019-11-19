@@ -15,11 +15,12 @@
 
 #include "sdkconfig.h"
 
-#include "esp_event_loop.h"
 #include "esp_event.h"
+#include "esp_event_loop.h"
 #include "esp_log.h"
 #include "esp_system.h"
 #include "esp_wifi.h"
+
 
 namespace wifi {
 
@@ -49,6 +50,8 @@ esp_err_t WiFiMode::begin(const DTOConfig& dto_config)
     ESP_LOGD(__func__, "set WiFi mode %d", dto_config.wifi_mode);
     err = esp_wifi_set_mode(dto_config.wifi_mode);
     if (err != ESP_OK) return err;
+
+    tcpip_adapter_init();
 
     ESP_LOGD(__func__, "init WiFi event loop");
     err = esp_event_loop_init(
