@@ -70,7 +70,7 @@ private:
      * @param[in] event_id: the ID of the event
      * @param[in] event_data: data contained in the event
      */
-    static esp_err_t eventHandler(void* ctx, system_event_t* event)
+    static esp_err_t eventHandler(void* ctx, system_event_t* event);
 };
 
 
