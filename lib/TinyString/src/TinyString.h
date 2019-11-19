@@ -73,6 +73,19 @@ public:
         return m_inner.c_str();
     }
 
+    /**
+     * @brief Copy this string to the given buffer
+     * 
+     * @param[out] buf: the output buffer, it should be at least
+     * "String::length() + 1" 
+     */
+    void copy_to(char* buf) const
+    {
+        std::size_t length_ = length();
+        std::memcpy(buf, m_inner.c_str(), length_);
+        buf[length_] = '\0';
+    }
+
     virtual std::size_t serialize_size() const
     {
         return sizeof(std::size_t) + length();

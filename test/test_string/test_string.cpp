@@ -1,7 +1,6 @@
 #include <cstdint>
 #include <sstream>
 
-#include <Arduino.h>
 #include <unity.h>
 
 #include "SerializablePOD.h"
@@ -36,12 +35,24 @@ void test_serialize_deserialize_string(void)
     TEST_ASSERT_EQUAL_STRING(test_string.c_str(), test_string_deserialized.c_str());
 }
 
+/**
+ * @brief Test string copying
+ * 
+ */
+void test_copy_to()
+{
+    char dest[7];
+    auto test_string = tinystring::TinyString("SSID_0");
+    TEST_ASSERT_EQUAL_INT(6, test_string.length());
+    test_string.copy_to(dest);
+    TEST_ASSERT_EQUAL_STRING(test_string.c_str(), dest);
+}
+
 extern "C" void app_main()
 {
-    delay(2000);
-
     UNITY_BEGIN();
     RUN_TEST(test_construct_string);
     RUN_TEST(test_serialize_deserialize_string);
+    RUN_TEST(test_copy_to);
     UNITY_END();
 }
