@@ -21,8 +21,8 @@ void test_serialized_and_deserialized_wifi_dto(void)
     wifi::DTOConfig wifi_params; //to serialized object  declare and initialized this one to be serialized
     wifi_params.ap_channel = 4;
     wifi_params.ap_max_conn = 3;
-    wifi_params.ap_password = tinystring::String("passwordTest");
-    wifi_params.ap_ssid = tinystring::String("ssidTest");
+    wifi_params.ap_password = "passwordTest";
+    wifi_params.ap_ssid = "ssidTest";
     wifi_params.is_open = false;
     wifi_params.wap_enabled = true;
     wifi_params.wst_enabled = false;

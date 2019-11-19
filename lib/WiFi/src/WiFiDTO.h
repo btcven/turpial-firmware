@@ -8,15 +8,14 @@
  * @license Apache 2.0, see LICENSE file for details
  */
 
+#include <array>
 #include <cstdint>
 #include <cstdlib>
-#include <cstring>
-#include <iostream>
 
 #include "esp_wifi.h"
 
 #include "Serializable.h"
-#include "TinyString.h"
+#include "SerializableBytes.h"
 
 namespace wifi {
 
@@ -34,9 +33,7 @@ public:
      * 
      */
     DTOConfig()
-        : ap_channel(0), ap_max_conn(0), wifi_mode(WIFI_MODE_NULL), is_open(false), ap_ssid(tinystring::String()), ap_password(tinystring::String()), wst_ssid(tinystring::String()), wst_password(tinystring::String()) {}
-
-    wifi_auth_mode_t auth_mode() const;
+        : ap_channel(0), ap_max_conn(0), wifi_mode(WIFI_MODE_NULL), is_open(false), ap_ssid(), ap_password(), wst_ssid(), wst_password() {}
 
     /**
      * @brief Returns the 
@@ -60,14 +57,14 @@ public:
     virtual std::istream& deserialize(std::istream& stream);
 
 public:
-    int8_t ap_channel;
-    int8_t ap_max_conn;
+    std::int8_t ap_channel;
+    std::int8_t ap_max_conn;
     wifi_mode_t wifi_mode;
     bool is_open;
-    tinystring::String ap_ssid;
-    tinystring::String ap_password;
-    tinystring::String wst_ssid;
-    tinystring::String wst_password;
+    SerializableBytes<32> ap_ssid;
+    SerializableBytes<64> ap_password;
+    SerializableBytes<32> wst_ssid;
+    SerializableBytes<64> wst_password;
 };
 
 } // namespace wifi

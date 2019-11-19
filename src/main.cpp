@@ -16,7 +16,6 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-
 #include "WiFiMode.h"
 #include "testRTOSCPP/Hello.h"
 
@@ -46,10 +45,10 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params)
     wifi_params.ap_max_conn = WAP_MAXCONN;
     wifi_params.wifi_mode = WIFI_MODE;
     wifi_params.is_open = false;
-    wifi_params.ap_ssid = tinystring::String(WAP_SSID);
-    wifi_params.ap_password = tinystring::String(WAP_PASS);
-    wifi_params.wst_ssid = tinystring::String(WST_SSID);
-    wifi_params.wst_password = tinystring::String(WST_PASS);
+    wifi_params.ap_ssid = WAP_SSID;
+    wifi_params.ap_password = WAP_PASS;
+    wifi_params.wst_ssid = WST_SSID;
+    wifi_params.wst_password = WST_PASS;
 }
 
 extern "C" void app_main()

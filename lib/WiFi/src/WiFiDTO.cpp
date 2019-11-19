@@ -12,20 +12,13 @@
 #include "WiFiDTO.h"
 
 #include "Serializable.h"
+#include "SerializableBytes.h"
 #include "SerializablePOD.h"
+
 
 // Implementation of all virtual methods from serializable interface.
 
 namespace wifi {
-
-wifi_auth_mode_t DTOConfig::auth_mode() const
-{
-    if (ap_password.length() >= 1) {
-        return WIFI_AUTH_WPA_WPA2_PSK;
-    } else {
-        return WIFI_AUTH_OPEN;
-    }
-}
 
 std::size_t DTOConfig::serialize_size() const
 {

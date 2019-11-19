@@ -2,7 +2,6 @@
 #include <sstream>
 
 #include "WiFiDTO.h"
-#include <Arduino.h>
 #include <unity.h>
 
 #include "Namespace.h"
@@ -34,13 +33,11 @@ void test_create_and_save_blob(void)
     wifi::DTOConfig wifi_params; //to serialized object  declare and initialized this one to be serialized
     wifi_params.ap_channel = 4;
     wifi_params.ap_max_conn = 3;
-    wifi_params.ap_password = tinystring::String("passwordTest");
-    wifi_params.ap_ssid = tinystring::String("ssidTest");
+    wifi_params.ap_password = "passwordTest";
+    wifi_params.ap_ssid = "ssidTest";
     wifi_params.is_open = false;
-    wifi_params.wap_enabled = true;
-    wifi_params.wst_enabled = false;
+    wifi_params.wifi_mode = WIFI_MODE_AP;
 
-    //std::ostringstream blob;
     std::stringstream blob;
     wifi_params.serialize(blob); //get serialized struct inside blob stream
 
@@ -67,13 +64,12 @@ void test_read_blob_and_deserialize(void)
     nvs_err = wifi_nvs.get_blob("test_BLOB", blob_from_nvs);
     wifi_params.deserialize(blob_from_nvs);
 
-    TEST_ASSERT_EQUAL_STRING(wifi_params.ap_password.c_str(), "passwordTest");
-    TEST_ASSERT_EQUAL_STRING(wifi_params.ap_ssid.c_str(), "ssidTest");
-    TEST_ASSERT_EQUAL_INT8(wifi_params.ap_channel, 4);
-    TEST_ASSERT_EQUAL_INT8(wifi_params.ap_max_conn, 3);
-    TEST_ASSERT_EQUAL_INT8(wifi_params.is_open, false);
-    TEST_ASSERT_EQUAL_INT8(wifi_params.wap_enabled, true);
-    TEST_ASSERT_EQUAL_INT8(wifi_params.wst_enabled, false);
+    TEST_ASSERT_EQUAL_STRING("passwordTest", wifi_params.ap_password.c_str());
+    TEST_ASSERT_EQUAL_STRING("ssidTest", wifi_params.ap_ssid.c_str());
+    TEST_ASSERT_EQUAL_INT8(4, wifi_params.ap_channel);
+    TEST_ASSERT_EQUAL_INT8(3, wifi_params.ap_max_conn);
+    TEST_ASSERT_EQUAL_INT8(false, wifi_params.is_open);
+    TEST_ASSERT_EQUAL_INT8(WIFI_MODE_AP, wifi_params.wifi_mode);
 }
 
 void test_remove_blob(void)
@@ -91,7 +87,6 @@ void test_remove_blob(void)
 
 extern "C" void app_main()
 {
-    delay(2000);
     UNITY_BEGIN();
     RUN_TEST(test_open_namespace);
     RUN_TEST(test_create_and_save_blob);

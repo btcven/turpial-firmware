@@ -21,7 +21,16 @@
 
 namespace wifi {
 
-WiFiMode::WiFiMode() {}
+template <unsigned int N>
+void copy_bytes(std::uint8_t* dest, const SerializableBytes<N>& src)
+{
+    // Copy bytes
+    std::memcpy(dest, src.data(), N);
+}
+
+WiFiMode::WiFiMode()
+{
+}
 
 esp_err_t WiFiMode::begin(const DTOConfig& dto_config)
 {
@@ -78,16 +87,13 @@ esp_err_t WiFiMode::begin(const DTOConfig& dto_config)
 
 esp_err_t WiFiMode::setSTAConfig(const DTOConfig& dto_config)
 {
-    // TODO(jeandudey): use fixed size arrays allocated on the stack
-    if (dto_config.wst_ssid.length() >= 32) return ESP_FAIL;
-    if (dto_config.wst_password.length() >= 64) return ESP_FAIL;
-
     // Zero-out the wifi_config_t structure before using it
     wifi_config_t sta_config;
     std::memset(reinterpret_cast<void*>(&sta_config), 0, sizeof(wifi_config_t));
 
-    dto_config.wst_ssid.copy_to(reinterpret_cast<char*>(sta_config.sta.ssid));
-    dto_config.wst_password.copy_to(reinterpret_cast<char*>(sta_config.sta.password));
+    copy_bytes<32>(sta_config.sta.ssid, dto_config.wst_ssid);
+    copy_bytes<64>(sta_config.sta.password, dto_config.wst_password);
+
     sta_config.sta.scan_method = WIFI_ALL_CHANNEL_SCAN;
     sta_config.sta.bssid_set = false;
     sta_config.sta.channel = 0;
@@ -98,21 +104,18 @@ esp_err_t WiFiMode::setSTAConfig(const DTOConfig& dto_config)
 
 esp_err_t WiFiMode::setAPConfig(const DTOConfig& dto_config)
 {
-    // TODO(jeandudey): use fixed size arrays allocated on the stack
-    if (dto_config.ap_ssid.length() >= 32) return ESP_FAIL;
-    if (dto_config.ap_password.length() >= 64) return ESP_FAIL;
     if (dto_config.ap_max_conn > 4) return ESP_FAIL;
 
     // Zero-out the wifi_config_t structure before using it
     wifi_config_t ap_config;
     std::memset(reinterpret_cast<void*>(&ap_config), 0, sizeof(wifi_config_t));
 
-    dto_config.ap_ssid.copy_to(reinterpret_cast<char*>(ap_config.ap.ssid));
-    dto_config.ap_password.copy_to(reinterpret_cast<char*>(ap_config.ap.password));
+    copy_bytes<32>(ap_config.ap.ssid, dto_config.ap_ssid);
+    copy_bytes<64>(ap_config.ap.password, dto_config.ap_password);
 
     ap_config.ap.ssid_len = 0;
     ap_config.ap.channel = dto_config.ap_channel;
-    ap_config.ap.authmode = dto_config.auth_mode();
+    ap_config.ap.authmode = WIFI_AUTH_WPA_WPA2_PSK;
     ap_config.ap.ssid_hidden = 0;
     ap_config.ap.max_connection = dto_config.ap_max_conn;
 
