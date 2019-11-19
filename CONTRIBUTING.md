@@ -52,7 +52,7 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
       - [Pros](#pros-1)
       - [Cons](#cons-1)
       - [Decision](#decision)
-  - [](#)
+  - [Preincremento y Predecremento](#preincremento-y-predecremento)
     - [Indentation](#indentation)
     - [Documentation styleguide](#documentation-styleguide)
 
@@ -451,18 +451,18 @@ Esta no es una regla estricta. Los parámetros que son tanto de entrada como de 
 ### Argumentos como referencia
 
 - Todos los parámetros pasados por referencia deben etiquetarse const.
-- En C, si una función necesita modificar una variable, el parámetro debe usar un puntero, por ejemplo, ```cpp int foo (int * pval); ```
+- En C, si una función necesita modificar una variable, el parámetro debe usar un puntero, por ejemplo, ```int foo (int * pval); ```
 En C ++, la función puede declarar alternativamente un parámetro de referencia: int foo (int & val).
 
 #### Pros
-Definir un parámetro como referencia evita un código feo como ```cpp (* pval) ++```. Necesario para algunas aplicaciones, como los constructores de copias. Deja en claro, a diferencia de los punteros, que un puntero nulo no es un valor posible.
+Definir un parámetro como referencia evita un código feo como ```(* pval) ++```. Necesario para algunas aplicaciones, como los constructores de copias. Deja en claro, a diferencia de los punteros, que un puntero nulo no es un valor posible.
 
 #### Cons
 Las referencias pueden ser confusas, ya que tienen una sintaxis de valor pero una semántica de puntero.
 
 #### Decision
 Dentro de las listas de parámetros de funciones, todas las referencias deben ser constantes:
-```cpp void Foo(const std::string &in, std::string *out);```
+```void Foo(const std::string &in, std::string *out);```
 De hecho, es una convención muy fuerte en el código de Google que los argumentos de entrada son valores o referencias constantes, mientras que los argumentos de salida son punteros. Los parámetros de entrada pueden ser punteros constantes, pero nunca permitimos parámetros de referencia no constantes, excepto cuando lo requiera la convención, por ejemplo, swap ().
 
 Sin embargo, hay algunos casos en los que es preferible usar const T * a const T & para los parámetros de entrada. Por ejemplo:
@@ -493,7 +493,45 @@ class MyClass {
 Puede sobrecargar una función cuando no hay diferencias semánticas entre las variantes. Estas sobrecargas pueden variar en tipos, calificadores o recuento de argumentos. Sin embargo, un lector de dicha llamada no necesita saber qué miembro del conjunto de sobrecarga se elige, solo que se está llamando a algo del conjunto. Si puede documentar todas las entradas en el conjunto de sobrecarga con un solo comentario en el encabezado, es una buena señal de que es un conjunto de sobrecarga bien diseñado.
 
 
-## 
+## Casting
+
+Use conversiones de estilo C++ como 
+```cpp 
+static_cast <float> (double_value)
+```
+O inicialice llaves para la conversión de tipos aritméticos como 
+
+```cpp 
+int64 y = int64 {1} << 42
+```
+No use formatos de conversión como 
+```cpp
+int y = (int) x 
+```
+
+```cpp
+int y = int (x) //pero este último está bien cuando se invoca un constructor de un tipo de clase
+```
+
+- Use la inicialización de llaves para convertir tipos aritméticos (por ejemplo, ```int64 {x})```. Este es el enfoque más seguro porque el código no se compilará si la conversión puede provocar la pérdida de información. La sintaxis también es concisa.
+
+- Use static_cast como el equivalente de una conversión de estilo C que realiza la conversión de valor, cuando necesita convertir explícitamente un puntero desde una clase a su superclase, o cuando necesita emitir explícitamente un puntero desde una superclase a una subclase. En este último caso, debe asegurarse de que su objeto sea realmente una instancia de la subclase.
+
+- Use const_cast para eliminar el calificador const.
+
+
+## Preincremento y Predecremento
+
+Utilice la forma de prefijo ``` (++ i) ``` de los operadores de incremento y decremento con iteradores y otros objetos de plantilla.
+
+Cuando una variable se incrementa (++ i o i ++) o disminuye (--i o i--) y el valor de la expresión no se usa, uno debe decidir si preincremento (decremento) o postincremento (decremento).
+
+Cuando se ignora el valor de retorno, la forma "pre" (++ i) nunca es menos eficiente que la forma "post" (i ++) y, a menudo, es más eficiente. Esto se debe a que el incremento posterior (o decremento) requiere que se haga una copia de i, que es el valor de la expresión. Si soy un iterador u otro tipo no escalar, copiarlo podría ser costoso. Dado que los dos tipos de incremento se comportan de la misma manera cuando se ignora el valor, ¿por qué no siempre pre-incrementar?
+
+La tradición se desarrolló, en C, de usar post-incremento cuando no se usa el valor de expresión, especialmente en for loops. Algunos encuentran que el incremento posterior es más fácil de leer, ya que el "asunto" (i) precede al "verbo" (++), al igual que en inglés.
+
+Para valores escalares simples (no objeto) no hay razón para preferir una forma y permitimos cualquiera. Para iteradores y otros tipos de plantillas, use pre-incremento.
+
 ### Indentation
 
 - Do not use tabs
