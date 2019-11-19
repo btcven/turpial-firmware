@@ -24,22 +24,35 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
   - [Como hacer un Pull Request](#como-hacer-un-pull-request)
     - [Empezar un nuevo cambio](#empezar-un-nuevo-cambio)
     - [Subir tus cambios y hacer Pull Request](#subir-tus-cambios-y-hacer-pull-request)
-  - [Guia de estilos para el codigo fuente](#guia-de-estilos-para-el-codigo-fuente)
-    - [Commit messages](#commit-messages)
-    - [Include guards](#include-guards)
-      - [Las declaraciones de inclusion](#las-declaraciones-de-inclusion)
-      - [Reglas de nomenclatura](#reglas-de-nomenclatura)
-    - [Sentencias de control](#sentencias-de-control)
-      - [if / if-else](#if--if-else)
-      - [while / do-while loops](#while--do-while-loops)
-    - [Forward Declarations](#forward-declarations)
-    - [Funciones Inline](#funciones-inline)
+- [Guia de estilos para el codigo fuente](#guia-de-estilos-para-el-codigo-fuente)
+  - [Commit messages](#commit-messages)
+  - [Include guards](#include-guards)
+  - [Las declaraciones de inclusion](#las-declaraciones-de-inclusion)
+  - [Reglas de nomenclatura](#reglas-de-nomenclatura)
+  - [Sentencias de control](#sentencias-de-control)
+    - [if / if-else](#if--if-else)
+  - [while / do-while loops](#while--do-while-loops)
+  - [Forward Declarations](#forward-declarations)
+  - [Funciones Inline](#funciones-inline)
     - [Orden en los que se deben incluir los archivos header](#orden-en-los-que-se-deben-incluir-los-archivos-header)
-    - [Namespaces](#namespaces)
-    - [Variables locales](#variables-locales)
-    - [Trabajando con clases](#trabajando-con-clases)
+  - [Namespaces](#namespaces)
+  - [Variables locales](#variables-locales)
+  - [Trabajando con clases](#trabajando-con-clases)
     - [Trabajando en constructores](#trabajando-en-constructores)
     - [estructuras vs clases](#estructuras-vs-clases)
+    - [Herencia](#herencia)
+      - [Pros](#pros)
+      - [Cons](#cons)
+      - [decision](#decision)
+      - [Orden en la declaracion](#orden-en-la-declaracion)
+  - [Funciones](#funciones)
+    - [Parametros de salida](#parametros-de-salida)
+    - [Escribir funciones cortas](#escribir-funciones-cortas)
+    - [Argumentos como referencia](#argumentos-como-referencia)
+      - [Pros](#pros-1)
+      - [Cons](#cons-1)
+      - [Decision](#decision)
+  - [](#)
     - [Indentation](#indentation)
     - [Documentation styleguide](#documentation-styleguide)
 
@@ -111,18 +124,18 @@ Haz push de tu commit a tu fork del repositorio:
 Ve a la página de GitHub, si vas a tu fork del repositorio, haz clic en el botón Branch y selecciona la rama en que realizaste los cambios nombredelfeaturequequiereshacer. Después presiona el botón Pull request.
 
 
-## Guia de estilos para el codigo fuente
+# Guia de estilos para el codigo fuente
 
 Actualmente este proyecto utiliza la guia de stilos de [google](https://google.github.io/styleguide/cppguide.html) y [.clang-format](https://github.com/bitcoin/bitcoin/blob/master/src/.clang-format) para formatear el documento.
 
 Es altamente recomendado que ejecute [.clang-format] para dar formato al documento antes de hacer un pull request, para hacer la revision del codigo mas facil.
 
-### Commit messages
+## Commit messages
 Un mensaje de commit debe ser corto, claro y con una descripcion de los cambios o mejoras propuestos.
 Si el commit incluye cambios en varios archivos o secciones, deberemos incluir un mensaje extendido con una descripcion de los cambios propuestos uno a uno.
 
 
-### Include guards
+## Include guards
 Todos los archivos de encabezado deben tener **#define** guardias para evitar la inclusión múltiple. El formato del nombre del símbolo debe ser:
 ```cpp
 // file: foo.h
@@ -132,11 +145,11 @@ Todos los archivos de encabezado deben tener **#define** guardias para evitar la
 #endif // FOO_H
 ```
 
-#### Las declaraciones de inclusion
+## Las declaraciones de inclusion
 Las declaraciones de inclusion deben ubicarse **unicamente** en la parte superior del archivo de manera predeterminada, esta declaración irá en los archivos .cpp, no en los archivos de encabezado (.h), excepto cuando sea necesario y debe clasificarse y agruparse.
 
 
-#### Reglas de nomenclatura
+## Reglas de nomenclatura
 
 - Use un nombre descriptivo y que sea coherente con el estilo cuando escriba código.
 - todos los nombres deberan ser escritos en **ingles**.
@@ -188,9 +201,9 @@ private:
     int m_foo; // Private variables have the m_ prefix
 };
 ```
-### Sentencias de control
+## Sentencias de control
 
-#### if / if-else
+### if / if-else
 
 - Always put braces around the if-else statement or when is nested in another if statement
 - Put space between `if` and `()`
@@ -218,7 +231,7 @@ else
 // only if statement
 if (foo) bar = UP;
 ```
-#### while / do-while loops
+## while / do-while loops
 
 - Poner espacios entre `while` and `()`
 ```cpp
@@ -236,13 +249,13 @@ do
 while (foo > 0);
 
 ```
-### Forward Declarations
+## Forward Declarations
 Evitar usar declaraciones forward, en lo posible incluya los headers que necesite.
 
 - cuando utilice una funcion declarada dentro de un archivo header, siempre incluya este header
 - Cuando utilice una clase template, preferiblemente incluya su archivo header.
 
-### Funciones Inline
+## Funciones Inline
 Defina funciones inline solo cuando sean de 10 o menos lineas de codigo.
 
 ### Orden en los que se deben incluir los archivos header
@@ -264,7 +277,7 @@ Todos los archivos headers deben aparecer de forma descendente
 
 ```
 
-### Namespaces
+## Namespaces
 Los namespaces proveen un metodo para prevenir conflictos de nombres en programas grandes.
 
 Los namespaces deberan ser usados siguiendo las siguientes reglas: 
@@ -303,7 +316,7 @@ void MyClass::Foo() {
 }  // namespace mynamespace
 ```
 
-### Variables locales
+## Variables locales
 
 Coloque las variables de una función en el alcance más estrecho posible e inicialice las variables en la declaración.
 
@@ -351,7 +364,7 @@ for (int i = 0; i < 1000000; ++i) {
 }
 ```
 
-### Trabajando con clases
+## Trabajando con clases
 
 Las clases son la unidad fundamental de código en C ++; Naturalmente, los usamos ampliamente;Esta sección enumera los principales y qué no debe hacer al escribir una clase.
 
@@ -377,6 +390,110 @@ Use estructuras solo para objetos pasivos que portan datos, todo lo demas es una
 - Para mantener la coherencia con STL, puede usar struct en lugar de class para tipos sin estado, como rasgos, metafunciones de plantilla.
 
 - Tenga en cuenta que las variables miembro en estructuras y clases tienen diferentes reglas de nomenclatura.
+
+### Herencia
+
+La composicion es mas apropiada que la herencia. Cuando use la herencia hagala publico
+
+Cuando una subclase hereda de una clase base, incluya las definiciones de todos los datos y operaciones que define la clase base. 
+"Herencia de interfaz" es herencia de una clase base abstracta pura (una sin estado o métodos definidos); toda otra herencia es "herencia de implementación".
+
+#### Pros
+La herencia de implementación reduce el tamaño del código al reutilizar el código de la clase base, ya que se especializa en un tipo existente. Como la herencia es una declaración en tiempo de compilación, usted y el compilador pueden comprender la operación y detectar errores. La herencia de interfaz se puede utilizar para exigir mediante programación que una clase exponga una API particular. Nuevamente, el compilador puede detectar errores, en este caso, cuando una clase no define un método necesario de la API.
+
+#### Cons
+Para la herencia de implementación, debido a que el código que implementa una subclase se distribuye entre la base y la subclase, puede ser más difícil entender una implementación. La subclase no puede anular funciones que no son virtuales, por lo que la subclase no puede cambiar la implementación.
+
+La herencia múltiple es especialmente problemática, ya que a menudo impone una sobrecarga de rendimiento más alta (de hecho, la caída del rendimiento de la herencia única a la herencia múltiple a menudo puede ser mayor que la caída del rendimiento del despacho ordinario a virtual), y porque corre el riesgo de llevar a "diamante" "patrones de herencia, que son propensos a la ambigüedad, la confusión y los errores directos.
+
+#### decision 
+Toda herencia debe ser pública. Si desea hacer una herencia privada, debe incluir una instancia de la clase base como miembro en su lugar.
+
+No abusar de la herencia de implementación. La composición es a menudo más apropiada. Trate de restringir el uso de la herencia.
+
+Limite el uso de protegido a las funciones miembro a las que se deba acceder desde subclases. Tenga en cuenta que los miembros de datos deben ser privados.
+
+#### Orden en la declaracion
+
+- Agrupe declaraciones similares juntas, colocando partes públicas antes.
+
+- Una definición de clase generalmente debe comenzar con una sección  pública: seguida de protegida: luego privada Omita las secciones que estarían vacías.
+
+- Dentro de cada sección, generalmente prefieren agrupar tipos similares de declaraciones, y generalmente prefieren el siguiente orden: tipos (incluidos typedef, using y estructuras anidadas y clases), constantes, funciones de fábrica, constructores, operadores de asignación, destructor, todos los demás métodos, miembros de datos.
+
+- No coloque definiciones de métodos grandes **inline** en la definición de clase. Por lo general, solo los métodos triviales o críticos para el rendimiento, y muy cortos, se pueden definir **inline**. Ver Funciones [Inline](#funciones-inline) para más detalles.
+
+
+## Funciones
+
+### Parametros de salida
+
+- La salida de una función C ++ se proporciona naturalmente a través de un valor de retorno y, a veces, a través de parámetros de salida.
+
+- se Prefiere usar valores de retorno sobre los parámetros de salida: mejoran la legibilidad y, a menudo, proporcionan el mismo o mejor rendimiento. Si se utilizan parámetros de solo salida, deben aparecer después de los parámetros de entrada.
+
+- Los parámetros son entrada a la función, salida de la función o ambos. Los parámetros de entrada suelen ser valores o referencias constantes, mientras que los parámetros de salida y entrada / salida serán punteros a no constantes.
+
+- Al ordenar parámetros de función, coloque todos los parámetros de solo entrada antes de cualquier parámetro de salida. En particular, no agregue nuevos parámetros al final de la función solo porque son nuevos; coloque nuevos parámetros de solo entrada antes de los parámetros de salida.
+
+Esta no es una regla estricta. Los parámetros que son tanto de entrada como de salida (a menudo clases / estructuras) enturbian las aguas y, como siempre, la coherencia con las funciones relacionadas puede requerir que doble la regla.
+
+### Escribir funciones cortas 
+
+- Se prefiere funciones pequeñas y enfocadas.
+
+- Reconocemos que las funciones largas a veces son apropiadas, por lo que no se establece un límite estricto en la longitud de las funciones. Si una función supera las 40 líneas, piense si se puede dividir sin dañar la estructura del programa.
+
+- Incluso si su función larga funciona perfectamente ahora, alguien que la modifique en unos meses puede agregar un nuevo comportamiento. Esto podría provocar errores que son difíciles de encontrar. Mantener sus funciones cortas y simples hace que sea más fácil para otras personas leer y modificar su código. Las funciones pequeñas también son más fáciles de probar.
+
+- Podrías encontrar funciones largas y complicadas cuando trabajas con algún código. No se deje intimidar modificando el código existente: si trabajar con una función de este tipo resulta difícil, encuentra que los errores son difíciles de depurar, o si desea usar una parte de él en varios contextos diferentes, considere dividir la función en una más pequeña y piezas más manejables.
+
+### Argumentos como referencia
+
+- Todos los parámetros pasados por referencia deben etiquetarse const.
+- En C, si una función necesita modificar una variable, el parámetro debe usar un puntero, por ejemplo, ```cpp int foo (int * pval); ```
+En C ++, la función puede declarar alternativamente un parámetro de referencia: int foo (int & val).
+
+#### Pros
+Definir un parámetro como referencia evita un código feo como ```cpp (* pval) ++```. Necesario para algunas aplicaciones, como los constructores de copias. Deja en claro, a diferencia de los punteros, que un puntero nulo no es un valor posible.
+
+#### Cons
+Las referencias pueden ser confusas, ya que tienen una sintaxis de valor pero una semántica de puntero.
+
+#### Decision
+Dentro de las listas de parámetros de funciones, todas las referencias deben ser constantes:
+```cpp void Foo(const std::string &in, std::string *out);```
+De hecho, es una convención muy fuerte en el código de Google que los argumentos de entrada son valores o referencias constantes, mientras que los argumentos de salida son punteros. Los parámetros de entrada pueden ser punteros constantes, pero nunca permitimos parámetros de referencia no constantes, excepto cuando lo requiera la convención, por ejemplo, swap ().
+
+Sin embargo, hay algunos casos en los que es preferible usar const T * a const T & para los parámetros de entrada. Por ejemplo:
+
+     Desea pasar un puntero nulo.
+     La función guarda un puntero o referencia a la entrada.
+
+Recuerde que la mayoría de las veces los parámetros de entrada se especificarán como const T &. El uso de const T * en su lugar comunica al lector que la entrada se trata de alguna manera de manera diferente. Entonces, si elige const T * en lugar de const T &, hágalo por una razón concreta; de lo contrario, probablemente confundirá a los lectores haciéndolos buscar una explicación que no existe.
+
+## Sobre carga de funciones
+
+- Use funciones sobrecargadas (incluidos los constructores) solo si un lector que mira un sitio de llamada puede tener una buena idea de lo que está sucediendo sin tener que averiguar primero qué sobrecarga se está llamando.
+
+```cpp
+class MyClass {
+ public:
+  void Analyze(const std::string &text);
+  void Analyze(const char *text, size_t textlen);
+}; 
+
+```
+- La sobrecarga puede hacer que el código sea más intuitivo al permitir que una función con nombre idéntico tome diferentes argumentos. Puede ser necesario para el código con plantilla, y puede ser conveniente para los visitantes.
+
+- La sobrecarga basada en la calificación constante o de referencia puede hacer que el código de utilidad sea más usable, más eficiente o ambos.
+
+- Si una función está sobrecargada solo por los tipos de argumento, un lector puede tener que comprender las complejas reglas de coincidencia de C ++ para saber qué está sucediendo. Además, muchas personas están confundidas por la semántica de la herencia si una clase derivada anula solo algunas de las variantes de una función.
+
+Puede sobrecargar una función cuando no hay diferencias semánticas entre las variantes. Estas sobrecargas pueden variar en tipos, calificadores o recuento de argumentos. Sin embargo, un lector de dicha llamada no necesita saber qué miembro del conjunto de sobrecarga se elige, solo que se está llamando a algo del conjunto. Si puede documentar todas las entradas en el conjunto de sobrecarga con un solo comentario en el encabezado, es una buena señal de que es un conjunto de sobrecarga bien diseñado.
+
+
+## 
 ### Indentation
 
 - Do not use tabs
