@@ -38,15 +38,14 @@ El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpi
       - [Cons](#cons)
       - [Decision](#decision)
       - [Orden en la declaracion](#orden-en-la-declaracion)
-  - [Funciones](#funciones)
+    - [Funciones](#funciones)
     - [Parametros de salida](#parametros-de-salida)
     - [Escribir funciones cortas](#escribir-funciones-cortas)
     - [Argumentos como referencia](#argumentos-como-referencia)
       - [Pros](#pros-1)
       - [Cons](#cons-1)
       - [Decision](#decision-1)
-  - [Preincremento y Predecremento](#preincremento-y-predecremento)
-    - [No miembros, miembros estaticos y funciones globales](#no-miembros-miembros-estaticos-y-funciones-globales)
+    - [Donde poner la palabra clave **const**](#donde-poner-la-palabra-clave-const)
     - [Indentation](#indentation)
     - [Documentation styleguide](#documentation-styleguide)
     
@@ -489,7 +488,7 @@ Limite el uso de protegido a las funciones miembro a las que se deba acceder des
 - No coloque definiciones de métodos grandes **inline** en la definición de clase. Por lo general, solo los métodos triviales o críticos para el rendimiento, y muy cortos, se pueden definir **inline**. Ver Funciones [Inline](#funciones-inline) para más detalles.
 
 
-## Funciones
+### Funciones
 
 ### Parametros de salida
 
@@ -537,7 +536,7 @@ Sin embargo, hay algunos casos en los que es preferible usar const T * a const T
 
 Recuerde que la mayoría de las veces los parámetros de entrada se especificarán como const T &. El uso de const T * en su lugar comunica al lector que la entrada se trata de alguna manera de manera diferente. Entonces, si elige const T * en lugar de const T &, hágalo por una razón concreta; de lo contrario, probablemente confundirá a los lectores haciéndolos buscar una explicación que no existe.
 
-## Sobre carga de funciones
+### Sobre carga de funciones
 
 - Use funciones sobrecargadas (incluidos los constructores) solo si un lector que mira un sitio de llamada puede tener una buena idea de lo que está sucediendo sin tener que averiguar primero qué sobrecarga se está llamando.
 
@@ -558,7 +557,7 @@ class MyClass {
 Puede sobrecargar una función cuando no hay diferencias semánticas entre las variantes. Estas sobrecargas pueden variar en tipos, calificadores o recuento de argumentos. Sin embargo, un lector de dicha llamada no necesita saber qué miembro del conjunto de sobrecarga se elige, solo que se está llamando a algo del conjunto. Si puede documentar todas las entradas en el conjunto de sobrecarga con un solo comentario en el encabezado, es una buena señal de que es un conjunto de sobrecarga bien diseñado.
 
 
-## Casting
+### Casting
 
 Use conversiones de estilo C++ como 
 ```cpp 
@@ -585,7 +584,7 @@ int y = int (x) //pero este último está bien cuando se invoca un constructor d
 - Use const_cast para eliminar el calificador const.
 
 
-## Preincremento y Predecremento
+### Preincremento y Predecremento
 
 Utilice la forma de prefijo ``` (++ i) ``` de los operadores de incremento y decremento con iteradores y otros objetos de plantilla.
 
@@ -603,10 +602,13 @@ Para valores escalares simples (no objeto) no hay razón para preferir una forma
 
 - No use una clase simplemente para agrupar funciones estáticas. Los métodos estáticos de una clase generalmente deben estar estrechamente relacionados con las instancias de la clase o los datos estáticos de la clase.
 
-- Las funciones de miembro no miembro y estático pueden ser útiles en algunas situaciones. Poner funciones que no sean miembros en un espacio de nombres evita contaminar el espacio de nombres global.
+#### Pros
+Las funciones de miembro no miembro y estático pueden ser útiles en algunas situaciones. Poner funciones que no sean miembros en un espacio de nombres evita contaminar el espacio de nombres global.
 
+#### Cons
 - Las funciones de miembro no miembro y estático pueden tener más sentido como miembros de una nueva clase, especialmente si acceden a recursos externos o tienen dependencias significativas.
 
+#### Decision
 - A veces es útil definir una función no vinculada a una instancia de clase. Tal función puede ser un miembro estático o una función no miembro. 
 
 - Las funciones que no son miembros no deben depender de variables externas, y casi siempre deben existir en un espacio de nombres. 
@@ -614,6 +616,46 @@ Para valores escalares simples (no objeto) no hay razón para preferir una forma
 - No cree clases solo para agrupar funciones miembro estáticas; Esto no es diferente a simplemente dar a los nombres de funciones un prefijo común, y tal agrupación generalmente es innecesaria de todos modos.
 
 Si define una función que no es miembro y solo es necesaria en su archivo .cc, use un enlace interno para limitar su alcance.
+
+
+## Control de acceso
+Haga que los miembros de datos de las clases sean privados, a menos que sean constantes. Esto simplifica el razonamiento sobre invariantes.
+
+
+### Uso de constantes
+
+- En las API, use **const** siempre que tenga sentido. **constexpr** es una mejor opción para algunos usos de const.
+
+- Las variables y parámetros declarados pueden ir precedidos por la palabra clave **const** para indicar que las variables no se modifican por ejemplo, ```const int foo```. 
+- Las funciones de clase pueden tener el calificador const para indicar que la función no cambia el estado de las variables miembro de la clase por ejemplo, 
+```cpp
+class Foo {
+    int Bar (char c) const;
+};
+```
+- Es más fácil para las personas entender cómo se utilizan las variables. 
+- Permite al compilador hacer una mejor verificación de tipo y posiblemente, generar un mejor código.
+- Ayuda a las personas a convencerse de la corrección del programa porque saben que las funciones que llaman están limitadas en cómo pueden modificar sus variables. 
+- Ayuda a las personas a saber qué funciones son seguras de usar sin bloqueos en programas multiproceso.
+
+**const** es viral: si pasa una variable const a una función, esa función debe tener const en su prototipo (o la variable necesitará un const_cast). Esto puede ser un problema particular al llamar a funciones de biblioteca.
+
+Recomendamos encarecidamente utilizar const en las API (es decir, en parámetros de función, métodos y variables no locales) siempre que sea significativo y preciso. Esto proporciona documentación consistente, mayormente verificada por el compilador, de qué objetos puede mutar una operación. Tener una forma consistente y confiable de distinguir las lecturas de las escrituras es fundamental para escribir código seguro para subprocesos, y también es útil en muchos otros contextos. En particular:
+
+- Si una función garantiza que no modificará un argumento pasado por referencia o por puntero, el parámetro de función correspondiente debe ser una referencia a const (const T &) o un puntero a const (const T *), respectivamente.
+
+- Para un parámetro de función pasado por valor, const no tiene efecto en el llamador, por lo tanto, no se recomienda en las declaraciones de función. 
+
+- Declare que los métodos son constantes a menos que alteren el estado lógico del objeto (o permitan que el usuario modifique ese estado, por ejemplo, devolviendo una referencia no constante, pero eso es raro), o no se pueden invocar de manera segura al mismo tiempo.
+
+- El uso de const en variables locales no se recomienda ni se desaconseja.
+
+### Donde poner la palabra clave **const**
+
+Algunas personas prefieren la forma ```int const * foo``` a ```const int * foo```. Argumentan que esto es más legible porque es más consistente: mantiene la regla de que const siempre sigue el objeto que está describiendo. Sin embargo, este argumento de coherencia no se aplica en bases de código con pocas expresiones de puntero profundamente anidadas, ya que la mayoría de las expresiones constantes tienen solo una constante, y se aplica al valor subyacente. En tales casos, no hay consistencia para mantener. Poner el const primero es posiblemente más legible, ya que sigue el inglés al poner el "adjetivo" (const) antes del "sustantivo" (int).
+
+Dicho esto, si bien alentamos a poner const primero, no lo requerimos. ¡Pero sea consistente con el código que lo rodea!
+
 
 ### Indentation
 
