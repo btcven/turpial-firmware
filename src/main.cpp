@@ -19,7 +19,6 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-
 #include "WiFiMode.h"
 #include "testRTOSCPP/Hello.h"
 
@@ -27,6 +26,16 @@
 
 #include "defaults.h"
 
+/**
+ * @brief Read WiFi initialization parameters from the NVS (persistent
+ * storage)
+ * 
+ * @param[out] wifi_params: "DTOConfig" structure where the parameters are
+ * going to be readed.
+ * 
+ * @return
+ *      - ESP_OK: on success 
+ */
 esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params)
 {
     ESP_LOGD(__func__, "Reading WiFi configuration from NVS");
@@ -43,6 +52,11 @@ esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params)
     return ESP_OK;
 }
 
+/**
+ * @brief Set the default WiFi initialization parameters
+ * 
+ * @param[out] wifi_params: the structure used to set the parameters
+ */
 void setDefaultWiFiParams(wifi::DTOConfig& wifi_params)
 {
     wifi_params.ap_channel = WAP_CHANNEL;
@@ -66,7 +80,7 @@ extern "C" void app_main()
     if (nvs_err != ESP_OK) {
         ESP_LOGE(__func__, "Couldn't initialize NVS, error %s", esp_err_to_name(nvs_err));
         ESP_LOGD(__func__, "Using default WiFi parameters");
-        
+
         setDefaultWiFiParams(wifi_params);
     } else {
         auto err = readWiFiParams(wifi_params);
@@ -74,7 +88,7 @@ extern "C" void app_main()
             auto estr = esp_err_to_name(err);
             ESP_LOGE(__func__, "Couldn't read WiFi parameters %s", estr);
             ESP_LOGD(__func__, "Using default WiFi parameters");
-            
+
             setDefaultWiFiParams(wifi_params);
         }
     }
@@ -82,4 +96,3 @@ extern "C" void app_main()
     wifi::mode::begin(wifi_params);
     // TODO: app loop
 }
-

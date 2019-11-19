@@ -24,8 +24,29 @@
 class Serializable
 {
 public:
+    /**
+     * @brief Get the size of an object when serialized, this is the totalsize in bytes
+     * 
+     * @return std::size_t the number of bytes
+     */
     virtual std::size_t serialize_size() const = 0;
+
+    /**
+     * @brief Serialize this object to the given stream
+     * 
+     * @param[in] stream: the stream to write to
+     * 
+     * @return std::ostream& a reference to the same stream we wrote
+     */
     virtual std::ostream& serialize(std::ostream& stream) const = 0;
+
+    /**
+     * @brief Deserialize this object from a stream
+     * 
+     * @param[in] stream: the stream to deserialize from 
+     * 
+     * @return std::istream& a reference to the same stream we readed
+     */
     virtual std::istream& deserialize(std::istream& stream) = 0;
 };
 

@@ -22,13 +22,13 @@ namespace wifi {
 std::size_t DTOConfig::serialize_size() const
 {
     std::size_t size;
-    size = pod::serialize_size<std::int8_t>(ap_channel) +
-           pod::serialize_size<std::int8_t>(ap_max_conn) +
-           pod::serialize_size<bool>(wap_enabled) +
-           pod::serialize_size<bool>(wst_enabled) +
-           pod::serialize_size<bool>(is_open) +
+    size = pod::serialize_size<std::int8_t>() +
+           pod::serialize_size<std::int8_t>() +
+           pod::serialize_size<bool>() +
+           pod::serialize_size<bool>() +
+           pod::serialize_size<bool>() +
            ap_ssid.serialize_size() +
-           ap_password.serialize_size() + 
+           ap_password.serialize_size() +
            wst_ssid.serialize_size() +
            wst_password.serialize_size();
 

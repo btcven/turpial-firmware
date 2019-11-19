@@ -39,7 +39,7 @@ public:
      * @brief Construct a new String object copying the supplied str allocating
      * new memory.
      * 
-     * @param str The string to be copied.
+     * @param[in] str: The string to be copied.
      */
     String(const char* str) : m_inner(str) {}
 
@@ -56,7 +56,7 @@ public:
     /**
      * @brief Get the underlying string.
      * 
-     * @return The string.
+     * @return const std::string& the string.
      */
     const std::string& str() const
     {
@@ -64,20 +64,32 @@ public:
     }
 
     /**
-     * @brief Get the underlying const char*.
+     * @brief Get the underlying "const char*"".
      * 
-     * @return The string.
+     * @return const char* the C string.
      */
     const char* c_str() const
     {
         return m_inner.c_str();
     }
 
+    /**
+     * @brief Get "String" serialize size
+     * 
+     * @return std::size_t size in bytes
+     */
     virtual std::size_t serialize_size() const
     {
         return sizeof(std::size_t) + length();
     }
 
+    /**
+     * @brief Serialize an "String"
+     * 
+     * @param[in] stream: the stream to write this "String"
+     * 
+     * @return std::ostream& a reference to the stream we wrote to
+     */
     virtual std::ostream& serialize(std::ostream& stream) const
     {
         auto const length_ = length();
@@ -87,6 +99,13 @@ public:
         return stream;
     }
 
+    /**
+     * @brief Deserialize an "String"
+     * 
+     * @param[in] stream: the stream to deserialize from
+     *  
+     * @return std::istream& a reference to the stream we readed from
+     */
     virtual std::istream& deserialize(std::istream& stream)
     {
         // If this String is already being used with some data and has allocated
