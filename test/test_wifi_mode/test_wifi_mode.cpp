@@ -8,9 +8,11 @@
  * 
  */
 
+#include "Namespace.h"
 #include "WiFiMode.h"
 #include "defaults.h"
 #include "sdkconfig.h"
+
 
 #include <cstdint>
 #include <sstream>
@@ -31,6 +33,9 @@ void setDefaultWiFiParams(wifi::DTOConfig& wifi_params)
 void testWifiMode(void)
 {
     const TickType_t xDelay = 10000 / portTICK_PERIOD_MS;
+
+    // Initialize NVS
+    nvs::begin();
 
     wifi::DTOConfig wifi_parameters;
     setDefaultWiFiParams(wifi_parameters);

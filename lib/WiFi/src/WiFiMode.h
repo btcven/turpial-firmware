@@ -31,6 +31,9 @@ public:
     /**
     * @brief Initialize WiFiMode interface
     * 
+    * @attention 1. Before using this method make sure that the NVS is already
+    * initialized, see nvs::begin()
+    * 
     * @param[in] dto_config: WiFi interface mode configuration
     * 
     * @return
