@@ -41,24 +41,26 @@ esp_err_t WiFiMode::begin(const DTOConfig& dto_config)
 
     esp_err_t err;
 
+    tcpip_adapter_init();
+
     wifi_init_config_t wifi_init_config = WIFI_INIT_CONFIG_DEFAULT();
 
     ESP_LOGD(__func__, "init WiFi");
     err = esp_wifi_init(&wifi_init_config);
     if (err != ESP_OK) return err;
 
+    err = esp_wifi_set_storage(WIFI_STORAGE_RAM);
+    if (err != ESP_OK) return err;
+
     ESP_LOGD(__func__, "set WiFi mode %d", dto_config.wifi_mode);
     err = esp_wifi_set_mode(dto_config.wifi_mode);
     if (err != ESP_OK) return err;
-
-    tcpip_adapter_init();
 
     ESP_LOGD(__func__, "init WiFi event loop");
     err = esp_event_loop_init(
         &WiFiMode::eventHandler,
         reinterpret_cast<void*>(this));
     if (err != ESP_OK) return err;
-
 
     bool should_init_sta = (dto_config.wifi_mode == WIFI_MODE_APSTA) ||
                            (dto_config.wifi_mode == WIFI_MODE_STA);
