@@ -1,11 +1,19 @@
-#include <cstdint>
-#include <sstream>
+/**
+ * @file test_nvs.cpp
+ * @author Locha Mesh project developers (locha.io)
+ * @brief 
+ * @version 0.1
+ * @date 2019-11-20
+ * 
+ * @copyright Copyright (c) 2019 Locha Mesh project developers
+ * @license Apache 2.0, see LICENSE file for details
+ */
 
-#include "WiFiDTO.h"
-#include <Arduino.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include <unity.h>
 
-#include "Namespace.h"
+#include "NVS.h"
 
 /**
  * @brief 
@@ -15,87 +23,40 @@
  * platformio test -e featheresp32 -f test_nvs
  *  
  */
-
-
 void test_open_namespace(void)
 {
-    auto nvs_err = nvs::begin();
-    nvs::Namespace wifi_nvs;
-    auto err = wifi_nvs.open("TEST", NVS_READONLY);
-    if (err != ESP_OK) {
-        TEST_FAIL();
-    }
-    wifi_nvs.close();
-}
-
-
-void test_create_and_save_blob(void)
-{
-    wifi::DTOConfig wifi_params; //to serialized object  declare and initialized this one to be serialized
-    wifi_params.ap_channel = 4;
-    wifi_params.ap_max_conn = 3;
-    wifi_params.ap_password = tinystring::String("passwordTest");
-    wifi_params.ap_ssid = tinystring::String("ssidTest");
-    wifi_params.is_open = false;
-    wifi_params.wap_enabled = true;
-    wifi_params.wst_enabled = false;
-
-    //std::ostringstream blob;
-    std::stringstream blob;
-    wifi_params.serialize(blob); //get serialized struct inside blob stream
+    esp_err_t err;
 
     nvs::Namespace wifi_nvs;
-    auto nvs_err = nvs::begin();
-    auto err = wifi_nvs.open("TEST", NVS_READWRITE);
-    if (err != ESP_OK) {
-        TEST_FAIL();
-    }
-    nvs_err = wifi_nvs.set_blob("test_BLOB", blob.str().c_str(), wifi_params.serialize_size()); //save blob into NVS
-    if (nvs_err != ESP_OK) {
-        TEST_FAIL();
-    }
-    wifi_nvs.close();
+    err = wifi_nvs.open("TEST", NVS_READONLY);
+    if (err != ESP_OK) TEST_FAIL();
 }
 
-void test_read_blob_and_deserialize(void)
+void test_create_and_save_bool()
 {
-    std::stringstream blob_from_nvs;
-    wifi::DTOConfig wifi_params; //object to deserialized stream is empty
-    nvs::Namespace wifi_nvs;     //object to recovery the blob from nvs
-    auto nvs_err = nvs::begin();
-    nvs_err = wifi_nvs.open("TEST", NVS_READONLY);
-    nvs_err = wifi_nvs.get_blob("test_BLOB", blob_from_nvs);
-    wifi_params.deserialize(blob_from_nvs);
+    esp_err_t err;
 
-    TEST_ASSERT_EQUAL_STRING(wifi_params.ap_password.c_str(), "passwordTest");
-    TEST_ASSERT_EQUAL_STRING(wifi_params.ap_ssid.c_str(), "ssidTest");
-    TEST_ASSERT_EQUAL_INT8(wifi_params.ap_channel, 4);
-    TEST_ASSERT_EQUAL_INT8(wifi_params.ap_max_conn, 3);
-    TEST_ASSERT_EQUAL_INT8(wifi_params.is_open, false);
-    TEST_ASSERT_EQUAL_INT8(wifi_params.wap_enabled, true);
-    TEST_ASSERT_EQUAL_INT8(wifi_params.wst_enabled, false);
-}
+    nvs::Namespace wifi_nvs;
 
-void test_remove_blob(void)
-{
-    nvs::Namespace wifi_nvs; //object to recovery the blob from nvs
-    auto nvs_err = nvs::begin();
-    nvs_err = nvs::begin();
-    nvs_err = wifi_nvs.open("TEST", NVS_READWRITE);
-    nvs_err = wifi_nvs.erase_key("test_BLOB");
-    if (nvs_err != ESP_OK) {
-        TEST_FAIL();
-    }
-    wifi_nvs.close();
+    err = wifi_nvs.open("TEST", NVS_READWRITE);
+    if (err != ESP_OK) TEST_FAIL();
+
+    err = wifi_nvs.set_bool("test_bool", true);
+    if (err != ESP_OK) TEST_FAIL();
+
+    err = wifi_nvs.commit();
+    if (err != ESP_OK) TEST_FAIL();
 }
 
 extern "C" void app_main()
 {
-    delay(2000);
+    vTaskDelay(2000);
+
+    esp_err_t err = nvs::init();
+    if (err != ESP_OK) return;
+
     UNITY_BEGIN();
     RUN_TEST(test_open_namespace);
-    RUN_TEST(test_create_and_save_blob);
-    RUN_TEST(test_read_blob_and_deserialize);
-    RUN_TEST(test_remove_blob);
+    RUN_TEST(test_create_and_save_bool);
     UNITY_END();
 }
