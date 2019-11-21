@@ -12,58 +12,112 @@
 #ifndef WIFIMODE_H
 #define WIFIMODE_H
 
-#include "Arduino.h"
-#include "WiFi.h"
-#include "WiFiDTO.h"
+#include <cstdint>
 
+#include "esp_err.h"
+#include "esp_event.h"
+#include "esp_wifi.h"
 
 namespace wifi {
 
-namespace mode {
-
 /**
- * @brief WAP/WST operation modes
+ * @brief AP mode configuration
  * 
  */
-enum class OperationMode {
-    /// No operation mode selected
-    None = WIFI_MODE_NULL,
-    /// WST only
-    St = WIFI_STA,
-    /// WAP onyly
-    Ap = WIFI_AP,
-    // Both WAP/WST
-    ApSt = WIFI_AP_STA,
+struct APConfig {
+    const char* ssid;
+    const char* password;
+    wifi_auth_mode_t authmode;
+    std::uint8_t max_conn;
+    std::uint8_t channel;
 };
 
 /**
- * @brief Select the WiFi operation mode
+ * @brief STA mode configuration
  * 
- * @param[in] ap: AP mode.
- * @param[in] st: ST mode.
- *  
- * @return OperationMode the selected operation mode 
  */
-OperationMode selectOperationMode(bool ap, bool st);
+struct STAConfig {
+    const char* ssid;
+    const char* password;
+};
 
-/**
- * @brief Handle WiFi interface events
- * 
- * @param[in] evt: a WiFi event 
- */
-void handleWiFiEvent(WiFiEvent_t evt);
+class WiFiMode
+{
+public:
+    /**
+     * @brief Initialize Wi-Fi
+     * 
+     * @attention 1. If you set the parameter "use_nvs" to true you must make
+     * sure that the NVS is initialized.
+     * 
+     * @param use_nvs: wether to use NVS for storage or not
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t init(bool use_nvs);
 
-/**
- * @brief Initialize WiFi with the given modes specified in "DTOConfig"
- * 
- * @param[in] wifi_params: WiFi DTO configuration parameters
- * 
- * @return
- *      - ESP_OK: on success
- */
-esp_err_t begin(DTOConfig wifi_params);
+    /**
+     * @brief Set Wi-Fi operation mode
+     * 
+     * @param mode: operation mode
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t set_mode(wifi_mode_t mode);
 
-} // namespace mode
+    /**
+     * @brief Set the AP configuration
+     * 
+     * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
+     * this configuration is going to be saved to the NVS.
+     * 
+     * @param ap_config: AP mode configuration
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t set_ap_config(APConfig& ap_config);
+
+    /**
+     * @brief Set the STA configuration
+     * 
+     * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
+     * this configuration is going to be saved to the NVS.
+     * 
+     * @param sta_config: ST mode configuration
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t set_sta_config(STAConfig& sta_config);
+
+    /**
+     * @brief Start Wi-Fi operation mode
+     * 
+     * @attention 1. WiFiMode::init must have been called
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t start();
+
+private:
+    /**
+     * @brief Wi-Fi event handler
+     * 
+     * @param ctx: application specific data (currently a pointer to the class
+     * instance)
+     * @param event: Wi-Fi event
+     */
+    static esp_err_t eventHandler(void* ctx, system_event_t* event);
+};
 
 } // namespace wifi
 

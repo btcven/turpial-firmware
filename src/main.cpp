@@ -9,90 +9,108 @@
  * 
  */
 
-
 #include <cstdio>
 #include <sstream>
 
-
+#include "esp_log.h"
 #include "sdkconfig.h"
-#include <Arduino.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
+#include "NVS.h"
 #include "WiFiMode.h"
-#include "testRTOSCPP/Hello.h"
-
-#include "Namespace.h"
 
 #include "defaults.h"
 
-/**
- * @brief Read WiFi initialization parameters from the NVS (persistent
- * storage)
- * 
- * @param[out] wifi_params: "DTOConfig" structure where the parameters are
- * going to be readed.
- * 
- * @return
- *      - ESP_OK: on success 
- */
-esp_err_t readWiFiParams(wifi::DTOConfig& wifi_params)
+static const char* TAG = "app_main";
+
+esp_err_t getIsConfigured(bool& is_configured)
 {
-    ESP_LOGD(__func__, "Reading WiFi configuration from NVS");
+    esp_err_t err;
 
-    nvs::Namespace wifi_nvs;
-    auto err = wifi_nvs.open("wifi", NVS_READWRITE);
-    if (err != ESP_OK) return err;
+    nvs::Namespace app_nvs;
+    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
+    if (err != ESP_OK) {
+        const char* err_str = esp_err_to_name(err);
+        ESP_LOGE(TAG,
+            "Couldn't open namespace \"%s\" (%s)",
+            NVS_APP_NAMESPACE,
+            err_str);
+        return err;
+    }
 
-    std::stringstream blob;
-    err = wifi_nvs.get_blob("wifi_dto_config", blob);
-    if (err != ESP_OK) return err;
+    err = app_nvs.get_bool(NVS_IS_CONFIGURED_KEY, is_configured);
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        // Set is_configured to true on flash so on next init the config is
+        // readed directly by the ESP-IDF Wi-Fi library component.
+        err = app_nvs.set_bool(NVS_IS_CONFIGURED_KEY, true);
+        if (err != ESP_OK) return err;
+        err = app_nvs.commit();
+        if (err != ESP_OK) return err;
+        // Set the return variable to "false" to forcibly set the default
+        // configuration
+        is_configured = false;
+    } else {
+        return err;
+    }
 
-    wifi_params.deserialize(blob);
     return ESP_OK;
-}
-
-/**
- * @brief Set the default WiFi initialization parameters
- * 
- * @param[out] wifi_params: the structure used to set the parameters
- */
-void setDefaultWiFiParams(wifi::DTOConfig& wifi_params)
-{
-    wifi_params.ap_channel = WAP_CHANNEL;
-    wifi_params.ap_max_conn = WAP_MAXCONN;
-    wifi_params.wap_enabled = WAP_ENABLED;
-    wifi_params.wst_enabled = WST_ENABLED;
-    wifi_params.is_open = false;
-    wifi_params.ap_ssid = tinystring::String(WAP_SSID);
-    wifi_params.ap_password = tinystring::String(WAP_PASS);
 }
 
 extern "C" void app_main()
 {
-    initArduino();
+    esp_err_t err;
 
-    // Initialize NVS.
-    auto nvs_err = nvs::begin();
+    bool is_nvs_initialized = true;
+    err = nvs::init();
+    if (err != ESP_OK) {
+        const char* err_name = esp_err_to_name(err);
+        ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", err_name);
+        is_nvs_initialized = false;
+    }
 
-    wifi::DTOConfig wifi_params;
+    ESP_LOGD(TAG, "Init TCP/IP adapter");
+    tcpip_adapter_init();
 
-    if (nvs_err != ESP_OK) {
-        ESP_LOGE(__func__, "Couldn't initialize NVS, error %s", esp_err_to_name(nvs_err));
-        ESP_LOGD(__func__, "Using default WiFi parameters");
-
-        setDefaultWiFiParams(wifi_params);
-    } else {
-        auto err = readWiFiParams(wifi_params);
+    bool is_configured = false;
+    if (is_nvs_initialized) {
+        err = getIsConfigured(is_configured);
         if (err != ESP_OK) {
-            auto estr = esp_err_to_name(err);
-            ESP_LOGE(__func__, "Couldn't read WiFi parameters %s", estr);
-            ESP_LOGD(__func__, "Using default WiFi parameters");
-
-            setDefaultWiFiParams(wifi_params);
+            const char* err_str = esp_err_to_name(err);
+            ESP_LOGE(TAG,
+                "Couldn't get \"is_configured\" value (%s)",
+                err_str);
         }
     }
 
-    wifi::mode::begin(wifi_params);
+    wifi::WiFiMode wifi_mode;
+    err = wifi_mode.init(is_nvs_initialized);
+    if (err != ESP_OK) {
+        const char* err_name = esp_err_to_name(err);
+        ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", err_name);
+        // TODO: fallback to bluetooth mode to configure Wi-Fi?
+        return;
+    }
+
+    if (!is_configured) {
+        wifi_mode.set_mode(WIFI_MODE);
+
+        wifi::APConfig ap_config = {
+            .ssid = WAP_SSID,
+            .password = WAP_PASS,
+            .authmode = WAP_AUTHMODE,
+            .max_conn = WAP_MAXCONN,
+            .channel = WAP_CHANNEL,
+        };
+        wifi_mode.set_ap_config(ap_config);
+
+        wifi::STAConfig sta_config = {
+            .ssid = WST_SSID,
+            .password = WST_PASS,
+        };
+        wifi_mode.set_sta_config(sta_config);
+    }
+
+    err = wifi_mode.start();
     // TODO: app loop
 }

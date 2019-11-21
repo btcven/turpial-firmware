@@ -4,51 +4,54 @@
  * @brief 
  * @version 0.1
  * @date 2019-09-17
- * @copyright Copyright (c) 2019
  * 
+ * @copyright Copyright (c) 2019 Locha Mesh project developers
+ * @license Apache 2.0, see LICENSE file for details
  */
 
 
 #include "WiFiMode.h"
 #include "defaults.h"
-#include "sdkconfig.h"
-#include <Arduino.h>
-#include <cstdint>
-#include <sstream>
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 #include <unity.h>
 
-
-void set_default_wifi_params(wifi::DTOConfig& wifi_params)
-{
-    wifi_params.ap_channel = WAP_CHANNEL;
-    wifi_params.ap_max_conn = WAP_MAXCONN;
-    wifi_params.wap_enabled = WAP_ENABLED;
-    wifi_params.wst_enabled = WST_ENABLED;
-    wifi_params.is_open = false;
-    wifi_params.ap_ssid = tinystring::String(WAP_SSID);
-    wifi_params.ap_password = tinystring::String(WAP_PASS);
-    wifi_params.wst_ssid = tinystring::String(WST_SSID);
-    wifi_params.wst_password = tinystring::String(WST_PASS);
-}
-
-void test_wifi_mode_with_default_values(void)
+void test_wifi_mode()
 {
     const TickType_t xDelay = 10000 / portTICK_PERIOD_MS;
-    wifi::DTOConfig wifi_parameters;
-    set_default_wifi_params(wifi_parameters);
-    std::cout << "wst_ssid: " << wifi_parameters.wst_ssid.c_str() << std::endl;
-    std::cout << "wst_password: " << wifi_parameters.wst_password.c_str() << std::endl;
-    std::cout << "wap_enabled: " << wifi_parameters.wap_enabled << std::endl;
-    std::cout << "wst_enabled: " << wifi_parameters.wst_enabled << std::endl;
-    wifi::mode::begin(wifi_parameters);
+
+    esp_err_t err;
+
+    tcpip_adapter_init();
+
+    wifi::WiFiMode wifi_mode;
+    err = wifi_mode.init(false);
+    if (err != ESP_OK) TEST_FAIL();
+
+    wifi_mode.set_mode(WIFI_MODE);
+
+    wifi::APConfig ap_config = {
+        .ssid = WAP_SSID,
+        .password = WAP_PASS,
+        .authmode = WAP_AUTHMODE,
+        .max_conn = WAP_MAXCONN,
+        .channel = WAP_CHANNEL,
+    };
+
+    err = wifi_mode.set_ap_config(ap_config);
+    if (err != ESP_OK) TEST_FAIL();
+
+    err = wifi_mode.start();
+    if (err != ESP_OK) TEST_FAIL();
+
     vTaskDelay(xDelay);
 }
 
-
 extern "C" void app_main()
 {
-    initArduino();
+    vTaskDelay(2000);
     UNITY_BEGIN();
-    RUN_TEST(test_wifi_mode_with_default_values);
+    RUN_TEST(test_wifi_mode);
     UNITY_END();
 }
