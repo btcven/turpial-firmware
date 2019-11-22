@@ -89,6 +89,7 @@ extern "C" void app_main() {
         }
     }
     //we need to pass parameters in a serialized way
+    wifi_mode.setStackSize(4096);
     wifi_mode.start((void*)1); // 0 no inicializada 1 inicializada 2 configurada
 
 }
