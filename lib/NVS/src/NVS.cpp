@@ -19,8 +19,9 @@
 
 #include "esp_log.h"
 #include "nvs_flash.h"
+#include "defaults.h"
 
-namespace nvs {
+namespace storage {
 
 static const char* TAG = "NVS";
 
@@ -48,14 +49,14 @@ esp_err_t init()
     return err;
 }
 
-Namespace::Namespace() : m_is_opened(false), m_handle{0} {}
+NVS::NVS() : m_is_opened(false), m_handle{0} {}
 
-Namespace::~Namespace()
+NVS::~NVS()
 {
     close();
 }
 
-esp_err_t Namespace::open(const char* name, nvs_open_mode open_mode)
+esp_err_t NVS::open(const char* name, nvs_open_mode open_mode)
 {
     esp_err_t err;
 
@@ -74,7 +75,7 @@ esp_err_t Namespace::open(const char* name, nvs_open_mode open_mode)
     return ESP_OK;
 }
 
-void Namespace::close()
+void NVS::close()
 {
     ESP_LOGD(TAG, "Closing namespace");
 
@@ -82,12 +83,12 @@ void Namespace::close()
     m_is_opened = false;
 }
 
-esp_err_t Namespace::set_bool(const char* key, bool value)
+esp_err_t NVS::set_bool(const char* key, bool value)
 {
     return nvs_set_u8(m_handle, key, value ? 1 : 0);
 }
 
-esp_err_t Namespace::get_bool(const char* key, bool& value)
+esp_err_t NVS::get_bool(const char* key, bool& value)
 {
     std::uint8_t v = 0;
     esp_err_t err = nvs_get_u8(m_handle, key, &v);
@@ -102,9 +103,74 @@ esp_err_t Namespace::get_bool(const char* key, bool& value)
     return ESP_OK;
 }
 
-esp_err_t Namespace::commit()
+esp_err_t NVS::commit()
 {
     return nvs_commit(m_handle);
 }
+
+esp_err_t NVS::getIsConfigured(bool& is_configured)
+{
+    esp_err_t err;
+
+    storage::NVS app_nvs;
+    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
+    if (err != ESP_OK) {
+        const char* err_str = esp_err_to_name(err);
+        ESP_LOGE(TAG,
+            "Couldn't open namespace \"%s\" (%s)",
+            NVS_APP_NAMESPACE,
+            err_str);
+        return err;
+    }
+
+    err = app_nvs.get_bool(NVS_IS_CONFIGURED_KEY, is_configured);
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        // Set is_configured to true on flash so on next init the config is
+        // readed directly by the ESP-IDF Wi-Fi library component.
+        err = app_nvs.set_bool(NVS_IS_CONFIGURED_KEY, true);
+        if (err != ESP_OK) return err;
+        err = app_nvs.commit();
+        if (err != ESP_OK) return err;
+        // Set the return variable to "false" to forcibly set the default
+        // configuration
+        is_configured = false;
+    } else {
+        return err;
+    }
+
+    return ESP_OK;
+}
+
+
+void NVS::run(void* data) {
+    esp_err_t err;
+
+    bool is_nvs_initialized = true;
+    err = storage::init();
+    if (err != ESP_OK) {
+        const char* err_name = esp_err_to_name(err);
+        ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", err_name);
+        is_nvs_initialized = false;
+    }
+
+    ESP_LOGD(TAG, "Init TCP/IP adapter");
+    
+
+    bool is_configured = false;
+    if (is_nvs_initialized) {
+        err = getIsConfigured(is_configured);
+        if (err != ESP_OK) {
+            const char* err_str = esp_err_to_name(err);
+            ESP_LOGE(TAG,
+                "Couldn't get \"is_configured\" value (%s)",
+                err_str);
+        }
+    }
+    while(1) {
+        vTaskDelay(10 / portTICK_PERIOD_MS); //don't remove this line
+    }
+}
+
+
 
 } // namespace nvs

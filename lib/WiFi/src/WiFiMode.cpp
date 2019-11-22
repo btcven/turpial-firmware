@@ -149,6 +149,7 @@ esp_err_t WiFiMode::eventHandler(void* ctx, system_event_t* event)
 }
 
 void WiFiMode::run(void* data) {
+    //I need to shared data from this task to the other tasks
         int is_nvs_initialized= (int)data; //aqui deberiamos tener un objeto seriaalizado
         esp_err_t err;
             err = init((bool)is_nvs_initialized); //is_nvs_initialized

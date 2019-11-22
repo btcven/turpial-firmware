@@ -25,71 +25,29 @@
 
 static const char* TAG = "app_main";
 
-esp_err_t getIsConfigured(bool& is_configured)
-{
-    esp_err_t err;
-
-    nvs::Namespace app_nvs;
-    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
-    if (err != ESP_OK) {
-        const char* err_str = esp_err_to_name(err);
-        ESP_LOGE(TAG,
-            "Couldn't open namespace \"%s\" (%s)",
-            NVS_APP_NAMESPACE,
-            err_str);
-        return err;
-    }
-
-    err = app_nvs.get_bool(NVS_IS_CONFIGURED_KEY, is_configured);
-    if (err == ESP_ERR_NVS_NOT_FOUND) {
-        // Set is_configured to true on flash so on next init the config is
-        // readed directly by the ESP-IDF Wi-Fi library component.
-        err = app_nvs.set_bool(NVS_IS_CONFIGURED_KEY, true);
-        if (err != ESP_OK) return err;
-        err = app_nvs.commit();
-        if (err != ESP_OK) return err;
-        // Set the return variable to "false" to forcibly set the default
-        // configuration
-        is_configured = false;
-    } else {
-        return err;
-    }
-
-    return ESP_OK;
-}
 
 
 
 
 static wifi::WiFiMode wifi_mode;
+static storage::NVS nvs_app;
 
 extern "C" void app_main() {
 
-    esp_err_t err;
+    nvs_app.setStackSize(4096);
+    nvs_app.start();
 
-    bool is_nvs_initialized = true;
-    err = nvs::init();
-    if (err != ESP_OK) {
-        const char* err_name = esp_err_to_name(err);
-        ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", err_name);
-        is_nvs_initialized = false;
-    }
-
-    ESP_LOGD(TAG, "Init TCP/IP adapter");
+    vTaskDelay(5000 / portTICK_PERIOD_MS); //don't remove this line while for nvs init, just fo test
     tcpip_adapter_init();
-
-    bool is_configured = false;
-    if (is_nvs_initialized) {
-        err = getIsConfigured(is_configured);
-        if (err != ESP_OK) {
-            const char* err_str = esp_err_to_name(err);
-            ESP_LOGE(TAG,
-                "Couldn't get \"is_configured\" value (%s)",
-                err_str);
-        }
-    }
+    
+    
     //we need to pass parameters in a serialized way
     wifi_mode.setStackSize(4096);
     wifi_mode.start((void*)1); // 0 no inicializada 1 inicializada 2 configurada
+
+    /*
+    need to be done, shared data b/w task, in order to send nvs state to wifi task
+    serialized data to shared b/w task 
+    */
 
 }
