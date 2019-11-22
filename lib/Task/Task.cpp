@@ -68,6 +68,7 @@ void Task::start(void* task_data)
 
 void Task::stop()
 {
+    ESP_LOGD(LOG_TAG, "<< stoping task");
     if (m_handle == nullptr) return;
     xTaskHandle temp = m_handle;
     m_handle = nullptr;

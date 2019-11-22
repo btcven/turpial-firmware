@@ -15,11 +15,15 @@
 #include <cstdint>
 
 #include "esp_err.h"
+#include "esp_log.h"
 #include "esp_event.h"
 #include "esp_wifi.h"
+#include "Task.h"
+#include "defaults.h"
+
+
 
 namespace wifi {
-
 /**
  * @brief AP mode configuration
  * 
@@ -41,7 +45,8 @@ struct STAConfig {
     const char* password;
 };
 
-class WiFiMode
+
+class WiFiMode : public Task
 {
 public:
     /**
@@ -52,12 +57,14 @@ public:
      * 
      * @param use_nvs: wether to use NVS for storage or not
      * 
+     * 
+     * 
+     * 
      * @return
      *      - ESP_OK: succeed
      *      - (others): failed
      */
     esp_err_t init(bool use_nvs);
-
     /**
      * @brief Set Wi-Fi operation mode
      * 
@@ -106,9 +113,46 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t start();
+    esp_err_t init();
+
+    
 
 private:
+
+    void run(void* data) override {
+        int is_nvs_initialized= (int)data; //aqui deberiamos tener un objeto seriaalizado
+        esp_err_t err;
+            err = init((bool)is_nvs_initialized); //is_nvs_initialized
+            if (err != ESP_OK) {
+                const char* err_name = esp_err_to_name(err);
+                ESP_LOGE("tESTfrertos", "Couldn't initalize Wi-Fi interface (%s)", err_name);
+                // TODO: fallback to bluetooth mode to configure Wi-Fi?
+                return;
+            }
+            if (is_nvs_initialized <= 1) { //nvs initialized but not configured
+                set_mode(WIFI_MODE);
+
+                APConfig ap_config = {
+                .ssid = WAP_SSID,
+                .password = WAP_PASS,
+                .authmode = WAP_AUTHMODE,
+                .max_conn = WAP_MAXCONN,
+                .channel = WAP_CHANNEL,
+                };
+                set_ap_config(ap_config);
+
+                STAConfig sta_config = {
+                .ssid = WST_SSID,
+                .password = WST_PASS,
+                };
+                set_sta_config(sta_config);
+            }
+            
+            init();
+            while(1) {
+                vTaskDelay(10 / portTICK_PERIOD_MS); //don't remove this line
+            }
+    }
     /**
      * @brief Wi-Fi event handler
      * 

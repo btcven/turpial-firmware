@@ -14,9 +14,15 @@
 #include <cstdint>
 #include <cstring>
 
+#include "freertos/FreeRTOS.h"
+#include "freertos/task.h"
+#include "esp_system.h"
+
 #include "esp_log.h"
 #include "esp_wifi.h"
+#include "esp_event.h"
 #include "esp_event_loop.h"
+
 
 namespace wifi {
 
@@ -105,7 +111,7 @@ esp_err_t WiFiMode::set_sta_config(STAConfig& sta_config)
     return esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
 }
 
-esp_err_t WiFiMode::start()
+esp_err_t WiFiMode::init()
 {
     esp_err_t err;
 

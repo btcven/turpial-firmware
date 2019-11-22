@@ -14,7 +14,7 @@
 
 #include "esp_err.h"
 #include "nvs_flash.h"
-
+#include "Task.h"
 namespace nvs {
 
 /**
@@ -30,8 +30,7 @@ esp_err_t init();
  * @brief Representation of a NVS namespace.
  * 
  */
-class Namespace
-{
+class Namespace  {
 public:
     /**
      * @brief Construct a new Namespace
@@ -97,6 +96,8 @@ public:
      *      - (others): failed
      */
     esp_err_t commit();
+
+
 
 private:
     bool m_is_opened;

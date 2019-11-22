@@ -22,6 +22,7 @@
 
 #include "defaults.h"
 
+
 static const char* TAG = "app_main";
 
 esp_err_t getIsConfigured(bool& is_configured)
@@ -57,8 +58,13 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
-extern "C" void app_main()
-{
+
+
+
+static wifi::WiFiMode wifi_mode;
+
+extern "C" void app_main() {
+
     esp_err_t err;
 
     bool is_nvs_initialized = true;
@@ -82,35 +88,7 @@ extern "C" void app_main()
                 err_str);
         }
     }
+    //we need to pass parameters in a serialized way
+    wifi_mode.start((void*)1); // 0 no inicializada 1 inicializada 2 configurada
 
-    wifi::WiFiMode wifi_mode;
-    err = wifi_mode.init(is_nvs_initialized);
-    if (err != ESP_OK) {
-        const char* err_name = esp_err_to_name(err);
-        ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", err_name);
-        // TODO: fallback to bluetooth mode to configure Wi-Fi?
-        return;
-    }
-
-    if (!is_configured) {
-        wifi_mode.set_mode(WIFI_MODE);
-
-        wifi::APConfig ap_config = {
-            .ssid = WAP_SSID,
-            .password = WAP_PASS,
-            .authmode = WAP_AUTHMODE,
-            .max_conn = WAP_MAXCONN,
-            .channel = WAP_CHANNEL,
-        };
-        wifi_mode.set_ap_config(ap_config);
-
-        wifi::STAConfig sta_config = {
-            .ssid = WST_SSID,
-            .password = WST_PASS,
-        };
-        wifi_mode.set_sta_config(sta_config);
-    }
-
-    err = wifi_mode.start();
-    // TODO: app loop
 }
