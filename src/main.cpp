@@ -17,6 +17,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
+#include "BLEPreferences.h"
 #include "NVS.h"
 #include "WiFiMode.h"
 
@@ -112,5 +113,11 @@ extern "C" void app_main()
     }
 
     err = wifi_mode.start();
+
+    ble::ServerParams server_params;
+    server_params.device_name = "Turpial-1234";
+    server_params.static_passkey = 123456;
+    server_params.app_id = 0;
+    ble_preferences::start(server_params);
     // TODO: app loop
 }
