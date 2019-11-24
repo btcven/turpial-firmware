@@ -20,6 +20,8 @@
 #include "NVS.h"
 #include "WiFiMode.h"
 
+#include "WiFiEventHandler.h"
+
 #include "defaults.h"
 
 static const char* TAG = "app_main";
@@ -57,9 +59,16 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
+
 extern "C" void app_main()
 {
     esp_err_t err;
+    wifi::WiFiEventHandler* event_handler;
+    wifi::WiFiMode wifi_mode;
+    event_handler = new wifi::WiFiEventHandler();
+    //wifi::WiFiMode* wifi_mode;
+    //wifi_mode = new wifi::WiFiMode();
+
 
     bool is_nvs_initialized = true;
     err = nvs::init();
@@ -83,7 +92,6 @@ extern "C" void app_main()
         }
     }
 
-    wifi::WiFiMode wifi_mode;
     err = wifi_mode.init(is_nvs_initialized);
     if (err != ESP_OK) {
         const char* err_name = esp_err_to_name(err);
@@ -111,6 +119,7 @@ extern "C" void app_main()
         wifi_mode.set_sta_config(sta_config);
     }
 
+    wifi_mode.setWiFiEventHandler(event_handler);
     err = wifi_mode.start();
     // TODO: app loop
 }
