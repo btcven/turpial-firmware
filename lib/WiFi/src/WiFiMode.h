@@ -16,15 +16,11 @@
 
 #include "WiFiEventHandler.h"
 #include "esp_err.h"
-#include "esp_log.h"
 #include "esp_event.h"
 #include "esp_wifi.h"
-#include "Task.h"
-#include "defaults.h"
-
-
 
 namespace wifi {
+
 /**
  * @brief AP mode configuration
  * 
@@ -45,7 +41,6 @@ struct STAConfig {
     const char* ssid;
     const char* password;
 };
-
 
 class WiFiMode
 {
@@ -69,14 +64,12 @@ public:
      * 
      * @param use_nvs: wether to use NVS for storage or not
      * 
-     * 
-     * 
-     * 
      * @return
      *      - ESP_OK: succeed
      *      - (others): failed
      */
     esp_err_t init(bool use_nvs);
+
     /**
      * @brief Set Wi-Fi operation mode
      * 
@@ -125,9 +118,7 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t init();
-
-    
+    esp_err_t start();
 
     /**
      * @brief Set callback handler to catch WiFi events outside of class itself

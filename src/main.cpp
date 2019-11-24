@@ -24,14 +24,13 @@
 
 #include "defaults.h"
 
-
 static const char* TAG = "app_main";
 
 esp_err_t getIsConfigured(bool& is_configured)
 {
     esp_err_t err;
 
-    nvs::Namespace app_nvs;
+    storage::NVS app_nvs;
     err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
     if (err != ESP_OK) {
         const char* err_str = esp_err_to_name(err);
@@ -72,7 +71,7 @@ extern "C" void app_main()
 
 
     bool is_nvs_initialized = true;
-    err = nvs::init();
+    err = storage::init();
     if (err != ESP_OK) {
         const char* err_name = esp_err_to_name(err);
         ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", err_name);
@@ -81,7 +80,7 @@ extern "C" void app_main()
 
     ESP_LOGD(TAG, "Init TCP/IP adapter");
     tcpip_adapter_init();
-    
+
     bool is_configured = false;
     if (is_nvs_initialized) {
         err = getIsConfigured(is_configured);

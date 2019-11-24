@@ -13,8 +13,6 @@
 
 #include <cstdint>
 
-#include "freertos/FreeRTOS.h"
-#include "freertos/task.h"
 #include "esp_system.h"
 
 #include "esp_log.h"
@@ -140,37 +138,6 @@ esp_err_t NVS::getIsConfigured(bool& is_configured)
 
     return ESP_OK;
 }
-
-
-void NVS::run(void* data) {
-    esp_err_t err;
-
-    bool is_nvs_initialized = true;
-    err = storage::init();
-    if (err != ESP_OK) {
-        const char* err_name = esp_err_to_name(err);
-        ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", err_name);
-        is_nvs_initialized = false;
-    }
-
-    ESP_LOGD(TAG, "Init TCP/IP adapter");
-    
-
-    bool is_configured = false;
-    if (is_nvs_initialized) {
-        err = getIsConfigured(is_configured);
-        if (err != ESP_OK) {
-            const char* err_str = esp_err_to_name(err);
-            ESP_LOGE(TAG,
-                "Couldn't get \"is_configured\" value (%s)",
-                err_str);
-        }
-    }
-    while(1) {
-        vTaskDelay(10 / portTICK_PERIOD_MS); //don't remove this line
-    }
-}
-
 
 
 } // namespace nvs

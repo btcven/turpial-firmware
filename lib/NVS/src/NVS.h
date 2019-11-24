@@ -30,7 +30,7 @@ esp_err_t init();
  * @brief Representation of a NVS namespace.
  * 
  */
-class NVS : public Task {
+class NVS {
 public:
     /**
      * @brief Construct a new Namespace
@@ -103,7 +103,6 @@ public:
 private:
     bool m_is_opened;
     nvs_handle m_handle;
-    void run(void* data) override;
 };
 
 } // namespace nvs
