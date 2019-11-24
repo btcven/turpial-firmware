@@ -64,10 +64,9 @@ extern "C" void app_main()
 {
     esp_err_t err;
     wifi::WiFiEventHandler* event_handler;
-    wifi::WiFiMode wifi_mode;
     event_handler = new wifi::WiFiEventHandler();
-    //wifi::WiFiMode* wifi_mode;
-    //wifi_mode = new wifi::WiFiMode();
+    wifi::WiFiMode* wifi_mode;
+    wifi_mode = new wifi::WiFiMode();
 
 
     bool is_nvs_initialized = true;
@@ -92,7 +91,7 @@ extern "C" void app_main()
         }
     }
 
-    err = wifi_mode.init(is_nvs_initialized);
+    err = wifi_mode->init(is_nvs_initialized);
     if (err != ESP_OK) {
         const char* err_name = esp_err_to_name(err);
         ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", err_name);
@@ -101,7 +100,7 @@ extern "C" void app_main()
     }
 
     if (!is_configured) {
-        wifi_mode.set_mode(WIFI_MODE);
+        wifi_mode->set_mode(WIFI_MODE);
 
         wifi::APConfig ap_config = {
             .ssid = WAP_SSID,
@@ -110,16 +109,16 @@ extern "C" void app_main()
             .max_conn = WAP_MAXCONN,
             .channel = WAP_CHANNEL,
         };
-        wifi_mode.set_ap_config(ap_config);
+        wifi_mode->set_ap_config(ap_config);
 
         wifi::STAConfig sta_config = {
             .ssid = WST_SSID,
             .password = WST_PASS,
         };
-        wifi_mode.set_sta_config(sta_config);
+        wifi_mode->set_sta_config(sta_config);
     }
 
-    wifi_mode.setWiFiEventHandler(event_handler);
-    err = wifi_mode.start();
+    wifi_mode->setWiFiEventHandler(event_handler);
+    err = wifi_mode->start();
     // TODO: app loop
 }
