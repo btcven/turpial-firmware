@@ -24,6 +24,8 @@
 #include "defaults.h"
 #include "wifi_event_source.h"
 
+#include "WiFiHandleEvents.h"
+
 static const char* TAG = "app_main";
 ESP_EVENT_DEFINE_BASE(WIFI_EVENTS);
 
@@ -111,6 +113,8 @@ extern "C" void app_main()
     esp_err_t err;
     wifi::WiFiMode wifi_mode;
 
+    wifi::WiFiHandleEvents wifi_event;
+
 
     bool is_nvs_initialized = true;
     err = storage::init();
@@ -163,9 +167,10 @@ extern "C" void app_main()
 
 
     // Create the default event loop
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
+    //ESP_ERROR_CHECK(esp_event_loop_create_default());
     //ESP_ERROR_CHECK(esp_event_handler_register(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, all_event_handler, NULL));
-    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENTS, STA_GOT_IP_EVENT, sta_got_ip_handler, NULL));
+   // ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENTS, STA_GOT_IP_EVENT, sta_got_ip_handler, NULL));
+    wifi_event.on(STA_GOT_IP_EVENT, sta_got_ip_handler);
     err = wifi_mode.start();
     // TODO: app loop
 }
