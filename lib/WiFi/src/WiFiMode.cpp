@@ -22,7 +22,7 @@ namespace wifi {
 
 static const char* TAG = "WiFiMode";
 
-WiFiMode::WiFiMode() : m_p_wifi_event_handler(nullptr)
+/* WiFiMode::WiFiMode() : m_p_wifi_event_handler(nullptr)
 {
 }
 
@@ -32,7 +32,7 @@ WiFiMode::~WiFiMode()
         delete m_p_wifi_event_handler;
         m_p_wifi_event_handler = nullptr;
     }
-}
+} */
 
 void WiFiMode::setWiFiEventHandler(WiFiEventHandler* wifiEventHandler)
 {

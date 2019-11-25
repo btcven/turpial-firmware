@@ -50,12 +50,12 @@ public:
      * @brief Constructor WiFiMode
      */
 
-    WiFiMode();
+    //WiFiMode();
     /**
      * @brief Destructor WiFiMode
      */
 
-    ~WiFiMode();
+    //~WiFiMode();
 
     /**
      * @brief Initialize Wi-Fi

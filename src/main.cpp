@@ -101,14 +101,17 @@ static void all_event_handler(void* handler_args, esp_event_base_t base, int32_t
     ESP_LOGI(TAG, "%s:%s: all_event_handler", base, get_id_string(base, id));
 }
 
+static void sta_got_ip_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
+{
+    ESP_LOGI(TAG, "*****************************!!!!!!!!!!!!!!!!!!!!!!!!!!!***********************************!!!!!!!!!!!!!!!!!!!!!!!!!");
+}
 
 extern "C" void app_main()
 {
     esp_err_t err;
     wifi::WiFiEventHandler* event_handler;
     event_handler = new wifi::WiFiEventHandler();
-    wifi::WiFiMode* wifi_mode;
-    wifi_mode = new wifi::WiFiMode();
+    wifi::WiFiMode wifi_mode;
 
 
     bool is_nvs_initialized = true;
@@ -133,7 +136,7 @@ extern "C" void app_main()
         }
     }
 
-    err = wifi_mode->init(is_nvs_initialized);
+    err = wifi_mode.init(is_nvs_initialized);
     if (err != ESP_OK) {
         const char* err_name = esp_err_to_name(err);
         ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", err_name);
@@ -142,7 +145,7 @@ extern "C" void app_main()
     }
 
     if (!is_configured) {
-        wifi_mode->set_mode(WIFI_MODE);
+        wifi_mode.set_mode(WIFI_MODE);
 
         wifi::APConfig ap_config = {
             .ssid = WAP_SSID,
@@ -151,20 +154,20 @@ extern "C" void app_main()
             .max_conn = WAP_MAXCONN,
             .channel = WAP_CHANNEL,
         };
-        wifi_mode->set_ap_config(ap_config);
+        wifi_mode.set_ap_config(ap_config);
 
         wifi::STAConfig sta_config = {
             .ssid = WST_SSID,
             .password = WST_PASS,
         };
-        wifi_mode->set_sta_config(sta_config);
+        wifi_mode.set_sta_config(sta_config);
     }
 
 
     // Create the default event loop
     ESP_ERROR_CHECK(esp_event_loop_create_default());
-    ESP_ERROR_CHECK(esp_event_handler_register(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, all_event_handler, NULL));
-
-    err = wifi_mode->start();
+    //ESP_ERROR_CHECK(esp_event_handler_register(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, all_event_handler, NULL));
+    ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENTS, STA_GOT_IP_EVENT, sta_got_ip_handler, NULL));
+    err = wifi_mode.start();
     // TODO: app loop
 }
