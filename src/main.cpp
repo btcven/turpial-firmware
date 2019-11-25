@@ -62,59 +62,16 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
-
-static char* get_id_string(esp_event_base_t base, int32_t id)
-{
-    char* event = "";
-    if (base == WIFI_EVENTS) {
-        switch (id) {
-        case STA_AUTHMODE_CHANGE_EVENT:
-            event = "SYSTEM_EVENT_STA_AUTHMODE_CHANGE";
-            break;
-        case STA_CONNECTED_EVENT:
-            event = "SYSTEM_EVENT_STA_CONNECTED";
-            break;
-        case STA_DISCONNECTED_EVENT:
-            event = "SYSTEM_EVENT_STA_DISCONNECTED";
-            break;
-        case STA_GOT_IP_EVENT:
-            event = "SYSTEM_EVENT_STA_GOT_IP";
-            break;
-        case STA_START_EVENT:
-            event = "SYSTEM_EVENT_STA_START";
-            break;
-        case STA_STOP_EVENT:
-            event = "SYSTEM_EVENT_STA_STOP";
-            break;
-        case WIFI_READY_EVENT:
-            event = "SYSTEM_EVENT_WIFI_READY";
-            break;
-        }
-    } else {
-        event = "TASK_ITERATION_EVENT";
-    }
-    return event;
-}
-
-
-/* Handler for all events */
-static void all_event_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
-{
-    ESP_LOGI(TAG, "%s:%s: all_event_handler", base, get_id_string(base, id));
-}
-
 static void sta_got_ip_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
 {
     ESP_LOGI(TAG, "*****************************!!!!!!!!!!!!!!!!!!!!!!!!!!!***********************************!!!!!!!!!!!!!!!!!!!!!!!!!");
+    ESP_LOGI(TAG, "*************************sta_got_ip_handler*****************************");
 }
 
 extern "C" void app_main()
 {
     esp_err_t err;
     wifi::WiFiMode wifi_mode;
-
-    wifi::WiFiHandleEvents wifi_event;
-
 
     bool is_nvs_initialized = true;
     err = storage::init();
@@ -165,12 +122,9 @@ extern "C" void app_main()
         wifi_mode.set_sta_config(sta_config);
     }
 
-
-    // Create the default event loop
-    //ESP_ERROR_CHECK(esp_event_loop_create_default());
-    //ESP_ERROR_CHECK(esp_event_handler_register(ESP_EVENT_ANY_BASE, ESP_EVENT_ANY_ID, all_event_handler, NULL));
-   // ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENTS, STA_GOT_IP_EVENT, sta_got_ip_handler, NULL));
-    wifi_event.on(STA_GOT_IP_EVENT, sta_got_ip_handler);
+    //register to listen STA_GOT_IP_EVENT
+    //there is a file with all wifi events to listen
+    wifi_mode.on(STA_GOT_IP_EVENT, sta_got_ip_handler);
     err = wifi_mode.start();
     // TODO: app loop
 }

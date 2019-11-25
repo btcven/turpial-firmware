@@ -140,7 +140,7 @@ esp_err_t WiFiMode::eventHandler(void* ctx, system_event_t* event)
 {
     ESP_LOGD(TAG, ">> *****************EVENT HANDLER CALLED*******************************************");
     ESP_LOGD(TAG, ">> ********************************************************************************");
-  
+
     esp_err_t rc = ESP_OK;
 
     switch (event->event_id) {
@@ -194,7 +194,7 @@ esp_err_t WiFiMode::eventHandler(void* ctx, system_event_t* event)
     }
 
     case SYSTEM_EVENT_WIFI_READY: {
-        ESP_ERROR_CHECK(esp_event_post(WIFI_EVENTS,  WIFI_READY_EVENT, NULL, 0, portMAX_DELAY));
+        ESP_ERROR_CHECK(esp_event_post(WIFI_EVENTS, WIFI_READY_EVENT, NULL, 0, portMAX_DELAY));
         break;
     }
 

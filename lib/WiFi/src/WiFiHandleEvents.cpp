@@ -4,7 +4,7 @@ namespace wifi {
 static const char* TAG = "WiFiMHandleEvent";
 WiFiHandleEvents::WiFiHandleEvents()
 {
-    
+    ESP_ERROR_CHECK(esp_event_loop_create_default());
 }
 
 WiFiHandleEvents::~WiFiHandleEvents()
@@ -13,13 +13,8 @@ WiFiHandleEvents::~WiFiHandleEvents()
 
 void WiFiHandleEvents::on(int32_t eventID, esp_event_handler_t handler)
 {
-    ESP_ERROR_CHECK(esp_event_loop_create_default());
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENTS, eventID, handler, NULL));
-}  
- void WiFiHandleEvents::on()
-{
-    ESP_LOGE(TAG, "@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@");
-} 
+}
 
 char* WiFiHandleEvents::get_id_string(esp_event_base_t base, int32_t id)
 {
@@ -53,12 +48,6 @@ char* WiFiHandleEvents::get_id_string(esp_event_base_t base, int32_t id)
     }
     return event;
 }
-
-/* static void sta_got_ip_handler(void* handler_args, esp_event_base_t base, int32_t id, void* event_data)
-{
-    ESP_LOGI(TAG, "*****************************!!!!!!!!!!!!!!!!!!!!!!!!!!!***********************************!!!!!!!!!!!!!!!!!!!!!!!!!");
-}
- */
 
 
 } // namespace wifi

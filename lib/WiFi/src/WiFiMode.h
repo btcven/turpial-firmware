@@ -14,6 +14,7 @@
 
 #include <cstdint>
 
+#include "WiFiHandleEvents.h"
 #include "esp_err.h"
 #include "esp_event.h"
 #include "esp_wifi.h"
@@ -42,7 +43,7 @@ struct STAConfig {
     const char* password;
 };
 
-class WiFiMode
+class WiFiMode : public WiFiHandleEvents
 {
 public:
     /**
