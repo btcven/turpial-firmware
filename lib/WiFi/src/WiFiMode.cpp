@@ -159,17 +159,97 @@ esp_err_t WiFiMode::eventHandler(void* ctx, system_event_t* event)
 {
     ESP_LOGD(TAG, ">> *****************EVENT HANDLER CALLED*******************************************");
     ESP_LOGD(TAG, ">> ********************************************************************************");
-    WiFiMode* pWiFiMode = reinterpret_cast<WiFiMode*>(ctx);
-    //WiFiMode* pWiFiMode = (WiFiMode*) ctx;   // retrieve the WiFi object from the passed in context.
+    //WiFiMode* pWiFiMode = reinterpret_cast<WiFiMode*>(ctx);
 
-    // Invoke the event handler.
-    esp_err_t rc;
-    if (pWiFiMode->m_p_wifi_event_handler != nullptr) {
-        rc = pWiFiMode->m_p_wifi_event_handler->getEventHandler()(pWiFiMode->m_p_wifi_event_handler, event);
-    } else {
-        rc = ESP_OK;
+
+
+    ESP_LOGD(TAG, ">>-------------------------------------- eventHandler called: ctx=0x%x, event=0x%x", (uint32_t)ctx, (uint32_t)event);
+    WiFiEventHandler* p_wifi_event_handler = (WiFiEventHandler*)ctx;
+    if (ctx == nullptr) {
+        ESP_LOGD(TAG, "No context");
+        return ESP_OK;
     }
 
+    esp_err_t rc = ESP_OK;
+    switch (event->event_id) {
+    case SYSTEM_EVENT_AP_START: {
+        //rc = p_wifi_event_handler->apStart();
+        break;
+    }
+
+    case SYSTEM_EVENT_AP_STOP: {
+        //rc = p_wifi_event_handler->apStop();
+        break;
+    }
+
+    case SYSTEM_EVENT_AP_STACONNECTED: {
+        //rc = p_wifi_event_handler->apStaConnected(event->event_info.sta_connected);
+        break;
+    }
+
+    case SYSTEM_EVENT_AP_STADISCONNECTED: {
+        //rc = p_wifi_event_handler->apStaDisconnected(event->event_info.sta_disconnected);
+        break;
+    }
+
+    case SYSTEM_EVENT_SCAN_DONE: {
+        //rc = p_wifi_event_handler->staScanDone(event->event_info.scan_done);
+        break;
+    }
+
+    case SYSTEM_EVENT_STA_AUTHMODE_CHANGE: {
+        //rc = p_wifi_event_handler->staAuthChange(event->event_info.auth_change);
+        break;
+    }
+
+    case SYSTEM_EVENT_STA_CONNECTED: {
+        ESP_ERROR_CHECK(esp_event_post(WIFI_EVENTS, STA_CONNECTED_EVENT, NULL, 0, portMAX_DELAY));
+        //rc = p_wifi_event_handler->staConnected(event->event_info.connected);
+        break;
+    }
+
+    case SYSTEM_EVENT_STA_DISCONNECTED: {
+        ESP_ERROR_CHECK(esp_event_post(WIFI_EVENTS, STA_DISCONNECTED_EVENT, NULL, 0, portMAX_DELAY));
+        //rc = p_wifi_event_handler->staDisconnected(event->event_info.disconnected);
+        break;
+    }
+
+    case SYSTEM_EVENT_STA_GOT_IP: {
+        ESP_ERROR_CHECK(esp_event_post(WIFI_EVENTS, STA_GOT_IP_EVENT, NULL, 0, portMAX_DELAY));
+        //rc = p_wifi_event_handler->staGotIp(event->event_info.got_ip);
+        break;
+    }
+
+    case SYSTEM_EVENT_STA_START: {
+        ESP_ERROR_CHECK(esp_event_post(WIFI_EVENTS, STA_START_EVENT, NULL, 0, portMAX_DELAY));
+        //rc = p_wifi_event_handler->staStart();
+        break;
+    }
+
+    case SYSTEM_EVENT_STA_STOP: {
+        ESP_ERROR_CHECK(esp_event_post(WIFI_EVENTS, STA_STOP_EVENT, NULL, 0, portMAX_DELAY));
+        //rc = p_wifi_event_handler->staStop();
+        break;
+    }
+
+    case SYSTEM_EVENT_WIFI_READY: {
+        ESP_ERROR_CHECK(esp_event_post(WIFI_EVENTS,  WIFI_READY_EVENT, NULL, 0, portMAX_DELAY));
+        //rc = p_wifi_event_handler->wifiReady();
+        break;
+    }
+
+    default:
+        break;
+    }
+
+    if (p_wifi_event_handler->m_next_handler != nullptr) {
+        ESP_LOGD(TAG, "Found a next handler");
+        rc = eventHandler(p_wifi_event_handler->m_next_handler, event);
+    } else {
+        //ESP_LOGD(LOG_TAG, "NOT Found a next handler");
+    }
+
+  
     return rc;
 }
 

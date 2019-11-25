@@ -18,6 +18,7 @@
 #include "esp_err.h"
 #include "esp_event.h"
 #include "esp_wifi.h"
+#include "wifi_event_source.h"
 
 namespace wifi {
 
