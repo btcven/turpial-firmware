@@ -22,25 +22,6 @@ namespace wifi {
 
 static const char* TAG = "WiFiMode";
 
-/* WiFiMode::WiFiMode() : m_p_wifi_event_handler(nullptr)
-{
-}
-
-WiFiMode::~WiFiMode()
-{
-    if (m_p_wifi_event_handler != nullptr) {
-        delete m_p_wifi_event_handler;
-        m_p_wifi_event_handler = nullptr;
-    }
-} */
-
-void WiFiMode::setWiFiEventHandler(WiFiEventHandler* wifiEventHandler)
-{
-    ESP_LOGD(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> setWifiEventHandler: 0x%d>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", (uint32_t)wifiEventHandler);
-    this->m_p_wifi_event_handler = wifiEventHandler;
-    ESP_LOGD(TAG, "<< ***************************************************setWifiEventHandler*************************************");
-}
-
 void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
 {
     std::size_t len = std::strlen(src);

@@ -20,10 +20,10 @@
 #include "NVS.h"
 #include "WiFiMode.h"
 
-#include "WiFiEventHandler.h"
 
 #include "defaults.h"
 #include "wifi_event_source.h"
+
 static const char* TAG = "app_main";
 ESP_EVENT_DEFINE_BASE(WIFI_EVENTS);
 
@@ -109,8 +109,6 @@ static void sta_got_ip_handler(void* handler_args, esp_event_base_t base, int32_
 extern "C" void app_main()
 {
     esp_err_t err;
-    wifi::WiFiEventHandler* event_handler;
-    event_handler = new wifi::WiFiEventHandler();
     wifi::WiFiMode wifi_mode;
 
 
