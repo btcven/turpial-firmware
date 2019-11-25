@@ -11,6 +11,8 @@ WiFiHandleEvents::~WiFiHandleEvents()
 {
 }
 
+
+
 void WiFiHandleEvents::on(int32_t eventID, esp_event_handler_t handler)
 {
     ESP_ERROR_CHECK(esp_event_handler_register(WIFI_EVENTS, eventID, handler, NULL));

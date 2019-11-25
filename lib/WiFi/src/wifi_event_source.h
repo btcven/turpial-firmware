@@ -15,7 +15,7 @@ extern "C" {
 ESP_EVENT_DECLARE_BASE(WIFI_EVENTS); // declaration of the task events family
 
 enum {
-    // raised during an iteration of the loop within the task
+    // raised during internal wifi events state machine, we need to rise up manually
     STA_AUTHMODE_CHANGE_EVENT,
     STA_CONNECTED_EVENT,
     STA_DISCONNECTED_EVENT,
