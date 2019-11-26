@@ -14,13 +14,32 @@
 #include <cstdint>
 #include <cstring>
 
+#include "esp_event_loop.h"
 #include "esp_log.h"
 #include "esp_wifi.h"
-#include "esp_event_loop.h"
 
 namespace wifi {
 
 static const char* TAG = "WiFiMode";
+
+WiFiMode::WiFiMode() : m_p_wifi_event_handler(nullptr)
+{
+}
+
+WiFiMode::~WiFiMode()
+{
+    if (m_p_wifi_event_handler != nullptr) {
+        delete m_p_wifi_event_handler;
+        m_p_wifi_event_handler = nullptr;
+    }
+}
+
+void WiFiMode::setWiFiEventHandler(WiFiEventHandler* wifiEventHandler)
+{
+    ESP_LOGD(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> setWifiEventHandler: 0x%d>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", (uint32_t)wifiEventHandler);
+    this->m_p_wifi_event_handler = wifiEventHandler;
+    ESP_LOGD(TAG, "<< ***************************************************setWifiEventHandler*************************************");
+}
 
 void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
 {
@@ -138,8 +157,20 @@ esp_err_t WiFiMode::start()
 
 esp_err_t WiFiMode::eventHandler(void* ctx, system_event_t* event)
 {
-    //WiFiMode wifi_mode = reinterpret_cast<WiFiMode*>(ctx);
-    return ESP_OK;
+    ESP_LOGD(TAG, ">> *****************EVENT HANDLER CALLED*******************************************");
+    ESP_LOGD(TAG, ">> ********************************************************************************");
+    WiFiMode* pWiFiMode = reinterpret_cast<WiFiMode*>(ctx);
+    //WiFiMode* pWiFiMode = (WiFiMode*) ctx;   // retrieve the WiFi object from the passed in context.
+
+    // Invoke the event handler.
+    esp_err_t rc;
+    if (pWiFiMode->m_p_wifi_event_handler != nullptr) {
+        rc = pWiFiMode->m_p_wifi_event_handler->getEventHandler()(pWiFiMode->m_p_wifi_event_handler, event);
+    } else {
+        rc = ESP_OK;
+    }
+
+    return rc;
 }
 
 } // namespace wifi

@@ -14,8 +14,7 @@
 
 #include "esp_err.h"
 #include "nvs_flash.h"
-
-namespace nvs {
+namespace storage {
 
 /**
  * @brief Initialize NVS
@@ -30,20 +29,19 @@ esp_err_t init();
  * @brief Representation of a NVS namespace.
  * 
  */
-class Namespace
-{
+class NVS {
 public:
     /**
      * @brief Construct a new Namespace
      * 
      */
-    Namespace();
+    NVS();
 
     /**
      * @brief Close the Namespace
      * 
      */
-    ~Namespace();
+    ~NVS();
 
     /**
      * @brief Open namespace
@@ -88,6 +86,7 @@ public:
      *      - (others): failed
      */
     esp_err_t get_bool(const char* key, bool& value);
+    esp_err_t getIsConfigured(bool& is_configured);
 
     /**
      * @brief Commit changes to flash
@@ -97,6 +96,8 @@ public:
      *      - (others): failed
      */
     esp_err_t commit();
+
+
 
 private:
     bool m_is_opened;

@@ -31,7 +31,7 @@
  * @brief WiFi AP/ST default params.
  * 
  */
-#define WIFI_MODE WIFI_MODE_AP
+#define WIFI_MODE WIFI_MODE_APSTA
 #define WST_SSID ""
 #define WST_PASS ""
 #define WAP_SSID "io.locha.ap"
