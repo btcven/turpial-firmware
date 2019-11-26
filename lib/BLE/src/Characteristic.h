@@ -76,6 +76,7 @@ public:
     void create(std::uint16_t service_handle);
 
     Value& value() { return m_value; }
+    void setHandle(std::uint16_t handle) { m_handle = handle; }
 
     void handleEvent(
         esp_gatts_cb_event_t event,
@@ -91,8 +92,6 @@ private:
     std::uint16_t m_handle;
     Value m_value;
     bool m_write_evt;
-
-    util::Semaphore m_create_sema;
 }; // namespace ble
 
 } // namespace ble

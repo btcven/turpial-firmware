@@ -27,6 +27,8 @@ Service::Service(Uuid uuid, std::uint16_t num_handles, std::uint8_t inst_id)
       m_inst_id(inst_id),
       m_create_sema("CreateService"),
       m_start_sema("StartService"),
+      m_char_create_sema("CharCreateSema"),
+      m_char_create_index(0),
       m_characteristics(),
       m_handle(0)
 {
@@ -38,6 +40,8 @@ Service::Service(Service&& other)
       m_inst_id(other.m_inst_id),
       m_create_sema(std::move(other.m_create_sema)),
       m_start_sema(std::move(other.m_start_sema)),
+      m_char_create_sema(std::move(other.m_char_create_sema)),
+      m_char_create_index(other.m_char_create_index),
       m_characteristics(std::move(other.m_characteristics)),
       m_handle(other.m_handle)
 {
@@ -82,7 +86,10 @@ void Service::start()
 
     // Create all of the characteristics
     for (auto& characteristic : m_characteristics) {
+        m_char_create_sema.take();
         characteristic.create(m_handle);
+        m_char_create_sema.wait();
+        m_char_create_index += 1;
     }
 
     esp_err_t err = esp_ble_gatts_start_service(m_handle);
@@ -110,6 +117,19 @@ void Service::handleEvent(esp_gatts_cb_event_t event,
     esp_ble_gatts_cb_param_t* param)
 {
     switch (event) {
+    case ESP_GATTS_ADD_CHAR_EVT: {
+        if (param->add_char.service_handle == m_handle) {
+            ESP_LOGD(TAG,
+                "Characteristic add event, status %d, attr_handle = %d",
+                param->add_char.status,
+                param->add_char.attr_handle);
+
+            Characteristic& characterisic = m_characteristics[m_char_create_index];
+            characterisic.setHandle(param->add_char.attr_handle);
+            m_char_create_sema.give();
+        }
+        break;
+    }
     case ESP_GATTS_CREATE_EVT: {
         ESP_LOGI(TAG, "Service Event, status %d, service_handle %d\n",
             param->create.status, param->create.service_handle);

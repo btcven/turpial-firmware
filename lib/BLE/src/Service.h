@@ -51,6 +51,8 @@ private:
 
     util::Semaphore m_create_sema;
     util::Semaphore m_start_sema;
+    util::Semaphore m_char_create_sema;
+    std::size_t m_char_create_index;
 
     std::vector<Characteristic> m_characteristics;
     std::uint16_t m_handle;

@@ -76,8 +76,7 @@ Characteristic::Characteristic(Uuid uuid,
       m_perm(perm),
       m_property(property),
       m_handle(0),
-      m_value(),
-      m_create_sema("CharacteristicCreate")
+      m_value()
 {
 }
 
@@ -87,8 +86,7 @@ Characteristic::Characteristic(Characteristic&& other)
       m_perm(other.m_perm),
       m_property(other.m_property),
       m_handle(other.m_handle),
-      m_value(std::move(other.m_value)),
-      m_create_sema(std::move(other.m_create_sema))
+      m_value(std::move(other.m_value))
 {
     other.m_handle = 0;
 }
@@ -96,13 +94,11 @@ Characteristic::Characteristic(Characteristic&& other)
 void Characteristic::create(std::uint16_t service_handle)
 {
     if (m_handle != 0) {
-        ESP_LOGD(TAG,
+        ESP_LOGE(TAG,
             "Characteristic has been already created, m_handle = 0x%x",
             m_handle);
         return;
     }
-
-    m_create_sema.take();
 
     ESP_LOGI(TAG, "Creating characteristic (esp_ble_gatts_add_char)");
 
@@ -119,8 +115,6 @@ void Characteristic::create(std::uint16_t service_handle)
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't register characteristic");
     }
-
-    m_create_sema.wait();
 }
 
 void Characteristic::handleEvent(
@@ -128,20 +122,15 @@ void Characteristic::handleEvent(
     esp_gatt_if_t gatts_if,
     esp_ble_gatts_cb_param_t* param)
 {
-    ESP_LOGD(TAG, "Characteristic event handler");
-
     Server& server = Server::getInstance();
 
     switch (event) {
-    case ESP_GATTS_ADD_CHAR_EVT: {
-        ESP_LOGD(TAG, "characteristic add event");
-        m_handle = param->add_char.attr_handle;
-        m_create_sema.give();
-        break;
-    }
     case ESP_GATTS_READ_EVT: {
-        ESP_LOGD(TAG, "characteristic read event");
         if (param->read.handle == m_handle) {
+            ESP_LOGI(TAG,
+                "Characteristic read event, handle = %d",
+                param->read.handle);
+
             uint16_t max_offset = server.getMTU() - 1;
             ESP_LOGD(TAG, "mtu value: %d", max_offset);
             if (param->read.need_rsp) {
@@ -205,7 +194,9 @@ void Characteristic::handleEvent(
     }
     case ESP_GATTS_WRITE_EVT: {
         if (param->write.handle == m_handle) {
-            ESP_LOGD(TAG, "Char write event");
+            ESP_LOGI(TAG,
+                "Characteristic Write Event, handle = %d",
+                param->write.handle);
 
             if (param->write.is_prep) {
                 m_value.addPart(param->write.value, param->write.len);
@@ -244,8 +235,7 @@ void Characteristic::handleEvent(
         break;
     }
     case ESP_GATTS_EXEC_WRITE_EVT: {
-        ESP_LOGD(TAG, "char exec write");
-
+        ESP_LOGD(TAG, "Characteristic Execute Write");
         if (m_write_evt) {
             m_write_evt = false;
             if (param->exec_write.exec_write_flag == ESP_GATT_PREP_WRITE_EXEC) {
