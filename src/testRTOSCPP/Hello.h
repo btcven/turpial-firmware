@@ -1,7 +1,7 @@
 #include "sdkconfig.h"
-#include <FreeRTOS.h>
-#include <Task.h>
-#include <WiFi.h>
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include "Task.h"
 #include <cstdio>
 #include <esp_log.h>
 #include <iostream>

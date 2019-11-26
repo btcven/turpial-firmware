@@ -14,6 +14,7 @@
 
 #include <cstdint>
 
+#include "WiFiEventHandler.h"
 #include "esp_err.h"
 #include "esp_event.h"
 #include "esp_wifi.h"
@@ -44,6 +45,17 @@ struct STAConfig {
 class WiFiMode
 {
 public:
+    /**
+     * @brief Constructor WiFiMode
+     */
+
+    WiFiMode();
+    /**
+     * @brief Destructor WiFiMode
+     */
+
+    ~WiFiMode();
+
     /**
      * @brief Initialize Wi-Fi
      * 
@@ -108,7 +120,19 @@ public:
      */
     esp_err_t start();
 
+    /**
+     * @brief Set callback handler to catch WiFi events outside of class itself
+     *      
+     */
+    void setWiFiEventHandler(WiFiEventHandler* WiFiEventHandler);
+
 private:
+    /**
+     * @brief pointer to desired hanlder events
+     *
+     */
+    WiFiEventHandler* m_p_wifi_event_handler;
+
     /**
      * @brief Wi-Fi event handler
      * 
