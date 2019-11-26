@@ -231,9 +231,11 @@ void Server::handleGattsEvent(esp_gatts_cb_event_t event,
         server.advertising().setScanResponseData(scan_rsp_data);
         break;
     }
-    case ESP_GATTS_MTU_EVT:
+    case ESP_GATTS_MTU_EVT: {
         ESP_LOGI(TAG, "ESP_GATTS_MTU_EVT, MTU %d", param->mtu.mtu);
+        server.m_mtu = param->mtu.mtu;
         break;
+    }
     case ESP_GATTS_CONNECT_EVT: {
         ESP_LOGI(TAG, "ESP_GATTS_CONNECT_EVT, conn_id %d, remote %02x:%02x:%02x:%02x:%02x:%02x:",
             param->connect.conn_id,

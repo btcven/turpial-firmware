@@ -42,7 +42,7 @@ public:
 
         wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
 
-        wifi_config_t config = {0};
+        wifi_config_t config;
         wifi.get_ap_config(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
@@ -65,6 +65,18 @@ public:
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
+        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+
+        wifi_config_t config;
+        wifi.get_ap_config(config);
+
+        if (config.ap.ssid_len == 0) {
+            char* ssid_str = reinterpret_cast<char*>(config.ap.ssid);
+            std::size_t len = std::strlen(ssid_str);
+            characteristic.value().set(config.ap.ssid, len);
+        } else {
+            characteristic.value().set(config.ap.ssid, config.ap.ssid_len);
+        }
     }
 };
 

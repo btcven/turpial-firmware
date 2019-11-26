@@ -20,12 +20,16 @@ namespace ble {
 static const char* TAG = "BLE_Characteristic";
 
 Value::Value()
-    : m_value()
+    : m_value(),
+      m_part_value(),
+      m_read_offset(0)
 {
 }
 
 Value::Value(Value&& other)
-    : m_value(std::move(other.m_value))
+    : m_value(std::move(other.m_value)),
+      m_part_value(std::move(other.m_part_value)),
+      m_read_offset(other.m_read_offset)
 {
 }
 
@@ -126,15 +130,77 @@ void Characteristic::handleEvent(
 {
     ESP_LOGD(TAG, "Characteristic event handler");
 
+    Server& server = Server::getInstance();
+
     switch (event) {
     case ESP_GATTS_ADD_CHAR_EVT: {
-        ESP_LOGD(TAG, "add char");
+        ESP_LOGD(TAG, "characteristic add event");
         m_handle = param->add_char.attr_handle;
         m_create_sema.give();
         break;
     }
     case ESP_GATTS_READ_EVT: {
-        ESP_LOGD(TAG, "char read");
+        ESP_LOGD(TAG, "characteristic read event");
+        if (param->read.handle == m_handle) {
+            uint16_t max_offset = server.getMTU() - 1;
+            ESP_LOGD(TAG, "mtu value: %d", max_offset);
+            if (param->read.need_rsp) {
+                ESP_LOGD(TAG,
+                    "Sending a response (esp_ble_gatts_send_response)");
+                esp_gatt_rsp_t rsp;
+
+                if (param->read.is_long) {
+                    std::vector<std::uint8_t>& value = m_value.get();
+
+                    if ((value.size() - m_value.getReadOffset()) < max_offset) {
+                        rsp.attr_value.len = value.size() - m_value.getReadOffset();
+                        rsp.attr_value.offset = m_value.getReadOffset();
+                        std::memcpy(rsp.attr_value.value,
+                            value.data() + rsp.attr_value.offset,
+                            rsp.attr_value.len);
+                        m_value.setReadOffset(0);
+                    } else {
+                        rsp.attr_value.len = max_offset;
+                        rsp.attr_value.offset = m_value.getReadOffset();
+                        memcpy(rsp.attr_value.value,
+                            value.data() + rsp.attr_value.offset,
+                            rsp.attr_value.len);
+                        m_value.setReadOffset(rsp.attr_value.offset + max_offset);
+                    }
+                } else {
+                    m_char_cb->onRead(*this);
+
+                    std::vector<std::uint8_t>& value = m_value.get();
+                    if (value.size() + 1 > max_offset) {
+                        m_value.setReadOffset(max_offset);
+                        rsp.attr_value.len = max_offset;
+                        rsp.attr_value.offset = 0;
+                        std::memcpy(rsp.attr_value.value,
+                            value.data(),
+                            rsp.attr_value.len);
+                    } else {
+                        rsp.attr_value.len = value.size();
+                        rsp.attr_value.offset = 0;
+                        std::memcpy(rsp.attr_value.value,
+                            value.data(),
+                            rsp.attr_value.len);
+                    }
+                }
+                rsp.attr_value.handle = param->read.handle;
+                rsp.attr_value.auth_req = ESP_GATT_AUTH_REQ_NONE;
+
+                esp_err_t err = esp_ble_gatts_send_response(
+                    gatts_if, param->read.conn_id,
+                    param->read.trans_id,
+                    ESP_GATT_OK,
+                    &rsp);
+                if (err != ESP_OK) {
+                    ESP_LOGE(TAG,
+                        "esp_ble_gatts_send_response: err = %s",
+                        esp_err_to_name(err));
+                }
+            }
+        }
         break;
     }
     case ESP_GATTS_WRITE_EVT: {

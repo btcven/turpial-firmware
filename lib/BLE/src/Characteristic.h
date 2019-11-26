@@ -41,9 +41,13 @@ public:
     void commit();
     void cancel();
 
+    std::size_t getReadOffset() { return m_read_offset; }
+    void setReadOffset(std::size_t offset) { m_read_offset = offset; }
+
 private:
     std::vector<std::uint8_t> m_value;
     std::vector<std::uint8_t> m_part_value;
+    std::size_t m_read_offset;
 };
 
 class Characteristic;

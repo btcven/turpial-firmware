@@ -56,6 +56,8 @@ public:
     void setGattsIf(esp_gatt_if_t gatts_if) { m_gatts_if = gatts_if; }
     esp_gatt_if_t getGattsIf() { return m_gatts_if; }
 
+    std::uint16_t getMTU() { return m_mtu; }
+
 private:
     Server()
         : m_advertising(),
@@ -63,7 +65,8 @@ private:
           m_services(),
           m_gatts_if(0),
           m_register_sema("RegisterApp"),
-          m_conn_id(0)
+          m_conn_id(0),
+          m_mtu(0)
     {
     }
 
@@ -82,6 +85,7 @@ private:
     util::Semaphore m_register_sema;
 
     std::uint16_t m_conn_id;
+    std::uint16_t m_mtu;
 };
 
 } // namespace ble
