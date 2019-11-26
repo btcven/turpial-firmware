@@ -139,8 +139,14 @@ void Server::registerApp()
 void Server::createService(Service&& service)
 {
     m_services.push_back(std::move(service));
+
+    m_srvc_create_sema.take();
     m_services.back().create();
+    m_srvc_create_sema.wait();
+
+    m_srvc_start_sema.take();
     m_services.back().start();
+    m_srvc_start_sema.wait();
 }
 
 void Server::handleGapEvent(esp_gap_ble_cb_event_t event,
@@ -277,6 +283,22 @@ void Server::handleGattsEvent(esp_gatts_cb_event_t event,
         server.advertising().start();
 
         server.m_conn_id = 0;
+        break;
+    }
+    case ESP_GATTS_CREATE_EVT: {
+        ESP_LOGI(TAG, "Service Event, status %d, service_handle %d\n",
+            param->create.status, param->create.service_handle);
+        server.m_services.back().setHandle(param->create.service_handle);
+        server.m_srvc_create_sema.give();
+        break;
+    }
+    case ESP_GATTS_START_EVT: {
+        if (param->start.service_handle == server.m_services.back().getHandle()) {
+            ESP_LOGI(TAG, "Start Service Event, status %d, service_handle %d\n",
+                param->start.status, param->start.service_handle);
+
+            server.m_srvc_start_sema.give();
+        }
         break;
     }
     default:

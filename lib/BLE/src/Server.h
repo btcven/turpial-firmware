@@ -65,6 +65,8 @@ private:
           m_services(),
           m_gatts_if(0),
           m_register_sema("RegisterApp"),
+          m_srvc_create_sema("ServiceCreate"),
+          m_srvc_start_sema("ServiceStart"),
           m_conn_id(0),
           m_mtu(0)
     {
@@ -83,6 +85,8 @@ private:
     esp_gatt_if_t m_gatts_if;
 
     util::Semaphore m_register_sema;
+    util::Semaphore m_srvc_create_sema;
+    util::Semaphore m_srvc_start_sema;
 
     std::uint16_t m_conn_id;
     std::uint16_t m_mtu;

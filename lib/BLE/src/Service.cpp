@@ -25,8 +25,6 @@ Service::Service(Uuid uuid, std::uint16_t num_handles, std::uint8_t inst_id)
     : m_uuid(uuid),
       m_num_handles(num_handles),
       m_inst_id(inst_id),
-      m_create_sema("CreateService"),
-      m_start_sema("StartService"),
       m_char_create_sema("CharCreateSema"),
       m_char_create_index(0),
       m_characteristics(),
@@ -38,8 +36,6 @@ Service::Service(Service&& other)
     : m_uuid(other.m_uuid),
       m_num_handles(other.m_num_handles),
       m_inst_id(other.m_inst_id),
-      m_create_sema(std::move(other.m_create_sema)),
-      m_start_sema(std::move(other.m_start_sema)),
       m_char_create_sema(std::move(other.m_char_create_sema)),
       m_char_create_index(other.m_char_create_index),
       m_characteristics(std::move(other.m_characteristics)),
@@ -51,8 +47,6 @@ Service::Service(Service&& other)
 void Service::create()
 {
     ESP_LOGI(TAG, "create new service");
-
-    m_create_sema.take();
 
     Server& server = Server::getInstance();
 
@@ -71,18 +65,11 @@ void Service::create()
             "esp_ble_gatts_create_service_failed: %s",
             esp_err_to_name(err));
     }
-
-    m_create_sema.wait();
 }
 
 void Service::start()
 {
     ESP_LOGI(TAG, "start service");
-    // If the service is on the creation state wait until it completes to start
-    // the service.
-    m_create_sema.wait();
-
-    m_start_sema.take();
 
     // Create all of the characteristics
     for (auto& characteristic : m_characteristics) {
@@ -100,8 +87,6 @@ void Service::start()
             esp_err_to_name(err));
         return;
     }
-
-    m_start_sema.wait();
 }
 
 void Service::addCharacteristic(Characteristic&& characteristic)
@@ -127,22 +112,6 @@ void Service::handleEvent(esp_gatts_cb_event_t event,
             Characteristic& characterisic = m_characteristics[m_char_create_index];
             characterisic.setHandle(param->add_char.attr_handle);
             m_char_create_sema.give();
-        }
-        break;
-    }
-    case ESP_GATTS_CREATE_EVT: {
-        ESP_LOGI(TAG, "Service Event, status %d, service_handle %d\n",
-            param->create.status, param->create.service_handle);
-        m_handle = param->create.service_handle;
-        m_create_sema.give();
-        break;
-    }
-    case ESP_GATTS_START_EVT: {
-        if (param->start.service_handle == m_handle) {
-            ESP_LOGI(TAG, "Start Service Event, status %d, service_handle %d\n",
-                param->start.status, param->start.service_handle);
-
-            m_start_sema.give();
         }
         break;
     }

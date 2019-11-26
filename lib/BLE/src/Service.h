@@ -39,6 +39,9 @@ public:
 
     void addCharacteristic(Characteristic&& characteristic);
 
+    void setHandle(std::uint16_t handle) { m_handle = handle; }
+    std::uint16_t getHandle() { return m_handle; }
+
     void handleEvent(
         esp_gatts_cb_event_t event,
         esp_gatt_if_t gatts_if,
@@ -49,8 +52,6 @@ private:
     std::uint16_t m_num_handles;
     std::uint8_t m_inst_id;
 
-    util::Semaphore m_create_sema;
-    util::Semaphore m_start_sema;
     util::Semaphore m_char_create_sema;
     std::size_t m_char_create_index;
 
