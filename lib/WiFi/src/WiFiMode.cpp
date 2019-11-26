@@ -105,6 +105,11 @@ esp_err_t WiFiMode::set_ap_config(APConfig& ap_config)
     return esp_wifi_set_config(WIFI_IF_AP, &wifi_config);
 }
 
+esp_err_t WiFiMode::set_ap_config(wifi_config_t& ap_config)
+{
+    return esp_wifi_set_config(WIFI_IF_AP, &ap_config);
+}
+
 esp_err_t WiFiMode::set_sta_config(STAConfig& sta_config)
 {
     const std::uint8_t UNKNOWN_CHANNEL = 0;
@@ -122,6 +127,11 @@ esp_err_t WiFiMode::set_sta_config(STAConfig& sta_config)
     wifi_config.sta.sort_method = WIFI_CONNECT_AP_BY_SECURITY;
 
     return esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
+}
+
+esp_err_t WiFiMode::get_ap_config(wifi_config_t& ap_config)
+{
+    return esp_wifi_get_config(WIFI_IF_AP, &ap_config);
 }
 
 esp_err_t WiFiMode::start()
@@ -153,6 +163,11 @@ esp_err_t WiFiMode::start()
     }
 
     return ESP_OK;
+}
+
+esp_err_t WiFiMode::stop()
+{
+    return esp_wifi_stop();
 }
 
 esp_err_t WiFiMode::eventHandler(void* ctx, system_event_t* event)

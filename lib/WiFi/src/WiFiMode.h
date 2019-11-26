@@ -46,15 +46,22 @@ class WiFiMode
 {
 public:
     /**
-     * @brief Constructor WiFiMode
-     */
-
-    WiFiMode();
-    /**
      * @brief Destructor WiFiMode
      */
-
     ~WiFiMode();
+
+    WiFiMode(WiFiMode const&) = delete;
+    WiFiMode(WiFiMode&&) = delete;
+
+    WiFiMode& operator=(WiFiMode const&) = delete;
+    WiFiMode& operator=(WiFiMode&&) = delete;
+
+    static WiFiMode& getInstance()
+    {
+        // Instatiated only once, won't be created again
+        static WiFiMode g_instance;
+        return g_instance;
+    }
 
     /**
      * @brief Initialize Wi-Fi
@@ -96,6 +103,20 @@ public:
     esp_err_t set_ap_config(APConfig& ap_config);
 
     /**
+     * @brief Set the AP configuration
+     * 
+     * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
+     * this configuration is going to be saved to the NVS.
+     * 
+     * @param ap_config: AP mode configuration
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t set_ap_config(wifi_config_t& ap_config);
+
+    /**
      * @brief Set the STA configuration
      * 
      * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
@@ -110,6 +131,17 @@ public:
     esp_err_t set_sta_config(STAConfig& sta_config);
 
     /**
+     * @brief Get the AP configuration
+     * 
+     * @param[out] ap_config: return value
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t get_ap_config(wifi_config_t& ap_config);
+
+    /**
      * @brief Start Wi-Fi operation mode
      * 
      * @attention 1. WiFiMode::init must have been called
@@ -121,12 +153,24 @@ public:
     esp_err_t start();
 
     /**
+     * @brief Stop WiFi
+     * 
+     * @return esp_err_t 
+     */
+    esp_err_t stop();
+
+    /**
      * @brief Set callback handler to catch WiFi events outside of class itself
      *      
      */
     void setWiFiEventHandler(WiFiEventHandler* WiFiEventHandler);
 
 private:
+    /**
+     * @brief Constructor WiFiMode
+     */
+    WiFiMode();
+
     /**
      * @brief pointer to desired hanlder events
      *
