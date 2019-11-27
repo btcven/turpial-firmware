@@ -88,6 +88,11 @@ esp_err_t WiFiMode::set_mode(wifi_mode_t mode)
     return esp_wifi_set_mode(mode);
 }
 
+esp_err_t WiFiMode::get_mode(wifi_mode_t& mode)
+{
+    return esp_wifi_get_mode(&mode);
+}
+
 esp_err_t WiFiMode::set_ap_config(APConfig& ap_config)
 {
     const std::uint8_t BROADCAST_SSID = 0;
@@ -132,6 +137,11 @@ esp_err_t WiFiMode::set_sta_config(STAConfig& sta_config)
 esp_err_t WiFiMode::get_ap_config(wifi_config_t& ap_config)
 {
     return esp_wifi_get_config(WIFI_IF_AP, &ap_config);
+}
+
+esp_err_t WiFiMode::get_sta_config(wifi_config_t& sta_config)
+{
+    return esp_wifi_get_config(WIFI_IF_STA, &sta_config);
 }
 
 esp_err_t WiFiMode::start()

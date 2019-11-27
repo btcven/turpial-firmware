@@ -89,6 +89,17 @@ public:
     esp_err_t set_mode(wifi_mode_t mode);
 
     /**
+     * @brief Get the Wi-Fi operation mode
+     * 
+     * @param mode: return value
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t get_mode(wifi_mode_t& mode);
+
+    /**
      * @brief Set the AP configuration
      * 
      * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
@@ -140,6 +151,17 @@ public:
      *      - (others): failed
      */
     esp_err_t get_ap_config(wifi_config_t& ap_config);
+
+    /**
+     * @brief Get the STA configuration
+     * 
+     * @param[out] sta_config: return value
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t get_sta_config(wifi_config_t& sta_config);
 
     /**
      * @brief Start Wi-Fi operation mode
