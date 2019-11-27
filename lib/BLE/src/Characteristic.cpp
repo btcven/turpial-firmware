@@ -56,13 +56,17 @@ void Value::addPart(std::uint8_t* value, std::size_t len)
 
 void Value::commit()
 {
+    // Set m_value to the contents of m_part_value
     m_part_value.swap(m_value);
+
+    // Erase m_part_value contents
     m_part_value.clear();
     m_part_value.shrink_to_fit();
 }
 
 void Value::cancel()
 {
+    // Erase m_part_value contents
     m_part_value.clear();
     m_part_value.shrink_to_fit();
 }

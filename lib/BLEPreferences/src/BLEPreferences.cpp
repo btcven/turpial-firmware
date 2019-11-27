@@ -40,7 +40,7 @@ static const char* TAG = "BLE_Preferences";
 //      - Uuid: STA_PASSWORD_UUID
 //      - Value: a maximum of 63 chars
 
-// This the equivalent to 1 (Service handle) + (2 * num characteristic)
+// This the equivalent to: 1 (Service handle) + (2 * num characteristic)
 static std::uint16_t WIFI_PREFERENCES_NUM_HANDLES = 1 + (2 * 5);
 
 static const char* WIFI_PREFERENCES_UUID = "4a2ccc6f55f847da8b918aa04dc1251c";
