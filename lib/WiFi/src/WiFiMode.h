@@ -142,6 +142,20 @@ public:
     esp_err_t set_sta_config(STAConfig& sta_config);
 
     /**
+     * @brief Set the STA configuration
+     * 
+     * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
+     * this configuration is going to be saved to the NVS.
+     * 
+     * @param sta_config: ST mode configuration
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t set_sta_config(wifi_config_t& sta_config);
+
+    /**
      * @brief Get the AP configuration
      * 
      * @param[out] ap_config: return value

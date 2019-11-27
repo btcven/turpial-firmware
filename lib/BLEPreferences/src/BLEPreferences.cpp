@@ -33,12 +33,23 @@ static const char* TAG = "BLE_Preferences";
 //   - Characteristic:
 //      - Uuid: AP_PASSWORD_UUID
 //      - Value: a maximum of 63 chars
+//   - Characteristic:
+//      - Uuid: STA_SSID_UUID
+//      - Value: a maximum of 31 chars
+//   - Characteristic:
+//      - Uuid: STA_PASSWORD_UUID
+//      - Value: a maximum of 63 chars
+
+// This the equivalent to 1 (Service handle) + (2 * num characteristic)
+static std::uint16_t WIFI_PREFERENCES_NUM_HANDLES = 1 + (2 * 5);
 
 static const char* WIFI_PREFERENCES_UUID = "4a2ccc6f55f847da8b918aa04dc1251c";
 
 static const char* WIFI_MODE_UUID = "3ab002a921d94e909e880346f37cb3f0";
 static const char* AP_SSID_UUID = "35ac95c13d524d64a427943240c71a85";
 static const char* AP_PASSWORD_UUID = "7bb1a7812d1249bbab344a548d3a9e8c";
+static const char* STA_SSID_UUID = "03118c93de744b09b26b5953924ba715";
+static const char* STA_PASSWORD_UUID = "90a96e194f0a453a9c1e8737b1e3d809";
 
 class WiFiModeCallback : public ble::CharacteristicCallback
 {
@@ -200,6 +211,92 @@ public:
     }
 };
 
+class STASSIDCallback : public ble::CharacteristicCallback
+{
+public:
+    STASSIDCallback()
+    {
+    }
+
+    virtual void onWrite(ble::Characteristic& characteristic)
+    {
+        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+
+        wifi_config_t config;
+        wifi.get_sta_config(config);
+
+        std::vector<std::uint8_t>& value = characteristic.value().get();
+        if (value.size() > 31) {
+            ESP_LOGW(TAG,
+                "AP SSID value is higher than 31 characters, trimming");
+            std::memcpy(config.sta.ssid, value.data(), 31);
+            config.sta.ssid[31] = '\0';
+        } else {
+            std::memcpy(config.sta.ssid, value.data(), value.size());
+            config.sta.ssid[value.size()] = '\0';
+        }
+
+        wifi.stop();
+        wifi.set_sta_config(config);
+        wifi.start();
+    }
+
+    virtual void onRead(ble::Characteristic& characteristic)
+    {
+        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+
+        wifi_config_t config;
+        wifi.get_sta_config(config);
+
+        char* ssid_str = reinterpret_cast<char*>(config.sta.ssid);
+        std::size_t len = std::strlen(ssid_str);
+        characteristic.value().set(config.sta.ssid, len);
+    }
+};
+
+class STAPasswordCallback : public ble::CharacteristicCallback
+{
+public:
+    STAPasswordCallback()
+    {
+    }
+
+    virtual void onWrite(ble::Characteristic& characteristic)
+    {
+        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+
+        wifi_config_t config;
+        wifi.get_sta_config(config);
+
+        std::vector<std::uint8_t>& value = characteristic.value().get();
+        if (value.size() > 63) {
+            ESP_LOGW(TAG,
+                "AP Password value is higher than 63 characters, trimming");
+            std::memcpy(config.sta.password, value.data(), 63);
+            config.sta.password[63] = '\0';
+        } else {
+            std::memcpy(config.ap.password, value.data(), value.size());
+            config.sta.password[value.size()] = '\0';
+        }
+
+        wifi.stop();
+        wifi.set_sta_config(config);
+        wifi.start();
+    }
+
+    virtual void onRead(ble::Characteristic& characteristic)
+    {
+        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+
+        wifi_config_t config;
+        wifi.get_sta_config(config);
+
+        char* password_str = reinterpret_cast<char*>(config.ap.password);
+        std::size_t len = std::strlen(password_str);
+        characteristic.value().set(config.ap.password, len);
+    }
+};
+
 void start(ble::ServerParams server_params)
 {
     ble::Server& server = ble::Server::getInstance();
@@ -210,7 +307,9 @@ void start(ble::ServerParams server_params)
 
     ble::Uuid wifi_preferences_uuid;
     ble::Uuid::fromHex(WIFI_PREFERENCES_UUID, wifi_preferences_uuid);
-    ble::Service wifi_preferences(wifi_preferences_uuid, 7, 0);
+    ble::Service wifi_preferences(wifi_preferences_uuid,
+        WIFI_PREFERENCES_NUM_HANDLES,
+        0);
 
     std::unique_ptr<WiFiModeCallback> wifi_mode_cb(new WiFiModeCallback());
     ble::Uuid wifi_mode_uuid;
@@ -238,6 +337,24 @@ void start(ble::ServerParams server_params)
         ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED,
         ESP_GATT_CHAR_PROP_BIT_READ | ESP_GATT_CHAR_PROP_BIT_WRITE);
     wifi_preferences.addCharacteristic(std::move(ap_password_char));
+
+    std::unique_ptr<STASSIDCallback> sta_ssid_cb(new STASSIDCallback());
+    ble::Uuid sta_ssid_uuid;
+    ble::Uuid::fromHex(STA_SSID_UUID, sta_ssid_uuid);
+    ble::Characteristic sta_ssid_char(sta_ssid_uuid,
+        std::move(sta_ssid_cb),
+        ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED,
+        ESP_GATT_CHAR_PROP_BIT_READ | ESP_GATT_CHAR_PROP_BIT_WRITE);
+    wifi_preferences.addCharacteristic(std::move(sta_ssid_char));
+
+    std::unique_ptr<STAPasswordCallback> sta_password_cb(new STAPasswordCallback());
+    ble::Uuid sta_password_uuid;
+    ble::Uuid::fromHex(STA_PASSWORD_UUID, sta_password_uuid);
+    ble::Characteristic sta_password_char(sta_password_uuid,
+        std::move(sta_password_cb),
+        ESP_GATT_PERM_READ_ENCRYPTED | ESP_GATT_PERM_WRITE_ENCRYPTED,
+        ESP_GATT_CHAR_PROP_BIT_READ | ESP_GATT_CHAR_PROP_BIT_WRITE);
+    wifi_preferences.addCharacteristic(std::move(sta_password_char));
 
     server.createService(std::move(wifi_preferences));
 

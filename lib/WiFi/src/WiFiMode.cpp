@@ -134,6 +134,11 @@ esp_err_t WiFiMode::set_sta_config(STAConfig& sta_config)
     return esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
 }
 
+esp_err_t WiFiMode::set_sta_config(wifi_config_t& sta_config)
+{
+    return esp_wifi_set_config(WIFI_IF_STA, &sta_config);
+}
+
 esp_err_t WiFiMode::get_ap_config(wifi_config_t& ap_config)
 {
     return esp_wifi_get_config(WIFI_IF_AP, &ap_config);
