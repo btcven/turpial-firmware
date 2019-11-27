@@ -135,11 +135,15 @@ public:
         wifi.get_ap_config(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
-        if (value.size() > 32) {
+        if (value.size() >= 32) {
             ESP_LOGW(TAG,
                 "AP SSID value is higher than 32 characters, trimming");
             std::memcpy(config.ap.ssid, value.data(), 32);
             config.ap.ssid_len = 32;
+        } else if (value.size() == 0) {
+            ESP_LOGW(TAG,
+                "AP SSID value is empty, not changing");
+            return;
         } else {
             std::memcpy(config.ap.ssid, value.data(), value.size());
             config.ap.ssid[value.size()] = '\0';
@@ -188,6 +192,9 @@ public:
                 "AP Password value is higher than 63 characters, trimming");
             std::memcpy(config.ap.password, value.data(), 63);
             config.ap.password[63] = '\0';
+        } else if (value.size() == 0) {
+            ESP_LOGW(TAG, "AP Password is empty, not changing");
+            return;
         } else {
             std::memcpy(config.ap.password, value.data(), value.size());
             config.ap.password[value.size()] = '\0';
@@ -228,9 +235,12 @@ public:
         std::vector<std::uint8_t>& value = characteristic.value().get();
         if (value.size() > 31) {
             ESP_LOGW(TAG,
-                "AP SSID value is higher than 31 characters, trimming");
+                "STA SSID value is higher than 31 characters, trimming");
             std::memcpy(config.sta.ssid, value.data(), 31);
             config.sta.ssid[31] = '\0';
+        } else if (value.size() == 0) {
+            ESP_LOGW(TAG, "STA SSID value is empty, not changing");
+            return;
         } else {
             std::memcpy(config.sta.ssid, value.data(), value.size());
             config.sta.ssid[value.size()] = '\0';
@@ -274,6 +284,8 @@ public:
                 "AP Password value is higher than 63 characters, trimming");
             std::memcpy(config.sta.password, value.data(), 63);
             config.sta.password[63] = '\0';
+        } else if (value.size() == 0) {
+            config.sta.password[0] = '\0';
         } else {
             std::memcpy(config.ap.password, value.data(), value.size());
             config.sta.password[value.size()] = '\0';
