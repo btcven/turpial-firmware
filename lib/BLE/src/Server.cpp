@@ -229,7 +229,6 @@ void Server::handleGattsEvent(esp_gatts_cb_event_t event,
         // Start GAP advertising and let the world know the device is out there
         ble::AdvertisementData adv_data;
         adv_data.setFlags(ESP_BLE_ADV_FLAG_GEN_DISC | ESP_BLE_ADV_FLAG_BREDR_NOT_SPT);
-        //adv_data.setCompleteServices(adv_service_uuid16);
         server.advertising().setData(adv_data);
 
         ble::AdvertisementData scan_rsp_data;
