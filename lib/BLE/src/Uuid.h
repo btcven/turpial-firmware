@@ -22,17 +22,57 @@ namespace ble {
 class Uuid
 {
 public:
+    /**
+     * @brief Construct a new Uuid
+     * 
+     */
     Uuid();
+
+    /**
+     * @brief Construct a new 16-bit Uuid
+     * 
+     * @param uuid 
+     */
     Uuid(std::uint16_t uuid);
 
+    /**
+     * @brief Create a UUID from an hexadecimal string
+     * 
+     * @param hex: hexadecimal string
+     * @param[out] uuid: the UUID
+     * 
+     * @return
+     *      - ESP_OK: succeed.
+     *      - ESP_FAIL: invalid hex string, invalid UUID
+     */
     static esp_err_t fromHex(const char* hex, Uuid& uuid);
 
+    /**
+     * @brief Compare with other UUID
+     * 
+     * @param other: the other UUID
+     * 
+     * @return true: equals
+     * @return false: not equals
+     */
     bool equals(const Uuid& other) const;
-    void copyTo(esp_bt_uuid_t& ohter) const;
+
+    /**
+     * @brief Copy this UUID to a raw UUID.
+     * 
+     * @param other: where to copy this UUID
+     */
+    void copyTo(esp_bt_uuid_t& other) const;
+
+    /**
+     * @brief Get the raw value of this UUID
+     * 
+     * @return esp_bt_uuid_t& the raw UUID
+     */
     esp_bt_uuid_t& getRaw();
 
 private:
-    esp_bt_uuid_t m_inner;
+    esp_bt_uuid_t m_inner; /**< Inner value of the UUID */
 };
 
 } // namespace ble
