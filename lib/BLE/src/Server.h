@@ -20,11 +20,22 @@
 
 namespace ble {
 
+/**
+ * @brief Server configuration parameters
+ * 
+ */
 struct ServerParams {
+    /**
+     * @brief Construct a new ServerParams with default parameters
+     * 
+     */
     ServerParams() : device_name(nullptr), static_passkey(123456), app_id(0) {}
 
+    /// The device name. Null terminated string.
     const char* device_name;
+    /// Static Passkey (used to authenticate and pair BLE clients).
     std::uint32_t static_passkey;
+    /// App ID that's going to be registered
     std::uint16_t app_id;
 };
 
@@ -37,6 +48,11 @@ public:
     Server& operator=(Server const&) = delete;
     Server& operator=(Server&&) = delete;
 
+    /**
+     * @brief Get the BLE Server unique instance
+     * 
+     * @return Server& a reference to the Server
+     */
     static Server& getInstance()
     {
         // Instatiated only once, won't be created again
@@ -44,21 +60,49 @@ public:
         return g_instance;
     }
 
+    /**
+     * @brief Initialize the BLE server
+     * 
+     * @param server_params: Server configuration parameters
+     * 
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t init(ServerParams server_params);
 
+    /**
+     * @brief Register BLE Server Profile application
+     * 
+     */
     void registerApp();
 
+    /**
+     * @brief Create a BLE service
+     * 
+     * @param service: the service to be created and added to the Server
+     */
     void createService(Service&& service);
 
-    Advertising& advertising() { return m_advertising; }
-    const ServerParams& params() const { return m_server_params; }
-
-    void setGattsIf(esp_gatt_if_t gatts_if) { m_gatts_if = gatts_if; }
+    /**
+     * @brief Get the GATT server interface
+     * 
+     * @return esp_gatt_if_t interface
+     */
     esp_gatt_if_t getGattsIf() { return m_gatts_if; }
 
+    /**
+     * @brief Get the Maximum Transfer Unit
+     * 
+     * @return std::uint16_t MTU value
+     */
     std::uint16_t getMTU() { return m_mtu; }
 
 private:
+    /**
+     * @brief Private constructor of Server
+     * 
+     */
     Server()
         : m_advertising(),
           m_server_params(),
@@ -72,24 +116,44 @@ private:
     {
     }
 
+    /**
+     * @brief Set the GATT sever interface
+     * 
+     * @param gatts_if: interface
+     */
+    void setGattsIf(esp_gatt_if_t gatts_if) { m_gatts_if = gatts_if; }
+
+    /**
+     * @brief handle BLE GAP event
+     * 
+     * @param event: GAP event
+     * @param param: GAP parameter
+     */
     static void handleGapEvent(esp_gap_ble_cb_event_t event,
         esp_ble_gap_cb_param_t* param);
 
+    /**
+     * @brief handle GATT event
+     * 
+     * @param event: GATT event
+     * @param gatts_if: GATT server interface
+     * @param param: event parameters
+     */
     static void handleGattsEvent(esp_gatts_cb_event_t event,
         esp_gatt_if_t gatts_if,
         esp_ble_gatts_cb_param_t* param);
 
-    Advertising m_advertising;
-    ServerParams m_server_params;
-    std::vector<Service> m_services;
-    esp_gatt_if_t m_gatts_if;
+    Advertising m_advertising;       /**< Advertisement manager  */
+    ServerParams m_server_params;    /**< Server parameters */
+    std::vector<Service> m_services; /**< Server list of services */
+    esp_gatt_if_t m_gatts_if;        /**< GATT server interface */
 
-    util::Semaphore m_register_sema;
-    util::Semaphore m_srvc_create_sema;
-    util::Semaphore m_srvc_start_sema;
+    util::Semaphore m_register_sema;    /**< App registration semaphore */
+    util::Semaphore m_srvc_create_sema; /**< Service creation semaphore*/
+    util::Semaphore m_srvc_start_sema;  /**< Service start semaphore*/
 
-    std::uint16_t m_conn_id;
-    std::uint16_t m_mtu;
+    std::uint16_t m_conn_id; /**< BLE connection id with client */
+    std::uint16_t m_mtu;     /**< Maximum Transfer Unit */
 };
 
 } // namespace ble

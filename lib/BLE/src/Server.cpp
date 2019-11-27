@@ -156,14 +156,14 @@ void Server::handleGapEvent(esp_gap_ble_cb_event_t event,
     switch (event) {
     case ESP_GAP_BLE_ADV_DATA_RAW_SET_COMPLETE_EVT:
         ESP_LOGD(TAG, "ADV_DATA_RAW_SET_COMPLETE_EVT");
-        if (server.advertising().state().is_config_state()) {
-            server.advertising().start();
+        if (server.m_advertising.state().is_config_state()) {
+            server.m_advertising.start();
         }
         break;
     case ESP_GAP_BLE_SCAN_RSP_DATA_RAW_SET_COMPLETE_EVT:
         ESP_LOGD(TAG, "SCAN_RSP_DATA_RAW_SET_COMPLETE_EVT");
-        if (server.advertising().state().is_scan_rsp_config_state()) {
-            server.advertising().start();
+        if (server.m_advertising.state().is_scan_rsp_config_state()) {
+            server.m_advertising.start();
         }
         break;
     case ESP_GAP_BLE_ADV_START_COMPLETE_EVT:
@@ -229,11 +229,11 @@ void Server::handleGattsEvent(esp_gatts_cb_event_t event,
         // Start GAP advertising and let the world know the device is out there
         ble::AdvertisementData adv_data;
         adv_data.setFlags(ESP_BLE_ADV_FLAG_GEN_DISC | ESP_BLE_ADV_FLAG_BREDR_NOT_SPT);
-        server.advertising().setData(adv_data);
+        server.m_advertising.setData(adv_data);
 
         ble::AdvertisementData scan_rsp_data;
-        scan_rsp_data.setName(server.params().device_name);
-        server.advertising().setScanResponseData(scan_rsp_data);
+        scan_rsp_data.setName(server.m_server_params.device_name);
+        server.m_advertising.setScanResponseData(scan_rsp_data);
         break;
     }
     case ESP_GATTS_MTU_EVT: {
@@ -259,9 +259,9 @@ void Server::handleGattsEvent(esp_gatts_cb_event_t event,
         server.m_conn_id = param->connect.conn_id;
 
         // Stop advertising
-        server.advertising().stop();
+        server.m_advertising.stop();
 
-        esp_ble_conn_update_params_t conn_params = {0};
+        esp_ble_conn_update_params_t conn_params;
         std::memcpy(conn_params.bda,
             param->connect.remote_bda,
             sizeof(esp_bd_addr_t));
@@ -279,7 +279,7 @@ void Server::handleGattsEvent(esp_gatts_cb_event_t event,
         ESP_LOGI(TAG, "ESP_GATTS_DISCONNECT_EVT");
 
         // Start adversiting again
-        server.advertising().start();
+        server.m_advertising.start();
 
         server.m_conn_id = 0;
         break;
