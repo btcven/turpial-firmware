@@ -29,7 +29,7 @@ namespace util {
  *      - ESP_OK: succeed
  *      - ESP_FAIL: invalid hex digit
  */
-esp_err_t hexToDecimal(const char c, int& r);
+esp_err_t hexToInt(const char c, int& r);
 
 /**
  * @brief Converts an hexadecimal string to a byte array
