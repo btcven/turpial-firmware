@@ -34,6 +34,11 @@ static const char* TAG = "BLE_Server";
 
 esp_err_t Server::init(ServerParams server_params)
 {
+    if (m_initialized) {
+        ESP_LOGE(TAG, "BLE Server is already initialized");
+        return ESP_FAIL;
+    }
+
     m_server_params = server_params;
 
     esp_err_t err;
@@ -65,6 +70,9 @@ esp_err_t Server::init(ServerParams server_params)
         ESP_LOGE(TAG, "%s enable bluetooth failed: %s\n", __func__, esp_err_to_name(err));
         return err;
     }
+
+    // Bluetooth controller has been initialized
+    m_initialized = true;
 
     err = esp_ble_gatts_register_callback(Server::handleGattsEvent);
     if (err != ESP_OK) {
@@ -124,6 +132,17 @@ esp_err_t Server::init(ServerParams server_params)
         sizeof(std::uint8_t));
 
     return ESP_OK;
+}
+
+void Server::stop()
+{
+    if (!m_initialized) return;
+
+    m_advertising.stop();
+    esp_bluedroid_disable();
+    esp_bluedroid_deinit();
+    esp_bt_controller_disable();
+    esp_bt_controller_deinit();
 }
 
 void Server::registerApp()

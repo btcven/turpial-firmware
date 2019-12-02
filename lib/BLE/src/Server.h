@@ -73,6 +73,12 @@ public:
     esp_err_t init(ServerParams server_params);
 
     /**
+     * @brief Stop the BLE Server
+     * 
+     */
+    void stop();
+
+    /**
      * @brief Register BLE Server Profile application
      * 
      */
@@ -105,7 +111,8 @@ private:
      * 
      */
     Server()
-        : m_advertising(),
+        : m_initialized(false),
+          m_advertising(),
           m_server_params(),
           m_services(),
           m_gatts_if(0),
@@ -143,6 +150,8 @@ private:
     static void handleGattsEvent(esp_gatts_cb_event_t event,
         esp_gatt_if_t gatts_if,
         esp_ble_gatts_cb_param_t* param);
+
+    bool m_initialized; /**< Whether the BLE controller is initialized or not */
 
     Advertising m_advertising;       /**< Advertisement manager  */
     ServerParams m_server_params;    /**< Server parameters */
