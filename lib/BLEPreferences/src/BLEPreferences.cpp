@@ -374,4 +374,10 @@ void start(ble::ServerParams server_params)
     ESP_LOGI(TAG, "BLE Server start finished");
 }
 
+void stop()
+{
+    ble::Server& server = ble::Server::getInstance();
+    server.stop();
+}
+
 } // namespace ble_preferences

@@ -20,6 +20,7 @@
 namespace ble_preferences {
 
 void start(ble::ServerParams server_params);
+void stop();
 
 } // namespace ble_preferences
 

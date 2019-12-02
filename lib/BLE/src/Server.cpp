@@ -143,6 +143,9 @@ void Server::stop()
     esp_bt_controller_disable();
     esp_bt_controller_deinit();
 
+    m_services.clear();
+    m_services.shrink_to_fit();
+
     m_initialized = false;
 }
 
