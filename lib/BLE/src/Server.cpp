@@ -43,8 +43,7 @@ esp_err_t Server::init(ServerParams server_params)
 
     esp_err_t err;
 
-    err = esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT);
-    if (err != ESP_OK) return err;
+    esp_bt_controller_mem_release(ESP_BT_MODE_CLASSIC_BT);
 
     esp_bt_controller_config_t bt_cfg = BT_CONTROLLER_INIT_CONFIG_DEFAULT();
     err = esp_bt_controller_init(&bt_cfg);
@@ -143,6 +142,8 @@ void Server::stop()
     esp_bluedroid_deinit();
     esp_bt_controller_disable();
     esp_bt_controller_deinit();
+
+    m_initialized = false;
 }
 
 void Server::registerApp()

@@ -63,7 +63,15 @@ void testInit()
 
     server.createService(std::move(service));
 
-    vTaskDelay(2000);
+    vTaskDelay(1000);
+
+    server.stop();
+
+    // Try to init/stop again to see if the stop method works as intended
+    err = server.init(server_params);
+    if (err != ESP_OK) TEST_FAIL();
+
+    vTaskDelay(1000);
 
     server.stop();
 }
