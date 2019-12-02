@@ -24,6 +24,12 @@
 
 #include "defaults.h"
 
+#include "GPIO.h"
+
+
+#define GPIO_OUTPUT_IO_0    18
+#define GPIO_OUTPUT_IO_1    19
+
 static const char* TAG = "app_main";
 
 esp_err_t getIsConfigured(bool& is_configured)
@@ -62,7 +68,7 @@ esp_err_t getIsConfigured(bool& is_configured)
 
 extern "C" void app_main()
 {
-    esp_err_t err;
+    /* esp_err_t err;
     wifi::WiFiEventHandler* event_handler;
     event_handler = new wifi::WiFiEventHandler();
     wifi::WiFiMode* wifi_mode;
@@ -120,5 +126,32 @@ extern "C" void app_main()
 
     wifi_mode->setWiFiEventHandler(event_handler);
     err = wifi_mode->start();
-    // TODO: app loop
+    // TODO: app loop */
+    gpio_num_t pin1 = GPIO_NUM_0;
+    gpio_num_t pin2 = GPIO_NUM_1;
+    gpio_num_t pin3 = GPIO_NUM_18;
+    gpio_num_t pin4 = GPIO_NUM_19;
+while(1) {
+
+    
+    hardware::GPIO::setOutput(pin1);
+    /*hardware::GPIO::setOutput(pin2);
+    hardware::GPIO::setOutput(pin3);
+    hardware::GPIO::setOutput(pin4);
+
+
+    hardware::GPIO::write(pin1,1); 
+    hardware::GPIO::write(pin2,1);
+    hardware::GPIO::write(pin3,1);
+    hardware::GPIO::write(pin4,1);
+
+    vTaskDelay(1000/portTICK_RATE_MS);
+
+    hardware::GPIO::write(pin1,0); 
+    hardware::GPIO::write(pin2,0);
+    hardware::GPIO::write(pin3,0);
+    hardware::GPIO::write(pin4,0); */
+    vTaskDelay(1000/portTICK_RATE_MS);
+    ESP_LOGI("RUNNING GPIO", "LOOP OK");
+}
 }
