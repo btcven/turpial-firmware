@@ -97,8 +97,8 @@ bool Uuid::equals(const Uuid& other) const
     case ESP_UUID_LEN_128: {
         if (m_inner.len != ESP_UUID_LEN_128) return false;
         return std::memcmp(m_inner.uuid.uuid128,
-            other.m_inner.uuid.uuid128,
-            ESP_UUID_LEN_128);
+                   other.m_inner.uuid.uuid128,
+                   ESP_UUID_LEN_128) == 0;
         break;
     }
     default: {
