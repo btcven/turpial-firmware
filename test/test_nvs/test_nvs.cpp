@@ -27,7 +27,7 @@ void test_open_namespace(void)
 {
     esp_err_t err;
 
-    nvs::Namespace wifi_nvs;
+    storage::NVS wifi_nvs;
     err = wifi_nvs.open("TEST", NVS_READONLY);
     if (err != ESP_OK) TEST_FAIL();
 }
@@ -36,7 +36,7 @@ void test_create_and_save_bool()
 {
     esp_err_t err;
 
-    nvs::Namespace wifi_nvs;
+    storage::NVS wifi_nvs;
 
     err = wifi_nvs.open("TEST", NVS_READWRITE);
     if (err != ESP_OK) TEST_FAIL();
@@ -52,7 +52,7 @@ extern "C" void app_main()
 {
     vTaskDelay(2000);
 
-    esp_err_t err = nvs::init();
+    esp_err_t err = storage::init();
     if (err != ESP_OK) return;
 
     UNITY_BEGIN();
