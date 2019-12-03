@@ -18,6 +18,7 @@
 #include <esp_event.h>
 #include <esp_wifi.h>
 
+#include "Sema.h"
 #include "WiFiEventHandler.h"
 
 namespace network {
@@ -43,6 +44,21 @@ public:
      *      - (others): failed
      */
     virtual esp_err_t staStart();
+
+    /**
+     * @brief Handles the "STA Stop" event
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    virtual esp_err_t staStop();
+
+private:
+    friend class WiFi;
+
+    util::Semaphore m_sta_start_sema;
+    util::Semaphore m_sta_stop_sema;
 };
 
 /**
@@ -107,6 +123,17 @@ public:
     esp_err_t setMode(wifi_mode_t mode);
 
     /**
+     * @brief Get the Wi-Fi operation mode
+     * 
+     * @param mode: return value
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t getMode(wifi_mode_t& mode);
+
+    /**
      * @brief Set the AP configuration
      * 
      * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
@@ -119,6 +146,20 @@ public:
      *      - (others): failed
      */
     esp_err_t setApConfig(APConfig& ap_config);
+
+    /**
+     * @brief Set the AP configuration
+     * 
+     * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
+     * this configuration is going to be saved to the NVS.
+     * 
+     * @param ap_config: AP mode configuration
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t setApConfig(wifi_config_t& ap_config);
 
     /**
      * @brief Set the STA configuration
@@ -135,6 +176,58 @@ public:
     esp_err_t setStaConfig(STAConfig& sta_config);
 
     /**
+     * @brief Set the STA configuration
+     * 
+     * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
+     * this configuration is going to be saved to the NVS.
+     * 
+     * @param sta_config: ST mode configuration
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t setStaConfig(wifi_config_t& sta_config);
+
+    /**
+     * @brief Get the AP configuration
+     * 
+     * @param[out] ap_config: return value
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t getApConfig(wifi_config_t& ap_config);
+
+    /**
+     * @brief Get the STA configuration
+     * 
+     * @param[out] sta_config: return value
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t getStaConfig(wifi_config_t& sta_config);
+
+    /**
+     * @brief Checks if the Wi-Fi mode is AP
+     * 
+     * @return true: is AP
+     * @return false: isn't AP
+     */
+    bool isAp();
+
+    /**
+     * @brief Checks if the Wi-Fi mode is STA
+     * 
+     * @return true: is AP
+     * @return false: is STA
+     */
+    bool isSta();
+
+    /**
      * @brief Start Wi-Fi operation mode
      * 
      * @attention 1. WiFi::init must have been called
@@ -146,13 +239,21 @@ public:
     esp_err_t start();
 
     /**
-     * @brief 
+
+     * @brief Stop WiFi
+     * 
+     * @return esp_err_t 
+     */
+    esp_err_t stop();
+
+    /**
+     * @brief
      * 
      * @attention 1. WiF::init must have been called
      * 
      * @return
      *      - ESP_OK: succeed
-     *      - (others): failed
+     *      -(others) : failed
      */
     esp_err_t connect();
 
@@ -165,7 +266,7 @@ public:
 private:
     /**
      * @brief Constructor Wi-Fi
-     * 
+     *
      */
     WiFi();
 
@@ -173,7 +274,7 @@ private:
      * @brief pointer to desired hanlder events
      *
      */
-    std::unique_ptr<WiFiEventHandler> m_event_handler;
+    WiFiDefaultEventHandler m_event_handler;
 
     /**
      * @brief Wi-Fi event handler
@@ -184,6 +285,16 @@ private:
      */
     static esp_err_t eventHandler(void* ctx, system_event_t* event);
 };
+
+/**
+ * @brief Sanitize SSIDs
+ * 
+ * @param[inout] ssid: SSID characters (bytes, not null terminated)
+ * @param        len: length of the ssid
+ * 
+ * @return esp_err_t 
+ */
+esp_err_t sanitizeSsid(std::uint8_t (&ssid)[32], std::size_t len);
 
 } // namespace network
 
