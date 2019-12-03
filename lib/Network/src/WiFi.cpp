@@ -22,6 +22,28 @@ namespace network {
 
 static const char* TAG = "WiFi";
 
+// Precomputed table of allowed SSID characters, 0 means invalid, 1
+// means ok. This table can be indexed using the character value, e.g:
+//
+// VALID_CHARACTER['A'] == 1
+static const std::uint8_t VALID_CHARACTERS[0xFF] = {
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    1, 1, 0, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1, 1, 0,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
+
 void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
 {
     std::size_t len = std::strlen(src);
@@ -264,6 +286,29 @@ esp_err_t WiFi::eventHandler(void* ctx, system_event_t* event)
         ESP_LOGE(TAG, "Event handler error, err = %s", esp_err_to_name(err));
         return err;
     }
+
+    return ESP_OK;
+}
+
+bool isCharValid(std::uint8_t c)
+{
+    return VALID_CHARACTERS[c] == 1;
+}
+
+esp_err_t sanitizeSsid(std::uint8_t (&ssid)[32], std::size_t len)
+{
+    if (len == 0) return ESP_FAIL;
+    if (len > 32) return ESP_FAIL;
+
+    for (int i = 0; i < len; ++i) {
+        bool not_valid = !isCharValid(ssid[i]);
+        if (not_valid) {
+            ssid[i] = '?';
+        }
+    }
+
+    bool is_trailing_whitespace = ssid[len - 1] == ' ';
+    if (is_trailing_whitespace) ssid[len - 1] = '?';
 
     return ESP_OK;
 }

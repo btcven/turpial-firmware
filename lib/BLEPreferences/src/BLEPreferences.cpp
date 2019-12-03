@@ -147,9 +147,10 @@ public:
             return;
         } else {
             std::memcpy(config.ap.ssid, value.data(), value.size());
-            config.ap.ssid[value.size()] = '\0';
-            config.ap.ssid_len = 0;
+            config.ap.ssid_len = value.size();
         }
+
+        network::sanitizeSsid(config.ap.ssid, config.ap.ssid_len);
 
         wifi.stop();
         wifi.setApConfig(config);

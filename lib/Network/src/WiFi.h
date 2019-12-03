@@ -286,6 +286,16 @@ private:
     static esp_err_t eventHandler(void* ctx, system_event_t* event);
 };
 
+/**
+ * @brief Sanitize SSIDs
+ * 
+ * @param[inout] ssid: SSID characters (bytes, not null terminated)
+ * @param        len: length of the ssid
+ * 
+ * @return esp_err_t 
+ */
+esp_err_t sanitizeSsid(std::uint8_t (&ssid)[32], std::size_t len);
+
 } // namespace network
 
 #endif // NETWORK_WIFI_H

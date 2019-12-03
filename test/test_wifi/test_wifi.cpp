@@ -11,6 +11,7 @@
 
 
 #include "NVS.h"
+#include "SSID.h"
 #include "WiFi.h"
 #include "defaults.h"
 
@@ -49,6 +50,26 @@ void testWiFi()
     vTaskDelay(DELAY);
 }
 
+void testSanitizeSsid()
+{
+    std::uint8_t expected_buf[32] = {0};
+    expected_buf[0] = 'a';
+    expected_buf[1] = 'b';
+    expected_buf[2] = '?';
+    expected_buf[3] = 'c';
+
+    std::uint8_t buf[32] = {0};
+    buf[0] = 'a';
+    buf[1] = 'b';
+    buf[2] = 0x0E;
+    buf[3] = 'c';
+
+    esp_err_t err = network::sanitizeSsid(buf, 4);
+    if (err != ESP_OK) TEST_FAIL();
+
+    TEST_ASSERT_EQUAL_MEMORY(expected_buf, buf, 32);
+}
+
 extern "C" void app_main()
 {
     storage::init();
@@ -56,5 +77,6 @@ extern "C" void app_main()
     vTaskDelay(2000);
     UNITY_BEGIN();
     RUN_TEST(testWiFi);
+    RUN_TEST(testSanitizeSsid);
     UNITY_END();
 }
