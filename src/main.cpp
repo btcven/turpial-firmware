@@ -68,7 +68,7 @@ esp_err_t getIsConfigured(bool& is_configured)
 
 extern "C" void app_main()
 {
-    /* esp_err_t err;
+    esp_err_t err;
     wifi::WiFiEventHandler* event_handler;
     event_handler = new wifi::WiFiEventHandler();
     wifi::WiFiMode* wifi_mode;
@@ -77,12 +77,14 @@ extern "C" void app_main()
 
     bool is_nvs_initialized = true;
     err = storage::init();
+    
     if (err != ESP_OK) {
         const char* err_name = esp_err_to_name(err);
         ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", err_name);
         is_nvs_initialized = false;
     }
 
+    
     ESP_LOGD(TAG, "Init TCP/IP adapter");
     tcpip_adapter_init();
 
@@ -126,31 +128,32 @@ extern "C" void app_main()
 
     wifi_mode->setWiFiEventHandler(event_handler);
     err = wifi_mode->start();
-    // TODO: app loop */
-    gpio_num_t pin1 = GPIO_NUM_0;
-    gpio_num_t pin2 = GPIO_NUM_1;
-    gpio_num_t pin3 = GPIO_NUM_18;
-    gpio_num_t pin4 = GPIO_NUM_19;
+    // TODO: app loop 
+    gpio_num_t LED_RED = GPIO_NUM_25; //doesnt works
+    gpio_num_t LED_GREEN = GPIO_NUM_26; //doesnt works
+    gpio_num_t LED_BLUE = GPIO_NUM_33;
+    gpio_num_t SYS_OFF = GPIO_NUM_27;
+    gpio_num_t BUTTON = GPIO_NUM_32;
 while(1) {
 
     
-    hardware::GPIO::setOutput(pin1);
-    /*hardware::GPIO::setOutput(pin2);
-    hardware::GPIO::setOutput(pin3);
-    hardware::GPIO::setOutput(pin4);
+    hardware::GPIO::setOutput(LED_RED);
+    hardware::GPIO::setOutput(LED_GREEN);
+    hardware::GPIO::setOutput(LED_BLUE);
+    hardware::GPIO::setOutput(SYS_OFF);
 
 
-    hardware::GPIO::write(pin1,1); 
-    hardware::GPIO::write(pin2,1);
-    hardware::GPIO::write(pin3,1);
-    hardware::GPIO::write(pin4,1);
+    hardware::GPIO::write(LED_RED,1); 
+    hardware::GPIO::write(LED_GREEN,1);
+    hardware::GPIO::write(LED_BLUE,1);
+    hardware::GPIO::write(SYS_OFF,1);
 
     vTaskDelay(1000/portTICK_RATE_MS);
 
-    hardware::GPIO::write(pin1,0); 
-    hardware::GPIO::write(pin2,0);
-    hardware::GPIO::write(pin3,0);
-    hardware::GPIO::write(pin4,0); */
+    hardware::GPIO::write(LED_RED,0); 
+    hardware::GPIO::write(LED_GREEN,0);
+    hardware::GPIO::write(LED_BLUE,0);
+    hardware::GPIO::write(SYS_OFF,0); 
     vTaskDelay(1000/portTICK_RATE_MS);
     ESP_LOGI("RUNNING GPIO", "LOOP OK");
 }
