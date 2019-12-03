@@ -10,28 +10,29 @@
  */
 
 
-#include "WiFiMode.h"
+#include "NVS.h"
+#include "WiFi.h"
 #include "defaults.h"
 
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <unity.h>
 
-void test_wifi_mode()
+void testWiFi()
 {
-    const TickType_t xDelay = 10000 / portTICK_PERIOD_MS;
+    const TickType_t DELAY = 10000 / portTICK_PERIOD_MS;
 
     esp_err_t err;
 
     tcpip_adapter_init();
 
-    wifi::WiFiMode wifi_mode;
-    err = wifi_mode.init(false);
+    network::WiFi& wifi = network::WiFi::getInstance();
+    err = wifi.init();
     if (err != ESP_OK) TEST_FAIL();
 
-    wifi_mode.set_mode(WIFI_MODE);
+    wifi.setMode(WIFI_MODE);
 
-    wifi::APConfig ap_config = {
+    network::APConfig ap_config = {
         .ssid = WAP_SSID,
         .password = WAP_PASS,
         .authmode = WAP_AUTHMODE,
@@ -39,19 +40,21 @@ void test_wifi_mode()
         .channel = WAP_CHANNEL,
     };
 
-    err = wifi_mode.set_ap_config(ap_config);
+    err = wifi.setApConfig(ap_config);
     if (err != ESP_OK) TEST_FAIL();
 
-    err = wifi_mode.start();
+    err = wifi.start();
     if (err != ESP_OK) TEST_FAIL();
 
-    vTaskDelay(xDelay);
+    vTaskDelay(DELAY);
 }
 
 extern "C" void app_main()
 {
+    storage::init();
+
     vTaskDelay(2000);
     UNITY_BEGIN();
-    RUN_TEST(test_wifi_mode);
+    RUN_TEST(testWiFi);
     UNITY_END();
 }

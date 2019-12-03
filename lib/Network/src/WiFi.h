@@ -1,5 +1,5 @@
 /**
- * @file WiFiMode.h
+ * @file WiFi.h
  * @author Locha Mesh project developers (locha.io)
  * @brief 
  * @version 0.1.1
@@ -9,17 +9,18 @@
  * @license Apache 2.0, see LICENSE file for details
  */
 
-#ifndef WIFIMODE_H
-#define WIFIMODE_H
+#ifndef NETWORK_WIFI_H
+#define NETWORK_WIFI_H
 
 #include <cstdint>
 
-#include "WiFiEventHandler.h"
-#include "esp_err.h"
-#include "esp_event.h"
-#include "esp_wifi.h"
+#include <esp_err.h>
+#include <esp_event.h>
+#include <esp_wifi.h>
 
-namespace wifi {
+#include "WiFiEventHandler.h"
+
+namespace network {
 
 /**
  * @brief AP mode configuration
@@ -42,19 +43,20 @@ struct STAConfig {
     const char* password;
 };
 
-class WiFiMode
+class WiFi
 {
 public:
-    /**
-     * @brief Constructor WiFiMode
-     */
+    static WiFi& getInstance()
+    {
+        static WiFi instance;
+        return instance;
+    }
 
-    WiFiMode();
-    /**
-     * @brief Destructor WiFiMode
-     */
+    WiFi(WiFi const&) = delete; // Copy construct
+    WiFi(WiFi&&) = delete;      // Move construct
 
-    ~WiFiMode();
+    WiFi& operator=(WiFi const&) = delete; // Copy assign
+    WiFi& operator=(WiFi&&) = delete;      // Move assign
 
     /**
      * @brief Initialize Wi-Fi
@@ -68,7 +70,7 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t init(bool use_nvs);
+    esp_err_t init();
 
     /**
      * @brief Set Wi-Fi operation mode
@@ -79,7 +81,7 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t set_mode(wifi_mode_t mode);
+    esp_err_t setMode(wifi_mode_t mode);
 
     /**
      * @brief Set the AP configuration
@@ -93,7 +95,7 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t set_ap_config(APConfig& ap_config);
+    esp_err_t setApConfig(APConfig& ap_config);
 
     /**
      * @brief Set the STA configuration
@@ -107,7 +109,7 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t set_sta_config(STAConfig& sta_config);
+    esp_err_t setStaConfig(STAConfig& sta_config);
 
     /**
      * @brief Start Wi-Fi operation mode
@@ -122,16 +124,22 @@ public:
 
     /**
      * @brief Set callback handler to catch WiFi events outside of class itself
-     *      
+     * 
      */
-    void setWiFiEventHandler(WiFiEventHandler* WiFiEventHandler);
+    void setEventHandler(std::unique_ptr<WiFiEventHandler>&& event_handler);
 
 private:
+    /**
+     * @brief Constructor Wi-Fi
+     * 
+     */
+    WiFi();
+
     /**
      * @brief pointer to desired hanlder events
      *
      */
-    WiFiEventHandler* m_p_wifi_event_handler;
+    std::unique_ptr<WiFiEventHandler> m_event_handler;
 
     /**
      * @brief Wi-Fi event handler
@@ -143,6 +151,6 @@ private:
     static esp_err_t eventHandler(void* ctx, system_event_t* event);
 };
 
-} // namespace wifi
+} // namespace network
 
-#endif // WIFIMODE_H
+#endif // NETWORK_WIFI_H

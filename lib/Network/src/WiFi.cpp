@@ -1,5 +1,5 @@
 /**
- * @file WiFiMode.cpp
+ * @file WiFi.cpp
  * @author Locha Mesh project developers (locha.io)
  * @brief 
  * @version 0.1.1
@@ -9,37 +9,18 @@
  * @license Apache 2.0, see LICENSE file for details
  */
 
-#include "WiFiMode.h"
+#include "WiFi.h"
 
 #include <cstdint>
 #include <cstring>
 
-#include "esp_event_loop.h"
-#include "esp_log.h"
-#include "esp_wifi.h"
+#include <esp_event_loop.h>
+#include <esp_log.h>
+#include <esp_wifi.h>
 
-namespace wifi {
+namespace network {
 
-static const char* TAG = "WiFiMode";
-
-WiFiMode::WiFiMode() : m_p_wifi_event_handler(nullptr)
-{
-}
-
-WiFiMode::~WiFiMode()
-{
-    if (m_p_wifi_event_handler != nullptr) {
-        delete m_p_wifi_event_handler;
-        m_p_wifi_event_handler = nullptr;
-    }
-}
-
-void WiFiMode::setWiFiEventHandler(WiFiEventHandler* wifiEventHandler)
-{
-    ESP_LOGD(TAG, ">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> setWifiEventHandler: 0x%d>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>", (uint32_t)wifiEventHandler);
-    this->m_p_wifi_event_handler = wifiEventHandler;
-    ESP_LOGD(TAG, "<< ***************************************************setWifiEventHandler*************************************");
-}
+static const char* TAG = "WiFi";
 
 void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
 {
@@ -52,43 +33,38 @@ void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
     dest[len] = '\0';
 }
 
-esp_err_t WiFiMode::init(bool use_nvs)
+WiFi::WiFi()
+    : m_event_handler(nullptr)
+{
+}
+
+esp_err_t WiFi::init()
 {
     esp_err_t err;
 
-    esp_event_loop_init(&WiFiMode::eventHandler, this);
+    ESP_LOGD(TAG, "Init TCP/IP adapter");
+    tcpip_adapter_init();
+
+    ESP_LOGD(TAG, "Initializing Wi-Fi");
+
+    esp_event_loop_init(&WiFi::eventHandler, this);
 
     wifi_init_config_t init_config = WIFI_INIT_CONFIG_DEFAULT();
-    if (!use_nvs) {
-        ESP_LOGD(TAG, "Disabling NVS in Wi-Fi");
-        init_config.nvs_enable = false;
-    }
-
-    ESP_LOGD(TAG, "Initializing Wi-Fi library");
     err = esp_wifi_init(&init_config);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "esp_wifi_init failed!");
+        ESP_LOGE(TAG, "esp_wifi_init failed, err = %s", esp_err_to_name(err));
         return err;
-    }
-
-    if (!use_nvs) {
-        ESP_LOGD(TAG, "Using RAM as storage mode for Wi-Fi");
-        err = esp_wifi_set_storage(WIFI_STORAGE_RAM);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Couldn't set RAM as Wi-Fi storage");
-            return err;
-        }
     }
 
     return ESP_OK;
 }
 
-esp_err_t WiFiMode::set_mode(wifi_mode_t mode)
+esp_err_t WiFi::setMode(wifi_mode_t mode)
 {
     return esp_wifi_set_mode(mode);
 }
 
-esp_err_t WiFiMode::set_ap_config(APConfig& ap_config)
+esp_err_t WiFi::setApConfig(APConfig& ap_config)
 {
     const std::uint8_t BROADCAST_SSID = 0;
 
@@ -105,7 +81,7 @@ esp_err_t WiFiMode::set_ap_config(APConfig& ap_config)
     return esp_wifi_set_config(WIFI_IF_AP, &wifi_config);
 }
 
-esp_err_t WiFiMode::set_sta_config(STAConfig& sta_config)
+esp_err_t WiFi::setStaConfig(STAConfig& sta_config)
 {
     const std::uint8_t UNKNOWN_CHANNEL = 0;
     const std::uint8_t DEFAULT_LISTEN_INTERVAL = 0;
@@ -124,7 +100,7 @@ esp_err_t WiFiMode::set_sta_config(STAConfig& sta_config)
     return esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
 }
 
-esp_err_t WiFiMode::start()
+esp_err_t WiFi::start()
 {
     esp_err_t err;
 
@@ -155,22 +131,27 @@ esp_err_t WiFiMode::start()
     return ESP_OK;
 }
 
-esp_err_t WiFiMode::eventHandler(void* ctx, system_event_t* event)
+void WiFi::setEventHandler(std::unique_ptr<WiFiEventHandler>&& event_handler)
 {
-    ESP_LOGD(TAG, ">> *****************EVENT HANDLER CALLED*******************************************");
-    ESP_LOGD(TAG, ">> ********************************************************************************");
-    WiFiMode* pWiFiMode = reinterpret_cast<WiFiMode*>(ctx);
-    //WiFiMode* pWiFiMode = (WiFiMode*) ctx;   // retrieve the WiFi object from the passed in context.
+    ESP_LOGD(TAG, "Setting Wi-Fi event handler");
 
-    // Invoke the event handler.
-    esp_err_t rc;
-    if (pWiFiMode->m_p_wifi_event_handler != nullptr) {
-        rc = pWiFiMode->m_p_wifi_event_handler->getEventHandler()(pWiFiMode->m_p_wifi_event_handler, event);
-    } else {
-        rc = ESP_OK;
-    }
-
-    return rc;
+    m_event_handler = std::move(event_handler);
 }
 
-} // namespace wifi
+esp_err_t WiFi::eventHandler(void* ctx, system_event_t* event)
+{
+    ESP_LOGD(TAG, "Wi-Fi Event Handler Called");
+    WiFi* wifi = reinterpret_cast<WiFi*>(ctx);
+
+    if (wifi->m_event_handler) {
+        esp_err_t err = wifi->m_event_handler->eventDispatcher(event);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Event handler error, err = %s", esp_err_to_name(err));
+            return err;
+        }
+    }
+
+    return ESP_OK;
+}
+
+} // namespace network
