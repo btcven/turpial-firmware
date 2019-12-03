@@ -16,7 +16,7 @@
 
 #include "esp_log.h"
 
-#include "WiFiMode.h"
+#include "WiFi.h"
 
 namespace ble_preferences {
 
@@ -63,7 +63,7 @@ public:
     {
         ESP_LOGI(TAG, "onWrite AP SSID");
 
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
         if (value.size() > 1) {
@@ -79,7 +79,7 @@ public:
         case WIFI_MODE_APSTA: {
             ESP_LOGI(TAG, "setting Wi-Fi mode = %d", mode);
             wifi.stop();
-            wifi.set_mode(static_cast<wifi_mode_t>(mode));
+            wifi.setMode(static_cast<wifi_mode_t>(mode));
             wifi.start();
             break;
         }
@@ -94,10 +94,10 @@ public:
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         wifi_mode_t mode;
-        wifi.get_mode(mode);
+        wifi.getMode(mode);
 
         std::uint8_t v = 0;
         switch (mode) {
@@ -110,7 +110,7 @@ public:
         default: {
             ESP_LOGW(TAG, "no Wi-Fi mode is set, changing to AP mode...");
             wifi.stop();
-            wifi.set_mode(WIFI_MODE_AP);
+            wifi.setMode(WIFI_MODE_AP);
             wifi.start();
             v = WIFI_MODE_AP;
             break;
@@ -130,10 +130,10 @@ public:
 
     virtual void onWrite(ble::Characteristic& characteristic)
     {
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         wifi_config_t config;
-        wifi.get_ap_config(config);
+        wifi.getApConfig(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
         if (value.size() >= 32) {
@@ -152,16 +152,16 @@ public:
         }
 
         wifi.stop();
-        wifi.set_ap_config(config);
+        wifi.setApConfig(config);
         wifi.start();
     }
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         wifi_config_t config;
-        wifi.get_ap_config(config);
+        wifi.getApConfig(config);
 
         if (config.ap.ssid_len == 0) {
             char* ssid_str = reinterpret_cast<char*>(config.ap.ssid);
@@ -182,10 +182,10 @@ public:
 
     virtual void onWrite(ble::Characteristic& characteristic)
     {
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         wifi_config_t config;
-        wifi.get_ap_config(config);
+        wifi.getApConfig(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
         if (value.size() > 63) {
@@ -202,16 +202,16 @@ public:
         }
 
         wifi.stop();
-        wifi.set_ap_config(config);
+        wifi.setApConfig(config);
         wifi.start();
     }
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         wifi_config_t config;
-        wifi.get_ap_config(config);
+        wifi.getApConfig(config);
 
         char* password_str = reinterpret_cast<char*>(config.ap.password);
         std::size_t len = std::strlen(password_str);
@@ -228,10 +228,10 @@ public:
 
     virtual void onWrite(ble::Characteristic& characteristic)
     {
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         wifi_config_t config;
-        wifi.get_sta_config(config);
+        wifi.getStaConfig(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
         if (value.size() > 31) {
@@ -248,16 +248,16 @@ public:
         }
 
         wifi.stop();
-        wifi.set_sta_config(config);
+        wifi.setStaConfig(config);
         wifi.start();
     }
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         wifi_config_t config;
-        wifi.get_sta_config(config);
+        wifi.getStaConfig(config);
 
         char* ssid_str = reinterpret_cast<char*>(config.sta.ssid);
         std::size_t len = std::strlen(ssid_str);
@@ -274,10 +274,10 @@ public:
 
     virtual void onWrite(ble::Characteristic& characteristic)
     {
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         wifi_config_t config;
-        wifi.get_sta_config(config);
+        wifi.getStaConfig(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
         if (value.size() > 63) {
@@ -293,16 +293,16 @@ public:
         }
 
         wifi.stop();
-        wifi.set_sta_config(config);
+        wifi.setStaConfig(config);
         wifi.start();
     }
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        wifi::WiFiMode& wifi = wifi::WiFiMode::getInstance();
+        network::WiFi& wifi = network::WiFi::getInstance();
 
         wifi_config_t config;
-        wifi.get_sta_config(config);
+        wifi.getStaConfig(config);
 
         char* password_str = reinterpret_cast<char*>(config.ap.password);
         std::size_t len = std::strlen(password_str);
