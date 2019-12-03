@@ -1,143 +1,132 @@
 /**
  * @file NVS.cpp
- * @author your name (you@domain.com)
+ * @author Locha Mesh Developers (contact@locha.io)
  * @brief 
  * @version 0.1
  * @date 2019-11-20
  * 
- * @copyright Copyright (c) 2019
- * 
+ * @copyright Copyright (c) 2019 Locha Mesh project developers
+ * @license Apache 2.0, see LICENSE file for details
  */
 
 #include "NVS.h"
 
-#include <cstdint>
-
-#include "esp_system.h"
-
 #include "esp_log.h"
-#include "nvs_flash.h"
-#include "defaults.h"
 
 namespace storage {
 
 static const char* TAG = "NVS";
 
-esp_err_t init()
+NVS::NVS()
+    : m_handle(0),
+      m_is_opened(false)
 {
-    esp_err_t err;
+}
 
-    ESP_LOGD(TAG, "Initializing NVS");
+NVS::~NVS()
+{
+    if (m_is_opened) nvs_close(m_handle);
+}
+
+esp_err_t NVS::start()
+{
+    esp_err_t err = 0;
+
+    ESP_LOGI(TAG, "Initializing NVS");
+
+    nvs_flash_erase();
 
     err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES ||
         err == ESP_ERR_NVS_NEW_VERSION_FOUND) {
-        ESP_LOGD(TAG, "NVS partition is truncated. Erasing partition...");
+        ESP_LOGW(TAG, "NVS partition is truncated. Erasing partition...");
 
         err = nvs_flash_erase();
         if (err != ESP_OK) {
-            ESP_LOGD(TAG, "Couldn't erase NVS partition");
+            ESP_LOGW(TAG, "Couldn't erase NVS partition (%s)", esp_err_to_name(err));
             return err;
         }
 
         ESP_LOGD(TAG, "Retrying nvs_flash_init");
-        return nvs_flash_init();
+        err = nvs_flash_init();
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Retry failed (%s)", esp_err_to_name(err));
+            return err;
+        }
     }
 
-    return err;
+    return ESP_OK;
 }
 
-NVS::NVS() : m_is_opened(false), m_handle{0} {}
-
-NVS::~NVS()
+esp_err_t NVS::open(const char* name, nvs_open_mode mode)
 {
-    close();
-}
-
-esp_err_t NVS::open(const char* name, nvs_open_mode open_mode)
-{
-    esp_err_t err;
+    if (m_is_opened) return ESP_FAIL;
 
     ESP_LOGD(TAG, "Opening namespace");
 
-    if (m_is_opened) close();
-
-    err = nvs_open(name, open_mode, &m_handle);
+    esp_err_t err = nvs_open("preferences", NVS_READWRITE, &m_handle);
     if (err != ESP_OK) {
-        const char* err_str = esp_err_to_name(err);
-        ESP_LOGE(TAG, "Couldn't open namespace (%s)", err_str);
+        ESP_LOGE(TAG, "Couldn't open namespace (%s)", esp_err_to_name(err));
         return err;
     }
 
     m_is_opened = true;
+
     return ESP_OK;
 }
 
-void NVS::close()
+esp_err_t NVS::setBlob(const char* key, const std::uint8_t* data, std::size_t len)
 {
-    ESP_LOGD(TAG, "Closing namespace");
+    if (!m_is_opened) return ESP_FAIL;
 
-    if (m_is_opened) nvs_close(m_handle);
-    m_is_opened = false;
+    return nvs_set_blob(m_handle, key, data, len);
 }
 
-esp_err_t NVS::set_bool(const char* key, bool value)
+esp_err_t NVS::getBlob(const char* key, std::vector<uint8_t>& data)
 {
-    return nvs_set_u8(m_handle, key, value ? 1 : 0);
-}
+    esp_err_t err = 0;
+    std::size_t len;
 
-esp_err_t NVS::get_bool(const char* key, bool& value)
-{
-    std::uint8_t v = 0;
-    esp_err_t err = nvs_get_u8(m_handle, key, &v);
-    if (err != ESP_OK) return err;
+    if (!m_is_opened) return ESP_FAIL;
 
-    if (v == 1) {
-        value = true;
-    } else {
-        value = false;
+    err = nvs_get_blob(m_handle, key, nullptr, &len);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't get blob length (%s)", esp_err_to_name(err));
+        return err;
     }
 
+    data.resize(len, 0);
+
+    err = nvs_get_blob(m_handle, key, &data[0], &len);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't get blob (%s)", esp_err_to_name(err));
+        return err;
+    }
+
+    ESP_LOGD(TAG, "len = %d, size = %d", len, data.size());
+
     return ESP_OK;
+}
+
+esp_err_t NVS::setU8(const char* key, std::uint8_t value)
+{
+    if (!m_is_opened) return ESP_FAIL;
+
+    return nvs_set_u8(m_handle, key, value);
+}
+
+esp_err_t NVS::getU8(const char* key, std::uint8_t& value)
+{
+    if (!m_is_opened) return ESP_FAIL;
+
+    return nvs_get_u8(m_handle, key, &value);
 }
 
 esp_err_t NVS::commit()
 {
+    if (!m_is_opened) return ESP_FAIL;
+
     return nvs_commit(m_handle);
 }
 
-esp_err_t NVS::getIsConfigured(bool& is_configured)
-{
-    esp_err_t err;
-
-    storage::NVS app_nvs;
-    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
-    if (err != ESP_OK) {
-        const char* err_str = esp_err_to_name(err);
-        ESP_LOGE(TAG,
-            "Couldn't open namespace \"%s\" (%s)",
-            NVS_APP_NAMESPACE,
-            err_str);
-        return err;
-    }
-
-    err = app_nvs.get_bool(NVS_IS_CONFIGURED_KEY, is_configured);
-    if (err == ESP_ERR_NVS_NOT_FOUND) {
-        // Set is_configured to true on flash so on next init the config is
-        // readed directly by the ESP-IDF Wi-Fi library component.
-        err = app_nvs.set_bool(NVS_IS_CONFIGURED_KEY, true);
-        if (err != ESP_OK) return err;
-        err = app_nvs.commit();
-        if (err != ESP_OK) return err;
-        // Set the return variable to "false" to forcibly set the default
-        // configuration
-        is_configured = false;
-    } else {
-        return err;
-    }
-
-    return ESP_OK;
-}
-
-
-} // namespace nvs
+} // namespace storage

@@ -20,89 +20,67 @@
 
 #include "BLEPreferences.h"
 #include "NVS.h"
+#include "Preferences.h"
 #include "WiFi.h"
+
 
 #include "defaults.h"
 
 static const char* TAG = "app_main";
 
-esp_err_t getIsConfigured(bool& is_configured)
-{
-    esp_err_t err;
-
-    storage::NVS app_nvs;
-    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
-    if (err != ESP_OK) {
-        const char* err_str = esp_err_to_name(err);
-        ESP_LOGE(TAG,
-            "Couldn't open namespace \"%s\" (%s)",
-            NVS_APP_NAMESPACE,
-            err_str);
-        return err;
-    }
-
-    err = app_nvs.get_bool(NVS_IS_CONFIGURED_KEY, is_configured);
-    if (err == ESP_ERR_NVS_NOT_FOUND) {
-        // Set is_configured to true on flash so on next init the config is
-        // readed directly by the ESP-IDF Wi-Fi library component.
-        err = app_nvs.set_bool(NVS_IS_CONFIGURED_KEY, true);
-        if (err != ESP_OK) return err;
-        err = app_nvs.commit();
-        if (err != ESP_OK) return err;
-        // Set the return variable to "false" to forcibly set the default
-        // configuration
-        is_configured = false;
-    } else {
-        return err;
-    }
-
-    return ESP_OK;
-}
-
-
 extern "C" void app_main()
 {
     esp_err_t err;
 
-    err = storage::init();
+    err = storage::NVS::start();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", esp_err_to_name(err));
         return;
     }
 
-    bool is_configured = false;
-    err = getIsConfigured(is_configured);
+    util::DefaultPreferences default_prefs;
+    default_prefs.setApSSID(WAP_SSID);
+    default_prefs.setApPassword(WAP_PASS);
+    default_prefs.setApMaxConn(WAP_MAXCONN);
+    default_prefs.setApChannel(WAP_CHANNEL);
+    default_prefs.setStaSsid(WST_SSID);
+    default_prefs.setStaPassword(WST_PASS);
+    default_prefs.setWiFiMode(WIFI_MODE);
+
+    util::Preferences& prefs = util::Preferences::getInstance();
+    err = prefs.start(default_prefs);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG,
-            "Couldn't get \"is_configured\" value (%s)",
-            esp_err_to_name(err));
+        ESP_LOGE(TAG, "Can't start preferences (%s)", esp_err_to_name(err));
+        return;
     }
+
+    ESP_LOGD(TAG, "Init TCP/IP adapter");
+    tcpip_adapter_init();
 
     network::WiFi& wifi = network::WiFi::getInstance();
     err = wifi.init();
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", esp_err_to_name(err));
+        const char* err_name = esp_err_to_name(err);
+        ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", err_name);
         return;
     }
 
-    if (!is_configured) {
-        wifi.setMode(WIFI_MODE);
+    wifi_mode_t mode;
+    prefs.getWiFiMode(mode);
+    wifi.setMode(mode);
 
-        network::APConfig ap_config = {
-            .ssid = WAP_SSID,
-            .password = WAP_PASS,
-            .authmode = WAP_AUTHMODE,
-            .max_conn = WAP_MAXCONN,
-            .channel = WAP_CHANNEL,
-        };
-        wifi.setApConfig(ap_config);
+    wifi_config_t ap_config = {};
+    prefs.getApSSID(ap_config.ap.ssid);
+    prefs.getApPassword(ap_config.ap.password);
+    prefs.getApMaxConn(ap_config.ap.max_connection);
+    prefs.getApChannel(ap_config.ap.channel);
+    ap_config.ap.authmode = WAP_AUTHMODE;
+    wifi.setApConfig(ap_config);
 
-        network::STAConfig sta_config = {
-            .ssid = WST_SSID,
-            .password = WST_PASS,
-        };
-        wifi.setStaConfig(sta_config);
-    }
+    wifi_config_t sta_config = {};
+    prefs.getStaSSID(sta_config.sta.ssid);
+    prefs.getStaPassword(sta_config.sta.password);
+    wifi.setStaConfig(sta_config);
 
     err = wifi.start();
     if (err != ESP_OK) {

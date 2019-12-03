@@ -13,6 +13,8 @@
 #include <freertos/task.h>
 #include <unity.h>
 
+#include <cstring>
+
 #include "NVS.h"
 
 /**
@@ -27,36 +29,69 @@ void test_open_namespace(void)
 {
     esp_err_t err;
 
-    storage::NVS wifi_nvs;
-    err = wifi_nvs.open("TEST", NVS_READONLY);
+    storage::NVS nvs;
+    err = nvs.open("TEST", NVS_READONLY);
     if (err != ESP_OK) TEST_FAIL();
 }
 
-void test_create_and_save_bool()
+void test_set_get_u8()
 {
     esp_err_t err;
+    storage::NVS nvs;
 
-    storage::NVS wifi_nvs;
-
-    err = wifi_nvs.open("TEST", NVS_READWRITE);
+    err = nvs.open("TEST", NVS_READWRITE);
     if (err != ESP_OK) TEST_FAIL();
 
-    err = wifi_nvs.set_bool("test_bool", true);
+    err = nvs.setU8("test_u8", 254);
     if (err != ESP_OK) TEST_FAIL();
 
-    err = wifi_nvs.commit();
+    err = nvs.commit();
     if (err != ESP_OK) TEST_FAIL();
+
+    std::uint8_t v = 0;
+    err = nvs.getU8("test_u8", v);
+    if (err != ESP_OK) TEST_FAIL();
+
+    TEST_ASSERT_EQUAL_UINT8(254, v);
+}
+
+void test_set_get_blob()
+{
+    esp_err_t err;
+    storage::NVS nvs;
+
+    const std::size_t blob_size = 9;
+    const char* blob = "test data";
+
+    err = nvs.open("TEST", NVS_READWRITE);
+    if (err != ESP_OK) TEST_FAIL();
+
+    err = nvs.setBlob("test_blob",
+        reinterpret_cast<const std::uint8_t*>(blob),
+        blob_size);
+    if (err != ESP_OK) TEST_FAIL();
+
+    err = nvs.commit();
+    if (err != ESP_OK) TEST_FAIL();
+
+    std::vector<std::uint8_t> value;
+    err = nvs.getBlob("test_blob", value);
+    if (err != ESP_OK) TEST_FAIL();
+
+    int equals = std::memcmp(&value[0], blob, blob_size);
+    if (equals != 0) TEST_FAIL();
 }
 
 extern "C" void app_main()
 {
     vTaskDelay(2000);
 
-    esp_err_t err = storage::init();
+    esp_err_t err = storage::NVS::start();
     if (err != ESP_OK) return;
 
     UNITY_BEGIN();
     RUN_TEST(test_open_namespace);
-    RUN_TEST(test_create_and_save_bool);
+    RUN_TEST(test_set_get_u8);
+    RUN_TEST(test_set_get_blob);
     UNITY_END();
 }

@@ -16,6 +16,7 @@
 
 #include "esp_log.h"
 
+#include "Preferences.h"
 #include "WiFi.h"
 
 namespace ble_preferences {
@@ -30,7 +31,7 @@ static const char* TAG = "BLE_Preferences";
 //      - Value: one of WIFI_MODE_STA, WIFI_MODE_AP, or WIFI_MODE_STA
 //   - Characteristic:
 //      - Uuid: AP_SSID_UUID
-//      - Value: a maximum of 32 chars
+//      - Value: a maximum of 31 chars
 //   - Characteristic:
 //      - Uuid: AP_PASSWORD_UUID
 //      - Value: a maximum of 63 chars
@@ -64,6 +65,7 @@ public:
         ESP_LOGI(TAG, "onWrite AP SSID");
 
         network::WiFi& wifi = network::WiFi::getInstance();
+        util::Preferences& prefs = util::Preferences::getInstance();
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
         if (value.size() > 1) {
@@ -78,6 +80,10 @@ public:
         case WIFI_MODE_AP:
         case WIFI_MODE_APSTA: {
             ESP_LOGI(TAG, "setting Wi-Fi mode = %d", mode);
+
+            prefs.setWiFiMode(static_cast<wifi_mode_t>(mode));
+            prefs.commit();
+
             wifi.stop();
             wifi.setMode(static_cast<wifi_mode_t>(mode));
             wifi.start();
@@ -94,28 +100,11 @@ public:
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        network::WiFi& wifi = network::WiFi::getInstance();
+        util::Preferences& prefs = util::Preferences::getInstance();
 
         wifi_mode_t mode;
-        wifi.getMode(mode);
-
-        std::uint8_t v = 0;
-        switch (mode) {
-        case WIFI_MODE_STA:
-        case WIFI_MODE_AP:
-        case WIFI_MODE_APSTA: {
-            v = mode;
-            break;
-        }
-        default: {
-            ESP_LOGW(TAG, "no Wi-Fi mode is set, changing to AP mode...");
-            wifi.stop();
-            wifi.setMode(WIFI_MODE_AP);
-            wifi.start();
-            v = WIFI_MODE_AP;
-            break;
-        }
-        }
+        prefs.getWiFiMode(mode);
+        std::uint8_t v = static_cast<std::uint8_t>(mode);
 
         characteristic.value().set(&v, 1);
     }
@@ -130,27 +119,34 @@ public:
 
     virtual void onWrite(ble::Characteristic& characteristic)
     {
-        network::WiFi& wifi = network::WiFi::getInstance();
+        ESP_LOGI(TAG, "write AP SSID");
 
-        wifi_config_t config;
+        network::WiFi& wifi = network::WiFi::getInstance();
+        util::Preferences& prefs = util::Preferences::getInstance();
+
+        wifi_config_t config = {};
         wifi.getApConfig(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
-        if (value.size() >= 32) {
-            ESP_LOGW(TAG,
-                "AP SSID value is higher than 32 characters, trimming");
-            std::memcpy(config.ap.ssid, value.data(), 32);
-            config.ap.ssid_len = 32;
-        } else if (value.size() == 0) {
-            ESP_LOGW(TAG,
-                "AP SSID value is empty, not changing");
+        if (value.size() == 0) {
+            ESP_LOGW(TAG, "AP SSID value is empty, not changing");
             return;
+        }
+
+        if (value.size() > 31) {
+            ESP_LOGW(TAG,
+                "AP SSID value is higher than 31 characters, trimming");
+            std::memcpy(config.ap.ssid, value.data(), 31);
+            config.ap.ssid[31] = '\0';
         } else {
             std::memcpy(config.ap.ssid, value.data(), value.size());
             config.ap.ssid_len = value.size();
         }
 
         network::sanitizeSsid(config.ap.ssid, config.ap.ssid_len);
+
+        prefs.setApSSID(config.ap.ssid);
+        prefs.commit();
 
         wifi.stop();
         wifi.setApConfig(config);
@@ -159,18 +155,15 @@ public:
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        network::WiFi& wifi = network::WiFi::getInstance();
+        ESP_LOGI(TAG, "read AP SSID");
 
-        wifi_config_t config;
-        wifi.getApConfig(config);
+        util::Preferences& prefs = util::Preferences::getInstance();
 
-        if (config.ap.ssid_len == 0) {
-            char* ssid_str = reinterpret_cast<char*>(config.ap.ssid);
-            std::size_t len = std::strlen(ssid_str);
-            characteristic.value().set(config.ap.ssid, len);
-        } else {
-            characteristic.value().set(config.ap.ssid, config.ap.ssid_len);
-        }
+        std::uint8_t ssid[32] = {0};
+        prefs.getApSSID(ssid);
+        std::size_t len = std::strlen(reinterpret_cast<char*>(ssid));
+
+        characteristic.value().set(ssid, len);
     }
 };
 
@@ -183,24 +176,32 @@ public:
 
     virtual void onWrite(ble::Characteristic& characteristic)
     {
-        network::WiFi& wifi = network::WiFi::getInstance();
+        ESP_LOGI(TAG, "write AP Password");
 
-        wifi_config_t config;
+        network::WiFi& wifi = network::WiFi::getInstance();
+        util::Preferences& prefs = util::Preferences::getInstance();
+
+        wifi_config_t config = {};
         wifi.getApConfig(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
+        if (value.size() == 0) {
+            ESP_LOGW(TAG, "AP Password is empty, not changing");
+            return;
+        }
+
         if (value.size() > 63) {
             ESP_LOGW(TAG,
                 "AP Password value is higher than 63 characters, trimming");
             std::memcpy(config.ap.password, value.data(), 63);
             config.ap.password[63] = '\0';
-        } else if (value.size() == 0) {
-            ESP_LOGW(TAG, "AP Password is empty, not changing");
-            return;
         } else {
             std::memcpy(config.ap.password, value.data(), value.size());
             config.ap.password[value.size()] = '\0';
         }
+
+        prefs.setApPassword(config.ap.password);
+        prefs.commit();
 
         wifi.stop();
         wifi.setApConfig(config);
@@ -209,14 +210,15 @@ public:
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        network::WiFi& wifi = network::WiFi::getInstance();
+        ESP_LOGI(TAG, "read AP Password");
 
-        wifi_config_t config;
-        wifi.getApConfig(config);
+        util::Preferences& prefs = util::Preferences::getInstance();
 
-        char* password_str = reinterpret_cast<char*>(config.ap.password);
-        std::size_t len = std::strlen(password_str);
-        characteristic.value().set(config.ap.password, len);
+        std::uint8_t password[64] = {0};
+        prefs.getApPassword(password);
+        std::size_t len = std::strlen(reinterpret_cast<char*>(password));
+
+        characteristic.value().set(password, len);
     }
 };
 
@@ -229,24 +231,28 @@ public:
 
     virtual void onWrite(ble::Characteristic& characteristic)
     {
-        network::WiFi& wifi = network::WiFi::getInstance();
+        ESP_LOGI(TAG, "write STA SSID");
 
-        wifi_config_t config;
+        network::WiFi& wifi = network::WiFi::getInstance();
+        util::Preferences& prefs = util::Preferences::getInstance();
+
+        wifi_config_t config = {};
         wifi.getStaConfig(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
+
         if (value.size() > 31) {
             ESP_LOGW(TAG,
                 "STA SSID value is higher than 31 characters, trimming");
             std::memcpy(config.sta.ssid, value.data(), 31);
             config.sta.ssid[31] = '\0';
-        } else if (value.size() == 0) {
-            ESP_LOGW(TAG, "STA SSID value is empty, not changing");
-            return;
         } else {
             std::memcpy(config.sta.ssid, value.data(), value.size());
             config.sta.ssid[value.size()] = '\0';
         }
+
+        prefs.setStaSSID(config.sta.ssid);
+        prefs.commit();
 
         wifi.stop();
         wifi.setStaConfig(config);
@@ -255,14 +261,15 @@ public:
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        network::WiFi& wifi = network::WiFi::getInstance();
+        ESP_LOGI(TAG, "read STA SSID");
 
-        wifi_config_t config;
-        wifi.getStaConfig(config);
+        util::Preferences& prefs = util::Preferences::getInstance();
 
-        char* ssid_str = reinterpret_cast<char*>(config.sta.ssid);
-        std::size_t len = std::strlen(ssid_str);
-        characteristic.value().set(config.sta.ssid, len);
+        std::uint8_t ssid[32];
+        prefs.getStaSSID(ssid);
+        std::size_t len = std::strlen(reinterpret_cast<char*>(ssid));
+
+        characteristic.value().set(ssid, len);
     }
 };
 
@@ -275,23 +282,27 @@ public:
 
     virtual void onWrite(ble::Characteristic& characteristic)
     {
-        network::WiFi& wifi = network::WiFi::getInstance();
+        ESP_LOGI(TAG, "write STA password");
 
-        wifi_config_t config;
+        network::WiFi& wifi = network::WiFi::getInstance();
+        util::Preferences& prefs = util::Preferences::getInstance();
+
+        wifi_config_t config = {};
         wifi.getStaConfig(config);
 
         std::vector<std::uint8_t>& value = characteristic.value().get();
         if (value.size() > 63) {
             ESP_LOGW(TAG,
-                "AP Password value is higher than 63 characters, trimming");
+                "STA Password value is higher than 63 characters, trimming");
             std::memcpy(config.sta.password, value.data(), 63);
             config.sta.password[63] = '\0';
-        } else if (value.size() == 0) {
-            config.sta.password[0] = '\0';
         } else {
             std::memcpy(config.ap.password, value.data(), value.size());
             config.sta.password[value.size()] = '\0';
         }
+
+        prefs.setStaPassword(config.ap.password);
+        prefs.commit();
 
         wifi.stop();
         wifi.setStaConfig(config);
@@ -300,14 +311,15 @@ public:
 
     virtual void onRead(ble::Characteristic& characteristic)
     {
-        network::WiFi& wifi = network::WiFi::getInstance();
+        ESP_LOGI(TAG, "read STA Password");
 
-        wifi_config_t config;
-        wifi.getStaConfig(config);
+        util::Preferences& prefs = util::Preferences::getInstance();
 
-        char* password_str = reinterpret_cast<char*>(config.ap.password);
-        std::size_t len = std::strlen(password_str);
-        characteristic.value().set(config.ap.password, len);
+        std::uint8_t password[64];
+        prefs.getStaPassword(password);
+        std::size_t len = std::strlen(reinterpret_cast<char*>(password));
+
+        characteristic.value().set(password, len);
     }
 };
 

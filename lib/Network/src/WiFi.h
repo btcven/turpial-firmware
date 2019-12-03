@@ -54,32 +54,15 @@ public:
      */
     virtual esp_err_t staStop();
 
+    virtual esp_err_t staConnected(system_event_sta_connected_t info);
+    virtual esp_err_t staDisconnected(system_event_sta_disconnected_t info);
+
 private:
     friend class WiFi;
 
     util::Semaphore m_sta_start_sema;
     util::Semaphore m_sta_stop_sema;
-};
-
-/**
- * @brief AP mode configuration
- * 
- */
-struct APConfig {
-    const char* ssid;
-    const char* password;
-    wifi_auth_mode_t authmode;
-    std::uint8_t max_conn;
-    std::uint8_t channel;
-};
-
-/**
- * @brief STA mode configuration
- * 
- */
-struct STAConfig {
-    const char* ssid;
-    const char* password;
+    util::Semaphore m_sta_connect_sema;
 };
 
 class WiFi
@@ -100,10 +83,7 @@ public:
     /**
      * @brief Initialize Wi-Fi
      * 
-     * @attention 1. If you set the parameter "use_nvs" to true you must make
-     * sure that the NVS is initialized.
-     * 
-     * @param use_nvs: wether to use NVS for storage or not
+     * @attention 1. You must make sure that the NVS is initialized.
      * 
      * @return
      *      - ESP_OK: succeed
@@ -145,35 +125,7 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t setApConfig(APConfig& ap_config);
-
-    /**
-     * @brief Set the AP configuration
-     * 
-     * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
-     * this configuration is going to be saved to the NVS.
-     * 
-     * @param ap_config: AP mode configuration
-     * 
-     * @return
-     *      - ESP_OK: succeed
-     *      - (others): failed
-     */
     esp_err_t setApConfig(wifi_config_t& ap_config);
-
-    /**
-     * @brief Set the STA configuration
-     * 
-     * @attention 1. If "use_nvs" was set to true when WiFiMode was initialized
-     * this configuration is going to be saved to the NVS.
-     * 
-     * @param sta_config: ST mode configuration
-     * 
-     * @return
-     *      - ESP_OK: succeed
-     *      - (others): failed
-     */
-    esp_err_t setStaConfig(STAConfig& sta_config);
 
     /**
      * @brief Set the STA configuration
@@ -271,12 +223,6 @@ private:
     WiFi();
 
     /**
-     * @brief pointer to desired hanlder events
-     *
-     */
-    WiFiDefaultEventHandler m_event_handler;
-
-    /**
      * @brief Wi-Fi event handler
      * 
      * @param ctx: application specific data (currently a pointer to the class
@@ -284,6 +230,8 @@ private:
      * @param event: Wi-Fi event
      */
     static esp_err_t eventHandler(void* ctx, system_event_t* event);
+
+    WiFiDefaultEventHandler m_event_handler; /*!< Default event handler */
 };
 
 /**

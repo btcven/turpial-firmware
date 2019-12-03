@@ -44,35 +44,16 @@ static const std::uint8_t VALID_CHARACTERS[0xFF] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
-void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
-{
-    std::size_t len = std::strlen(src);
-    if (len > (max - 1)) {
-        ESP_LOGW(TAG, "Field too lage (max is %d), trimming...", max);
-        len = (max - 1);
-    }
-    std::memcpy(dest, src, len);
-    dest[len] = '\0';
-}
-
 WiFiDefaultEventHandler::WiFiDefaultEventHandler()
     : m_sta_start_sema("STA Start"),
-      m_sta_stop_sema("STA Stop")
+      m_sta_stop_sema("STA Stop"),
+      m_sta_connect_sema("STA Connect")
 {
 }
 
 esp_err_t WiFiDefaultEventHandler::staStart()
 {
     ESP_LOGI(TAG, "STA Start");
-
-    WiFi& wifi = WiFi::getInstance();
-
-    esp_err_t err = wifi.connect();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't connect to AP (%s)", esp_err_to_name(err));
-        m_sta_start_sema.give();
-        return err;
-    }
 
     // Release the "STA Start" lock so the execution continues from where
     // WiFi::start (with STA mode enabled) was called
@@ -91,6 +72,25 @@ esp_err_t WiFiDefaultEventHandler::staStop()
 
     return ESP_OK;
 }
+
+esp_err_t WiFiDefaultEventHandler::staConnected(system_event_sta_connected_t info)
+{
+    ESP_LOGI(TAG, "STA Connected");
+
+    m_sta_connect_sema.give();
+
+    return ESP_OK;
+}
+
+esp_err_t WiFiDefaultEventHandler::staDisconnected(system_event_sta_disconnected_t info)
+{
+    ESP_LOGI(TAG, "STA Disconnected");
+
+    m_sta_connect_sema.give();
+
+    return ESP_OK;
+}
+
 
 WiFi::WiFi()
     : m_event_handler()
@@ -128,43 +128,9 @@ esp_err_t WiFi::getMode(wifi_mode_t& mode)
     return esp_wifi_get_mode(&mode);
 }
 
-esp_err_t WiFi::setApConfig(APConfig& ap_config)
-{
-    const std::uint8_t BROADCAST_SSID = 0;
-
-    wifi_config_t wifi_config = {};
-
-    copy_bytes(wifi_config.ap.ssid, ap_config.ssid, 32);
-    copy_bytes(wifi_config.ap.password, ap_config.password, 64);
-    wifi_config.ap.channel = ap_config.channel;
-    wifi_config.ap.authmode = ap_config.authmode;
-    wifi_config.ap.ssid_hidden = BROADCAST_SSID;
-    wifi_config.ap.max_connection = ap_config.max_conn;
-
-    return esp_wifi_set_config(WIFI_IF_AP, &wifi_config);
-}
-
 esp_err_t WiFi::setApConfig(wifi_config_t& ap_config)
 {
     return esp_wifi_set_config(WIFI_IF_AP, &ap_config);
-}
-
-esp_err_t WiFi::setStaConfig(STAConfig& sta_config)
-{
-    const std::uint8_t UNKNOWN_CHANNEL = 0;
-    const std::uint8_t DEFAULT_LISTEN_INTERVAL = 0;
-
-    wifi_config_t wifi_config = {};
-
-    copy_bytes(wifi_config.sta.ssid, sta_config.ssid, 32);
-    copy_bytes(wifi_config.sta.password, sta_config.password, 64);
-    wifi_config.sta.scan_method = WIFI_FAST_SCAN;
-    wifi_config.sta.bssid_set = false;
-    wifi_config.sta.channel = UNKNOWN_CHANNEL;
-    wifi_config.sta.listen_interval = DEFAULT_LISTEN_INTERVAL;
-    wifi_config.sta.sort_method = WIFI_CONNECT_AP_BY_SECURITY;
-
-    return esp_wifi_set_config(WIFI_IF_STA, &wifi_config);
 }
 
 esp_err_t WiFi::setStaConfig(wifi_config_t& sta_config)
@@ -228,6 +194,16 @@ esp_err_t WiFi::start()
     // Wait until the staStart handle releases the lock
     if (is_sta) m_event_handler.m_sta_start_sema.wait();
 
+    if (is_sta) {
+        m_event_handler.m_sta_connect_sema.take();
+        esp_err_t err = connect();
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Couldn't connect to AP (%s)", esp_err_to_name(err));
+            m_event_handler.m_sta_connect_sema.give();
+            return err;
+        }
+        m_event_handler.m_sta_connect_sema.wait();
+    }
     return ESP_OK;
 }
 
