@@ -79,8 +79,7 @@ extern "C" void app_main()
     }
 
     network::WiFi& wifi = network::WiFi::getInstance();
-    wifi.init();
-
+    err = wifi.init();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", esp_err_to_name(err));
         return;
@@ -105,10 +104,6 @@ extern "C" void app_main()
         wifi.setStaConfig(sta_config);
     }
 
-    err = wifi.start();
-
-    std::unique_ptr<network::WiFiEventHandler> event_handler(new network::WiFiDefaultEventHandler());
-    wifi.setEventHandler(std::move(event_handler));
     err = wifi.start();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't start Wi-Fi, err = %s", esp_err_to_name(err));

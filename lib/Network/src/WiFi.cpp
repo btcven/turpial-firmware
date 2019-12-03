@@ -34,6 +34,8 @@ void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
 }
 
 WiFiDefaultEventHandler::WiFiDefaultEventHandler()
+    : m_sta_start_sema("STA Start"),
+      m_sta_stop_sema("STA Stop")
 {
 }
 
@@ -42,11 +44,34 @@ esp_err_t WiFiDefaultEventHandler::staStart()
     ESP_LOGI(TAG, "STA Start");
 
     WiFi& wifi = WiFi::getInstance();
-    return wifi.connect();
+
+    esp_err_t err = wifi.connect();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't connect to AP (%s)", esp_err_to_name(err));
+        m_sta_start_sema.give();
+        return err;
+    }
+
+    // Release the "STA Start" lock so the execution continues from where
+    // WiFi::start (with STA mode enabled) was called
+    m_sta_start_sema.give();
+
+    return ESP_OK;
+}
+
+esp_err_t WiFiDefaultEventHandler::staStop()
+{
+    ESP_LOGI(TAG, "STA Stop");
+
+    // Release the "STA Stop" lock so the execution continues from where
+    // WiFi::stop (with STA mode enabled) was called
+    m_sta_stop_sema.give();
+
+    return ESP_OK;
 }
 
 WiFi::WiFi()
-    : m_event_handler(nullptr)
+    : m_event_handler()
 {
 }
 
@@ -135,17 +160,51 @@ esp_err_t WiFi::getStaConfig(wifi_config_t& sta_config)
     return esp_wifi_get_config(WIFI_IF_STA, &sta_config);
 }
 
+bool WiFi::isAp()
+{
+    wifi_mode_t mode;
+    esp_err_t err = esp_wifi_get_mode(&mode);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "esp_wifi_get_mode failed (%s)", esp_err_to_name(err));
+        return false;
+    }
+
+    return (mode == WIFI_MODE_APSTA || mode == WIFI_MODE_AP);
+}
+
+bool WiFi::isSta()
+{
+    wifi_mode_t mode;
+    esp_err_t err = esp_wifi_get_mode(&mode);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "esp_wifi_get_mode failed (%s)", esp_err_to_name(err));
+        return false;
+    }
+
+    return (mode == WIFI_MODE_APSTA || mode == WIFI_MODE_STA);
+}
+
 esp_err_t WiFi::start()
 {
     esp_err_t err;
 
     ESP_LOGD(TAG, "Starting Wi-Fi");
 
+    bool is_sta = isSta();
+
+    // Lock this semaphore so the execution pauses until "STA Start" event
+    // is created and handled
+    if (is_sta) m_event_handler.m_sta_start_sema.take();
+
     err = esp_wifi_start();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "esp_wifi_start failed");
+        if (is_sta) m_event_handler.m_sta_start_sema.give();
         return err;
     }
+
+    // Wait until the staStart handle releases the lock
+    if (is_sta) m_event_handler.m_sta_start_sema.wait();
 
     return ESP_OK;
 }
@@ -161,31 +220,38 @@ esp_err_t WiFi::connect()
         return err;
     }
 
-    if (wifimode == WIFI_MODE_APSTA ||
-        wifimode == WIFI_MODE_STA) {
-        err = esp_wifi_connect();
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "esp_wifi_connect failed");
-            return err;
-        }
-
-        return ESP_OK;
-    } else {
+    if (!isSta()) {
         ESP_LOGE(TAG, "Wi-Fi mode is not STA");
         return ESP_FAIL;
     }
+
+    return esp_wifi_connect();
 }
 
 void WiFi::setEventHandler(std::unique_ptr<WiFiEventHandler>&& event_handler)
 {
     ESP_LOGD(TAG, "Setting Wi-Fi event handler");
 
-    m_event_handler = std::move(event_handler);
+    m_event_handler.setNextHandler(std::move(event_handler));
 }
 
 esp_err_t WiFi::stop()
 {
-    return esp_wifi_stop();
+    bool is_sta = isSta();
+
+    // Take the lock and wait later to staStop event handler to release it
+    if (is_sta) m_event_handler.m_sta_stop_sema.take();
+
+    esp_err_t err = esp_wifi_stop();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "esp_wifi_stop failed, err = %s", esp_err_to_name(err));
+        if (is_sta) m_event_handler.m_sta_stop_sema.give();
+        return err;
+    }
+
+    if (is_sta) m_event_handler.m_sta_stop_sema.wait();
+
+    return ESP_OK;
 }
 
 esp_err_t WiFi::eventHandler(void* ctx, system_event_t* event)
@@ -193,12 +259,10 @@ esp_err_t WiFi::eventHandler(void* ctx, system_event_t* event)
     ESP_LOGD(TAG, "Wi-Fi Event Handler Called");
     WiFi* wifi = reinterpret_cast<WiFi*>(ctx);
 
-    if (wifi->m_event_handler) {
-        esp_err_t err = wifi->m_event_handler->eventDispatcher(event);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Event handler error, err = %s", esp_err_to_name(err));
-            return err;
-        }
+    esp_err_t err = wifi->m_event_handler.eventDispatcher(event);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Event handler error, err = %s", esp_err_to_name(err));
+        return err;
     }
 
     return ESP_OK;

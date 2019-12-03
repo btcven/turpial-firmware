@@ -18,6 +18,7 @@
 #include <esp_event.h>
 #include <esp_wifi.h>
 
+#include "Sema.h"
 #include "WiFiEventHandler.h"
 
 namespace network {
@@ -43,6 +44,21 @@ public:
      *      - (others): failed
      */
     virtual esp_err_t staStart();
+
+    /**
+     * @brief Handles the "STA Stop" event
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    virtual esp_err_t staStop();
+
+private:
+    friend class WiFi;
+
+    util::Semaphore m_sta_start_sema;
+    util::Semaphore m_sta_stop_sema;
 };
 
 /**
@@ -196,6 +212,22 @@ public:
     esp_err_t getStaConfig(wifi_config_t& sta_config);
 
     /**
+     * @brief Checks if the Wi-Fi mode is AP
+     * 
+     * @return true: is AP
+     * @return false: isn't AP
+     */
+    bool isAp();
+
+    /**
+     * @brief Checks if the Wi-Fi mode is STA
+     * 
+     * @return true: is AP
+     * @return false: is STA
+     */
+    bool isSta();
+
+    /**
      * @brief Start Wi-Fi operation mode
      * 
      * @attention 1. WiFi::init must have been called
@@ -242,7 +274,7 @@ private:
      * @brief pointer to desired hanlder events
      *
      */
-    std::unique_ptr<WiFiEventHandler> m_event_handler;
+    WiFiDefaultEventHandler m_event_handler;
 
     /**
      * @brief Wi-Fi event handler
