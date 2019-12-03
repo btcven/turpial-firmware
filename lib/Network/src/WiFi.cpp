@@ -33,6 +33,18 @@ void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
     dest[len] = '\0';
 }
 
+WiFiDefaultEventHandler::WiFiDefaultEventHandler()
+{
+}
+
+esp_err_t WiFiDefaultEventHandler::staStart()
+{
+    ESP_LOGI(TAG, "STA Start");
+
+    WiFi& wifi = WiFi::getInstance();
+    return wifi.connect();
+}
+
 WiFi::WiFi()
     : m_event_handler(nullptr)
 {
@@ -112,6 +124,13 @@ esp_err_t WiFi::start()
         return err;
     }
 
+    return ESP_OK;
+}
+
+esp_err_t WiFi::connect()
+{
+    esp_err_t err;
+
     wifi_mode_t wifimode;
     err = esp_wifi_get_mode(&wifimode);
     if (err != ESP_OK) {
@@ -126,9 +145,12 @@ esp_err_t WiFi::start()
             ESP_LOGE(TAG, "esp_wifi_connect failed");
             return err;
         }
-    }
 
-    return ESP_OK;
+        return ESP_OK;
+    } else {
+        ESP_LOGE(TAG, "Wi-Fi mode is not STA");
+        return ESP_FAIL;
+    }
 }
 
 void WiFi::setEventHandler(std::unique_ptr<WiFiEventHandler>&& event_handler)

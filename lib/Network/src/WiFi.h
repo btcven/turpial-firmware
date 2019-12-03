@@ -23,6 +23,29 @@
 namespace network {
 
 /**
+ * @brief Wi-Fi default event handler
+ * 
+ */
+class WiFiDefaultEventHandler : public WiFiEventHandler
+{
+public:
+    /**
+     * @brief Construct a new Wi-Fi default event handler
+     * 
+     */
+    WiFiDefaultEventHandler();
+
+    /**
+     * @brief Handles the "STA Start" event, starts connection to AP.
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    virtual esp_err_t staStart();
+};
+
+/**
  * @brief AP mode configuration
  * 
  */
@@ -114,13 +137,24 @@ public:
     /**
      * @brief Start Wi-Fi operation mode
      * 
-     * @attention 1. WiFiMode::init must have been called
+     * @attention 1. WiFi::init must have been called
      * 
      * @return
      *      - ESP_OK: succeed
      *      - (others): failed
      */
     esp_err_t start();
+
+    /**
+     * @brief 
+     * 
+     * @attention 1. WiF::init must have been called
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
+    esp_err_t connect();
 
     /**
      * @brief Set callback handler to catch WiFi events outside of class itself

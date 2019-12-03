@@ -104,7 +104,7 @@ extern "C" void app_main()
         wifi.setStaConfig(sta_config);
     }
 
-    std::unique_ptr<network::WiFiEventHandler> event_handler(new network::WiFiEventHandler());
+    std::unique_ptr<network::WiFiEventHandler> event_handler(new network::WiFiDefaultEventHandler());
     wifi.setEventHandler(std::move(event_handler));
 
     err = wifi.start();
