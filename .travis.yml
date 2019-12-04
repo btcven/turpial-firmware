@@ -73,8 +73,14 @@ sudo: false
 cache:
     directories:
         - "~/.platformio"
+
+before_install:
+  - sudo apt-get -y install doxygen
+
 install:
     - pip install -U travis-sphinx
+    - pip install -U breathe
+    - pip install -U exhale
     - pip install -U platformio
     - platformio update
 
