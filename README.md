@@ -21,6 +21,10 @@ transactions. The main objetive is a long range network for everyone and
 everywhere, for this reason, we are working not only in a protocol, also the
 firmware for affordable devices like our "Turpial".
 
+If you want to learn more about Locha Mesh feel free to read
+[this repository](https://github.com/btcven/locha) or take a look at our website
+[locha.io](https://www.locha.io).
+
 ## Development workflow
 
 The development code is located on the `dev` branch, all the development
@@ -84,7 +88,7 @@ make html
 ```
 
 The documentation will reside in `doc/build/_html/`, from there you can open
-`index.html`
+`index.html`.
 
 ## License
 Copyright © 2019 Bitcoin Venezuela and Locha Mesh developers.
