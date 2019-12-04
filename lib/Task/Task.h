@@ -113,7 +113,16 @@ public:
 private:
     xTaskHandle m_handle;
     void* m_task_data;
-    static void runTask(void* data);
+
+    /**
+     * Static class member that actually runs the target task.
+     *
+     * The code here will run on the task thread.
+     * 
+     * @param[in] task_instance: the task to run.
+     */
+    static void runTask(void* task_instance);
+
     std::string m_task_name;
     uint16_t m_stack_size;
     uint8_t m_priority;

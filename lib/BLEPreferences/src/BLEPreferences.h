@@ -19,7 +19,17 @@
 
 namespace ble_preferences {
 
+/**
+ * @brief Start the BLE Preferences server
+ * 
+ * @param server_params: BLE server parameters
+ */
 void start(ble::ServerParams server_params);
+
+/**
+ * @brief Stop the BLE Preferences server
+ * 
+ */
 void stop();
 
 } // namespace ble_preferences
