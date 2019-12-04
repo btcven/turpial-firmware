@@ -74,7 +74,13 @@ cache:
     directories:
         - "~/.platformio"
 install:
+    - pip install -U travis-sphinx
     - pip install -U platformio
     - platformio update
+
 script:
     - platformio run
+    - travis-sphinx build --source doc/
+
+after_success:
+    - travis-sphinx deploy
