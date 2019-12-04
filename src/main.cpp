@@ -9,203 +9,110 @@
  * 
  */
 
-#include <Arduino.h>
-#include "nvs.h"
-#include "nvs_flash.h"
-#include "hal/hardware.h"
-#include "WiFi/WiFiMode.h"
-#include "ESC/battery.h"
-#include  "WiFiDTO.h"
-#include "NVS/SingletonNVS.h"
+#include <cstdio>
+#include <memory>
+#include <sstream>
 
+#include "esp_log.h"
+#include "sdkconfig.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
-#include <iostream>
-#include <string>
-#include <vector>
+#include "BLEPreferences.h"
+#include "NVS.h"
+#include "WiFi.h"
 
-// Creating instances of the classes
-Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
+#include "defaults.h"
 
-//singleton instance for all the application
-SingletonNVS* nvs = SingletonNVS::getInstance(); //create or recovery SingletonNVS instance as needed
-WiFiMode wlan;
+static const char* TAG = "app_main";
 
-esp_err_t status;
-
-esp_err_t batteryTest() {
-    // Put the code here for battery test
-    //esp_err_t err;
-    //Battery battery(BATTERY_CAPACITY, LOW_BAT_THRESHOLD, CRITICAL_BAT_THRESHOLD);
-
-    status = battery.begin();
-    if (status != ESP_OK)
-    {
-        //esp_restart();
-        ESP_LOGE(__func__, "Error starting battery IC module");
-    }
-
-    ESP_LOGD(__func__, "Battery level: %i%", battery.getBatteryLevel());
-    ESP_LOGD(__func__, "Battery voltage: %imV", battery.getBatteryVoltage());
-    ESP_LOGD(__func__, "Battery current: %iA", battery.getBatteryCurrent());
-}
-
-/*
-esp_err_t bleTest() {
-    // Put the code here for BLE test
-    esp_err_t err;
-}
-*/
-
-esp_err_t wifiTest() {
-    // Put the code here for Wi-Fi test
-    //esp_err_t err;
-    //WiFiMode wlan;
-    status = wlan.begin();
-    if (status != ESP_OK)
-    {
-        //esp_restart();
-        ESP_LOGE(__func__, "Error starting WiFi modules");
-    }
-}
-
-
-void nvsTest() {
-    // Initialize the NVS flash storage
-    nvs->begin();
-    // open nvs
-    bool isOpen = nvs->open("namespace", false);
-
-    if (isOpen)
-    {
-        ESP_LOGD(__func__, "nvs is open");
-        // Save chars into the NVS
-        nvs->setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
-        //size_t str_saved = nvs.setString(NVS_STR_KEY, "ESTA ES UNA PRUEBA CON UN STRING LARGO... SALUD!");
-        //ESP_LOGD(__func__, "saved %d bytes", str_saved);
-
-        // Read chars from the NVS
-        char *readString = nvs->getString(NVS_STR_KEY, "ERROR");
-
-        if (readString != "ERROR" && readString)
-        {
-            ESP_LOGD(__func__, "have a key w/value %s", readString);
-            free(readString);
-        }
-        else
-        {
-            ESP_LOGE(__func__, "error reading value w/key");
-        }
-
-        // Save int value into the NVS
-        nvs->setInt(NVS_INT_KEY, 23987);
-        // Read int from the NVS
-        int32_t readInt = nvs->getInt(NVS_INT_KEY, 0);
-        ESP_LOGD(__func__, "Int value from NVS: %i", readInt);
-
-        // Save bool value into the NVS
-        nvs->setBool(NVS_BOOL_KEY, 1);
-        // Read int from the NVS
-        bool readBool = nvs->getBool(NVS_BOOL_KEY, 0);
-        ESP_LOGD(__func__, "Bool value from NVS: %i", readBool);
-    }
-    else
-    {
-        ESP_LOGE(__func__, "Error opening the NVS");
-    }
-}
-
-
-void checkForCriticalLevels(){
-    if (battery.isBatteryCritical()) 
-    {
-        // Power off the device
-    }
-}
-
-
-
-void setup() {
-   
-   /*  nvs->setValue(10);
-    SingletonNVS* p2 = SingletonNVS::getInstance();
-    p2->setValue(150);
-    std::cout<<"value = "<<nvs->getValue() << std::endl; */
- 
-    //initial test object
-    wifi_dto_config_t wifi_params = {
-        wifi_params.apChannel = 8,
-        wifi_params.apMaxConn = 7,
-        wifi_params.WAP_enabled = 1, // Default value
-        wifi_params.WST_enabled = 1, // Default value
-        wifi_params.isOpen = true,
-        wifi_params.apSSID = "hello",
-        wifi_params.apPassword = "mi_password_largo",
-        
-    };  
-    size_t length;
-    char* buffer;
-    //to interpolate information relate with wifi data stored
-    //dta just for test serialized functionalities
-    /* wifi_params.apSSID = "hello";
-    wifi_params.apPassword = "mi_password_largo";
-    wifi_params.apChannel = 8;
-    wifi_params.apMaxConn = 7;
-    wifi_params.WAP_enabled = 1; // Default value
-    wifi_params.WST_enabled = 1; // Default value
-    wifi_params.isOpen = 1; */
-   
-    
-    
-    
-    WiFiDTO wifi_dto(wifi_params); //object to be serialized
-    length = wifi_dto.serialize_size(); //get the length of the dto class
-    
-    //buffer to store the serialized data
-    buffer = (char*)malloc(sizeof(char)*length);
-    wifi_dto.serialize(buffer);
-
-    std::cout << "<-------------------------> fin de la serializacion <-----------------> " << std::endl;
-    std::cout <<"------------------>>>" << static_cast<const void*>(buffer)<<""<<std::endl;
-
-   wifi_dto.deserialize(buffer);
-
-   std::cout<<"The length is :" << length << std::endl; 
-   /*
-    // Initialize battery module
-    status = battery.begin();
-    if (status != ESP_OK)
-    {
-        //esp_restart();
-        ESP_LOGE(__func__, "Error starting battery IC module!");
-    }
-    // Check for critical levels
-    checkForCriticalLevels();
-    */
-    // Initialize Non-Volatile Storage
-    /* status = nvs->begin();
-    if (status != ESP_OK)
-    {
-        //esp_restart();
-        ESP_LOGE(__func__, "Error starting NVS!");
-    }  */
-
-    // Initialize BLE
-    // Put the code here...
-
-
-    // Initialize Wi-Fi module
-    /* status = wlan.begin();
-    if (status != ESP_OK)
-    {
-        //esp_restart();
-        ESP_LOGE(__func__, "Error starting WiFi modules!");
-    } */
-
-    // Initialize Radio module
-    // Put the code here...
-}
-
-void loop()
+esp_err_t getIsConfigured(bool& is_configured)
 {
-    //
+    esp_err_t err;
+
+    storage::NVS app_nvs;
+    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
+    if (err != ESP_OK) {
+        const char* err_str = esp_err_to_name(err);
+        ESP_LOGE(TAG,
+            "Couldn't open namespace \"%s\" (%s)",
+            NVS_APP_NAMESPACE,
+            err_str);
+        return err;
+    }
+
+    err = app_nvs.get_bool(NVS_IS_CONFIGURED_KEY, is_configured);
+    if (err == ESP_ERR_NVS_NOT_FOUND) {
+        // Set is_configured to true on flash so on next init the config is
+        // readed directly by the ESP-IDF Wi-Fi library component.
+        err = app_nvs.set_bool(NVS_IS_CONFIGURED_KEY, true);
+        if (err != ESP_OK) return err;
+        err = app_nvs.commit();
+        if (err != ESP_OK) return err;
+        // Set the return variable to "false" to forcibly set the default
+        // configuration
+        is_configured = false;
+    } else {
+        return err;
+    }
+
+    return ESP_OK;
+}
+
+
+extern "C" void app_main()
+{
+    esp_err_t err;
+
+    err = storage::init();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", esp_err_to_name(err));
+        return;
+    }
+
+    bool is_configured = false;
+    err = getIsConfigured(is_configured);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG,
+            "Couldn't get \"is_configured\" value (%s)",
+            esp_err_to_name(err));
+    }
+
+    network::WiFi& wifi = network::WiFi::getInstance();
+    err = wifi.init();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", esp_err_to_name(err));
+        return;
+    }
+
+    if (!is_configured) {
+        wifi.setMode(WIFI_MODE);
+
+        network::APConfig ap_config = {
+            .ssid = WAP_SSID,
+            .password = WAP_PASS,
+            .authmode = WAP_AUTHMODE,
+            .max_conn = WAP_MAXCONN,
+            .channel = WAP_CHANNEL,
+        };
+        wifi.setApConfig(ap_config);
+
+        network::STAConfig sta_config = {
+            .ssid = WST_SSID,
+            .password = WST_PASS,
+        };
+        wifi.setStaConfig(sta_config);
+    }
+
+    err = wifi.start();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't start Wi-Fi, err = %s", esp_err_to_name(err));
+        return;
+    }
+
+    ble::ServerParams server_params;
+    server_params.device_name = "Turpial-1234";
+    server_params.static_passkey = 123456;
+    server_params.app_id = 0;
+    ble_preferences::start(server_params);
 }
