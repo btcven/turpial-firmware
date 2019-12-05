@@ -12,7 +12,8 @@
 #ifndef DEFAULTS_H
 #define DEFAULTS_H
 
-#define NVS_APP_NAMESPACE "turpial" /*!< NVS application namespace */
+#define NVS_APP_NAMESPACE "turpial"           /*!< NVS application namespace */
+#define NVS_IS_CONFIGURED_KEY "is_configured" /*!< Is turpial configured? */
 
 #define ESC_ENABLED true              /*!< ESC feature enabled? */
 #define ESC_MAX_BATTERY_CAPACITY 2200 /*!< in mAh unit */
