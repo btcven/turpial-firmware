@@ -24,6 +24,18 @@
 
 #include "defaults.h"
 
+
+#include "HttpServer.h"
+
+
+HttpServer httpServer;
+ //Socket my_Socket;
+//WebSocket myWebsocket(my_Socket);
+//WebSocketHandler* myHandler = new WebSocketHandler();
+
+//WebSocketHandler* myHandler;
+
+
 static const char* TAG = "app_main";
 
 esp_err_t getIsConfigured(bool& is_configured)
@@ -59,6 +71,33 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
+void helloWorldHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
+{
+ /*pHttpResponse->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
+  pHttpResponse->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
+  pHttpResponse->sendData("Hello world");
+  pHttpResponse->close();*/
+}
+
+
+void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
+{
+      WebSocketHandler* myHandler = new WebSocketHandler();
+    if (pHttpRequest->isWebsocket()) {
+        ESP_LOGI("WEBSOCKETHANDLER----->", "******************encontramos un websocket");
+         ESP_LOGD("WEBSOCKETHANDLER----->", "*DDDDDDDDDDDDDDDDDDDDDD*****************encontramos un websocket");
+        WebSocket* myWebsocket = new WebSocket(pHttpRequest->getSocket());
+       pHttpRequest->getWebSocket()->setHandler(myHandler);
+        //WebSocket myWebsocket(pHttpRequest->getSocket());
+       // WebSocketHandler* myHandler;
+        //myWebsocket->setHandler(myHandler);
+        //xTaskCreate(&reader_task, "readerTask", 10 * 1024, NULL, 5, NULL);
+       
+    }
+
+
+
+}
 
 extern "C" void app_main()
 {
@@ -110,9 +149,20 @@ extern "C" void app_main()
         return;
     }
 
-    ble::ServerParams server_params;
+    /* ble::ServerParams server_params;
     server_params.device_name = "Turpial-1234";
     server_params.static_passkey = 123456;
     server_params.app_id = 0;
-    ble_preferences::start(server_params);
+    ble_preferences::start(server_params); */
+
+
+    /*  HttpServer* pHttpServer = new HttpServer();
+    pHttpServer->addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", helloWorldHandler);
+    pHttpServer->start(80); */
+    //mySocket.setHandler(myHandler);
+
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
+    httpServer.start(80, false);
+  
+
 }
