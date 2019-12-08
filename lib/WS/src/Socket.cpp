@@ -14,8 +14,6 @@
 #include <string.h>
 
 #include <unistd.h>
-#include "GeneralUtils.h"
-#include "SSLUtils.h"
 #include "sdkconfig.h"
 #include "Socket.h"
 
@@ -65,14 +63,6 @@ Socket Socket::accept() {
 	ESP_LOGD(LOG_TAG, " - accept: Received new client!: sockFd: %d", clientSockFD);
 	Socket newSocket;
 	newSocket.m_sock = clientSockFD;
-	if (getSSL()) {
-		newSocket.setSSL(true);
-		newSocket.m_sslSock.fd = clientSockFD;
-		newSocket.sslHandshake();
-		ESP_LOGD(LOG_TAG, "DEBUG DEBUG ");
-		uint8_t x;   // What is going on here???
-		newSocket.receive(&x, 1, 0); // FIX FIX FIX
-	}
 	ESP_LOGD(LOG_TAG, "<< accept: sockFd: %d", clientSockFD);
 	return newSocket;
 } // accept
@@ -501,7 +491,7 @@ void Socket::setReuseAddress(bool value) {
  * @brief Flag the socket as using SSL
  * @param [in] sslValue True if we wish to use SSL.
  */
-void Socket::setSSL(bool sslValue) {
+/* void Socket::setSSL(bool sslValue) {
   const char* pers = "ssl_server";
 	ESP_LOGD(LOG_TAG, ">> setSSL: %s", sslValue?"Yes":"No");
 	m_useSSL = sslValue;
@@ -576,13 +566,13 @@ void Socket::setSSL(bool sslValue) {
 	}
 exit:
 	return;
-} // setSSL
+} // setSSL */
 
 
 /**
  * @brief perform the SSL handshake
  */
-void Socket::sslHandshake() {
+/* void Socket::sslHandshake() {
 	ESP_LOGD(LOG_TAG, ">> sslHandshake: sock: %d", m_sslSock.fd);
 	mbedtls_ssl_session_reset(&m_sslContext);
 	ESP_LOGD(LOG_TAG, " - Reset complete");
@@ -599,7 +589,7 @@ void Socket::sslHandshake() {
 	} // End while
 	ESP_LOGD(LOG_TAG, "<< sslHandshake");
 } // sslHandshake
-
+ */
 
 /**
  * @brief Get the string representation of this socket
