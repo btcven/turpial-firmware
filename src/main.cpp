@@ -22,11 +22,13 @@
 #include "NVS.h"
 #include "WiFi.h"
 
-#include "defaults.h"
 #include "HttpServer.h"
+#include "defaults.h"
+#include "WebSocket.h"
 
 
 HttpServer httpServer;
+
 
 
 static const char* TAG = "app_main";
@@ -66,7 +68,7 @@ esp_err_t getIsConfigured(bool& is_configured)
 
 void helloWorldHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 {
- /*pHttpResponse->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
+    /*pHttpResponse->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
   pHttpResponse->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
   pHttpResponse->sendData("Hello world");
   pHttpResponse->close();*/
@@ -75,13 +77,13 @@ void helloWorldHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 
 void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 {
-      WebSocketHandler* myHandler = new WebSocketHandler();
+    WebSocketHandler* myWsHandler = new WebSocketHandler();
     if (pHttpRequest->isWebsocket()) {
         ESP_LOGI("WEBSOCKETHANDLER----->", "******************encontramos un websocket");
-         ESP_LOGD("WEBSOCKETHANDLER----->", "*DDDDDDDDDDDDDDDDDDDDDD*****************encontramos un websocket");
-        WebSocket* myWebsocket = new WebSocket(pHttpRequest->getSocket());
-       pHttpRequest->getWebSocket()->setHandler(myHandler);
-       
+        ESP_LOGD("WEBSOCKETHANDLER----->", "*DDDDDDDDDDDDDDDDDDDDDD*****************encontramos un websocket");
+        pHttpRequest->getWebSocket()->setHandler(myWsHandler);
+        httpServer.setClientToQueue(pHttpRequest->getSocket().getFD(), pHttpRequest->getWebSocket());
+       // wsClients.insert(std::pair<int, WebSocket*>(pHttpRequest->getSocket().getFD(), pHttpRequest->getWebSocket()));
     }
 }
 
@@ -144,6 +146,4 @@ extern "C" void app_main()
 
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
     httpServer.start(80);
-  
-
 }

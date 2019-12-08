@@ -16,6 +16,8 @@ extern "C" {
 
 static const char* LOG_TAG = "WebSocket";
 
+
+
 // WebSocket op codes as found in a WebSocket frame.
 static const uint8_t OPCODE_CONTINUE = 0x00;
 static const uint8_t OPCODE_TEXT     = 0x01;
@@ -229,9 +231,9 @@ void WebSocketHandler::onMessage(WebSocketInputStreambuf* pWebSocketInputStreamb
 
 	stringstream s2;
 	s2 << pWebSocketInputStreambuf;
-	
-	//ESP_LOGI("-----------------------------------LA SLAIDA ES ", "LA SIGUIENTE: %s",std::string(s2.rdbuf()->str()));
+
 	std::cout << "-----------------------------------LA SLAIDA ES " << s2.rdbuf()->str() << std::endl;
+	pWebSocket->send("Helloworld", 0x02);
 } // onData
 
 

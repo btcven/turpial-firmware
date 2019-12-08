@@ -227,25 +227,6 @@ void HttpParser::parse(Socket s) {
 
 
 /**
- * @brief Parse a string message.
- * @param [in] message The HTTP message to parse.
- */
-/*
-void HttpParser::parse(std::string message) {
-	auto it = message.begin();
-	auto line = toStringToken(it, message, lineTerminator);
-	parseRequestLine(line);
-	line = toStringToken(it, message, lineTerminator);
-	while(!line.empty()) {
-		//ESP_LOGD(LOG_TAG, "Header: \"%s\"", line.c_str());
-		m_headers.insert(parseHeader(line));
-		line = toStringToken(it, message, lineTerminator);
-	}
-	m_body = message.substr(std::distance(message.begin(), it));
-} // parse
-*/
-
-/**
  * @brief Parse A request line.
  * @param [in] line The request line to parse.
  */

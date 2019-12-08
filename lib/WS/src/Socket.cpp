@@ -241,7 +241,7 @@ bool Socket::isValid()
  * @param [in] isDatagram True if we are listening on a datagram.  The default is false.
  * @return Returns 0 on success.
  */
-int Socket::listen(uint16_t port, bool isDatagram, bool reuseAddress)
+ int Socket::listen(uint16_t port, bool isDatagram, bool reuseAddress)
 {
     ESP_LOGD(LOG_TAG, ">> listen: port: %d, isDatagram: %d", port, isDatagram);
     createSocket(isDatagram);
@@ -263,7 +263,7 @@ int Socket::listen(uint16_t port, bool isDatagram, bool reuseAddress)
     ESP_LOGD(LOG_TAG, "<< listen");
     return 0;
 } // listen
-
+ 
 
 bool Socket::operator<(const Socket& other) const
 {

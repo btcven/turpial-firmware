@@ -289,5 +289,27 @@ bool PathHandler::match(std::string method, std::string path)
  */
 void PathHandler::invokePathHandler(HttpRequest* request, HttpResponse* response)
 {
+    ESP_LOGI("++++++++++++++++++++++++++++++++++++", "INVOCANDO PATH HANDLER-------------------------");
     m_pRequestHandler(request, response);
 } // invokePathHandler
+
+
+
+bool HttpServer::setClientToQueue(int fd, WebSocket* socket)
+{
+    if(wsClients.size() < WEBSOCKET_SERVER_MAX_CLIENTS) {
+         wsClients.insert(std::pair<int, WebSocket*>(fd, socket));
+         return true;
+    }
+    return false;
+}
+
+/* WebSocket* HttpServer::getClient(int fd)
+{
+    
+} */
+
+void HttpServer::removeClient(int fd)
+{
+
+}

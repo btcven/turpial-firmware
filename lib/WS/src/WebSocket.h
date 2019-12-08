@@ -9,6 +9,7 @@
 #define COMPONENTS_WEBSOCKET_H_
 #include <string>
 #include "Socket.h"
+#include <map>
 
 #undef close
 #undef send
@@ -96,6 +97,7 @@ private:
 	Socket            m_socket;		// Partner socket.
 	WebSocketHandler* m_pWebSocketHandler;
 	WebSocketReader*  m_pWebSockerReader;
+	std::map<int, WebSocket*> wsClients; //to store wsclients inside container
 
 }; // WebSocket
 
