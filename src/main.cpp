@@ -23,17 +23,10 @@
 #include "WiFi.h"
 
 #include "defaults.h"
-
-
 #include "HttpServer.h"
 
 
 HttpServer httpServer;
- //Socket my_Socket;
-//WebSocket myWebsocket(my_Socket);
-//WebSocketHandler* myHandler = new WebSocketHandler();
-
-//WebSocketHandler* myHandler;
 
 
 static const char* TAG = "app_main";
@@ -88,15 +81,8 @@ void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
          ESP_LOGD("WEBSOCKETHANDLER----->", "*DDDDDDDDDDDDDDDDDDDDDD*****************encontramos un websocket");
         WebSocket* myWebsocket = new WebSocket(pHttpRequest->getSocket());
        pHttpRequest->getWebSocket()->setHandler(myHandler);
-        //WebSocket myWebsocket(pHttpRequest->getSocket());
-       // WebSocketHandler* myHandler;
-        //myWebsocket->setHandler(myHandler);
-        //xTaskCreate(&reader_task, "readerTask", 10 * 1024, NULL, 5, NULL);
        
     }
-
-
-
 }
 
 extern "C" void app_main()
@@ -155,11 +141,6 @@ extern "C" void app_main()
     server_params.app_id = 0;
     ble_preferences::start(server_params); */
 
-
-    /*  HttpServer* pHttpServer = new HttpServer();
-    pHttpServer->addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", helloWorldHandler);
-    pHttpServer->start(80); */
-    //mySocket.setHandler(myHandler);
 
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
     httpServer.start(80, false);
