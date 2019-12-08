@@ -13,7 +13,6 @@
 #include <stdint.h>
 
 #include <vector>
-#include "SockServ.h"
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include "FreeRTOS.h"
@@ -82,9 +81,9 @@ public:
 	std::string getRootPath();        // Get the root of the file system path.
 	bool        getSSL();             // Are we using SSL?
 	void        setClientTimeout(uint32_t timeout);			   // Set client's socket timeout
-	void        setDirectoryListing(bool use);             // Should we list the content of directories?
-	void        setFileBufferSize(size_t fileBufferSize);  // Set the size of the file buffer
-	void        setRootPath(std::string path);             // Set the root of the file system path.
+	//void        setDirectoryListing(bool use);             // Should we list the content of directories?
+	//void        setFileBufferSize(size_t fileBufferSize);  // Set the size of the file buffer
+	//void        setRootPath(std::string path);             // Set the root of the file system path.
 	void        start(uint16_t portNumber, bool useSSL = false);
 	void        stop();          // Stop a previously started server.
 

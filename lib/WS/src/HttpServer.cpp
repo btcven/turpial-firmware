@@ -12,12 +12,11 @@
 
 #include <fstream>
 #include "HttpServer.h"
-#include "SockServ.h"
 #include "Task.h"
 #include <esp_log.h>
 #include "HttpRequest.h"
 #include "HttpResponse.h"
-#include "FileSystem.h"
+//#include "FileSystem.h"
 #include "WebSocket.h"
 #include "GeneralUtils.h"
 #include "Memory.h"
@@ -34,7 +33,7 @@ HttpServer::HttpServer() {
 	m_clientTimeout = 5;            // The default timeout 5 seconds.
 	m_rootPath   = "";            // The default path.
 	m_useSSL     = false;         // Default SSL is no.
-	setDirectoryListing(false);   // Default directory listing is disabled.
+	//setDirectoryListing(false);   // Default directory listing is disabled.
 	m_fileBufferSize = 4 * 1024;	// Default size of the file buffer.
 } // HttpServer
 
@@ -105,22 +104,22 @@ private:
 
 		// Serve up the content from the file on the file system ... if found ...
 
-		std::string fileName = m_pHttpServer->getRootPath() + request.getPath(); // Build the absolute file name to read.
+		//std::string fileName = m_pHttpServer->getRootPath() + request.getPath(); // Build the absolute file name to read.
 
 		// If the file name ends with a '/' then remove it ... we are normalizing to NO trailing slashes.
-		if (GeneralUtils::endsWith(fileName, '/')) {
+		/* if (GeneralUtils::endsWith(fileName, '/')) {
 			fileName = fileName.substr(0, fileName.length() - 1);
-		}
+		} */
 
 		HttpResponse response(&request);
 		// Test if the path is a directory.
-		if (FileSystem::isDirectory(fileName)) {
+	/* 	if (FileSystem::isDirectory(fileName)) {
 			ESP_LOGD(LOG_TAG, "Path %s is a directory", fileName.c_str());
 			m_pHttpServer->listDirectory(fileName, response);   // List the contents of the directory.
 			return;
 		} // Path was a directory.
 
-		response.sendFile(fileName, m_pHttpServer->getFileBufferSize());
+		response.sendFile(fileName, m_pHttpServer->getFileBufferSize()); */
 	} // processRequest
 
 
@@ -268,7 +267,7 @@ bool HttpServer::getSSL() {
  * @param [in] path The path of the directory to list.
  * @param [in] response The response object to use to send data back to the browser.
  */
-void HttpServer::listDirectory(std::string path, HttpResponse& response) {
+/* void HttpServer::listDirectory(std::string path, HttpResponse& response) {
 	// If path ends with a "/" then remove it.
 	if (GeneralUtils::endsWith(path, '/')) {
 		path = path.substr(0, path.length()-1);
@@ -312,7 +311,7 @@ void HttpServer::listDirectory(std::string path, HttpResponse& response) {
 	response.sendData("</body></html>");
 	response.close();
 } // listDirectory
-
+ */
 
 /**
  * @brief Set different socket timeout for new connections.
@@ -336,10 +335,10 @@ uint32_t HttpServer::getClientTimeout() {
  * @brief Set whether or not we will list directories.
  * @param [in] use Set to true to enable directory listing.
  */
-void HttpServer::setDirectoryListing(bool use) {
+/* void HttpServer::setDirectoryListing(bool use) {
 	m_directoryListing = use;
 } // setDirectoryListening
-
+ */
 
 /**
  * @brief Set the size of the file buffer.
@@ -348,11 +347,11 @@ void HttpServer::setDirectoryListing(bool use) {
  * transmitted before the next chunk is read.
  * @param [in] fileBufferSize How large should the file buffer size be?
  */
-void HttpServer::setFileBufferSize(size_t fileBufferSize) {
+/* void HttpServer::setFileBufferSize(size_t fileBufferSize) {
 	m_fileBufferSize = fileBufferSize;
 } // setFileBufferSize
 
-
+ */
 /**
  * @brief Set the root path for URL file mapping.
  *
@@ -370,7 +369,7 @@ void HttpServer::setFileBufferSize(size_t fileBufferSize) {
  * @param [in] path The root path on the file system.
  * @return N/A.
  */
-void HttpServer::setRootPath(std::string path) {
+/* void HttpServer::setRootPath(std::string path) {
 	// Should the user have supplied a path that ends in a "/" remove the trailing slash.  This also
 	// means that "/" becomes "".
 	if (GeneralUtils::endsWith(path, '/')) {
@@ -379,7 +378,7 @@ void HttpServer::setRootPath(std::string path) {
 	m_rootPath = path;
 } // setRootPath
 
-
+ */
 /**
  * @brief Start the HTTP server listening.
  * We start an instance of the HTTP server listening.  A new task is spawned to perform this work in the
