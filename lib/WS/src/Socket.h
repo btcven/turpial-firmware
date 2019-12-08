@@ -76,7 +76,7 @@ public:
 	int  setTimeout(uint32_t seconds);
 	void getBind(struct sockaddr* pAddr);
 	int  getFD() const;
-	bool getSSL() const;
+	//bool getSSL() const;
 	bool isValid();
 	int  listen(uint16_t port, bool isDatagram = false, bool reuseAddress = false);
 	bool operator<(const Socket& other) const;
@@ -88,7 +88,7 @@ public:
 	int  send(uint16_t value);
 	int  send(uint32_t value);
 	void sendTo(const uint8_t* data, size_t length, struct sockaddr* pAddr);
-	void setSSL(bool sslValue = true);
+	//void setSSL(bool sslValue = true);
 	std::string toString();
 
 private:
