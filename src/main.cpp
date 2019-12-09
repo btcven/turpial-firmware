@@ -20,6 +20,7 @@
 
 #include "BLEPreferences.h"
 #include "NVS.h"
+#include "Radio.h"
 #include "WiFi.h"
 
 #include "defaults.h"
@@ -115,4 +116,9 @@ extern "C" void app_main()
     server_params.static_passkey = 123456;
     server_params.app_id = 0;
     ble_preferences::start(server_params);
+
+#if RAD_ENABLED == true
+    radio::Radio* radio_task = new radio::Radio();
+    radio_task->start();
+#endif
 }
