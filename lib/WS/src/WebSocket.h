@@ -47,6 +47,8 @@ private:
 // +------------------+
 // | WebSocketHandler |
 // +------------------+
+
+
 class WebSocketHandler {
 public:
 	virtual ~WebSocketHandler();
@@ -60,9 +62,11 @@ public:
 // +-----------+
 // | WebSocket |
 // +-----------+
+typedef std::map<int, WebSocket*> ws_list_t;
+extern ws_list_t    						wsClients; //to store possibles wsclients inside container
 class WebSocket {
 public:
-	typedef std::map<int, WebSocket*> ws_list_t;
+	
 	static const uint16_t CLOSE_NORMAL_CLOSURE        = 1000;
 	static const uint16_t CLOSE_GOING_AWAY            = 1001;
 	static const uint16_t CLOSE_PROTOCOL_ERROR        = 1002;
@@ -92,9 +96,9 @@ public:
 	void              send(uint8_t* data, uint16_t length, uint8_t sendType = SEND_TYPE_BINARY);
 	void              setHandler(WebSocketHandler *handler);
 
-	static ws_list_t    						wsClients; //to store possibles wsclients inside container
-	inline const ws_list_t&    			getClients() const { return WebSocket::wsClients;};
-	inline const int 					availableClients() { return WebSocket::wsClients.size();};
+	
+	inline const ws_list_t&    			getClients() const { return wsClients;};
+	inline const int 					availableClients() { return wsClients.size();};
 	bool                                addClientToQueue(int fd, WebSocket* socket);
 	WebSocket*                          getClient(int fd);
 	void                                removeClientFromQueue(int fd);
