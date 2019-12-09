@@ -72,10 +72,8 @@ void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 {
     WsHandlerEvents* myHandler = new WsHandlerEvents(); 
     if (pHttpRequest->isWebsocket()) {
-        ESP_LOGI("WEBSOCKETHANDLER----->", "******************encontramos un websocket");
-        ESP_LOGD("WEBSOCKETHANDLER----->", "*DDDDDDDDDDDDDDDDDDDDDD*****************encontramos un websocket");
         pHttpRequest->getWebSocket()->setHandler(myHandler);
-        ESP_LOGI("-----------------LA CANTIDAD---------------","%d", pHttpRequest->getWebSocket()->availableClients());
+        ESP_LOGI("available clients---->>","%d", pHttpRequest->getWebSocket()->availableClients());
     }
 }
 
@@ -129,11 +127,11 @@ extern "C" void app_main()
         return;
     }
 
-    /* ble::ServerParams server_params;
+    ble::ServerParams server_params;
     server_params.device_name = "Turpial-1234";
     server_params.static_passkey = 123456;
     server_params.app_id = 0;
-    ble_preferences::start(server_params); */
+    ble_preferences::start(server_params); 
 
 
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
