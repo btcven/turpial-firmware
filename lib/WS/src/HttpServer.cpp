@@ -82,9 +82,9 @@ private:
                 if (request.isWebsocket()) {
                     ESP_LOGD("HTTPSERVER-PROCCESS REQUEST", ">>>>>>>>>>>>>>>>this is a websocket>>>>>>>>>>>>>>>>>>>>>>>>>>!!");
                     ESP_LOGD("HTTPSERVER PROCCESS REQUEST", ">>>>>>>>>>>>>>>>start reader>>>>>>>>>>>>>>>>>>>>>>>>>>!!"); // Is this handler to be invoked for a web socket?
-                    pathHandlerIterartor->invokePathHandler(&request, nullptr);                                          // Invoke the handler.
-                    request.getWebSocket()->startReader();
                     request.getWebSocket()->addClientToQueue(request.getSocket().getFD(), request.getWebSocket());
+                    pathHandlerIterartor->invokePathHandler(&request, nullptr); // Invoke the handler.
+                    request.getWebSocket()->startReader();
                 } else {
                     HttpResponse response(&request);
                     pathHandlerIterartor->invokePathHandler(&request, &response); // Invoke the handler.
@@ -293,32 +293,3 @@ void PathHandler::invokePathHandler(HttpRequest* request, HttpResponse* response
     ESP_LOGI("++++++++++++++++++++++++++++++++++++", "INVOCANDO PATH HANDLER-------------------------");
     m_pRequestHandler(request, response);
 } // invokePathHandler
-
-/* 
-WebSocket* HttpServer::getClient(int fd)
-{
-    ws_list_t::iterator it;
-    it = wsClients.find(fd);
-    return it->second;
-}
-
-void HttpServer::removeClientFromQueue(int fd)
-{
-    //remove by key
-    wsClients.erase(fd);
-
-    //remove by iterator
-    // ws_list_t::iterator it;
-    //it = wsClients.find(fd);
-    //wsClients.erase(it)  
-}
-
-
-bool HttpServer::addClientToQueue(int fd, WebSocket* socket)
-{
-    if (wsClients.size() < WEBSOCKET_SERVER_MAX_CLIENTS) {
-        wsClients.insert(std::pair<int, WebSocket*>(fd, socket));
-        return true;
-    }
-    return false;
-} */

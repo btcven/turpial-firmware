@@ -128,11 +128,6 @@ private:
                 return;
             }
 
-            /* if (length  == 0 ) {
-				ESP_LOGD("WebSocketReader", "length == 0");
-				pWebSocket->close();
-				return;
-			} */
             ESP_LOGD("WebSocketReader", "Received data from web socket.  Length: %d", length);
             dumpFrame(frame);
 
@@ -176,7 +171,7 @@ private:
             case OPCODE_CLOSE: {
                 pWebSocket->m_receivedClose = true;
                 if (pWebSocketHandler != nullptr) { // If we have a handler, invoke the onClose method upon it.
-                    pWebSocketHandler->onClose();
+                    pWebSocketHandler->onClose(pWebSocket);
                 }
                 pWebSocket->close(); // Close the websocket.
                 break;
@@ -210,7 +205,7 @@ private:
  * @brief The default onClose handler.
  * If no over-riding handler is provided for the "close" event, this method is called.
  */
-void WebSocketHandler::onClose()
+void WebSocketHandler::onClose(WebSocket* pWebSocket)
 {
     ESP_LOGI("***************************************************WebSocketHandler", ">> onClose");
     ESP_LOGI("****************************************************WebSocketHandler", "<< onClose");
@@ -250,8 +245,7 @@ void WebSocketHandler::onMessage(WebSocketInputStreambuf* pWebSocketInputStreamb
  */
 void WebSocketHandler::onError(std::string error)
 {
-    ESP_LOGD("WebSocketHandler", ">> onError: %s", error.c_str());
-    ESP_LOGD("WebSocketHandler", "<< onError");
+    ESP_LOGD("WebSocketHandler", ">> DEFAULT onError: %s", error.c_str());
 } // onError
 
 
@@ -285,7 +279,7 @@ WebSocket::~WebSocket()
  */
 void WebSocket::close(uint16_t status, std::string message)
 {
-    ESP_LOGD(LOG_TAG, ">> close(): status: %d, message: %s", status, message.c_str());
+    ESP_LOGD(LOG_TAG, ">>******close()********: status: %d, message: %s", status, message.c_str());
 
     if (m_sentClose) { // If we have previously sent a close request then we can close the underlying socket.
         ESP_LOGD(LOG_TAG, "Closing the underlying socket");
@@ -438,7 +432,6 @@ void WebSocket::removeClientFromQueue(int fd)
 {
     //remove by key
     wsClients.erase(fd);
-
     //remove by iterator
     /* ws_list_t::iterator it;
     it = wsClients.find(fd);

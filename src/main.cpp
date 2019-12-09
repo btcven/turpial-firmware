@@ -25,6 +25,7 @@
 #include "HttpServer.h"
 #include "defaults.h"
 #include "WebSocket.h"
+#include "WsHandlerEvents.h"
 
 
 HttpServer httpServer;
@@ -69,13 +70,12 @@ esp_err_t getIsConfigured(bool& is_configured)
 
 void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 {
-    WebSocketHandler* myWsHandler = new WebSocketHandler();
+    WsHandlerEvents* myHandler = new WsHandlerEvents(); 
     if (pHttpRequest->isWebsocket()) {
         ESP_LOGI("WEBSOCKETHANDLER----->", "******************encontramos un websocket");
         ESP_LOGD("WEBSOCKETHANDLER----->", "*DDDDDDDDDDDDDDDDDDDDDD*****************encontramos un websocket");
-        pHttpRequest->getWebSocket()->setHandler(myWsHandler);
-       //httpServer.addClientToQueue(pHttpRequest->getSocket().getFD(), pHttpRequest->getWebSocket()); //return true if there are available space
-        //ESP_LOGI("-----------------LA CANTIDAD---------------","%d", pHttpRequest->getWebSocket()->availableClients());
+        pHttpRequest->getWebSocket()->setHandler(myHandler);
+        ESP_LOGI("-----------------LA CANTIDAD---------------","%d", pHttpRequest->getWebSocket()->availableClients());
     }
 }
 
