@@ -44,6 +44,14 @@ static const std::uint8_t VALID_CHARACTERS[0xFF] = {
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0};
 
+/**
+ * @brief Copy bytes from a `const char*`
+ * 
+ * @param dest: destination buffer, should be large enough to hold `max` bytes.
+ * @param src: source buffer
+ * 
+ * @param max: destination maximum length
+ */
 void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
 {
     std::size_t len = std::strlen(src);
@@ -290,6 +298,14 @@ esp_err_t WiFi::eventHandler(void* ctx, system_event_t* event)
     return ESP_OK;
 }
 
+/**
+ * @brief Checks if a character is a valid SSID character
+ * 
+ * @param c: the character
+ * 
+ * @return true: is valid
+ * @return false: not valid
+ */
 bool isCharValid(std::uint8_t c)
 {
     return VALID_CHARACTERS[c] == 1;

@@ -20,6 +20,10 @@
 
 namespace ble {
 
+/**
+ * @brief A BLE Universal-Unique-Identifier
+ * 
+ */
 class Uuid
 {
 public:
