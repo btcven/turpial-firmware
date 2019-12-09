@@ -40,6 +40,10 @@ struct ServerParams {
     std::uint16_t app_id;
 };
 
+/**
+ * @brief Representation of a BLE GATT server
+ * 
+ */
 class Server
 {
 public:
