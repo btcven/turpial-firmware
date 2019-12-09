@@ -66,14 +66,6 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
-void helloWorldHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
-{
-    /*pHttpResponse->setStatus(HttpResponse::HTTP_STATUS_OK, "OK");
-  pHttpResponse->addHeader(HttpRequest::HTTP_HEADER_CONTENT_TYPE, "text/plain");
-  pHttpResponse->sendData("Hello world");
-  pHttpResponse->close();*/
-}
-
 
 void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 {
@@ -82,8 +74,8 @@ void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
         ESP_LOGI("WEBSOCKETHANDLER----->", "******************encontramos un websocket");
         ESP_LOGD("WEBSOCKETHANDLER----->", "*DDDDDDDDDDDDDDDDDDDDDD*****************encontramos un websocket");
         pHttpRequest->getWebSocket()->setHandler(myWsHandler);
-        httpServer.setClientToQueue(pHttpRequest->getSocket().getFD(), pHttpRequest->getWebSocket());
-       // wsClients.insert(std::pair<int, WebSocket*>(pHttpRequest->getSocket().getFD(), pHttpRequest->getWebSocket()));
+       //httpServer.addClientToQueue(pHttpRequest->getSocket().getFD(), pHttpRequest->getWebSocket()); //return true if there are available space
+        //ESP_LOGI("-----------------LA CANTIDAD---------------","%d", pHttpRequest->getWebSocket()->availableClients());
     }
 }
 

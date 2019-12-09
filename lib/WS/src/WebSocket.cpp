@@ -404,11 +404,41 @@ void WebSocket::setHandler(WebSocketHandler* pHandler) {
  * function starts that activity.  We want to have control over when we start watching.
  */
 void WebSocket::startReader() {
-		ESP_LOGD(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>>***reader****************************************");
+	ESP_LOGD(LOG_TAG, ">>>>>>>>>>>>>>>>>>>>>***reader****************************************");
 	ESP_LOGD(LOG_TAG, ">> startReader: Socket: %s", m_socket.toString().c_str());
 	m_pWebSockerReader->start(this);
 } // startReader
 
+
+
+
+WebSocket* WebSocket::getClient(int fd)
+{
+    ws_list_t::iterator it;
+    it = WebSocket::wsClients.find(fd);
+    return it->second;
+}
+
+void WebSocket::removeClientFromQueue(int fd)
+{
+    //remove by key
+    WebSocket::wsClients.erase(fd);
+
+    //remove by iterator
+    /* ws_list_t::iterator it;
+    it = wsClients.find(fd);
+    wsClients.erase(it)  */
+}
+
+
+bool WebSocket::addClientToQueue(int fd, WebSocket* socket)
+{
+   /*  if ( WebSocket::wsClients.size() < WEBSOCKET_SERVER_MAX_CLIENTS) {
+       // WebSocket::wsClients.insert(std::pair<int, WebSocket*>(fd, socket));
+        return true;
+    }   */
+    return false;
+}
 
 /**
  * @brief Create a Web Socket input record streambuf

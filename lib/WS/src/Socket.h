@@ -93,7 +93,7 @@ public:
 
 private:
 	int  m_sock;     // The underlying TCP/IP socket
-	//bool m_useSSL;   // Should we use SSL
+	bool m_useSSL;   // Should we use SSL
 	mbedtls_net_context      m_sslSock;
 	mbedtls_entropy_context  m_entropy;
 	mbedtls_ctr_drbg_context m_ctr_drbg;

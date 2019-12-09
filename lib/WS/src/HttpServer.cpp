@@ -84,6 +84,7 @@ private:
                     ESP_LOGD("HTTPSERVER PROCCESS REQUEST", ">>>>>>>>>>>>>>>>start reader>>>>>>>>>>>>>>>>>>>>>>>>>>!!"); // Is this handler to be invoked for a web socket?
                     pathHandlerIterartor->invokePathHandler(&request, nullptr);                                          // Invoke the handler.
                     request.getWebSocket()->startReader();
+                    request.getWebSocket()->addClientToQueue(request.getSocket().getFD(), request.getWebSocket());
                 } else {
                     HttpResponse response(&request);
                     pathHandlerIterartor->invokePathHandler(&request, &response); // Invoke the handler.
@@ -105,7 +106,6 @@ private:
         HttpResponse response(&request);
 
     } // processRequest
-
 
     /**
 	 * @brief Perform the task handling for server.
@@ -136,6 +136,7 @@ private:
             HttpRequest request(clientSocket); // Build the HTTP Request from the socket.
             if (request.isWebsocket()) {       // If this is a WebSocket
                 clientSocket.setTimeout(0);    //   Clear the timeout.
+                //m_pHttpServer->addClientToQueue(clientSocket.getFD(), request.getWebSocket());
             }
             request.dump();               // debug.
             processRequest(request);      // Process the request.
@@ -293,23 +294,31 @@ void PathHandler::invokePathHandler(HttpRequest* request, HttpResponse* response
     m_pRequestHandler(request, response);
 } // invokePathHandler
 
-
-
-bool HttpServer::setClientToQueue(int fd, WebSocket* socket)
+/* 
+WebSocket* HttpServer::getClient(int fd)
 {
-    if(wsClients.size() < WEBSOCKET_SERVER_MAX_CLIENTS) {
-         wsClients.insert(std::pair<int, WebSocket*>(fd, socket));
-         return true;
+    ws_list_t::iterator it;
+    it = wsClients.find(fd);
+    return it->second;
+}
+
+void HttpServer::removeClientFromQueue(int fd)
+{
+    //remove by key
+    wsClients.erase(fd);
+
+    //remove by iterator
+    // ws_list_t::iterator it;
+    //it = wsClients.find(fd);
+    //wsClients.erase(it)  
+}
+
+
+bool HttpServer::addClientToQueue(int fd, WebSocket* socket)
+{
+    if (wsClients.size() < WEBSOCKET_SERVER_MAX_CLIENTS) {
+        wsClients.insert(std::pair<int, WebSocket*>(fd, socket));
+        return true;
     }
     return false;
-}
-
-/* WebSocket* HttpServer::getClient(int fd)
-{
-    
 } */
-
-void HttpServer::removeClient(int fd)
-{
-
-}

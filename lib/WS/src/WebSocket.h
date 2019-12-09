@@ -13,6 +13,8 @@
 
 #undef close
 #undef send
+
+#define WEBSOCKET_SERVER_MAX_CLIENTS CONFIG_WEBSOCKET_SERVER_MAX_CLIENTS
 class WebSocketReader;
 class WebSocket;
 
@@ -60,6 +62,7 @@ public:
 // +-----------+
 class WebSocket {
 public:
+	typedef std::map<int, WebSocket*> ws_list_t;
 	static const uint16_t CLOSE_NORMAL_CLOSURE        = 1000;
 	static const uint16_t CLOSE_GOING_AWAY            = 1001;
 	static const uint16_t CLOSE_PROTOCOL_ERROR        = 1002;
@@ -77,6 +80,7 @@ public:
 
 	static const uint8_t SEND_TYPE_BINARY = 0x01;
 	static const uint8_t SEND_TYPE_TEXT   = 0x02;
+	
 
 	WebSocket(Socket socket);
 	virtual ~WebSocket();
@@ -88,6 +92,14 @@ public:
 	void              send(uint8_t* data, uint16_t length, uint8_t sendType = SEND_TYPE_BINARY);
 	void              setHandler(WebSocketHandler *handler);
 
+	static ws_list_t    						wsClients; //to store possibles wsclients inside container
+	inline const ws_list_t&    			getClients() const { return WebSocket::wsClients;};
+	inline const int 					availableClients() { return WebSocket::wsClients.size();};
+	bool                                addClientToQueue(int fd, WebSocket* socket);
+	WebSocket*                          getClient(int fd);
+	void                                removeClientFromQueue(int fd);
+	
+
 private:
 	friend class WebSocketReader;
 	friend class HttpServerTask;
@@ -97,7 +109,7 @@ private:
 	Socket            m_socket;		// Partner socket.
 	WebSocketHandler* m_pWebSocketHandler;
 	WebSocketReader*  m_pWebSockerReader;
-	std::map<int, WebSocket*> wsClients; //to store wsclients inside container
+	//std::map<int, WebSocket*> wsClients; //to store wsclients inside container
 
 }; // WebSocket
 

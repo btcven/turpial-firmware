@@ -10,7 +10,7 @@
 
 #ifndef COMPONENTS_CPP_UTILS_HTTPSERVER_H_
 #define COMPONENTS_CPP_UTILS_HTTPSERVER_H_
-#define WEBSOCKET_SERVER_MAX_CLIENTS CONFIG_WEBSOCKET_SERVER_MAX_CLIENTS
+/* #define WEBSOCKET_SERVER_MAX_CLIENTS CONFIG_WEBSOCKET_SERVER_MAX_CLIENTS */
 
 #include <stdint.h>
 
@@ -48,7 +48,7 @@ class PathHandler {
 
 class HttpServer {
 public:
-	typedef std::map<int, WebSocket*> ws_list_t;
+	/* typedef std::map<int, WebSocket*> ws_list_t; */
 	HttpServer();
 	virtual ~HttpServer();
 
@@ -68,12 +68,13 @@ public:
 	void        stop();          // Stop a previously started server.
 
 
-	ws_list_t    						wsClients; //to store possibles wsclients inside container
+	/* ws_list_t    						wsClients; //to store possibles wsclients inside container
 	inline const ws_list_t&    			getClients() const { return wsClients;};
-	bool                                setClientToQueue(int fd, WebSocket* socket);
+	inline const int 					availableClients() { return wsClients.size();};
+	bool                                addClientToQueue(int fd, WebSocket* socket);
 	WebSocket*                          getClient(int fd);
-	void                                removeClient(int fd);
-	inline int 							availableClients() { return wsClients.size();};
+	void                                removeClientFromQueue(int fd);
+	 */
 
 private:
 	friend class HttpServerTask;
