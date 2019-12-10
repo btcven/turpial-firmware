@@ -21,7 +21,13 @@
 #define ESC_CRITICAL_BAT_THRESHOLD 7  /*!< in % unit */
 
 #define BLE_ENABLED false /*!< BLE feature enabled? */
-#define RAD_ENABLED false /*!< Radio subsystem enabled? */
+
+// BLE enabled?
+#define BLE_ENABLED false
+
+#define RAD_ENABLED true /*!< Radio subsystem enabled? */
+#define RAD_TX_PIN 5     /*!< Radio UART TX pin */
+#define RAD_RX_PIN 4     /*!< Radio UART RX pin */
 
 #define WIFI_MODE WIFI_MODE_AP              /*!< Wi-Fi Operation mode */
 #define WST_SSID ""                         /*!< STA SSID */
