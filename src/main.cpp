@@ -24,13 +24,12 @@
 #include "WiFi.h"
 
 #include "HttpServer.h"
-#include "defaults.h"
 #include "WebSocket.h"
 #include "WsHandlerEvents.h"
+#include "defaults.h"
 
 
 HttpServer httpServer;
-
 
 
 static const char* TAG = "app_main";
@@ -71,10 +70,10 @@ esp_err_t getIsConfigured(bool& is_configured)
 
 void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 {
-    WsHandlerEvents* myHandler = new WsHandlerEvents(); 
+    WsHandlerEvents* myHandler = new WsHandlerEvents();
     if (pHttpRequest->isWebsocket()) {
         pHttpRequest->getWebSocket()->setHandler(myHandler);
-        ESP_LOGI("available clients---->>","%d", pHttpRequest->getWebSocket()->availableClients());
+        ESP_LOGI("available clients---->>", "%d", pHttpRequest->getWebSocket()->availableClients());
     }
 }
 
@@ -138,9 +137,6 @@ extern "C" void app_main()
     radio::Radio* radio_task = new radio::Radio();
     radio_task->start();
 #endif
-}
-
-
 
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
     httpServer.start(80);

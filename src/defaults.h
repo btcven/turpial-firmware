@@ -28,8 +28,6 @@
 #define RAD_ENABLED true /*!< Radio subsystem enabled? */
 #define RAD_TX_PIN 5     /*!< Radio UART TX pin */
 #define RAD_RX_PIN 4     /*!< Radio UART RX pin */
-=======
-#define RAD_ENABLED false /*!< Radio subsystem enabled? */
 
 #define WIFI_MODE WIFI_MODE_AP              /*!< Wi-Fi Operation mode */
 #define WST_SSID ""                         /*!< STA SSID */
