@@ -57,8 +57,8 @@ public:
 private:
     friend class WiFi;
 
-    util::Semaphore m_sta_start_sema;
-    util::Semaphore m_sta_stop_sema;
+    util::Semaphore m_sta_start_sema; /*!< "STA Start" event semaphore */
+    util::Semaphore m_sta_stop_sema;  /*!< "STA Stop" event semaphore */
 };
 
 /**
@@ -66,11 +66,11 @@ private:
  * 
  */
 struct APConfig {
-    const char* ssid;
-    const char* password;
-    wifi_auth_mode_t authmode;
-    std::uint8_t max_conn;
-    std::uint8_t channel;
+    const char* ssid;          /*!< AP SSID */
+    const char* password;      /*!< AP Password */
+    wifi_auth_mode_t authmode; /*!< AP Authentication mode*/
+    std::uint8_t max_conn;     /*!< AP Maximum connections */
+    std::uint8_t channel;      /*!< AP Channel */
 };
 
 /**
@@ -78,13 +78,22 @@ struct APConfig {
  * 
  */
 struct STAConfig {
-    const char* ssid;
-    const char* password;
+    const char* ssid;     /*!< Station SSID */
+    const char* password; /*!< Station Password */
 };
 
+/**
+ * @brief Wi-Fi manager class
+ * 
+ */
 class WiFi
 {
 public:
+    /**
+     * @brief Get the unique instance of the object
+     * 
+     * @return WiFi& 
+     */
     static WiFi& getInstance()
     {
         static WiFi instance;
@@ -99,11 +108,6 @@ public:
 
     /**
      * @brief Initialize Wi-Fi
-     * 
-     * @attention 1. If you set the parameter "use_nvs" to true you must make
-     * sure that the NVS is initialized.
-     * 
-     * @param use_nvs: wether to use NVS for storage or not
      * 
      * @return
      *      - ESP_OK: succeed
@@ -271,12 +275,6 @@ private:
     WiFi();
 
     /**
-     * @brief pointer to desired hanlder events
-     *
-     */
-    WiFiDefaultEventHandler m_event_handler;
-
-    /**
      * @brief Wi-Fi event handler
      * 
      * @param ctx: application specific data (currently a pointer to the class
@@ -284,6 +282,8 @@ private:
      * @param event: Wi-Fi event
      */
     static esp_err_t eventHandler(void* ctx, system_event_t* event);
+
+    WiFiDefaultEventHandler m_event_handler; /*!< Pointer to desired hanlder events */
 };
 
 /**

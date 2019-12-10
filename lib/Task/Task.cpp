@@ -30,24 +30,11 @@ Task::~Task()
 {
 }
 
-/**
- * @brief Suspend the task for the specified milliseconds.
- *
- * @param [in] ms The delay time in milliseconds.
- * @return N/A.
- */
-
 void Task::delay(int ms)
 {
     ::vTaskDelay(ms / portTICK_PERIOD_MS);
 }
 
-/**
- * Static class member that actually runs the target task.
- *
- * The code here will run on the task thread.
- * @param [in] pTaskInstance The task to run.
- */
 void Task::runTask(void* task_instance)
 {
     Task* task = reinterpret_cast<Task*>(task_instance);

@@ -29,7 +29,8 @@ esp_err_t init();
  * @brief Representation of a NVS namespace.
  * 
  */
-class NVS {
+class NVS
+{
 public:
     /**
      * @brief Construct a new Namespace
@@ -86,6 +87,16 @@ public:
      *      - (others): failed
      */
     esp_err_t get_bool(const char* key, bool& value);
+
+    /**
+     * @brief Checks whether the Turpial device is configured or not
+     * 
+     * @param is_configured: return value
+     * 
+     * @return
+     *      - ESP_OK: succeed
+     *      - (others): failed
+     */
     esp_err_t getIsConfigured(bool& is_configured);
 
     /**
@@ -98,12 +109,11 @@ public:
     esp_err_t commit();
 
 
-
 private:
     bool m_is_opened;
     nvs_handle m_handle;
 };
 
-} // namespace nvs
+} // namespace storage
 
 #endif //
