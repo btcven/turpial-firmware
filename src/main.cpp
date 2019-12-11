@@ -153,20 +153,31 @@ static void initialize_console() {
   // Configure UART. Note that REF_TICK is used so that the baud rate remains
   //  correct while APB frequency is changing in light sleep mode.
 
-  uart_config_t uart_config;// = {
+/*   uart_config_t uart_config;// = {
     uart_config.baud_rate = CONFIG_CONSOLE_UART_BAUDRATE;
     uart_config.data_bits = UART_DATA_8_BITS;
     uart_config.parity = UART_PARITY_DISABLE;
     uart_config.stop_bits = UART_STOP_BITS_1;
     
     //uart_config.use_ref_tick = true;
-  ESP_ERROR_CHECK(uart_param_config(static_cast<uart_port_t>(CONFIG_CONSOLE_UART_NUM), &uart_config));
+  ESP_ERROR_CHECK(uart_param_config(static_cast<uart_port_t>(0), &uart_config));
 
-  /* Install UART driver for interrupt-driven reads and writes */
-  ESP_ERROR_CHECK(uart_driver_install(static_cast<uart_port_t>(CONFIG_CONSOLE_UART_NUM), 256, 0, 0, NULL, 0));
+  // Install UART driver for interrupt-driven reads and writes 
+  ESP_ERROR_CHECK(uart_driver_install(static_cast<uart_port_t>(0), 256, 0, 0, NULL, 0));
 
   // Tell VFS to use UART driver
-  esp_vfs_dev_uart_use_driver(CONFIG_CONSOLE_UART_NUM);
+  esp_vfs_dev_uart_use_driver(CONFIG_CONSOLE_UART_NUM); */
+
+  uart_config_t uart_config = {
+        .baud_rate = 115200,
+        .data_bits = UART_DATA_8_BITS,
+        .parity    = UART_PARITY_DISABLE,
+        .stop_bits = UART_STOP_BITS_1,
+        .flow_ctrl = UART_HW_FLOWCTRL_DISABLE
+    };
+    ESP_ERROR_CHECK(uart_param_config(UART_NUM_1, &uart_config));
+    //uart_set_pin(UART_NUM_1, ECHO_TEST_TXD, ECHO_TEST_RXD, ECHO_TEST_RTS, ECHO_TEST_CTS);
+    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_1, 1024 * 2, 0, 0, NULL, 0));
 
   // Initialize the console
   esp_console_config_t console_config; //= {
