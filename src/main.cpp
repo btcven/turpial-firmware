@@ -10,6 +10,7 @@
  */
 
 #include <cstdio>
+#include <memory>
 #include <sstream>
 
 #include "esp_log.h"
@@ -17,12 +18,19 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
+#include "BLEPreferences.h"
 #include "NVS.h"
-#include "WiFiMode.h"
+#include "Radio.h"
+#include "WiFi.h"
 
-#include "WiFiEventHandler.h"
-
+#include "HttpServer.h"
+#include "WebSocket.h"
+#include "WsHandlerEvents.h"
 #include "defaults.h"
+
+
+HttpServer httpServer;
+
 
 static const char* TAG = "app_main";
 
@@ -59,68 +67,80 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
+
+void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
+{
+    WsHandlerEvents* myHandler = new WsHandlerEvents();
+    if (pHttpRequest->isWebsocket()) {
+        pHttpRequest->getWebSocket()->setHandler(myHandler);
+        ESP_LOGI("available clients---->>", "%d", pHttpRequest->getWebSocket()->availableClients());
+    }
+}
+
 extern "C" void app_main()
 {
     esp_err_t err;
-    wifi::WiFiEventHandler* event_handler;
-    event_handler = new wifi::WiFiEventHandler();
-    wifi::WiFiMode* wifi_mode;
-    wifi_mode = new wifi::WiFiMode();
 
-
-    bool is_nvs_initialized = true;
     err = storage::init();
     
     if (err != ESP_OK) {
-        const char* err_name = esp_err_to_name(err);
-        ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", err_name);
-        is_nvs_initialized = false;
+        ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", esp_err_to_name(err));
+        return;
     }
-
-    
-    ESP_LOGD(TAG, "Init TCP/IP adapter");
-    tcpip_adapter_init();
 
     bool is_configured = false;
-    if (is_nvs_initialized) {
-        err = getIsConfigured(is_configured);
-        if (err != ESP_OK) {
-            const char* err_str = esp_err_to_name(err);
-            ESP_LOGE(TAG,
-                "Couldn't get \"is_configured\" value (%s)",
-                err_str);
-        }
+    err = getIsConfigured(is_configured);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG,
+            "Couldn't get \"is_configured\" value (%s)",
+            esp_err_to_name(err));
     }
 
-    err = wifi_mode->init(is_nvs_initialized);
+    network::WiFi& wifi = network::WiFi::getInstance();
+    err = wifi.init();
     if (err != ESP_OK) {
-        const char* err_name = esp_err_to_name(err);
-        ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", err_name);
-        // TODO: fallback to bluetooth mode to configure Wi-Fi?
+        ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", esp_err_to_name(err));
         return;
     }
 
     if (!is_configured) {
-        wifi_mode->set_mode(WIFI_MODE);
+        wifi.setMode(WIFI_MODE);
 
-        wifi::APConfig ap_config = {
+        network::APConfig ap_config = {
             .ssid = WAP_SSID,
             .password = WAP_PASS,
             .authmode = WAP_AUTHMODE,
             .max_conn = WAP_MAXCONN,
             .channel = WAP_CHANNEL,
         };
-        wifi_mode->set_ap_config(ap_config);
+        wifi.setApConfig(ap_config);
 
-        wifi::STAConfig sta_config = {
+        network::STAConfig sta_config = {
             .ssid = WST_SSID,
             .password = WST_PASS,
         };
-        wifi_mode->set_sta_config(sta_config);
+        wifi.setStaConfig(sta_config);
     }
 
-    wifi_mode->setWiFiEventHandler(event_handler);
-    err = wifi_mode->start();
+    err = wifi.start();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't start Wi-Fi, err = %s", esp_err_to_name(err));
+        return;
+    }
 
 
+    ble::ServerParams server_params;
+    server_params.device_name = "Turpial-1234";
+    server_params.static_passkey = 123456;
+    server_params.app_id = 0;
+    ble_preferences::start(server_params);
+
+#if RAD_ENABLED == true
+    radio::Radio* radio_task = new radio::Radio();
+    radio_task->start();
+#endif
+
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
+    httpServer.start(80);
 }
+

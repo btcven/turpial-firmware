@@ -24,7 +24,7 @@ namespace storage {
 static const char* TAG = "NVS";
 
 esp_err_t init()
-{
+{   
     esp_err_t err;
 
     ESP_LOGD(TAG, "Initializing NVS");
