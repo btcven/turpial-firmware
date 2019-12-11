@@ -24,12 +24,6 @@
 
 #include "defaults.h"
 
-#include "GPIO.h"
-
-
-#define GPIO_OUTPUT_IO_0    18
-#define GPIO_OUTPUT_IO_1    19
-
 static const char* TAG = "app_main";
 
 esp_err_t getIsConfigured(bool& is_configured)
@@ -64,7 +58,6 @@ esp_err_t getIsConfigured(bool& is_configured)
 
     return ESP_OK;
 }
-
 
 extern "C" void app_main()
 {
@@ -128,33 +121,6 @@ extern "C" void app_main()
 
     wifi_mode->setWiFiEventHandler(event_handler);
     err = wifi_mode->start();
-    // TODO: app loop 
-    gpio_num_t LED_RED = GPIO_NUM_25; //doesnt works
-    gpio_num_t LED_GREEN = GPIO_NUM_26; //doesnt works
-    gpio_num_t LED_BLUE = GPIO_NUM_33;
-    gpio_num_t SYS_OFF = GPIO_NUM_27;
-    gpio_num_t BUTTON = GPIO_NUM_32;
-while(1) {
-
-    
-    hardware::GPIO::setOutput(LED_RED);
-    hardware::GPIO::setOutput(LED_GREEN);
-    hardware::GPIO::setOutput(LED_BLUE);
-    hardware::GPIO::setOutput(SYS_OFF);
 
 
-    hardware::GPIO::write(LED_RED,1); 
-    hardware::GPIO::write(LED_GREEN,1);
-    hardware::GPIO::write(LED_BLUE,1);
-    hardware::GPIO::write(SYS_OFF,1);
-
-    vTaskDelay(1000/portTICK_RATE_MS);
-
-    hardware::GPIO::write(LED_RED,0); 
-    hardware::GPIO::write(LED_GREEN,0);
-    hardware::GPIO::write(LED_BLUE,0);
-    hardware::GPIO::write(SYS_OFF,0); 
-    vTaskDelay(1000/portTICK_RATE_MS);
-    ESP_LOGI("RUNNING GPIO", "LOOP OK");
-}
 }
