@@ -82,6 +82,7 @@ extern "C" void app_main()
     esp_err_t err;
 
     err = storage::init();
+    
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", esp_err_to_name(err));
         return;
@@ -127,6 +128,7 @@ extern "C" void app_main()
         return;
     }
 
+
     ble::ServerParams server_params;
     server_params.device_name = "Turpial-1234";
     server_params.static_passkey = 123456;
@@ -141,3 +143,4 @@ extern "C" void app_main()
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
     httpServer.start(80);
 }
+
