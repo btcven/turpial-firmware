@@ -1,11 +1,15 @@
-/* UART Echo Example
 
-   This example code is in the Public Domain (or CC0 licensed, at your option.)
+/**
+ * @file test_nvs.cpp
+ * @author Locha Mesh project developers (locha.io)
+ * @brief 
+ * @version 0.1
+ * @date 2019-12-13
+ * 
+ * @copyright Copyright (c) 2019 Locha Mesh project developers
+ * @license Apache 2.0, see LICENSE file for details
+ */
 
-   Unless required by applicable law or agreed to in writing, this
-   software is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR
-   CONDITIONS OF ANY KIND, either express or implied.
-*/
 #include <stdio.h>
 #include "freertos/FreeRTOS.h"
 #include "freertos/task.h"
@@ -13,20 +17,17 @@
 #include "driver/gpio.h"
 #include <esp_log.h>
 
+
 /**
- * This is an example which echos any data it receives on UART1 back to the sender,
- * with hardware flow control turned off. It does not use UART driver event queue.
- *
- * - Port: UART1
- * - Receive (Rx) buffer: on
- * - Transmit (Tx) buffer: off
- * - Flow control: off
- * - Event queue: off
- * - Pin assignment: see defines below
+ * @brief 
+ * Test UART
+ * it try to show how to work in a proper way with uart ports
+ * platformio test -e wemosbat -f test_serial
+ *  
  */
 
-#define ECHO_TEST_TXD  (UART_PIN_NO_CHANGE) //(GPIO_NUM_21)
-#define ECHO_TEST_RXD  (UART_PIN_NO_CHANGE) //(GPIO_NUM_22)
+#define ECHO_TEST_TXD  (GPIO_NUM_21)
+#define ECHO_TEST_RXD  (GPIO_NUM_22)
 #define ECHO_TEST_RTS  (UART_PIN_NO_CHANGE)
 #define ECHO_TEST_CTS  (UART_PIN_NO_CHANGE)
 
@@ -53,9 +54,9 @@ static void echo_task()
     while (1) {
         
         // Read data from the UART
-         uart_write_bytes(UART_NUM_2, (const char *) dta, 10);
+        uart_write_bytes(UART_NUM_2, (const char *) dta, 10);
         int len = uart_read_bytes(UART_NUM_2, data, BUF_SIZE, 20 / portTICK_RATE_MS);
-        ESP_LOGI("llEGO DATA","***************************");
+        ESP_LOGI("llEGO DATA","***************************%d  ",len);
         // Write data back to the UART
         //uart_write_bytes(UART_NUM_1, (const char *) data, len);
     }
