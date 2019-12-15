@@ -1,6 +1,6 @@
 # Contributing to Turpial firmware
 
-Gracias por tomarte el tiempo de contribuir!.
+Gracias por tomarte el tiempo de contribuir.
 
 El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpial**]().
 
