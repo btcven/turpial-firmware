@@ -45,6 +45,21 @@ void Semaphore::take()
     xSemaphoreTake(m_handle, portMAX_DELAY);
 }
 
+bool Semaphore::take(std::uint32_t timeout_ms)
+{
+    ESP_LOGD(TAG, "take: %s for %d ms", m_dbg_name, timeout_ms);
+
+	TickType_t timeout_ticks = timeout_ms / portTICK_PERIOD_MS;
+    bool taken = xSemaphoreTake(m_handle, timeout_ticks) == pdTRUE;
+
+    if (taken) {
+        ESP_LOGD(TAG, "Semaphore taken:  %s", m_dbg_name);
+    } else {
+        ESP_LOGE(TAG, "Semaphore NOT taken:  %s", m_dbg_name);
+    }
+    return taken;
+}
+
 void Semaphore::give()
 {
     ESP_LOGD(TAG, "give \"%s\"", m_dbg_name);
