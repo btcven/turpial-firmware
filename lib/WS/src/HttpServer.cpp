@@ -27,6 +27,7 @@ static const char* LOG_TAG = "HttpServer";
  * Constructor for HTTP Server
  */
 HttpServer::HttpServer()
+	: m_semaphoreServerStarted("ServerStarted")
 {
     m_portNumber = 80;   // The default port number.
     m_clientTimeout = 5; // The default timeout 5 seconds.
@@ -223,7 +224,7 @@ void HttpServer::start(uint16_t portNumber)
 
     // Take the semaphore that says that we are now running.  If we are already running, then end here as
     // there is nothing further to do.
-    if (!m_semaphoreServerStarted.take(100, "start")) {
+    if (!m_semaphoreServerStarted.take(100)) {
         ESP_LOGD(LOG_TAG, "<< start: Already running");
         return;
     }
@@ -246,7 +247,7 @@ void HttpServer::stop()
     // activities.
     ESP_LOGD(LOG_TAG, ">> stop");
     m_socket.close();                      // Close the socket that is being used to watch for incoming requests.
-    m_semaphoreServerStarted.wait("stop"); // Wait for the server to stop.
+    m_semaphoreServerStarted.wait(); // Wait for the server to stop.
     ESP_LOGD(LOG_TAG, "<< stop");
 } // stop
 

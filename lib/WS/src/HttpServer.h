@@ -13,7 +13,7 @@
 
 #include <stdint.h>
 
-#include "FreeRTOS.h"
+#include "Sema.h"
 #include "HttpRequest.h"
 #include "HttpResponse.h"
 #include <regex>
@@ -74,7 +74,7 @@ private:
     uint16_t m_portNumber;                   // Port number on which server is listening.
     Socket m_socket;
     uint32_t m_clientTimeout; // Default Timeout
-    FreeRTOS::Semaphore m_semaphoreServerStarted = FreeRTOS::Semaphore("ServerStarted");
+    util::Semaphore m_semaphoreServerStarted;
 }; // HttpServer
 
 #endif /* COMPONENTS_CPP_UTILS_HTTPSERVER_H_ */

@@ -16,6 +16,8 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/semphr.h>
 
+#include <cstdint>
+
 namespace util {
 
 /**
@@ -50,6 +52,20 @@ public:
      * 
      */
     void take();
+
+	/**
+	 * @brief Take a semaphore.
+	 *
+	 * Take a semaphore but return if we haven't obtained it in the given
+	 * period of milliseconds.
+	 *
+	 * @param[in] timeout_ms: Timeout in milliseconds.
+	 *
+	 * @return
+	 *		- true: we took the semaphore.
+	 *		- false: we didn't take the semaphore.
+	 */
+	bool take(std::uint32_t timeout_ms);
 
     /**
      * @brief Give or "unlock" this semaphore
