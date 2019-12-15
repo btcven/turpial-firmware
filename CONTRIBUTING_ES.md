@@ -4,12 +4,12 @@ Gracias por tomarte el tiempo de contribuir.
 
 El siguiente es un conjunto de pautas para contribuir a  [**Locha**](), [**Turpial**]().
 
-#### Table de contenido
+#### Tabla de contenido
 
 - [Contributing to Turpial firmware](#contributing-to-turpial-firmware)
       - [Table de contenido](#table-de-contenido)
   - [Antes de empezar](#antes-de-empezar)
-  - [Como puedo contribuir?](#como-puedo-contribuir)
+  - [¿Como puedo contribuir?](#como-puedo-contribuir)
     - [Tengo una pregunta](#tengo-una-pregunta)
     - [Sugerencia de mejoras](#sugerencia-de-mejoras)
     - [Reportando un bug](#reportando-un-bug)
