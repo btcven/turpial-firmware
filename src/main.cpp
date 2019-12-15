@@ -20,9 +20,17 @@
 
 #include "BLEPreferences.h"
 #include "NVS.h"
+#include "Radio.h"
 #include "WiFi.h"
 
+#include "HttpServer.h"
+#include "WebSocket.h"
+#include "WsHandlerEvents.h"
 #include "defaults.h"
+
+
+HttpServer httpServer;
+
 
 static const char* TAG = "app_main";
 
@@ -60,11 +68,21 @@ esp_err_t getIsConfigured(bool& is_configured)
 }
 
 
+void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
+{
+    WsHandlerEvents* myHandler = new WsHandlerEvents();
+    if (pHttpRequest->isWebsocket()) {
+        pHttpRequest->getWebSocket()->setHandler(myHandler);
+        ESP_LOGI("available clients---->>", "%d", pHttpRequest->getWebSocket()->availableClients());
+    }
+}
+
 extern "C" void app_main()
 {
     esp_err_t err;
 
     err = storage::init();
+    
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", esp_err_to_name(err));
         return;
@@ -110,9 +128,19 @@ extern "C" void app_main()
         return;
     }
 
+
     ble::ServerParams server_params;
     server_params.device_name = "Turpial-1234";
     server_params.static_passkey = 123456;
     server_params.app_id = 0;
     ble_preferences::start(server_params);
+
+#if RAD_ENABLED == true
+    radio::Radio* radio_task = new radio::Radio();
+    radio_task->start();
+#endif
+
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
+    httpServer.start(80);
 }
+

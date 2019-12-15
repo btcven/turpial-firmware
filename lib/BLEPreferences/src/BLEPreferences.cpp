@@ -44,21 +44,50 @@ static const char* TAG = "BLE_Preferences";
 // This the equivalent to: 1 (Service handle) + (2 * num characteristic)
 static std::uint16_t WIFI_PREFERENCES_NUM_HANDLES = 1 + (2 * 5);
 
+/// Wi-Fi preferences UUID
 static const char* WIFI_PREFERENCES_UUID = "4a2ccc6f55f847da8b918aa04dc1251c";
 
+/// Wi-Fi Mode characteristic UUID
 static const char* WIFI_MODE_UUID = "3ab002a921d94e909e880346f37cb3f0";
+
+/// AP SSID characteristic UUID
 static const char* AP_SSID_UUID = "35ac95c13d524d64a427943240c71a85";
+
+/// AP Password characteristic UUID
 static const char* AP_PASSWORD_UUID = "7bb1a7812d1249bbab344a548d3a9e8c";
+
+/// Station SSID characteristic UUID
 static const char* STA_SSID_UUID = "03118c93de744b09b26b5953924ba715";
+
+/// Station Password characteristic UUID
 static const char* STA_PASSWORD_UUID = "90a96e194f0a453a9c1e8737b1e3d809";
 
+/**
+ * @brief WiFiMode Characteristic
+ * 
+ * UUID: WIFI_MODE_UUID
+ * 
+ * Format: std::uint8_t, possible values:
+ *      - `0x01` or `WIFI_MODE_STA`: Wi-Fi Station only mode.
+ *      - `0x02` or `WIFI_MODE_AP`: Wi-Fi Access Point only mode
+ *      - `0x03` or `WIFI_MODE_APSTA`: both Wi-Fi Access Point and Station mode.
+ */
 class WiFiModeCallback : public ble::CharacteristicCallback
 {
 public:
+    /**
+     * @brief Construct a new WiFiModeCallback
+     * 
+     */
     WiFiModeCallback()
     {
     }
 
+    /**
+     * @brief Write event
+     * 
+     * @param characteristic: characteristic object
+     */
     virtual void onWrite(ble::Characteristic& characteristic)
     {
         ESP_LOGI(TAG, "onWrite AP SSID");
@@ -92,6 +121,11 @@ public:
         }
     }
 
+    /**
+     * @brief Read event
+     * 
+     * @param characteristic: characteristic object
+     */
     virtual void onRead(ble::Characteristic& characteristic)
     {
         network::WiFi& wifi = network::WiFi::getInstance();
@@ -121,13 +155,37 @@ public:
     }
 };
 
+/**
+ * @brief AP SSID Characteristic
+ * 
+ * UUID: AP_SSID_UUID
+ * 
+ * Format:
+ *  - Data Type: `std::uint8_t [32]`
+ *    - Minimum length is 1-byte.
+ *    - Maximum length is 32-bytes.
+ *  - Rules:
+ *    - 1 to 32 bytes of characters.
+ *    - Characters are encoded in ASCII, only printable characters.
+ *    - The characters '+', ']', '/', TAB and trailing spaces are invalid
+ *      characters, invalid characters are changed to '?' automatically.
+ */
 class APSSIDCallback : public ble::CharacteristicCallback
 {
 public:
+    /**
+     * @brief Construct a new APSSIDCallback
+     * 
+     */
     APSSIDCallback()
     {
     }
 
+    /**
+     * @brief Write event
+     * 
+     * @param characteristic: characteristic object
+     */
     virtual void onWrite(ble::Characteristic& characteristic)
     {
         network::WiFi& wifi = network::WiFi::getInstance();
@@ -157,6 +215,11 @@ public:
         wifi.start();
     }
 
+    /**
+     * @brief Read event
+     * 
+     * @param characteristic: characteristics
+     */
     virtual void onRead(ble::Characteristic& characteristic)
     {
         network::WiFi& wifi = network::WiFi::getInstance();
@@ -174,13 +237,32 @@ public:
     }
 };
 
+/**
+ * @brief AP Password characteristic callback
+ * 
+ * UUID: AP_PASSWORD_UUID
+ * 
+ * Format:
+ *  - Data Type: `std::uint8_t [63]`
+ *    - Minimum length is 1-byte.
+ *    - Maximum length is 63-bytes.
+ */
 class APPasswordCallback : public ble::CharacteristicCallback
 {
 public:
+    /**
+     * @brief Construct a new APPasswordCallback
+     * 
+     */
     APPasswordCallback()
     {
     }
 
+    /**
+     * @brief Write event
+     * 
+     * @param characteristic: characteristic event
+     */
     virtual void onWrite(ble::Characteristic& characteristic)
     {
         network::WiFi& wifi = network::WiFi::getInstance();
@@ -207,6 +289,11 @@ public:
         wifi.start();
     }
 
+    /**
+     * @brief Read event
+     * 
+     * @param characteristic: characteristic event
+     */
     virtual void onRead(ble::Characteristic& characteristic)
     {
         network::WiFi& wifi = network::WiFi::getInstance();
@@ -220,13 +307,32 @@ public:
     }
 };
 
+/**
+ * @brief Station SSID characteristic callback
+ * 
+ * UUID: STA_SSID_UUID
+ * 
+ * Format:
+ *  - Data Type: `std::uint8_t [31]`
+ *    - Minimum length is 1-byte.
+ *    - Maximum length is 31-bytes.
+ */
 class STASSIDCallback : public ble::CharacteristicCallback
 {
 public:
+    /**
+     * @brief Construct a new STASSIDCallback
+     * 
+     */
     STASSIDCallback()
     {
     }
 
+    /**
+     * @brief Write event
+     * 
+     * @param characteristic: characteristic object
+     */
     virtual void onWrite(ble::Characteristic& characteristic)
     {
         network::WiFi& wifi = network::WiFi::getInstance();
@@ -253,6 +359,11 @@ public:
         wifi.start();
     }
 
+    /**
+     * @brief Read event
+     * 
+     * @param characteristic: characteristic event
+     */
     virtual void onRead(ble::Characteristic& characteristic)
     {
         network::WiFi& wifi = network::WiFi::getInstance();
@@ -266,13 +377,32 @@ public:
     }
 };
 
+/**
+ * @brief Station Password characteristic callback
+ * 
+ * UUID: STA_PASSWORD_UUID
+ * 
+ * Format:
+ *  - Data Type: `std::uint8_t [63]`
+ *    - Minimum length is 1-byte.
+ *    - Maximum length is 63-bytes.
+ */
 class STAPasswordCallback : public ble::CharacteristicCallback
 {
 public:
+    /**
+     * @brief Construct a new STAPasswordCallback
+     * 
+     */
     STAPasswordCallback()
     {
     }
 
+    /**
+     * @brief Write event
+     * 
+     * @param characteristic: characteristic object
+     */
     virtual void onWrite(ble::Characteristic& characteristic)
     {
         network::WiFi& wifi = network::WiFi::getInstance();
@@ -298,6 +428,11 @@ public:
         wifi.start();
     }
 
+    /**
+     * @brief Read event
+     * 
+     * @param characteristic: characteristic object
+     */
     virtual void onRead(ble::Characteristic& characteristic)
     {
         network::WiFi& wifi = network::WiFi::getInstance();

@@ -18,6 +18,7 @@
 
 namespace ble {
 
+/// Logging tag
 const char* TAG = "BLE_Advertising";
 
 void AdvertisementData::setFlags(std::uint8_t flags)

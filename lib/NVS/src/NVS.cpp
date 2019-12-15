@@ -24,11 +24,10 @@ namespace storage {
 static const char* TAG = "NVS";
 
 esp_err_t init()
-{
+{   
     esp_err_t err;
 
     ESP_LOGD(TAG, "Initializing NVS");
-
     err = nvs_flash_init();
     if (err == ESP_ERR_NVS_NO_FREE_PAGES ||
         err == ESP_ERR_NVS_NEW_VERSION_FOUND) {

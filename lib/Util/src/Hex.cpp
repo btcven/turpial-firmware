@@ -50,7 +50,7 @@ esp_err_t hexToBytes(const char* src, std::uint8_t* target)
         src += 2;
     }
 
-    return err;
+    return ESP_OK;
 }
 
 } // namespace util
