@@ -21,18 +21,6 @@ static const char* LOG_TAG = "Socket";
 
 #undef bind
 
-static void my_debug(
-    void* ctx,
-    int level,
-    const char* file,
-    int line,
-    const char* str)
-{
-    ((void)level);
-    ((void)ctx);
-    printf("%s:%04d: %s", file, line, str);
-}
-
 Socket::Socket()
 {
     m_sock = -1;
@@ -361,7 +349,6 @@ size_t Socket::receive(uint8_t* data, size_t length, bool exact)
         amountToRead -= rc;
         data += rc;
     }
-    //GeneralUtils::hexDump(data, length);
     //ESP_LOGD(LOG_TAG, "<< receive: %d", length);
     return length;
 } // receive_cpp
@@ -393,7 +380,6 @@ int Socket::receiveFrom(uint8_t* data, size_t length, struct sockaddr* pAddr)
 int Socket::send(const uint8_t* data, size_t length) const
 {
     ESP_LOGD(LOG_TAG, "send: Raw binary of length: %d", length);
-    //GeneralUtils::hexDump(data, length);
     int rc = ERR_OK;
     while (length > 0) {
         rc = lwip_send(m_sock, data, length, 0);

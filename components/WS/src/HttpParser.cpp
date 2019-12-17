@@ -6,13 +6,15 @@
  */
 
 #include "HttpParser.h"
-#include "GeneralUtils.h"
 #include "HttpRequest.h"
+
 #include <cstdlib>
 #include <iostream>
 #include <string>
 
 #include <esp_log.h>
+
+#include "StringUtil.h"
 
 #undef close
 /**
@@ -104,8 +106,8 @@ std::pair<std::string, std::string> parseHeader(std::string& line)
     auto it = line.begin();
     std::string name = toCharToken(it, line, ':'); // Parse the line until we find a ':'
     // We normalize the header name to be lower case.
-    GeneralUtils::toLower(name);
-    auto value = GeneralUtils::trim(toStringToken(it, line, lineTerminator));
+    util::toLower(name);
+    auto value = util::trim(toStringToken(it, line, lineTerminator));
     return std::pair<std::string, std::string>(name, value);
 } // parseHeader
 
@@ -149,7 +151,7 @@ std::string HttpParser::getHeader(const std::string& name)
 {
     // We normalize the header name to be lower case.
     std::string localName = name;
-    GeneralUtils::toLower(localName);
+    util::toLower(localName);
     if (!hasHeader(localName)) return "";
     return m_headers.at(localName);
 } // getHeader
@@ -197,7 +199,7 @@ bool HttpParser::hasHeader(const std::string& name)
 {
     // We normalize the header name to be lower case.
     std::string localName = name;
-    return m_headers.find(GeneralUtils::toLower(localName)) != m_headers.end();
+    return m_headers.find(util::toLower(localName)) != m_headers.end();
 } // hasHeader
 
 

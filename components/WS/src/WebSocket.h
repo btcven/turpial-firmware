@@ -101,7 +101,7 @@ public:
 
 
     inline const ws_list_t& getClients() const { return wsClients; };
-    inline const int availableClients() { return wsClients.size(); };
+    inline int availableClients() { return wsClients.size(); };
     bool addClientToQueue(int fd, WebSocket* socket);
     WebSocket* getClient(int fd);
     void removeClientFromQueue(int fd);
