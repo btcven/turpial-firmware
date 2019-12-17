@@ -1,3 +1,14 @@
+/**
+ * @file FuelGauge.cpp
+ * @author Locha Mesh project developers (locha.io)
+ * @brief 
+ * @version 0.1
+ * @date 2019-12-17
+ * 
+ * @copyright Copyright (c) 2019 Locha Mesh project 
+ * 
+ */
+
 #include "FuelGauge.h"
 #include "esp_err.h"
 #include "esp_log.h"
@@ -7,11 +18,9 @@
 #include <cstdlib>
 #include <cstring>
 
-
 namespace esc {
 
 static const char* TAG = "ESC";
-
 
 FuelGauge::FuelGauge()
 {
@@ -82,17 +91,17 @@ uint16_t FuelGauge::readWord(uint8_t command)
     return (data[1] << 8) | data[0];
 }
 
-int16_t FuelGauge::getVoltage()
+int16_t FuelGauge::voltage()
 {
     return readWord(0x04);
 }
 
-int16_t FuelGauge::getAvgCurrent()
+int16_t FuelGauge::avgCurrent()
 {
     return readWord(0x10);
 }
 
-int16_t FuelGauge::getAvgPower()
+int16_t FuelGauge::avgPower()
 {
     return readWord(0x18);
 }

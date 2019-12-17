@@ -4,7 +4,6 @@
 #include "driver/i2c.h"
 #include "esp_err.h"
 
-
 #define I2C_MASTER_TX_BUF_DISABLE 0 /*!< I2C master doesn't need buffer */
 #define I2C_MASTER_RX_BUF_DISABLE 0 /*!< I2C master doesn't need buffer */
 
@@ -14,14 +13,11 @@
 #define I2C_MASTER_ACK_EN true   /*!< Enable ack check for master */
 #define I2C_MASTER_ACK_DIS false /*!< Disable ack check for master */
 
-
 namespace esc {
-
 
 uint8_t fuelgauge_addr = 0x55;
 i2c_mode_t esc_i2c_mode = I2C_MODE_MASTER;
 i2c_port_t esc_i2c_port = I2C_NUM_0;
-
 gpio_num_t esc_sda_pin = GPIO_NUM_23;
 gpio_num_t esc_scl_pin = GPIO_NUM_22;
 
@@ -40,18 +36,21 @@ public:
      * 
      */
     FuelGauge();
+
     /**
      * @brief Init i2c iface
      * 
      * @return esp_err_t 
      */
     esp_err_t i2cInit();
+
     /**
      * @brief delete i2c iface
      * 
      * @return esp_err_t 
      */
     esp_err_t i2cDelete();
+
     /**
      * @brief read Word
      * 
@@ -59,24 +58,28 @@ public:
      * @return uint16_t 
      */
     uint16_t readWord(uint8_t command);
+
     /**
      * @brief Get the Voltage object
      * 
      * @return int16_t 
      */
-    int16_t getVoltage();
+    int16_t voltage();
+
     /**
      * @brief Get the Avg Current object
      * 
      * @return int16_t 
      */
-    int16_t getAvgCurrent();
+    int16_t avgCurrent();
+
     /**
      * @brief Get the Avg Power object
      * 
      * @return int16_t 
      */
-    int16_t getAvgPower();
+    int16_t avgPower();
+
     /**
      * @brief Destroy the Fuel Gauge object
      * 
