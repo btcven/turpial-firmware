@@ -1,24 +1,55 @@
+dist: xenial
 language: python
 python:
-- '3.8'
-sudo: false
-cache:
-  directories:
-  - "~/.platformio"
+  - '3.8'
+os: 
+  - linux
+
+addons:
+  apt:
+    packages:
+      - git
+      - wget
+      - make
+      - gperf
+      - python
+      - python-serial
+      - python-future
+      - python-cryptography
+      - python-pyparsing
+      - libncurses-dev
+      - flex
+      - bison
+
 before_install:
 - sudo apt-get -y install doxygen
+# Save path to the git respository
+- PROJECT_PATH=$(pwd)
+
 install:
 - pip install -U travis-sphinx
 - pip install -U sphinx-rtd-theme
 - pip install -U breathe
 - pip install -U exhale
-- pip install -U platformio
-- platformio update
+# Install ESP32 toochain following steps as desribed
+# in https://docs.espressif.com/projects/esp-idf/en/latest/get-started/#get-started-get-prerequisites
+- mkdir -p ~/esp
+- cd ~/esp
+- git clone --recursive https://github.com/espressif/esp-idf.git
+- cd ~/esp/esp-idf
+- ./install.sh
+- export IDF_PATH=~/esp/esp-idf
+- export PATH=$PATH:$HOME/esp/esp-idf/tools
+- . $HOME/esp/esp-idf/export.sh
+
 script:
-- platformio run
 - travis-sphinx build --nowarn --source doc/
+# Go back to the git repository
+- cd $PROJECT_PATH
+- idf.py build
 after_success:
 - travis-sphinx deploy --branches dev
+
 env:
   global:
     secure: houW6Q5bbUYqQwVRf5Osmp/PjEItXHZMNQBTjqAJDHMFVFZS6pRoj1nYuT+z9IOgV2U7wHlKQv1yCGbSC/7B0ckaGSNw2sgP1lBJGFDmQxfRZ6sWPqKLyKjLGLpDdf08QMXxeoBnFKMQEKDv9CquVkHxgYVYxKexTE0FbNFXkuiCIEVbW2wWczsJHuEmlwm9tSkHMmPdJjMGJhFcddO5sBS2YL2cKTi07L4JP2nCFicImihhGozDE0uz0lu5rA75YDqatKDpL6MoQa1Q8s2x5BPh/mHCjE6Vjo36Yc9GT8ZVgO4AdjXsgZeCH5GCa48Ap9xIkjvXsG/37YXTsllogJ+HaSyrjn8HASCPpUHgyRGf//CBXohCEQ4t1kDG/hJSodXZNZJbNkxQySOlOitSdR1kJiRFKs/tbawb50wmEkzo+gvkl+p4Dq3IyzOsv9aQ7ys5kmJ5/ySwvaAU5ZUz1sR9p8rNh2coYOua3lvkkrZhWDTM64B6XelxP2ndDAT5AEcwrHlw/nUNWUexNHziw51inXPr/q9wIdDnRtf9ltkLQpZZODZlCK1K/6cIQRZuERRJH0AXaqWfajdWpjZbA9/8JwdtkiKZF/gD97zI/q1J3WW+p/Q5l7F/rAq6lsBtOhckXgwdEBllzlV33UjkYyTjr+cEw2PehgYqMYZ6zXM=
