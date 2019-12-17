@@ -25,7 +25,7 @@ void testDigit(const char actual, int expected)
     TEST_ASSERT_EQUAL_INT(expected, r);
 }
 
-void testHexToInt()
+TEST_CASE("Hexadecimal to integer", "[util]")
 {
     testDigit('0', 0);
     testDigit('1', 1);
@@ -45,7 +45,7 @@ void testHexToInt()
     testDigit('F', 15);
 }
 
-void testHexToBytes()
+TEST_CASE("Hexadecimal string to byte buffer", "[util]")
 {
     const char* TEST_STRING = "aabbccddeeff";
     const std::uint8_t EXPECTED[6] = {0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
@@ -56,13 +56,4 @@ void testHexToBytes()
     if (err != ESP_OK) TEST_FAIL();
 
     TEST_ASSERT_EQUAL_MEMORY(EXPECTED, result, 6);
-}
-
-extern "C" void app_main()
-{
-    vTaskDelay(2000);
-    UNITY_BEGIN();
-    RUN_TEST(testHexToInt);
-    RUN_TEST(testHexToBytes);
-    UNITY_END();
 }

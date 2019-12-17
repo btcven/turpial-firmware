@@ -1,25 +1,21 @@
 /**
  * @file test_wifi_mode.cpp
  * @author Locha Mesh Developers (contact@locha.io)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2019-09-17
- * 
+ *
  * @copyright Copyright (c) 2019 Locha Mesh project developers
  * @license Apache 2.0, see LICENSE file for details
  */
 
-
-#include "NVS.h"
-#include "SSID.h"
+#include "Storage.h"
 #include "WiFi.h"
 #include "defaults.h"
 
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
 #include <unity.h>
 
-void testWiFi()
+TEST_CASE("Wi-Fi initialize", "[network]")
 {
     const TickType_t DELAY = 10000 / portTICK_PERIOD_MS;
 
@@ -50,7 +46,7 @@ void testWiFi()
     vTaskDelay(DELAY);
 }
 
-void testSanitizeSsid()
+TEST_CASE("Sanitize SSID", "[network]")
 {
     std::uint8_t expected_buf[32] = {0};
     expected_buf[0] = 'a';
@@ -68,15 +64,4 @@ void testSanitizeSsid()
     if (err != ESP_OK) TEST_FAIL();
 
     TEST_ASSERT_EQUAL_MEMORY(expected_buf, buf, 32);
-}
-
-extern "C" void app_main()
-{
-    storage::init();
-
-    vTaskDelay(2000);
-    UNITY_BEGIN();
-    RUN_TEST(testWiFi);
-    RUN_TEST(testSanitizeSsid);
-    UNITY_END();
 }

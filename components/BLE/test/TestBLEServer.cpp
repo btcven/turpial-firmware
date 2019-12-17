@@ -9,9 +9,10 @@
  * @license Apache 2.0, see LICENSE file for details
  */
 
+#include <unity.h>
+
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-#include <unity.h>
 
 #include "NVS.h"
 #include "Server.h"
@@ -32,7 +33,7 @@ public:
     }
 };
 
-void testInit()
+TEST_CASE("ble::Server starts", "[ble]")
 {
     esp_err_t err;
 
@@ -74,16 +75,4 @@ void testInit()
     vTaskDelay(1000);
 
     server.stop();
-}
-
-extern "C" void app_main()
-{
-    vTaskDelay(2000);
-
-    esp_err_t err = storage::init();
-    if (err != ESP_OK) return;
-
-    UNITY_BEGIN();
-    RUN_TEST(testInit);
-    UNITY_END();
 }
