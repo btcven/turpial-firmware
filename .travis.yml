@@ -43,9 +43,9 @@ install:
 - . $HOME/esp/esp-idf/export.sh
 
 script:
-- travis-sphinx build --nowarn --source doc/
 # Go back to the git repository
 - cd $PROJECT_PATH
+- travis-sphinx build --nowarn --source doc/
 - idf.py build
 after_success:
 - travis-sphinx deploy --branches dev

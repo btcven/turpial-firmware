@@ -52,9 +52,15 @@ exhale_args = {
     # "treeViewIsBootstrap": True,
     "exhaleExecutesDoxygen": True,
     "exhaleDoxygenStdin":    textwrap.dedent(''''
-        INPUT = ../lib
-        INPUT += ../src
-        EXCLUDE = ../src/sdkconfig.h
+        INPUT = ../main
+        INPUT += ../components/BLE/src/
+        INPUT += ../components/BLEPreferences/src/
+        INPUT += ../components/Network/src/
+        INPUT += ../components/NVS/src/
+        INPUT += ../components/Radio/src/
+        INPUT += ../components/Task/src/
+        INPUT += ../components/Util/src/
+        INPUT += ../components/WS/src/
         ALIASES += "license=\\note"
     ''')
 }
