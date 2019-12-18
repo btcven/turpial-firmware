@@ -146,6 +146,27 @@ extern "C" void app_main()
 #if ESC_ENABLED == true
     esc::FuelGauge fuel_gauge;
 
+    err = fuel_gauge.enterConfig(true);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't enter configuration mode, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
+
+    err = fuel_gauge.setCapacity(4000);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't set capacity, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
+
+    err = fuel_gauge.exitConfig(true);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't exit configuration mode, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
+
     std::uint16_t voltage = 0;
     std::int16_t avg_current = 0;
     std::int16_t avg_power = 0;
