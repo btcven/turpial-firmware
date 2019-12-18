@@ -19,7 +19,7 @@ namespace esc {
  * @brief Default I2C address for the BQ27441
  * 
  */
-const std::uint8_t I2C_ADDRESS = 0x55;
+const std::uint8_t FUELGAUGE_ADDRESS = 0x55;
 
 /**
  * @brief Secret code to unseal the BQ27441
@@ -37,7 +37,7 @@ const std::uint16_t DEVICE_TYPE_ID = 0x0421;
  * @brief BQ27441 Standard Command
  * 
  */
-enum command {
+enum Command {
     CONTROL = 0x00,
     TEMP = 0x02,
     VOLTAGE = 0x04,

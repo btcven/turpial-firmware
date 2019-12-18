@@ -1,90 +1,103 @@
+/**
+ * @file FuelGauge.h
+ * @author Locha Mesh Developers (contact@locha.io)
+ * @brief
+ * @version 0.1
+ * @date 2019-11-22
+ *
+ * @copyright Copyright (c) 2019 Locha Mesh project developers
+ * @license Apache 2.0, see LICENSE file for details
+ *
+ */
+
 #ifndef FUEL_GAUGE_H
 #define FUEL_GAUGE_H
-#include "driver/gpio.h"
-#include "driver/i2c.h"
-#include "esp_err.h"
 
-#define I2C_MASTER_TX_BUF_DISABLE 0 /*!< I2C master doesn't need buffer */
-#define I2C_MASTER_RX_BUF_DISABLE 0 /*!< I2C master doesn't need buffer */
+#include <cstdint>
 
-#define I2C_MASTER_TX_BUF_ENABLE 1 /*!< I2C master doesn't need buffer */
-#define I2C_MASTER_RX_BUF_ENABLE 1 /*!< I2C master doesn't need buffer */
+#include <driver/gpio.h>
+#include <driver/i2c.h>
 
-#define I2C_MASTER_ACK_EN true   /*!< Enable ack check for master */
-#define I2C_MASTER_ACK_DIS false /*!< Disable ack check for master */
+#include <esp_err.h>
 
 namespace esc {
 
-uint8_t fuelgauge_addr = 0x55;
-i2c_mode_t esc_i2c_mode = I2C_MODE_MASTER;
-i2c_port_t esc_i2c_port = I2C_NUM_0;
-gpio_num_t esc_sda_pin = GPIO_NUM_23;
-gpio_num_t esc_scl_pin = GPIO_NUM_22;
-
 class FuelGauge
 {
-private:
-    i2c_config_t m_conf;
-    i2c_port_t m_i2c_master_port = esc_i2c_port;
-    uint32_t esc_i2c_frequency = 100000;
-    uint32_t m_ticksToWait = 10;
-    int32_t m_timeout = 2000;
-
 public:
     /**
      * @brief Construct a new Fuel Gauge object
-     * 
+     *
      */
     FuelGauge();
 
     /**
+     * @brief Get the battery voltage.
+     *
+     * @param[out] voltage: The voltage return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t voltage(std::uint16_t* voltage);
+
+    /**
+     * @brief Get the avg. battery current.
+     *
+     * @param[out] avg_current: The avg. current return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t avgCurrent(std::int16_t* avg_current);
+
+    /**
+     * @brief Get the Avg Power object
+     *
+     * @param[out] avg_power: The avg. power return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t avgPower(std::int16_t* avg_power);
+
+private:
+    /**
+     * @brief read a Word (std::uint16_t) from the IC.
+     *
+     * @param[in]  command: Command.
+     * @param[out] word: The return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - ESP_FAIL: `word` is a null pointer, or i2c failure.
+     *      - (others): failed.
+     */
+    esp_err_t readWord(std::uint8_t command, std::uint16_t* word);
+
+    /**
      * @brief Init i2c iface
-     * 
-     * @return esp_err_t 
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
      */
     esp_err_t i2cInit();
 
     /**
      * @brief delete i2c iface
-     * 
-     * @return esp_err_t 
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
      */
     esp_err_t i2cDelete();
 
-    /**
-     * @brief read Word
-     * 
-     * @param command 
-     * @return uint16_t 
-     */
-    uint16_t readWord(uint8_t command);
-
-    /**
-     * @brief Get the Voltage object
-     * 
-     * @return int16_t 
-     */
-    int16_t voltage();
-
-    /**
-     * @brief Get the Avg Current object
-     * 
-     * @return int16_t 
-     */
-    int16_t avgCurrent();
-
-    /**
-     * @brief Get the Avg Power object
-     * 
-     * @return int16_t 
-     */
-    int16_t avgPower();
-
-    /**
-     * @brief Destroy the Fuel Gauge object
-     * 
-     */
-    ~FuelGauge();
+    /// I2C port configuration.
+    i2c_config_t m_conf;
 };
 
 

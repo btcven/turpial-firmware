@@ -1,12 +1,12 @@
 /**
  * @file main.cpp
  * @author Locha Mesh Developers (contact@locha.io)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2019-09-11
- * 
+ *
  * @copyright Copyright (c) 2019
- * 
+ *
  */
 
 #include <cstdio>
@@ -21,6 +21,7 @@
 #include <Storage.h>
 #include <Radio.h>
 #include <WiFi.h>
+#include <FuelGauge.h>
 
 #include <HttpServer.h>
 #include <WebSocket.h>
@@ -80,7 +81,7 @@ extern "C" void app_main()
     esp_err_t err;
 
     err = storage::init();
-    
+
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", esp_err_to_name(err));
         return;
@@ -140,4 +141,34 @@ extern "C" void app_main()
 
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
     httpServer.start(80);
+
+
+#if ESC_ENABLED == true
+    esc::FuelGauge fuel_gauge;
+
+    std::uint16_t voltage = 0;
+    std::int16_t avg_current = 0;
+    std::int16_t avg_power = 0;
+
+    err = fuel_gauge.voltage(&voltage);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't get voltage, err = %s", esp_err_to_name(err));
+        return;
+    }
+
+    err = fuel_gauge.avgCurrent(&avg_current);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't get avg. current, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
+
+    err = fuel_gauge.avgPower(&avg_power);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't get avg. power, err = %s", esp_err_to_name(err));
+        return;
+    }
+
+    ESP_LOGI(TAG, "%d mV | %d mA | %d mA", voltage, avg_current, avg_power);
+#endif
 }

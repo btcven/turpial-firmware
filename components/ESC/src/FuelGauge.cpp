@@ -10,104 +10,140 @@
  */
 
 #include "FuelGauge.h"
-#include "esp_err.h"
-#include "esp_log.h"
-#include "esp_system.h"
-#include "freertos/FreeRTOS.h"
-#include "sdkconfig.h"
-#include <cstdlib>
-#include <cstring>
+
+#include <esp_err.h>
+#include <esp_log.h>
+#include <esp_system.h>
+#include <freertos/FreeRTOS.h>
+
+#include "BQ27441_Constants.h"
 
 namespace esc {
 
 static const char* TAG = "ESC";
 
+/**
+ * @brief Enable ack check for master
+ */
+static const bool I2C_MASTER_ACK_EN = true;   
+
+/**
+ * @brief Disable ack check for master
+ */
+static const bool I2C_MASTER_ACK_DIS = false; 
+
+static const i2c_port_t I2C_PORT = I2C_NUM_0;
+static const int        I2C_FREQUENCY = 400000;
+static const gpio_num_t I2C_SDA_PIN = GPIO_NUM_23;
+static const gpio_num_t I2C_SCL_PIN = GPIO_NUM_22;
+
+static const std::int32_t TIMEOUT = 2000;
+
+
 FuelGauge::FuelGauge()
+    : m_conf{}
 {
-    m_conf.mode = esc_i2c_mode;
-    m_conf.sda_io_num = esc_sda_pin;
+    m_conf.mode = I2C_MODE_MASTER;
+    m_conf.sda_io_num = I2C_SDA_PIN;
     m_conf.sda_pullup_en = GPIO_PULLUP_DISABLE;
-    m_conf.scl_io_num = esc_scl_pin;
+    m_conf.scl_io_num = I2C_SCL_PIN;
     m_conf.scl_pullup_en = GPIO_PULLUP_DISABLE;
-    m_conf.master.clk_speed = esc_i2c_frequency;
+    m_conf.master.clk_speed = I2C_FREQUENCY;
+}
+
+
+esp_err_t FuelGauge::voltage(std::uint16_t* voltage)
+{
+    return readWord(VOLTAGE, voltage);
+}
+
+esp_err_t FuelGauge::avgCurrent(std::int16_t* avg_current)
+{
+    return readWord(AVG_CURRENT, reinterpret_cast<std::uint16_t*>(avg_current));
+}
+
+esp_err_t FuelGauge::avgPower(std::int16_t* avg_power)
+{
+    return readWord(AVG_POWER, reinterpret_cast<std::uint16_t*>(avg_power));
+}
+
+esp_err_t FuelGauge::readWord(std::uint8_t command, std::uint16_t* word)
+{
+    std::uint8_t data[2] = {0};
+    esp_err_t err = ESP_FAIL;
+
+    if (word == nullptr) return ESP_FAIL;
+
+    err = i2cInit();
+    if (err != ESP_OK) return err;
+
+    err = i2c_set_timeout(I2C_PORT, 14000);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't set timeout");
+        return err;
+    }
+
+    i2c_cmd_handle_t cmd = i2c_cmd_link_create();
+
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd,
+                          (FUELGAUGE_ADDRESS << 1) | I2C_MASTER_WRITE,
+                          I2C_MASTER_ACK_EN);
+    i2c_master_write_byte(cmd, command, I2C_MASTER_ACK_EN);
+    i2c_master_start(cmd);
+    i2c_master_write_byte(cmd,
+                          (FUELGAUGE_ADDRESS << 1) | I2C_MASTER_READ,
+                          I2C_MASTER_ACK_EN);
+    i2c_master_read(cmd, data, 2, I2C_MASTER_LAST_NACK);
+    i2c_master_stop(cmd);
+
+    err = i2c_master_cmd_begin(I2C_PORT, cmd, pdMS_TO_TICKS(TIMEOUT));
+
+    i2c_cmd_link_delete(cmd);
+
+    // Ignore timeout errors.
+    if (err != ESP_OK && err != ESP_ERR_TIMEOUT) {
+        ESP_LOGE(TAG, "I2C command failed, err = %s",
+                 esp_err_to_name(err));
+        return err;
+    }
+
+    err = i2cDelete();
+    if (err != ESP_OK) return err;
+    
+    *word = (data[1] << 8) | data[0];
+
+    return ESP_OK;
 }
 
 esp_err_t FuelGauge::i2cInit()
 {
-    esp_err_t res;
-    res = i2c_param_config(m_i2c_master_port, &m_conf);
-    if (res != ESP_OK) {
-        ESP_LOGE(TAG, "Config: %s", esp_err_to_name(res));
-        return res;
+    esp_err_t err = ESP_FAIL;
+
+    err = i2c_param_config(I2C_PORT, &m_conf);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Config failed, err = %s", esp_err_to_name(err));
+        return err;
     }
-    res = i2c_driver_install(m_i2c_master_port, m_conf.mode, I2C_MASTER_RX_BUF_DISABLE, I2C_MASTER_TX_BUF_DISABLE, 0);
-    if (res != ESP_OK) {
-        ESP_LOGE(TAG, "Driver install: %s", esp_err_to_name(res));
+
+    err = i2c_driver_install(I2C_PORT, m_conf.mode, 0, 0, 0);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Driver install failed, err = %s", esp_err_to_name(err));
+        return err;
     }
-    return res;
+
+    return ESP_OK;
 }
 
 esp_err_t FuelGauge::i2cDelete()
 {
-    esp_err_t res = i2c_driver_delete(m_i2c_master_port);
-    if (res != ESP_OK) {
-        ESP_LOGE(TAG, "Delete %s", esp_err_to_name(res));
+    esp_err_t err = i2c_driver_delete(I2C_PORT);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Delete failed, err = %s", esp_err_to_name(err));
+        return err;
     }
-    return res;
-}
 
-uint16_t FuelGauge::readWord(uint8_t command)
-{
-    uint8_t data[2];
-
-    // init i2c interface
-    i2cInit();
-    // set timeout
-    i2c_set_timeout(m_i2c_master_port, 14000);
-
-    i2c_cmd_handle_t cmd = i2c_cmd_link_create();
-
-    // i2c start
-    i2c_master_start(cmd);
-    // Select the slave by address
-    i2c_master_write_byte(cmd, (0x55 << 1) | I2C_MASTER_WRITE, I2C_MASTER_ACK_EN);
-    i2c_master_write_byte(cmd, command, I2C_MASTER_ACK_EN);
-    // Start read
-    i2c_master_start(cmd);
-    // Select the slave by addr
-    i2c_master_write_byte(cmd, (fuelgauge_addr << 1) | I2C_MASTER_READ, I2C_MASTER_ACK_EN);
-    // Read data from slave
-    i2c_master_read(cmd, data, 2, I2C_MASTER_LAST_NACK);
-    // Stop transaction
-    i2c_master_stop(cmd);
-    // Begin transaction
-    esp_err_t res = i2c_master_cmd_begin(m_i2c_master_port, cmd, (m_timeout < 0 ? m_ticksToWait : pdMS_TO_TICKS(m_timeout)));
-    if (res != ESP_OK) {
-        ESP_LOGE(TAG, "transaction Begin: %s", esp_err_to_name(res));
-    }
-    // i2c driver delete
-    i2cDelete();
-
-    return (data[1] << 8) | data[0];
-}
-
-int16_t FuelGauge::voltage()
-{
-    return readWord(0x04);
-}
-
-int16_t FuelGauge::avgCurrent()
-{
-    return readWord(0x10);
-}
-
-int16_t FuelGauge::avgPower()
-{
-    return readWord(0x18);
-}
-
-FuelGauge::~FuelGauge()
-{
+    return ESP_OK;
 }
 
 } // namespace esc

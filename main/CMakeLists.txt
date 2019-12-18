@@ -3,6 +3,7 @@ idf_component_register(SRCS "main.cpp"
                        REQUIRES
                            BLE
                            BLEPreferences
+                           ESC
                            Network
                            NVS
                            Radio
