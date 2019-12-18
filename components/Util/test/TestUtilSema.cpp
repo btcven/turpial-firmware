@@ -15,7 +15,7 @@
 #include <freertos/task.h>
 #include <unity.h>
 
-void testSema()
+TEST_CASE("Semaphore take, give and wait", "[util]")
 {
     util::Semaphore sema("TestSema");
 
@@ -24,12 +24,4 @@ void testSema()
 
     // Should not block
     sema.wait();
-}
-
-extern "C" void app_main()
-{
-    vTaskDelay(2000);
-    UNITY_BEGIN();
-    RUN_TEST(testSema);
-    UNITY_END();
 }

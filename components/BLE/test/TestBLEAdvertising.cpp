@@ -1,7 +1,7 @@
 /**
  * @file test_ble_advertising.cpp
  * @author Locha Mesh Developers (contact@locha.io)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2019-12-02
  * 
@@ -11,13 +11,11 @@
 
 #include <cstdint>
 
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
 #include <unity.h>
 
 #include "Advertising.h"
 
-void testAdvertisementData()
+TEST_CASE("AdvertisementData encodes data", "[ble]")
 {
     const std::size_t LENGTH = 1 + 1 + 7;
     const std::uint8_t DATA[LENGTH] = {1 + 7, ESP_BLE_AD_TYPE_NAME_CMPL, 0x54, 0x75, 0x72, 0x70, 0x69, 0x61, 0x6c};
@@ -29,7 +27,7 @@ void testAdvertisementData()
     TEST_ASSERT_EQUAL_MEMORY(DATA, adv_data.getPayload(), LENGTH);
 }
 
-void testAdvertisementState()
+TEST_CASE("AdvertisementState changes state", "[ble]")
 {
     ble::AdvertisementState adv_state;
 
@@ -41,14 +39,4 @@ void testAdvertisementState()
     // check the state
     TEST_ASSERT_TRUE(adv_state.is_config_state());
     TEST_ASSERT_TRUE(adv_state.is_scan_rsp_config_state());
-}
-
-extern "C" void app_main()
-{
-    vTaskDelay(2000);
-
-    UNITY_BEGIN();
-    RUN_TEST(testAdvertisementData);
-    RUN_TEST(testAdvertisementState);
-    UNITY_END();
 }
