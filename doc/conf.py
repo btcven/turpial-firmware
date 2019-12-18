@@ -55,6 +55,7 @@ exhale_args = {
         INPUT = ../main
         INPUT += ../components/BLE/src/
         INPUT += ../components/BLEPreferences/src/
+        INPUT += ../components/ESC/src/
         INPUT += ../components/Network/src/
         INPUT += ../components/NVS/src/
         INPUT += ../components/Radio/src/
