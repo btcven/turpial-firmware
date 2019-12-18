@@ -153,9 +153,30 @@ extern "C" void app_main()
         return;
     }
 
-    err = fuel_gauge.setCapacity(4000);
+    err = fuel_gauge.setCapacity(ESC_MAX_BATTERY_CAPACITY);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Can't set capacity, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
+
+    err = fuel_gauge.setGPOUTPolarity(true);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't set polarity, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
+
+    err = fuel_gauge.setGPOUTFunction(esc::SOC_INT);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't set function, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
+
+    err = fuel_gauge.setSOCIDelta(1);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't set function, err = %s",
                  esp_err_to_name(err));
         return;
     }
@@ -166,6 +187,9 @@ extern "C" void app_main()
                  esp_err_to_name(err));
         return;
     }
+
+    // Test interrupt
+    fuel_gauge.pulseGPOUT();
 
     std::uint16_t voltage = 0;
     std::int16_t avg_current = 0;

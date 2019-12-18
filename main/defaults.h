@@ -16,7 +16,7 @@
 #define NVS_IS_CONFIGURED_KEY "is_configured" /*!< Is turpial configured? */
 
 #define ESC_ENABLED true              /*!< ESC feature enabled? */
-#define ESC_MAX_BATTERY_CAPACITY 2200 /*!< in mAh unit */
+#define ESC_MAX_BATTERY_CAPACITY 2000 /*!< in mAh unit */
 #define ESC_LOW_BATTTERY_THRESHOLD 20 /*!< in % unit */
 #define ESC_CRITICAL_BAT_THRESHOLD 7  /*!< in % unit */
 

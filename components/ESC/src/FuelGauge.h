@@ -22,6 +22,9 @@
 
 namespace esc {
 
+static const bool BAT_LOW = true;  /*!< Battery low */
+static const bool SOC_INT = false; /*!< SoC change */
+
 class FuelGauge
 {
 public:
@@ -67,13 +70,88 @@ public:
     /**
      * @brief Set capacity
      *
-     * @param[out] avg_power: The avg. power return value.
+     * @param[in] capacity: The capacity in mA.
      *
      * @return
      *      - ESP_OK: succeed.
      *      - (others): failed.
      */
     esp_err_t setCapacity(std::uint16_t capacity);
+
+    /**
+     * @brief GPOUT polarity
+     *
+     * @param[out] value: Return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t GPOUTPolarity(bool* value);
+
+    /**
+     * @brief Set GPOUT polarity.
+     *
+     * @param[in] active_high: true to set to active high, false for low.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t setGPOUTPolarity(bool active_high);
+
+    /**
+     * @brief GPOUT function.
+     *
+     * @param[out] function: The return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t GPOUTFunction(bool* function);
+
+    /**
+     * @brief Set GPOUT function.
+     *
+     * @param[in] function: The GPOUT function.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t setGPOUTFunction(bool function);
+
+    /**
+     * @brief SOC_INT delta.
+     *
+     * @param[out] value: The return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t sociDelta(std::uint8_t* value);
+
+    /**
+     * @brief SOC_INT delta.
+     *
+     * @param[in] delta: The SOC_INT delta.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t setSOCIDelta(std::uint8_t delta);
+
+    /**
+     * @brief Pulse GPOUT.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t pulseGPOUT();
 
     /**
      * @brief Enter configuration mode.
@@ -97,6 +175,28 @@ public:
      *      - (others): failed.
      */
     esp_err_t exitConfig(bool resim);
+
+    /**
+     * @brief Get opConfig.
+     *
+     * @param[out] result: The return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t opConfig(std::uint16_t* result);
+
+    /**
+     * @brief Write opConfig.
+     *
+     * @param[in] value: The opConfig value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t writeOpConfig(std::uint16_t value);
 
     /**
      * @brief Soft reset.

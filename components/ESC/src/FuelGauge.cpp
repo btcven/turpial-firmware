@@ -42,6 +42,15 @@ static const TickType_t I2C_TIMEOUT = 2000;
         }                     \
     } while (false)
 
+template <typename T>
+static T constrain(T value, T min, T max)
+{
+    if (value < min) { return min; }
+    if (value > max) { return max; }
+
+    return value;
+}
+
 FuelGauge::FuelGauge()
     : m_conf{},
       m_seal_again(false),
@@ -90,6 +99,94 @@ esp_err_t FuelGauge::status(std::uint16_t* result)
 esp_err_t FuelGauge::flags(std::uint16_t* result)
 {
     return readWord(FLAGS, result);
+}
+
+esp_err_t FuelGauge::GPOUTPolarity(bool* value)
+{
+    if (value == nullptr) return ESP_FAIL;
+
+    std::uint16_t opconfig = 0;
+    ESP_ERR_TRY(opConfig(&opconfig));
+
+    *value = (opconfig & OPCONFIG_GPIOPOL) == OPCONFIG_GPIOPOL;
+
+    return ESP_OK;
+}
+
+esp_err_t FuelGauge::setGPOUTPolarity(bool active_high)
+{
+    std::uint16_t old_opconfig = 0;
+    ESP_ERR_TRY(opConfig(&old_opconfig));
+
+    bool already_high = (active_high && (old_opconfig & OPCONFIG_GPIOPOL));
+    bool already_low = (!active_high && !(old_opconfig & OPCONFIG_GPIOPOL));
+
+    if (already_high || already_low) return ESP_OK;
+
+    uint16_t new_opconfig = old_opconfig;
+    if (active_high) {
+        new_opconfig |= OPCONFIG_GPIOPOL;
+    } else {
+        new_opconfig &= ~(OPCONFIG_GPIOPOL);
+    }
+
+    ESP_ERR_TRY(writeOpConfig(new_opconfig));
+
+    return ESP_OK;
+}
+
+esp_err_t FuelGauge::GPOUTFunction(bool* function)
+{
+    if (function == nullptr) return ESP_FAIL;
+
+    std::uint16_t opconfig = 0;
+    ESP_ERR_TRY(opConfig(&opconfig));
+
+    *function = ((opconfig & OPCONFIG_BATLOWEN) == OPCONFIG_BATLOWEN);
+
+    return ESP_OK;
+}
+
+esp_err_t FuelGauge::setGPOUTFunction(bool function)
+{
+    std::uint16_t old_opconfig = 0;
+    ESP_ERR_TRY(opConfig(&old_opconfig));
+
+    bool is_bat_low = (function && (old_opconfig & OPCONFIG_BATLOWEN));
+    bool is_soc_int = (!function && !(old_opconfig & OPCONFIG_BATLOWEN));
+    if (is_bat_low || is_soc_int) return ESP_OK;
+
+    std::uint16_t new_opconfig = old_opconfig;
+    if (function == BAT_LOW) {
+        new_opconfig |= OPCONFIG_BATLOWEN;
+    } else {
+        new_opconfig &= ~(OPCONFIG_BATLOWEN);
+    }
+
+    ESP_ERR_TRY(writeOpConfig(new_opconfig));
+
+    return ESP_OK;
+}
+
+esp_err_t FuelGauge::sociDelta(std::uint8_t* value)
+{
+    if (value == nullptr) return ESP_FAIL;
+
+    std::uint8_t soci = 0;
+    ESP_ERR_TRY(readExtendedData(ID_STATE, 26, &soci));
+
+    return ESP_OK;
+}
+
+esp_err_t FuelGauge::setSOCIDelta(std::uint8_t delta)
+{
+    std::uint8_t soci = constrain<std::uint8_t>(delta, 0, 100);
+    return writeExtendedData(ID_STATE, 26, &soci, 1);
+}
+
+esp_err_t FuelGauge::pulseGPOUT()
+{
+    return executeControlWord(PULSE_SOC_INT);
 }
 
 esp_err_t FuelGauge::sealed(bool* is_sealed)
@@ -202,6 +299,21 @@ esp_err_t FuelGauge::exitConfig(bool resim)
     }
 
     return ESP_FAIL;
+}
+
+esp_err_t FuelGauge::opConfig(std::uint16_t* result)
+{
+    return readWord(EXTENDED_OPCONFIG, result);
+}
+
+esp_err_t FuelGauge::writeOpConfig(std::uint16_t value)
+{
+    std::uint8_t op_config_msb = value >> 8;
+    std::uint8_t op_config_lsb = value & 0x00FF;
+    std::uint8_t op_config_data[2] = {op_config_msb, op_config_lsb};
+
+    // OpConfig register location: ID_REGISTERS id, offset 0
+    return writeExtendedData(ID_REGISTERS, 0, op_config_data, 2);
 }
 
 esp_err_t FuelGauge::blockDataControl()
