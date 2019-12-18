@@ -163,27 +163,118 @@ private:
      */
     esp_err_t seal(std::uint16_t* result);
 
-
+    /**
+     * @brief Set block data control.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t blockDataControl();
 
+    /**
+     * @brief Set block data class.
+     *
+     * @param[in] result: Class ID.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t blockDataClass(std::uint8_t id);
 
+    /**
+     * @brief Set block data offset.
+     *
+     * @param[in] offset: Offset.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t blockDataOffset(std::uint8_t offset);
 
+    /**
+     * @brief Get block data checksum.
+     *
+     * @param[out] result: The return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t blockDataChecksum(std::uint8_t* csum);
 
+    /**
+     * @brief Read block data.
+     *
+     * @param[in]  offset: Offset.
+     * @param[out] result: The return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t readBlockData(std::uint8_t offset, std::uint8_t* result);
 
+    /**
+     * @brief Write block data.
+     *
+     * @param[in] offset: Offset.
+     * @param[in] data: Data.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t writeBlockData(std::uint8_t offset, std::uint8_t data);
 
+    /**
+     * @brief Compute block checksum.
+     *
+     * @param[out] result: Block checksum.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t computeBlockChecksum(std::uint8_t* checksum);
 
+    /**
+     * @brief Write block checksum.
+     *
+     * @param[in] csum: The checksum.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t writeBlockChecksum(std::uint8_t csum);
 
+    /**
+     * @brief Read extended data.
+     *
+     * @param[in]  class_id: Class ID.
+     * @param[in]  offset: offset.
+     * @param[out] result: The return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t readExtendedData(std::uint8_t class_id,
                                std::uint8_t offset,
                                std::uint8_t* result);
 
+    /**
+     * @brief Seal the BQ27441.
+     *
+     * @param[out] result: The return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
     esp_err_t writeExtendedData(std::uint8_t class_id,
                                 std::uint8_t offset,
                                 std::uint8_t* data,
@@ -224,10 +315,34 @@ private:
      */
     esp_err_t readWord(std::uint8_t command, std::uint16_t* word);
 
+    /**
+     * @brief Write bytes to I2C.
+     *
+     * @param[in] sub_addres: Sub address (command).
+     * @param[in] bytes: Byte buffer.
+     * @param[in] count: Byte buffer size.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - ESP_FAIL: `word` is a null pointer, or i2c failure.
+     *      - (others): failed.
+     */
     esp_err_t i2cWriteBytes(std::uint8_t sub_address,
                             std::uint8_t* bytes,
                             std::size_t count);
 
+    /**
+     * @brief Read bytes from the I2C.
+     *
+     * @param[in] sub_addres: Sub address (command).
+     * @param[out] bytes: Byte buffer.
+     * @param[in] count: Byte buffer size.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - ESP_FAIL: `word` is a null pointer, or i2c failure.
+     *      - (others): failed.
+     */
     esp_err_t i2cReadBytes(std::uint8_t sub_address,
                            std::uint8_t* bytes,
                            std::size_t count);
