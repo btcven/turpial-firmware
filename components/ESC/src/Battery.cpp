@@ -44,20 +44,20 @@ esp_err_t Battery::init(gpio_num_t gpout_io_num,
 
     ESP_ERR_TRY(fuel_gauge.setCapacity(max_capacity));
 
-    ESP_ERR_TRY(fuel_gauge.setGPOUTPolarity(true));
+    ESP_ERR_TRY(fuel_gauge.setGPOUTPolarity(false));
     ESP_ERR_TRY(fuel_gauge.setGPOUTFunction(SOC_INT));
     ESP_ERR_TRY(fuel_gauge.setSOCIDelta(soc_interval));
 
     ESP_ERR_TRY(fuel_gauge.exitConfig(true));
 
     gpio_config_t io_conf = {};
-    io_conf.intr_type = GPIO_INTR_HIGH_LEVEL;
+    io_conf.intr_type = GPIO_INTR_LOW_LEVEL;
     io_conf.pin_bit_mask = (1 << static_cast<std::uint32_t>(gpout_io_num));
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
 
     ESP_ERR_TRY(gpio_config(&io_conf));
-    ESP_ERR_TRY(gpio_set_intr_type(gpout_io_num, GPIO_INTR_HIGH_LEVEL));
+    ESP_ERR_TRY(gpio_set_intr_type(gpout_io_num, GPIO_INTR_LOW_LEVEL));
     ESP_ERR_TRY(gpio_install_isr_service(0));
     ESP_ERR_TRY(gpio_isr_handler_add(gpout_io_num, interruptIsrHandler, &g_gpout_num));
 
