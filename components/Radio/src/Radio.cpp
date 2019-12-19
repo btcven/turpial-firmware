@@ -14,9 +14,11 @@
 #include <driver/uart.h>
 #include <esp_log.h>
 
-namespace radio {
+#include "TxBuffer.h"
 
-#if RAD_ENABLED == true
+#include "defaults.h"
+
+namespace radio {
 
 static const char* TAG = "UART";
 
@@ -45,26 +47,26 @@ void Radio::run(void* data)
     ESP_LOGD(TAG, "Configuring UART pins");
     ESP_ERROR_CHECK(uart_set_pin(UART_NUM_2, RAD_TX_PIN, RAD_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 
-    const int uart_buffer_size = (1024 * 2);
+    const int uart_buffer_size = 1024;
     QueueHandle_t uart_queue;
 
     ESP_LOGD(TAG, "Installing UART driver");
-    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_2, uart_buffer_size, uart_buffer_size, 10, &uart_queue, 0));
+    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_2, uart_buffer_size, 0, 10, &uart_queue, 0));
+
+    TxBuffer& tx_buffer = TxBuffer::getInstance();
+
+    std::size_t buf_size = 0;
 
     while (true) {
-        ESP_LOGD(TAG, "Reading bytes");
+        // Get a packet of MTU-value bytes.
+        std::uint8_t* byte_buf = tx_buffer.receive(&buf_size);
 
-        std::uint8_t buffer[13];
-        int n = uart_read_bytes(UART_NUM_2, buffer, 12, 1000);
-        buffer[12] = '\0';
-        if (n == 12) {
-            ESP_LOGI(TAG, "Received, buffer = %s", reinterpret_cast<char*>(buffer));
-        } else {
-            ESP_LOGE(TAG, "Error, n = %d", n);
-        }
+        ESP_LOG_BUFFER_HEXDUMP(TAG, byte_buf, TXBUFFER_MTU, ESP_LOG_INFO);
+
+        // This function blocks until all bytes have been sent
+        // or copied to the TX FIFO.
+        uart_write_bytes(UART_NUM_2, reinterpret_cast<char*>(byte_buf), buf_size);
     }
 }
-
-#endif
 
 } // namespace radio

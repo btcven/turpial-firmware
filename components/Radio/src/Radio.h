@@ -13,11 +13,8 @@
 #define RADIO_H
 
 #include "Task.h"
-#include "defaults.h"
 
 namespace radio {
-
-#if RAD_ENABLED == true
 
 /**
  * @brief Radio communication task
@@ -39,8 +36,6 @@ public:
      */
     void run(void* data) override;
 };
-
-#endif
 
 } // namespace radio
 

@@ -24,7 +24,7 @@
 
 #include <HttpServer.h>
 #include <WebSocket.h>
-#include <WsHandlerEvents.h>
+#include <TxBuffer.h>
 
 #include "defaults.h"
 
@@ -68,9 +68,8 @@ esp_err_t getIsConfigured(bool& is_configured)
 
 void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 {
-    WsHandlerEvents* myHandler = new WsHandlerEvents();
     if (pHttpRequest->isWebsocket()) {
-        pHttpRequest->getWebSocket()->setHandler(myHandler);
+        pHttpRequest->getWebSocket()->setHandler(&TxBuffer::getInstance());
         ESP_LOGI("available clients---->>", "%d", pHttpRequest->getWebSocket()->availableClients());
     }
 }
