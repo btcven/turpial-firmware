@@ -15,8 +15,8 @@
 
 #include <cstdint>
 
-#include <driver/gpio.h>
 #include <driver/i2c.h>
+#include <driver/gpio.h>
 
 #include <esp_err.h>
 
@@ -25,14 +25,34 @@ namespace esc {
 static const bool BAT_LOW = true;  /*!< Battery low */
 static const bool SOC_INT = false; /*!< SoC change */
 
+/**
+ * @brief State-Of-Charge measure type.
+ */
+enum class SocMeasure {
+    Filtered,   /*!< State-Of-Charge measure filtered */
+    Unfiltered, /*!< State-Of-Charge measure unfiltered */
+};
+
 class FuelGauge
 {
 public:
+    FuelGauge(FuelGauge const&) = delete;
+    FuelGauge(FuelGauge&&) = delete;
+
+    FuelGauge& operator=(FuelGauge const&) = delete;
+    FuelGauge& operator=(FuelGauge&&) = delete;
+
     /**
-     * @brief Construct a new Fuel Gauge object
+     * @brief Get the Fuel Gauge unique instance
      *
+     * @return FuelGauge& a reference to the Fuel Gauge
      */
-    FuelGauge();
+    static FuelGauge& getInstance()
+    {
+        // Instatiated only once, won't be created again
+        static FuelGauge g_instance;
+        return g_instance;
+    }
 
     /**
      * @brief Get the battery voltage.
@@ -66,6 +86,18 @@ public:
      *      - (others): failed.
      */
     esp_err_t avgPower(std::int16_t* avg_power);
+
+    /**
+     * @brief Get State-Of-Charge
+     *
+     * @param[in]  type: Measure type.
+     * @param[out] soc: The SoC return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t soc(SocMeasure type, std::uint16_t* soc);
 
     /**
      * @brief Set capacity
@@ -208,6 +240,11 @@ public:
     esp_err_t softReset();
 
 private:
+    /**
+     * @brief Construct a new Fuel Gauge object
+     */
+    FuelGauge();
+
     /**
      * @brief Get result of the STATUS command.
      *

@@ -18,6 +18,8 @@
 #include <esp_log.h>
 #include <esp_system.h>
 
+#include <ErrUtil.h>
+
 #include "BQ27441_Constants.h"
 
 namespace esc {
@@ -30,17 +32,6 @@ static const gpio_num_t I2C_SDA_PIN = GPIO_NUM_23;
 static const gpio_num_t I2C_SCL_PIN = GPIO_NUM_22;
 
 static const TickType_t I2C_TIMEOUT = 2000;
-
-#define ESP_ERR_TRY(expr)     \
-    do {                      \
-        esp_err_t err = expr; \
-        if (err != ESP_OK) {  \
-            ESP_LOGE(TAG, "%s failed, err = %s", \
-                     #expr,                      \
-                     esp_err_to_name(err));      \
-            return err;       \
-        }                     \
-    } while (false)
 
 template <typename T>
 static T constrain(T value, T min, T max)
@@ -78,6 +69,23 @@ esp_err_t FuelGauge::avgCurrent(std::int16_t* avg_current)
 esp_err_t FuelGauge::avgPower(std::int16_t* avg_power)
 {
     return readWord(AVG_POWER, reinterpret_cast<std::uint16_t*>(avg_power));
+}
+
+esp_err_t FuelGauge::soc(SocMeasure type, std::uint16_t* soc)
+{
+    switch (type) {
+    case SocMeasure::Filtered:
+        return readWord(SOC, soc);
+        break;
+    case SocMeasure::Unfiltered:
+        return readWord(SOC_UNFL, soc);
+        break;
+    default:
+        return ESP_FAIL;
+        break;
+    }
+
+    return ESP_OK;
 }
 
 esp_err_t FuelGauge::setCapacity(std::uint16_t capacity)

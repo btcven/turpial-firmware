@@ -21,6 +21,7 @@
 #include <Storage.h>
 #include <Radio.h>
 #include <WiFi.h>
+#include <Battery.h>
 #include <FuelGauge.h>
 
 #include <HttpServer.h>
@@ -144,76 +145,18 @@ extern "C" void app_main()
 
 
 #if ESC_ENABLED == true
-    esc::FuelGauge fuel_gauge;
+    esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
 
-    err = fuel_gauge.enterConfig(true);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Can't enter configuration mode, err = %s",
-                 esp_err_to_name(err));
-        return;
-    }
+    esc::Battery& battery = esc::Battery::getInstance();
 
-    err = fuel_gauge.setCapacity(ESC_MAX_BATTERY_CAPACITY);
+    err = battery.init(ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Can't set capacity, err = %s",
-                 esp_err_to_name(err));
-        return;
-    }
-
-    err = fuel_gauge.setGPOUTPolarity(true);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Can't set polarity, err = %s",
-                 esp_err_to_name(err));
-        return;
-    }
-
-    err = fuel_gauge.setGPOUTFunction(esc::SOC_INT);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Can't set function, err = %s",
-                 esp_err_to_name(err));
-        return;
-    }
-
-    err = fuel_gauge.setSOCIDelta(1);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Can't set function, err = %s",
-                 esp_err_to_name(err));
-        return;
-    }
-
-    err = fuel_gauge.exitConfig(true);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Can't exit configuration mode, err = %s",
+        ESP_LOGE(TAG, "Can't setup ESC, err = %s",
                  esp_err_to_name(err));
         return;
     }
 
     // Test interrupt
     fuel_gauge.pulseGPOUT();
-
-    std::uint16_t voltage = 0;
-    std::int16_t avg_current = 0;
-    std::int16_t avg_power = 0;
-
-    err = fuel_gauge.voltage(&voltage);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Can't get voltage, err = %s", esp_err_to_name(err));
-        return;
-    }
-
-    err = fuel_gauge.avgCurrent(&avg_current);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Can't get avg. current, err = %s",
-                 esp_err_to_name(err));
-        return;
-    }
-
-    err = fuel_gauge.avgPower(&avg_power);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Can't get avg. power, err = %s", esp_err_to_name(err));
-        return;
-    }
-
-    ESP_LOGI(TAG, "%d mV | %d mA | %d mA", voltage, avg_current, avg_power);
 #endif
 }
