@@ -11,8 +11,6 @@
 
 #include "TxBuffer.h"
 
-#include <istream>
-
 #include <esp_log.h>
 
 static const char* TAG = "TxBuffer";
@@ -30,11 +28,21 @@ TxBuffer::TxBuffer()
 
 void TxBuffer::onMessage(WebSocketInputStreambuf* input, WebSocket* ws)
 {
-    std::istream in(input);
-
     char buf[TXBUFFER_MTU] = {0};
-    while (in.read(buf, sizeof(buf))) {
-        send(reinterpret_cast<std::uint8_t*>(buf), TXBUFFER_MTU);
+    std::size_t avail = input->getRecordSize();
+    ESP_LOGI(TAG, "avail = %d", avail);
+    while (avail >= 1) {
+        std::size_t chunk_size = avail > TXBUFFER_MTU ? TXBUFFER_MTU : avail;
+        ESP_LOGI(TAG, "chunk_size = %d", avail);
+        for (int i = 0; i < chunk_size; ++i) {
+            buf[i] = static_cast<char>(input->sbumpc());
+        }
+
+        if (send(reinterpret_cast<std::uint8_t*>(buf), chunk_size)) {
+            ESP_LOGI(TAG, "sent chunk");
+        }
+
+        avail -= chunk_size;
     }
 }
 

@@ -51,7 +51,7 @@ void Radio::run(void* data)
     QueueHandle_t uart_queue;
 
     ESP_LOGD(TAG, "Installing UART driver");
-    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_2, uart_buffer_size, 0, 10, &uart_queue, 0));
+    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_2, uart_buffer_size, uart_buffer_size, 10, &uart_queue, 0));
 
     TxBuffer& tx_buffer = TxBuffer::getInstance();
 
@@ -61,11 +61,15 @@ void Radio::run(void* data)
         // Get a packet of MTU-value bytes.
         std::uint8_t* byte_buf = tx_buffer.receive(&buf_size);
 
-        ESP_LOG_BUFFER_HEXDUMP(TAG, byte_buf, TXBUFFER_MTU, ESP_LOG_INFO);
+        ESP_LOG_BUFFER_HEXDUMP(TAG, byte_buf, buf_size, ESP_LOG_INFO);
 
         // This function blocks until all bytes have been sent
         // or copied to the TX FIFO.
         uart_write_bytes(UART_NUM_2, reinterpret_cast<char*>(byte_buf), buf_size);
+
+        ESP_LOGD(TAG, "sent %d bytes", buf_size);
+
+        buf_size = 0;
     }
 }
 
