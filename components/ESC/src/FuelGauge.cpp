@@ -55,6 +55,20 @@ FuelGauge::FuelGauge()
     m_conf.master.clk_speed = I2C_FREQUENCY;
 }
 
+esp_err_t FuelGauge::temperature(TempMeasure type, std::uint16_t* temp)
+{
+	switch (type)
+	{
+    case TempMeasure::Battery:
+		ESP_ERR_TRY(readWord(TEMP, temp));
+		break;
+    case TempMeasure::Internal:
+		ESP_ERR_TRY(readWord(INT_TEMP, temp));
+		break;
+	}
+
+	return ESP_OK;
+}
 
 esp_err_t FuelGauge::voltage(std::uint16_t* voltage)
 {

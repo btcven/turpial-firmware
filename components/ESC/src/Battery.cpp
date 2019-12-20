@@ -84,6 +84,7 @@ void Interrupt::run(void* task_data)
     std::int16_t avg_current = 0;
     std::int16_t avg_power = 0;
     std::uint16_t soc = 0;
+    std::uint16_t temp = 0;
 
     while (true) {
         if (xQueueReceive(g_bat_evt_queue, &io_pin, portMAX_DELAY)) {
@@ -117,11 +118,19 @@ void Interrupt::run(void* task_data)
                 continue;
             }
 
-            ESP_LOGI(TAG, "%d mV | %d mA | %d mA | %d %%",
+            err = fuel_gauge.temperature(TempMeasure::Internal, &temp);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Can't get internal temperature, err = %s",
+                         esp_err_to_name(err));
+                continue;
+            }
+
+            ESP_LOGI(TAG, "%d mV | %d mA | %d mA | %d %% | %d",
                      voltage,
                      avg_current,
                      avg_power,
-                     soc);
+                     soc,
+                     temp);
         }
     }
 }

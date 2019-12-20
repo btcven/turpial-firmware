@@ -33,6 +33,14 @@ enum class SocMeasure {
     Unfiltered, /*!< State-Of-Charge measure unfiltered */
 };
 
+/**
+ * @brief Temperature measure type.
+ */
+enum class TempMeasure {
+    Battery,  /*!< Measure battery temperature. */
+    Internal, /*!< Measure internal temperature. */
+};
+
 class FuelGauge
 {
 public:
@@ -53,6 +61,18 @@ public:
         static FuelGauge g_instance;
         return g_instance;
     }
+
+    /**
+     * @brief Get the battery voltage.
+     *
+     * @param[in]  type: Temperature measure type.
+     * @param[out] temp: Temperature return value.
+     *
+     * @return
+     *      - ESP_OK: succeed.
+     *      - (others): failed.
+     */
+    esp_err_t temperature(TempMeasure type, std::uint16_t* temp);
 
     /**
      * @brief Get the battery voltage.
