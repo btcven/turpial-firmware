@@ -1,12 +1,12 @@
 /**
  * @file main.cpp
  * @author Locha Mesh Developers (contact@locha.io)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2019-09-11
- * 
+ *
  * @copyright Copyright (c) 2019
- * 
+ *
  */
 
 #include <cstdio>
@@ -21,6 +21,8 @@
 #include <Storage.h>
 #include <Radio.h>
 #include <WiFi.h>
+#include <Battery.h>
+#include <FuelGauge.h>
 
 #include <HttpServer.h>
 #include <WebSocket.h>
@@ -80,7 +82,7 @@ extern "C" void app_main()
     esp_err_t err;
 
     err = storage::init();
-    
+
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initialize NVS, error (%s)", esp_err_to_name(err));
         return;
@@ -140,4 +142,21 @@ extern "C" void app_main()
 
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
     httpServer.start(80);
+
+
+#if ESC_ENABLED == true
+    esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
+
+    esc::Battery& battery = esc::Battery::getInstance();
+
+    err = battery.init(ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Can't setup ESC, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
+
+    // Test interrupt
+    fuel_gauge.pulseGPOUT();
+#endif
 }

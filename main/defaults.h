@@ -16,18 +16,17 @@
 #define NVS_IS_CONFIGURED_KEY "is_configured" /*!< Is turpial configured? */
 
 #define ESC_ENABLED true              /*!< ESC feature enabled? */
-#define ESC_MAX_BATTERY_CAPACITY 2200 /*!< in mAh unit */
+#define ESC_MAX_BATTERY_CAPACITY 2000 /*!< in mAh unit */
 #define ESC_LOW_BATTTERY_THRESHOLD 20 /*!< in % unit */
 #define ESC_CRITICAL_BAT_THRESHOLD 7  /*!< in % unit */
+#define ESC_GPOUT_PIN GPIO_NUM_18     /*!< GPOUT pin number */
+#define ESC_SOC_DELTA 1               /*!< SoC change delta */
 
 #define BLE_ENABLED false /*!< BLE feature enabled? */
 
-// BLE enabled?
-#define BLE_ENABLED false
-
-#define RAD_ENABLED true /*!< Radio subsystem enabled? */
-#define RAD_TX_PIN 5     /*!< Radio UART TX pin */
-#define RAD_RX_PIN 4     /*!< Radio UART RX pin */
+#define RAD_ENABLED false /*!< Radio subsystem enabled? */
+#define RAD_TX_PIN 5      /*!< Radio UART TX pin */
+#define RAD_RX_PIN 4      /*!< Radio UART RX pin */
 
 #define WIFI_MODE WIFI_MODE_AP              /*!< Wi-Fi Operation mode */
 #define WST_SSID ""                         /*!< STA SSID */
