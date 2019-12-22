@@ -18,17 +18,17 @@
 #include <freertos/task.h>
 
 #include <BLEPreferences.h>
-#include <Storage.h>
-#include <Radio.h>
-#include <WiFi.h>
 #include <Battery.h>
 #include <FuelGauge.h>
+#include <Radio.h>
+#include <Storage.h>
+#include <WiFi.h>
 
+#include "UserButton.h"
+#include "defaults.h"
 #include <HttpServer.h>
 #include <WebSocket.h>
 #include <WsHandlerEvents.h>
-
-#include "defaults.h"
 
 HttpServer httpServer;
 
@@ -76,6 +76,22 @@ void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
         ESP_LOGI("available clients---->>", "%d", pHttpRequest->getWebSocket()->availableClients());
     }
 }
+
+static void click(void)
+{
+    printf(">>>>>>>>>>>>>>>> click event-----callback called------------>>>>\n");
+} //
+
+static void doubleClick(void)
+{
+    printf(">>>>>>>>>>>>>>>> DOUBLEclick event----callback called------------->>>>\n");
+} //
+
+static void longClick(void)
+{
+    printf(">>>>>>>>>>>>>>>> LONG CLICK EVENT-----callback called----------->>>>\n");
+} //
+
 
 extern "C" void app_main()
 {
@@ -152,11 +168,14 @@ extern "C" void app_main()
     err = battery.init(ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Can't setup ESC, err = %s",
-                 esp_err_to_name(err));
+            esp_err_to_name(err));
         return;
     }
 
     // Test interrupt
     fuel_gauge.pulseGPOUT();
 #endif
+
+    hmi::UserButton* usrBtn = new hmi::UserButton();
+    usrBtn->init(GPIO_NUM_21, true, click, doubleClick, longClick);
 }
