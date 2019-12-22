@@ -96,6 +96,9 @@ static void longClick(void)
 extern "C" void app_main()
 {
     esp_err_t err;
+    
+    hmi::UserButton* usrBtn = new hmi::UserButton();
+    usrBtn->init(GPIO_NUM_21, true, click, doubleClick, longClick);
 
     err = storage::init();
 
@@ -173,9 +176,8 @@ extern "C" void app_main()
     }
 
     // Test interrupt
-    fuel_gauge.pulseGPOUT();
+   // fuel_gauge.pulseGPOUT();
 #endif
-
-    hmi::UserButton* usrBtn = new hmi::UserButton();
-    usrBtn->init(GPIO_NUM_21, true, click, doubleClick, longClick);
+ 
+  
 }

@@ -28,13 +28,7 @@ void UserButton::init(gpio_num_t user_button,
     static Button* btn = new Button(user_button, true);
 
     btn->_gpio_btn = user_button;
-    if (active) {
-        // the button connects the input pin to GND when pressed.
-        btn->_buttonPressed = LOW;
-    } else {
-        // the button connects the input pin to VCC when pressed.
-        btn->_buttonPressed = HIGH;
-    }
+    active ? btn->_buttonPressed = LOW : btn->_buttonPressed = HIGH;
 
     btn->attachClick(fnClick);
     btn->attachDoubleClick(fn2Click);
