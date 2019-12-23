@@ -19,13 +19,23 @@ UserButton::UserButton()
 {
 }
 
+/**
+ * @brief this is a public interface to interact with external user 
+ * let us configure any Button as a Input to have multiple functionalities
+ * 
+ * @param user_button 
+ * @param active 
+ * @param fnClick callback to handle click event
+ * @param fn2Click callback to handle double click event
+ * @param fnLongClick callback to handle long click event
+ */
 void UserButton::init(gpio_num_t user_button,
     bool active,
     callbackFunction fnClick,
     callbackFunction fn2Click,
     callbackFunction fnLongClick)
 {
-    static Button* btn = new Button(user_button, true);
+    Button* btn = new Button(user_button, true);
 
     btn->_gpio_btn = user_button;
     active ? btn->_buttonPressed = LOW : btn->_buttonPressed = HIGH;
@@ -67,6 +77,18 @@ Interrupt::Interrupt()
     : Task("Interrupt", 2000, 5)
 {
 }
+
+/**
+ * @brief Interrupt class is implementing run virtual method from Task class
+ * to has ineer loop task, also we are using the same loop to handle state machine
+ * to debounce input button.
+ * The task first blocks waiting for a communications event inside firs do-while loop. 
+ * The block time is relatively short. 
+ * the second do-while block waiting for some states to decode the button input.
+ * The methid run is getting and instance of Button class as a parameter 
+ * 
+ * @param task_data 
+ */
 
 void Interrupt::run(void* task_data)
 {

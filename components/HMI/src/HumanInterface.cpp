@@ -25,17 +25,34 @@ Button::Button()
     _gpio_btn = static_cast<gpio_num_t>(-1);
 }
 
+/**
+ * @brief Construct a new Button:: Button object
+ * 
+ * @param gpio 
+ * @param activeLow 
+ * @param pullupActive 
+ */
 Button::Button(gpio_num_t gpio, int activeLow, bool pullupActive)
 {
 } //Button
+
 // save function for click event
+/**
+ * @brief save function for  click event
+ * 
+ * @param newFunction callback function
+ */
 void Button::attachClick(callbackFunction newFunction)
 {
     _clickFunc = newFunction;
 } // attachClick
 
-
-// save function for parameterized click event
+/**
+ * @brief save function for parameterized click event
+ * 
+ * @param newFunction 
+ * @param parameter 
+ */
 void Button::attachClick(parameterizedCallbackFunction newFunction, void* parameter)
 {
     _paramClickFunc = newFunction;
@@ -50,27 +67,45 @@ void Button::attachDoubleClick(callbackFunction newFunction)
 } // attachDoubleClick
 
 
-// save function for parameterized doubleClick event
+/**
+ * @brief save function for parameterized doubleClick event
+ * 
+ * @param newFunction 
+ * @param parameter 
+ */
 void Button::attachDoubleClick(parameterizedCallbackFunction newFunction, void* parameter)
 {
     _paramDoubleClickFunc = newFunction;
     _doubleClickFuncParam = parameter;
 } // attachDoubleClick
 
-// save function for click event
+/**
+ * @brief save function for long click event
+ * 
+ * @param newFunction 
+ */
 void Button::attachLongClick(callbackFunction newFunction)
 {
     _longClickFunc = newFunction;
 } // attachClick
 
 
-// save function for parameterized click event
+/**
+ * @brief save function for parameterized long click event
+ * 
+ * @param newFunction 
+ * @param parameter 
+ */
 void Button::attachLongClick(parameterizedCallbackFunction newFunction, void* parameter)
 {
     _paramLongClickFunc = newFunction;
     _longClickFuncParam = parameter;
 } // attachClick
 
+/**
+ * @brief reset the state machine, the proccess function was finished
+ * 
+ */
 void Button::reset(void)
 {
     _state = 0; // restart.
@@ -86,7 +121,7 @@ void Button::reset(void)
 
 void Button::tick(bool activeLevel, unsigned long time_now)
 {
-    unsigned long now = time_now/1000;
+    unsigned long now = time_now / 1000;
     static unsigned long press_time;
 
     // Implementation of the state machine
@@ -121,7 +156,7 @@ void Button::tick(bool activeLevel, unsigned long time_now)
             }
             _state = 0; // step to state 6
         } else {
-                //just waitting
+            //just waitting
         } // if
 
     } else if (_state == 2) {

@@ -8,6 +8,12 @@
 namespace hmi {
 typedef void (*callbackFunction)(void);
 typedef void (*parameterizedCallbackFunction)(void*);
+
+/**
+ * @brief This is a public interface to setting User button up 
+ * to have callback for each different operation
+ * 
+ */
 class UserButton
 {
 public:
@@ -19,6 +25,10 @@ public:
         callbackFunction fnLongClick);
 };
 
+/**
+ * @brief this Interrupt class is handling all the process to decode the button when press it
+ * 
+ */
 class Interrupt : public Task
 {
 public:
