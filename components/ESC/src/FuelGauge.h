@@ -530,8 +530,6 @@ private:
     bool m_manual_config;
 };
 
-
 } // namespace esc
-
 
 #endif //FUEL_GAUGE_H
