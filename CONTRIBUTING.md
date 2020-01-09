@@ -11,11 +11,18 @@ to the turpial-firmware.
 
 [Before starting.](#before-starting)
 
-* [How can I contribute?](#how-can-i-contribute)
-  - [I have a question.](#i-have-a-question)
-  - [Suggesting features and reporting bugs.](#suggesting-features-and-reporting-bugs)
-  - [Making a Pull-Request.](#making-a-pull-request)
-  - [Making a change.](#making-a-change)
+- [Contributing to Turpial Firmware guidelines.](#contributing-to-turpial-firmware-guidelines)
+  - [Table of Contents.](#table-of-contents)
+  - [Before starting.](#before-starting)
+  - [How can I contribute?](#how-can-i-contribute)
+    - [I have a question.](#i-have-a-question)
+    - [Suggesting features and reporting bugs.](#suggesting-features-and-reporting-bugs)
+    - [Making a Pull-Request.](#making-a-pull-request)
+    - [Start a new change](#start-a-new-change)
+    - [Static functions and global functions.](#static-functions-and-global-functions)
+    - [const keyword.](#const-keyword)
+    - [Indentation.](#indentation)
+  - [Documentation styleguide](#documentation-styleguide)
 
 - [Contributing to Turpial Firmware guidelines.](#contributing-to-turpial-firmware-guidelines)
   - [Table of Contents.](#table-of-contents)
@@ -25,31 +32,6 @@ to the turpial-firmware.
     - [Suggesting features and reporting bugs.](#suggesting-features-and-reporting-bugs)
     - [Making a Pull-Request.](#making-a-pull-request)
     - [Start a new change](#start-a-new-change)
-    - [Upload your changes and make Pull Request](#upload-your-changes-and-make-pull-request)
-  - [C++ code style guide.](#c-code-style-guide)
-    - [Guideline goals.](#guideline-goals)
-    - [Commit messages.](#commit-messages)
-    - [Include guards.](#include-guards)
-    - [#include declarations.](#include-declarations)
-    - [Naming rules.](#naming-rules)
-      - [Macros.](#macros)
-      - [Variables.](#variables)
-      - [Methods or functions.](#methods-or-functions)
-      - [Classes.](#classes)
-    - [Control flow statements.](#control-flow-statements)
-      - [if / if-else.](#if--if-else)
-      - [while / do-while loops.](#while--do-while-loops)
-    - [Forward declarations.](#forward-declarations)
-    - [Inline functions.](#inline-functions)
-    - [Namespaces.](#namespaces)
-    - [Working with classes.](#working-with-classes)
-      - [Structures vs classes.](#structures-vs-classes)
-      - [Functions.](#functions)
-        - [Return parameters.](#return-parameters)
-        - [Write short functions.](#write-short-functions)
-        - [Arguments by reference.](#arguments-by-reference)
-        - [Function overloading.](#function-overloading)
-    - [Casting.](#casting)
     - [Static functions and global functions.](#static-functions-and-global-functions)
     - [const keyword.](#const-keyword)
     - [Indentation.](#indentation)
@@ -90,28 +72,52 @@ first, and after that it can be merged.
 ### Start a new change
 Before you start making modifications, run these commands to create a new branch that is synchronized with dev:
 
-    git fetch --all # Download the branches in the repository.
-    git checkout dev # it changes you to the dev branch in case you are not in it
-    git pull origin dev # to synchronize the dev branch locally.
-    git checkout -b featureNameYouWantToDo # create a new branch synchronized with dev.
-    git push pr featureNameYouWantToDo # upload your change to github
+Download the branches in the repository.
+
+``` git fetch --all``` 
+***
+
+It changes you to the dev branch in case you are not in it.
+
+```git checkout dev``` 
+***
+
+To synchronize the dev branch locally.
+
+```git pull origin dev``` 
+***
+
+Create a new branch synchronized with dev.
+
+```git checkout -b featureNameYouWantToDo```  
+***
+
+```git push pr featureNameYouWantToDo```  upload your change to github
+***
 
 make some changes
 
 ### Upload your changes and make Pull Request
 Once you made the changes you want to propose, perform the following steps:
-    git add -A
-    git commit -m "Here a description of your changes".
-    
-Configure your user data (You only need to enter this information the first time you push):
 
-    git config --global user.email "tu-email@gmail.com"
-    git config --global user.name "<tu-usuario>"
+```git add -A```.
 
-Push your commit to your repository fork: 
+```git commit -m "Here a description of your changes"```.
+***
     
-    git push featureNameYouWantToDo # upload your change to github
-    git push -u pr
+### Configure your user data (You only need to enter this information the first time you push):
+
+```git config --global user.email "tu-email@gmail.com"```
+
+```git config --global user.name "<tu-usuario>"```
+***
+
+### Push your commit to your repository fork: 
+    
+```git push featureNameYouWantToDo # upload your change to github```
+
+```git push -u pr```
+***
 
 Go to the GitHub page, if you go to your repository fork, click on the Branch button and select the branch in which you made the name changes of the nature you want to do. Then press the Pull request button.
 
