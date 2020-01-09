@@ -66,13 +66,18 @@ information on the radio module we use.
 
 [Supported boards.](#supported-boards)
 
-* [Getting started.](#getting-started)
-   - [Development workflow.](#development-workflow)
-   - [Installing ESP-IDF.](#installing-esp-idf)
-   - [Compiling.](#compiling)
-   - [Flashing the firmware.](#flashing-the-firmware)
-   - [Running tests.](#running-tests)
-   - [Compiling documentation.](#compiling-documentation)
+- [What's Locha Mesh?](#whats-locha-mesh)
+- [Sponsor.](#sponsor)
+- [Supported boards.](#supported-boards)
+- [Table of Contents.](#table-of-contents)
+- [Getting Started.](#getting-started)
+  - [Development workflow](#development-workflow)
+  - [Installing ESP-IDF.](#installing-esp-idf)
+  - [Compiling.](#compiling)
+  - [Flashing the firmware.](#flashing-the-firmware)
+  - [Running tests](#running-tests)
+  - [Compiling documentation](#compiling-documentation)
+- [License](#license)
 
 [License.](#license)
 
@@ -86,7 +91,7 @@ description on how to work with the code, to compile
 
 Development happens in the `dev` branch, all of the Pull-Requests should be
 pointed to that branch. Make sure you follow the
-[CONTRIBUTING.md](blob/master/CONTRIBUTING.md) guidelines. All Pull-Requests
+[CONTRIBUTING.md](CONTRIBUTING.md) guidelines. All Pull-Requests
 require that at least two developers review them first before merging to `dev`
 branch.
 
