@@ -22,7 +22,6 @@ to the turpial-firmware.
     - [Static functions and global functions.](#static-functions-and-global-functions)
     - [const keyword.](#const-keyword)
     - [Indentation.](#indentation)
-  - [Documentation styleguide](#documentation-styleguide)
 
 - [Contributing to Turpial Firmware guidelines.](#contributing-to-turpial-firmware-guidelines)
   - [Table of Contents.](#table-of-contents)
@@ -35,7 +34,6 @@ to the turpial-firmware.
     - [Static functions and global functions.](#static-functions-and-global-functions)
     - [const keyword.](#const-keyword)
     - [Indentation.](#indentation)
-  - [Documentation styleguide](#documentation-styleguide)
 
 * [Documentation styleguide.](#documentation-styleguide)
 
@@ -466,8 +464,4 @@ codebase.
 
 1. Do not use tabs.
 2. Use 4 spaces as default identation.
-
-## Documentation styleguide
-
-ToDo
 
