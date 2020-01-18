@@ -18,18 +18,18 @@
 
 <h1 align="center">Turpial Firmware</h1>
 
-We are happy of your visit and that you can read more about us. Here you can
-find the main firmware for your device compatible with Locha Mesh and be aware
+Welcome, and thank you for your visit. Here you can
+find the main firmware for the Turpial device, compatible with Locha Mesh and be aware
 of our development process.
 
-## What's Locha Mesh?
+## What is the Locha Mesh?
 
-The Locha Mesh network is a secure radio network for text messaging and bitcoin
-transactions. The main objetive is a long range network for everyone and
-everywhere, for this reason, we are working not only in a protocol, also the
-firmware for affordable devices like our "Turpial".
+The Locha Mesh network is a secure radio network for text messaging and Bitcoin
+transactions. The main objective is a long range network for everyone and
+everywhere. For this reason, we are working not only in a protocol, but also in the
+firmware for affordable devices like our **Turpial**.
 
-If you want to learn more about Locha Mesh feel free to read
+If you want to learn more about Locha Mesh, feel free to read
 [the Locha Mesh main repository](https://github.com/btcven/locha) or take a
 look at our website [locha.io](https://www.locha.io).
 
@@ -85,14 +85,14 @@ description on how to work with the code, to compile
 ### Development workflow
 
 Development happens in the `dev` branch, all of the Pull-Requests should be
-pointed to that branch. Make sure you follow the
+pointed to that branch. Please, make sure you follow the
 [CONTRIBUTING.md](blob/master/CONTRIBUTING.md) guidelines. All Pull-Requests
 require that at least two developers review them first before merging to `dev`
 branch.
 
 ### Installing ESP-IDF.
 
-To compile the firmware (and to flash it) you need to install the
+In order to compile the firmware (and to flash it) you need to install the
 [ESP-IDF](https://github.com/espressif/esp-idf/) development framework, which
 brings the compiler and necessary tools in order to correctly build the
 project.
@@ -120,7 +120,7 @@ board.
 
 ### Running tests
 
-To ensure the safety of code we run some tests in the ESP32 to ensure the code
+To ensure the safety of code, we run some tests in the ESP32 to ensure the code
 works as expected, the testing code lives in the `test/` directory. To compile
 a test you can run the following command:
 
@@ -153,7 +153,7 @@ The documentation will reside in `doc/build/_html/`, from there you can open
 `index.html`.
 
 ## License
-Copyright © 2019 Bitcoin Venezuela and Locha Mesh developers.
+Copyright © 2019 **Bitcoin Venezuela** and **Locha Mesh** developers.
 
 Licensed under the **Apache License, Version 2.0**
 
