@@ -24,8 +24,8 @@ of our development process.
 
 ## About Locha Mesh
 
-The Locha Mesh network is a secure radio network for off-grid messaging and
-cryptocurrency transactions without access to the internet. The main objective is a
+The Locha Mesh network is a secure radio network for off-grid messaging, Bitcoin and other
+cryptocurrencies transactions without access to the Internet. The main objective is a
 long range network for everyone and
 everywhere. For this reason, we are working not only in a protocol, but also in the
 firmware for affordable devices like our **Turpial**.
@@ -37,7 +37,8 @@ look at our website [locha.io](https://www.locha.io).
 ## Sponsor
 
 If you want to support this project you can make a donation to the Locha Mesh
-effort to build private censorship-resistant mesh network devices for cryptocurrency payments without Internet.
+effort to build private censorship-resistant mesh network devices for Bitcoin and other
+cryptocurrencies transactions without Internet.
 
 Here are some places if you want to support us:
 
