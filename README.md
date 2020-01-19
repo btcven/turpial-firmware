@@ -18,15 +18,19 @@
 
 <h1 align="center">Turpial Firmware</h1>
 
-Thank you for coming to learn more about us. We welcome and invite any new contributors! Here you can find the main firmware for ESP32 devices compatible with Locha Mesh and discover our development process.
+Welcome, and thank you for your visit. Here you can
+find the main firmware for the Turpial device, compatible with Locha Mesh and be aware
+of our development process.
 
 ## About Locha Mesh
 
-The Locha Mesh is a radio network for off-grid messaging and cryptocurrency transactions without access to the internet. The main objective is a long range network for everyone, everywhere. For this reason we are working not only in a protocol, but also the firmware for affordable devices like the Turpial, Harpia, or their DIY equivalents. We adhere to open source ethos at every step and aim to make this tool as decentralized as possible so users can transmit with freedom. 
+The Locha Mesh network is a secure radio network for off-grid messaging and
+cryptocurrency transactions without access to the internet. The main objective is a
+long range network for everyone and
+everywhere. For this reason, we are working not only in a protocol, but also in the
+firmware for affordable devices like our **Turpial**.
 
-While this repo references our "Turpial" device, it can be utilized for (and is synonomous with) any compatible ESP32 board.
-
-If you want to learn more about Locha Mesh feel free to read
+If you want to learn more about Locha Mesh, feel free to read
 [the Locha Mesh main repository](https://github.com/btcven/locha) or take a
 look at our website [locha.io](https://www.locha.io).
 
@@ -82,14 +86,14 @@ description on how to work with the code and to compile
 ### Development Workflow
 
 Development happens in the `dev` branch. All Pull-Requests should be
-pointed to that branch. Make sure you follow the
+pointed to that branch. Please, make sure you follow the
 [CONTRIBUTING.md](blob/master/CONTRIBUTING.md) guidelines. All Pull-Requests
 require that at least two developers review them first before merging to `dev`
 branch.
 
 ### Installing ESP-IDF
 
-To compile the firmware (and to flash it) you need to install the
+In order to compile the firmware (and to flash it) you need to install the
 [ESP-IDF](https://github.com/espressif/esp-idf/) development framework, which
 brings the compiler and necessary tools in order to correctly build the
 project.
@@ -150,7 +154,7 @@ The documentation will reside in `doc/build/_html/`, from there you can open
 `index.html`.
 
 ## License
-Copyright © 2019 Bitcoin Venezuela and Locha Mesh developers.
+Copyright © 2019 **Bitcoin Venezuela** and **Locha Mesh** developers.
 
 Licensed under the **Apache License, Version 2.0**
 
