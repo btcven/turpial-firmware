@@ -138,5 +138,4 @@ esp_err_t NVS::getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
-
 } // namespace nvs
