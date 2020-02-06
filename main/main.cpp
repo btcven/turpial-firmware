@@ -19,7 +19,7 @@
 
 #include <BLEPreferences.h>
 #include <Storage.h>
-#include <Radio.h>
+#include <mt.h>
 #include <WiFi.h>
 #include <Battery.h>
 #include <FuelGauge.h>
@@ -135,10 +135,11 @@ extern "C" void app_main()
     server_params.app_id = 0;
     ble_preferences::start(server_params);
 
-#if RAD_ENABLED == true
-    radio::Radio* radio_task = new radio::Radio();
-    radio_task->start();
-#endif
+    ESP_ERROR_CHECK(mt_init());
+
+    for ( ;; ) {
+        ESP_ERROR_CHECK(mt_send_ping());
+    }
 
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
     httpServer.start(80);
