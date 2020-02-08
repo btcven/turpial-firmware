@@ -45,13 +45,13 @@ install:
 jobs:
   include:
 
-    stage: "1"
-    name: "one test"
+    stage: "One"
+    name: "One test"
     - script: cd $PROJECT_PATH
     - script: idf.py build
 
-    stage: "2"
-    name: "two test"
+    stage: "Two"
+    name: "Two test"
     - script: ls
 
 
