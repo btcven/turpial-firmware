@@ -45,9 +45,13 @@ install:
 jobs:
   include:
 
-    stage: "Compile"
-    name: "Compile test"
-    - cd $PROJECT_PATH
-    - idf.py build
+    stage: "1"
+    name: "one test"
+    - script: cd $PROJECT_PATH
+    - script: idf.py build
 
-    
+    stage: "2"
+    name: "two test"
+    - script: ls
+
+
