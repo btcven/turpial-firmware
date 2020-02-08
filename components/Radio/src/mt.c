@@ -21,11 +21,11 @@
 #endif
 
 #ifndef MT_UART_TX
-#define MT_UART_TX (17)
+#define MT_UART_TX (4)
 #endif
 
 #ifndef MT_UART_RX
-#define MT_UART_RX (16)
+#define MT_UART_RX (0)
 #endif
 
 #ifndef MT_UART_BAUD_RATE
@@ -77,14 +77,14 @@ static void mt_recv_task(void *pvParameters)
             continue;
         }
 
+        ESP_LOG_BUFFER_HEXDUMP(TAG, recv_buf, 3, ESP_LOG_INFO);
+
         /* Check length */
         if (recv_buf[0] > 250) {
             ESP_LOGE(TAG, "Message is too big!");
             uart_flush(MT_UART_NUM);
             continue;
         }
-
-        ESP_LOG_BUFFER_HEXDUMP(TAG, recv_buf, 3, ESP_LOG_INFO);
 
         /* Read rest of message, including FCS */
         ret = uart_read_bytes(MT_UART_NUM, recv_buf + 3, recv_buf[0] + 1, MT_TIMEOUT);
@@ -93,10 +93,13 @@ static void mt_recv_task(void *pvParameters)
             continue;
         }
 
+        ESP_LOG_BUFFER_HEXDUMP(TAG, recv_buf, 5, ESP_LOG_INFO);
+
         /* Calculate FCS, doesn't include the last byte (which is the FCS to verify) */
         fcs = mt_calc_fcs(recv_buf, recv_buf[0] + 3);
         if (fcs != recv_buf[recv_buf[0] + 1]) {
-            ESP_LOGE(TAG, "FCS doesn't match!!");
+            ESP_LOGE(TAG, "FCS doesn't match!!, ours = %02x, theirs = %02x",
+                     fcs, recv_buf[recv_buf[0] + 1]);
             continue;
         }
 
@@ -131,7 +134,7 @@ esp_err_t mt_init(void)
     ESP_ERROR_CHECK(uart_driver_install(MT_UART_NUM, uart_buffer_size, uart_buffer_size, 5, &uart_queue, 0));
 
     TaskHandle_t handle = NULL;
-    xTaskCreate(mt_recv_task, "mt_recv", 1024, NULL, 15, handle);
+    xTaskCreate(mt_recv_task, "mt_recv", 2024, NULL, 15, handle);
 
     return ESP_OK;
 }
@@ -150,11 +153,14 @@ esp_err_t mt_send(uint8_t cmd0, uint8_t cmd1, void *buf, uint8_t buf_len)
     msg[2] = cmd0;
     msg[3] = cmd1;
 
-    if (buf != NULL && buf_len != 0) {
+    if (buf != NULL && buf_len > 0) {
+        ESP_LOGI(TAG, "shouldn't be called");
         memcpy(msg + 4, buf, buf_len);
     }
 
-    msg[buf_len + 1] = mt_calc_fcs(msg + 1, 3 + buf_len);
+    msg[4 + buf_len] = mt_calc_fcs(msg + 1, 3 + buf_len);
+
+    ESP_LOG_BUFFER_HEXDUMP(TAG, msg, 10, ESP_LOG_INFO);
 
     /* SOF|LEN|CMD0|CMD1|BUF|FCS */
     if (uart_write_bytes(MT_UART_NUM, (const char *)msg, 4 + buf_len + 1) == -1) {

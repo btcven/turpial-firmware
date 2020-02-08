@@ -136,10 +136,7 @@ extern "C" void app_main()
     ble_preferences::start(server_params);
 
     ESP_ERROR_CHECK(mt_init());
-
-    for ( ;; ) {
-        ESP_ERROR_CHECK(mt_send_ping());
-    }
+    ESP_ERROR_CHECK(mt_send_ping());
 
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
     httpServer.start(80);
