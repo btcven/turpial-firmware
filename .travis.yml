@@ -47,11 +47,5 @@ jobs:
 
     stage: "One"
     name: "One test"
-    - script: cd $PROJECT_PATH
-    - script: idf.py build
-
-    stage: "Two"
-    name: "Two test"
-    - script: ls
-
-
+    script: cd $PROJECT_PATH
+    script: idf.py build
