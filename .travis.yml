@@ -41,18 +41,15 @@ install:
 - export IDF_PATH=~/esp/esp-idf
 - export PATH=$PATH:$HOME/esp/esp-idf/tools
 - . $HOME/esp/esp-idf/export.sh
+- cd $PROJECT_PATH
 
 jobs:
   include:
     - stage: "Documentation"
-      script:
-        - cd $PROJECT_PATH
-        - travis-sphinx build --nowarn --source doc/
+      script: travis-sphinx build --nowarn --source doc/
 
     - stage: "Build"
-      script: 
-        - cd $PROJECT_PATH
-        - idf.py build
+      script: idf.py build
       
 
 
