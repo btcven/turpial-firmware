@@ -55,7 +55,7 @@ jobs:
       script: idf.py build
     
     -  stage: "Test any code fragment"
-      script: ls
+      script: ls -la
       
     - stage: "Check if documentation deploy works"
       script: travis-sphinx build --nowarn --source doc/
