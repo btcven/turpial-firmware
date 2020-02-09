@@ -51,13 +51,16 @@ jobs:
       name: "Check misspellings in the code"
       script: codespell
 
-    - stage: "Check if build process works"
+    - stage: "Build"
+      name: "Check if build process works"
       script: idf.py build
     
-    -  stage: "Test any code fragment"
+    - stage: "Test" 
+      name: "Test any code fragment"
       script: ls -la
       
-    - stage: "Check if documentation deploy works"
+    - stage: "Documentation"
+      name: "Check if documentation deploy works"
       script: travis-sphinx build --nowarn --source doc/
 
 
