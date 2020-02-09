@@ -44,8 +44,9 @@ install:
 
 jobs:
   include:
-    stage: "One"
-    name: "One test"
+    stage: "Build"
+    name: "Build Firmaware"
     script: 
       - cd $PROJECT_PATH
       - idf.py build
+      
