@@ -47,6 +47,7 @@ jobs:
     stage: "Documentation"
     name: "Documentatiom Deploy"
     script:
+      - cd $PROJECT_PATH
       - travis-sphinx build --nowarn --source doc/
 
     stage: "Build"
