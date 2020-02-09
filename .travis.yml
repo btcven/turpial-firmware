@@ -44,8 +44,8 @@ install:
 
 jobs:
   include:
-
     stage: "One"
     name: "One test"
-    script: cd $PROJECT_PATH
-    script: idf.py build
+    script: 
+      - cd $PROJECT_PATH
+      - idf.py build
