@@ -21,8 +21,10 @@ addons:
       - flex
       - bison
 
+
 before_install:
 - sudo apt-get -y install doxygen
+- sudo apt-get -y install codespell
 # Save path to the git respository
 - PROJECT_PATH=$(pwd)
 
@@ -45,6 +47,9 @@ install:
 
 jobs:
   include:
+    - stage: "Codespell"
+      script: codespell -w
+  
     - stage: "Documentation"
       script: travis-sphinx build --nowarn --source doc/
 
