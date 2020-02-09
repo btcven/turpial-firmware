@@ -44,9 +44,16 @@ install:
 
 jobs:
   include:
+    stage: "Documentation"
+    name: "Documentatiom Deploy"
+    script:
+      - travis-sphinx build --nowarn --source doc/
+
     stage: "Build"
-    name: "Build Firmaware"
+    name: "Build Firmware"
     script: 
       - cd $PROJECT_PATH
       - idf.py build
       
+
+
