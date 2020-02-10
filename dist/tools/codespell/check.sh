@@ -1,8 +1,9 @@
 #!/bin/bash
 
 exec codespell -h
+exec codespell --version
 
-CODESPELL_CMD="codespell -c -q 2 -H"
+CODESPELL_CMD="codespell -c -q 2"
 
 ERRORS=$(${CODESPELL_CMD})
 
