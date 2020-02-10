@@ -1,13 +1,8 @@
-#!/usr/bin/env bash
-exec codespell -h
+#!/bin/bash
 
-CODESPELL_CMD="codespell"
+CODESPELL_CMD="codespell -c -q 2 --check-hidden"
 
-CODESPELL_OPT=" --enable-colors"
-CODESPELL_OPT+=" --quiet-level 2"
-CODESPELL_OPTS+=" --check-hidden"
-
-ERRORS=$(${CODESPELL_CMD} ${CODESPELL_OPTS})
+ERRORS=$(${CODESPELL_CMD})
 
 if [ -n "${ERRORS}" ]
 then
