@@ -1,8 +1,11 @@
 #!/usr/bin/env bash
+exec codespell -h
+
 CODESPELL_CMD="codespell"
-CODESPELL_OPTS=" -q 2"
-CODESPELL_OPTS+=" -c"
-CODESPELL_OPTS+=" --ignore-words-list=ND,nd,wan,od,dout"
+
+CODESPELL_OPT=" --enable-colors"
+CODESPELL_OPT+=" --quiet-level 2"
+CODESPELL_OPTS+=" --check-hidden"
 
 ERRORS=$(${CODESPELL_CMD} ${CODESPELL_OPTS})
 
