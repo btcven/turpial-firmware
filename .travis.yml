@@ -24,11 +24,11 @@ addons:
 
 before_install:
 - sudo apt-get -y install doxygen
-- sudo apt-get -y install codespell
 # Save path to the git respository
 - PROJECT_PATH=$(pwd)
 
 install:
+- pip install -U codespell
 - pip install -U travis-sphinx
 - pip install -U sphinx-rtd-theme
 - pip install -U breathe
