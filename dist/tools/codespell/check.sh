@@ -1,6 +1,5 @@
 #!/bin/bash
 
-exec codespell -h
 exec codespell --version
 
 CODESPELL_CMD="codespell -c -q 2"
