@@ -1,10 +1,11 @@
 #!/bin/bash
+CODESPELL_CMD="codespell"
+CODESPELL_OPT=" -c"
+CODESPELL_OPT+=" -q 2"
+CODESPELL_OPT+=" --check-hidden"
+CODESPELL_OPT+=" --ignore-words-list=ND,nd,wan,od,dout"
 
-exec codespell --version
-
-CODESPELL_CMD="codespell -c -q 2"
-
-ERRORS=$(${CODESPELL_CMD})
+ERRORS=$(${CODESPELL_CMD} ${CODESPELL_OPT})
 
 if [ -n "${ERRORS}" ]
 then
