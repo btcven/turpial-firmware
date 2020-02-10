@@ -1,6 +1,8 @@
 #!/bin/bash
 
-CODESPELL_CMD="codespell -c -q 2 --check-hidden"
+exec codespell -h
+
+CODESPELL_CMD="codespell -c -q 2 -H"
 
 ERRORS=$(${CODESPELL_CMD})
 
