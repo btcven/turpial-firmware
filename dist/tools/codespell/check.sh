@@ -2,7 +2,6 @@
 CODESPELL_CMD="codespell"
 CODESPELL_OPTS=" -q 2"
 CODESPELL_OPTS+=" -c"
-CODESPELL_OPTS+=" --check-hidden"
 CODESPELL_OPTS+=" --ignore-words-list=ND,nd,wan,od,dout"
 
 ERRORS=$(${CODESPELL_CMD} ${CODESPELL_OPTS})
