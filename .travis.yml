@@ -48,7 +48,7 @@ install:
 jobs:
   include:
     - name: "Check misspellings in the code"
-      script: codespell
+      script: "./dist/tools/codespell/check.sh"
       
     - name: "Check if build process works"
       script: idf.py build
