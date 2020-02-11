@@ -54,8 +54,8 @@ jobs:
     - script: idf.py build
     # stage 2
     - stage: "CD"
-      - script: travis-sphinx build --nowarn --source doc/
-      - script: travis-sphinx deploy --branches dev
+      script: travis-sphinx build --nowarn --source doc/
+      script: travis-sphinx deploy --branches dev
 
 env:
   global:
