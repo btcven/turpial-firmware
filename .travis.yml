@@ -48,10 +48,10 @@ install:
 jobs:
   include:
     # stage 1
-      name: "Codespell"
-    - script: ./dist/tools/codespell/check.sh
-      name: "Build"
-    - script: idf.py build
+    - name: "Codespell"
+      script: ./dist/tools/codespell/check.sh
+    - name: "Build"
+      script: idf.py build
     # stage 2
     - stage: "CD"
       script: travis-sphinx build --nowarn --source doc/
