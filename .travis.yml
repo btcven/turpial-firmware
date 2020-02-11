@@ -47,6 +47,7 @@ install:
 
 jobs:
   include:
+
     # Code spell
     - name: "Code-spell" 
       script: ./dist/tools/codespell/check.sh
@@ -61,6 +62,7 @@ jobs:
       script: 
           - "travis-sphinx build --nowarn --source doc/"
           - "travis-sphinx deploy --branches dev"
+
 
 env:
   global:
