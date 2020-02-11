@@ -53,7 +53,7 @@ jobs:
       script: idf.py build
     - name: "Testing"
       script: idf.py --help
-    - stage: "Deploy"
+      stage: "Deploy"
     - name: "Deploy documentation"
       script: "ls -la"
           #- "travis-sphinx build --nowarn --source doc/"
