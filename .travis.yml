@@ -47,18 +47,20 @@ install:
 
 jobs:
   include:
-    - name: "Check misspellings in the code"
-      script: "./dist/tools/codespell/check.sh"
+    - stage: "CI"
+      - name: "Check misspellings in the code"
+        script: "./dist/tools/codespell/check.sh"
       
-    - name: "Check if build process works"
-      script: idf.py build
+      - name: "Check if build process works"
+        script: idf.py build
       
-    - name: "Test any code fragment"
-      script: ls -la
-
-after_success:
-- travis-sphinx build --nowarn --source doc/
-- travis-sphinx deploy --branches dev
+      - name: "Test any code fragment"
+        script: ls -la
+    - stage: "CD"
+      - name: "Doc build & deploy"
+        script: 
+        - travis-sphinx build --nowarn --source doc/
+        - travis-sphinx deploy --branches dev
 
 env:
   global:
