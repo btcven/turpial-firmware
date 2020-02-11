@@ -57,8 +57,8 @@ jobs:
     # Stage 2 - Deploying
     - stage: "Deploy"
       - name: "Deploy Documentation"
-      script: travis-sphinx build --nowarn --source doc/
-      script: travis-sphinx deploy --branches dev
+        script: travis-sphinx build --nowarn --source doc/
+        script: travis-sphinx deploy --branches dev
 
 env:
   global:
