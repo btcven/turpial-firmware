@@ -47,15 +47,13 @@ install:
 
 jobs:
   include:
-    - stage: "Test"
-      # Check code spell
-      script: ./dist/tools/codespell/check.sh
-      # Test Build
-      script: idf.py build
+    - name: "Codespell"
+    - script: ./dist/tools/codespell/check.sh
+    - name: "Build"
+    - script: idf.py build
     - stage: "CD"
-      script: 
-      - travis-sphinx build --nowarn --source doc/
-      - travis-sphinx deploy --branches dev
+      script: travis-sphinx build --nowarn --source doc/
+      script: travis-sphinx deploy --branches dev
 
 env:
   global:
