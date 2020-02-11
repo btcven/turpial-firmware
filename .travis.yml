@@ -58,9 +58,8 @@ jobs:
         script: ls -la
     - stage: "CD"
       - name: "Doc build & deploy"
-        script: 
-        - travis-sphinx build --nowarn --source doc/
-        - travis-sphinx deploy --branches dev
+        script: travis-sphinx build --nowarn --source doc/
+        script: travis-sphinx deploy --branches dev
 
 env:
   global:
