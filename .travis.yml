@@ -47,12 +47,11 @@ install:
 
 jobs:
   include:
-    - stage: "CI"
-      script:
+    - stage: "Test"
       # Check code spell
-      - ./dist/tools/codespell/check.sh
+      script: ./dist/tools/codespell/check.sh
       # Test Build
-      - idf.py build
+      script: idf.py build
     - stage: "CD"
       script: 
       - travis-sphinx build --nowarn --source doc/
