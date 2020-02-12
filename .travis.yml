@@ -47,6 +47,7 @@ install:
 
 jobs:
   include:
+<<<<<<< HEAD
 
     # Code spell
     - name: "Code-spell" 
@@ -63,6 +64,15 @@ jobs:
           - "travis-sphinx build --nowarn --source doc/"
           - "travis-sphinx deploy --branches dev"
 
+=======
+    - stage: "CI"
+      script: "./dist/tools/codespell/check.sh"
+      script: idf.py build
+      script: ls -la
+    - stage: "CD"
+      script: travis-sphinx build --nowarn --source doc/
+      script: travis-sphinx deploy --branches dev
+>>>>>>> 6a1d6d3... --
 
 env:
   global:
