@@ -1,4 +1,5 @@
 #!/bin/bash
+
 CODESPELL_CMD="codespell"
 CODESPELL_OPT=" -c"
 CODESPELL_OPT+=" -q 2"
