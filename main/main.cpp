@@ -18,21 +18,24 @@
 #include <freertos/task.h>
 
 #include <BLEPreferences.h>
-#include <Storage.h>
-#include <Radio.h>
-#include <WiFi.h>
 #include <Battery.h>
 #include <FuelGauge.h>
+#include <Radio.h>
+#include <Storage.h>
+#include <WiFi.h>
 
 #include <HttpServer.h>
 #include <WebSocket.h>
 #include <WsHandlerEvents.h>
+#include "HttpServerHandler.h"
 
 #include "defaults.h"
 
 HttpServer httpServer;
 
 static const char* TAG = "app_main";
+
+
 
 esp_err_t getIsConfigured(bool& is_configured)
 {
@@ -76,6 +79,7 @@ void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
         ESP_LOGI("available clients---->>", "%d", pHttpRequest->getWebSocket()->availableClients());
     }
 }
+
 
 extern "C" void app_main()
 {
@@ -129,19 +133,25 @@ extern "C" void app_main()
     }
 
 
-    ble::ServerParams server_params;
-    server_params.device_name = "Turpial-1234";
-    server_params.static_passkey = 123456;
-    server_params.app_id = 0;
-    ble_preferences::start(server_params);
-
 #if RAD_ENABLED == true
     radio::Radio* radio_task = new radio::Radio();
     radio_task->start();
 #endif
 
+   
+   // handler.readDeviceInfoHandler();
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
-    httpServer.start(80);
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/read-device-info", &HttpServerHandler::readDeviceInfoHandler);
+
+    //httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/turn-off-wap", &HttpServerHandler::turnWapHandler);
+    //httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/turn-on-wap", &HttpServerHandler::turnWapHandler);
+    //httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-wap", &HttpServerHandler::setUpWstApHandler);
+
+    //httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/turn-off-wst", &HttpServerHandler::turnWstHandler);
+    //httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/turn-on-wst", &HttpServerHandler::turnWstHandler);
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-wst-ap", &HttpServerHandler::setUpWstApHandler);
+
+    httpServer.start(2565);
 
 
 #if ESC_ENABLED == true
@@ -152,7 +162,7 @@ extern "C" void app_main()
     err = battery.init(ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Can't setup ESC, err = %s",
-                 esp_err_to_name(err));
+            esp_err_to_name(err));
         return;
     }
 

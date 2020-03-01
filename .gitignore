@@ -7,3 +7,4 @@ doc/api
 doc/doxyoutput
 build/
 sdkconfig.old
+sdkconfig
