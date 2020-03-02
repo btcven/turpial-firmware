@@ -24,4 +24,4 @@ public:
     static void setUpStaApHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse);
 }; // HttpServerHandler
 
-#endif /* COMPONENTS_CPP_UTILS_HTTPSERVER_H_ */
+#endif 

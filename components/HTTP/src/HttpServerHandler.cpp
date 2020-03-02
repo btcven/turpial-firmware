@@ -4,19 +4,18 @@
 #include <iostream>
 #include <map>
 #include <sstream>
+
 static const char* TAG = "HTTP-SERVER-HANDLER";
 
 HttpServerHandler::HttpServerHandler()
 {
 }
 
-
 void configureSta(std::map<std::string, std::string>& params)
 {
     network::WiFi& wifi = network::WiFi::getInstance();
     wifi_config_t config;
     wifi.getStaConfig(config);
-
 
     std::map<std::string, std::string>::iterator iterator = params.find("ssid_name");
     if (iterator != params.end()) {
@@ -62,7 +61,6 @@ void configureAp(std::map<std::string, std::string>& params)
         wifi.stop();
         wifi.setApConfig(config);
         wifi.start();
-        //esp_restart();
         
     }
 }
@@ -70,7 +68,6 @@ void configureAp(std::map<std::string, std::string>& params)
 
 void configureStaAp(std::map<std::string, std::string>& params)
 {
-    //network::WiFi& wifi = network::WiFi::getInstance();
     std::map<std::string, std::string>::iterator iterator = params.find("type");
 
     if (iterator != params.end()) {
@@ -81,6 +78,7 @@ void configureStaAp(std::map<std::string, std::string>& params)
             std::cout << "ap" << std::endl;
             configureAp(params);
         }
+        esp_restart();
     }
 }
 
@@ -153,7 +151,6 @@ void HttpServerHandler::readDeviceInfoHandler(HttpRequest* pHttpRequest, HttpRes
 
 void HttpServerHandler::setUpStaApHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 {
-    std::cout << "receiving........................" << std::endl;
     std::string body = pHttpRequest->getBody();
     std::istringstream ss(body);
     std::string token[3]; //length of json object, hoe many field there are

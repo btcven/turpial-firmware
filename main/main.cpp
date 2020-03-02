@@ -134,9 +134,6 @@ extern "C" void app_main()
     radio_task->start();
 #endif
 
-    //HttpServerHandler* handler = new HttpServerHandler();
-
-
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/stream", webSocketHandler);
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/get-device-info", HttpServerHandler::readDeviceInfoHandler);
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-sta-ap", HttpServerHandler::setUpStaApHandler);
