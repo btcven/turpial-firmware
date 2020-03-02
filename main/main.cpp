@@ -159,7 +159,7 @@ extern "C" void app_main()
 
     esc::Battery& battery = esc::Battery::getInstance();
 
-    err = battery.init(ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
+    err = battery.init(ESC_SYSOFF_PIN, ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Can't setup ESC, err = %s",
             esp_err_to_name(err));

@@ -20,6 +20,7 @@
 #define ESC_LOW_BATTTERY_THRESHOLD 20 /*!< in % unit */
 #define ESC_CRITICAL_BAT_THRESHOLD 7  /*!< in % unit */
 #define ESC_GPOUT_PIN GPIO_NUM_18     /*!< GPOUT pin number */
+#define ESC_SYSOFF_PIN GPIO_NUM_27    /*!< SYSOFF pin number */
 #define ESC_SOC_DELTA 1               /*!< SoC change delta */
 
 #define BLE_ENABLED false /*!< BLE feature enabled? */
