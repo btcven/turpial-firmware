@@ -14,14 +14,14 @@
 /**
  * @brief Handle path matching for an incoming HTTP request.
  */
-static const char* TAG1 = "HTTP_SERVER";
+
 
 class HttpServerHandler
 {
 public:
     HttpServerHandler();
-    void helloWorld(void);
-   
+    static void readDeviceInfoHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse);
+    static void setUpStaApHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse);
 }; // HttpServerHandler
 
 #endif /* COMPONENTS_CPP_UTILS_HTTPSERVER_H_ */

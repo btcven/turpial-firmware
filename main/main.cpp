@@ -129,22 +129,18 @@ extern "C" void app_main()
         return;
     }
 
-
-    ble::ServerParams server_params;
-    server_params.device_name = "Turpial-1234";
-    server_params.static_passkey = 123456;
-    server_params.app_id = 0;
-    ble_preferences::start(server_params);
-
 #if RAD_ENABLED == true
     radio::Radio* radio_task = new radio::Radio();
     radio_task->start();
 #endif
 
-    HttpServerHandler* handler = new HttpServerHandler();
-    handler->helloWorld();
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
-    httpServer.start(80);
+    //HttpServerHandler* handler = new HttpServerHandler();
+
+
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/stream", webSocketHandler);
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/get-device-info", HttpServerHandler::readDeviceInfoHandler);
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-sta-ap", HttpServerHandler::setUpStaApHandler);
+    httpServer.start(2565);
 
 #if ESC_ENABLED == true
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
