@@ -80,8 +80,8 @@ private:
             if (pathHandlerIterartor->match(request.getMethod(), request.getPath())) { // Did we match the handler?
                 ESP_LOGD("HttpServerTask", "Found a path handler match!!");
                 if (request.isWebsocket()) {
-                    ESP_LOGD("HTTPSERVER-PROCCESS REQUEST", ">>>>>>>>>>>>>>>>this is a websocket>>>>>>>>>>>>>>>>>>>>>>>>>>!!");
-                    ESP_LOGD("HTTPSERVER PROCCESS REQUEST", ">>>>>>>>>>>>>>>>start reader>>>>>>>>>>>>>>>>>>>>>>>>>>!!"); // Is this handler to be invoked for a web socket?
+                    ESP_LOGD("HTTPSERVER-PROCESS REQUEST", ">>>>>>>>>>>>>>>>this is a websocket>>>>>>>>>>>>>>>>>>>>>>>>>>!!");
+                    ESP_LOGD("HTTPSERVER PROCESS REQUEST", ">>>>>>>>>>>>>>>>start reader>>>>>>>>>>>>>>>>>>>>>>>>>>!!"); // Is this handler to be invoked for a web socket?
                     request.getWebSocket()->addClientToQueue(request.getSocket().getFD(), request.getWebSocket());
                     pathHandlerIterartor->invokePathHandler(&request, nullptr); // Invoke the handler.
                     request.getWebSocket()->startReader();
@@ -245,7 +245,7 @@ void HttpServer::stop()
     // that is listening for incoming connections.  That will then shutdown all the other
     // activities.
     ESP_LOGD(LOG_TAG, ">> stop");
-    m_socket.close();                      // Close the socket that is being used to watch for incoming requests.
+    m_socket.close();                // Close the socket that is being used to watch for incoming requests.
     m_semaphoreServerStarted.wait(); // Wait for the server to stop.
     ESP_LOGD(LOG_TAG, "<< stop");
 } // stop

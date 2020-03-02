@@ -99,7 +99,7 @@ extern "C" void app_main()
     network::WiFi& wifi = network::WiFi::getInstance();
     err = wifi.init();
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", esp_err_to_name(err));
+        ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface (%s)", esp_err_to_name(err));
         return;
     }
 

@@ -195,7 +195,7 @@ public:
      * @brief Get a reference to BLE advertisement parameters to change them,
      * or to get them.
      * 
-     * @return esp_ble_adv_params_t& reference to advertisement paramters
+     * @return esp_ble_adv_params_t& reference to advertisement parameters
      */
     esp_ble_adv_params_t& parameters() { return m_params; }
 

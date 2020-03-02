@@ -283,7 +283,7 @@ private:
      */
     static esp_err_t eventHandler(void* ctx, system_event_t* event);
 
-    WiFiDefaultEventHandler m_event_handler; /*!< Pointer to desired hanlder events */
+    WiFiDefaultEventHandler m_event_handler; /*!< Pointer to desired handler event */
 };
 
 /**
