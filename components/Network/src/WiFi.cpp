@@ -23,16 +23,6 @@ namespace network {
 static const char* TAG = "WiFi";
 
 
-#include <lwip/sockets.h>
-#define DEVICE_IP          "192.168.1.100"
-
-// The Gateway address where we wish to send packets.
-// This will commonly be our access point.
-#define DEVICE_GW          "192.168.1.254"
-
-// The netmask specification.
-#define DEVICE_NETMASK "255.255.255.0"
-
 // Precomputed table of allowed SSID characters, 0 means invalid, 1
 // means ok. This table can be indexed using the character value, e.g:
 //
@@ -122,16 +112,6 @@ esp_err_t WiFi::init()
 
     ESP_LOGD(TAG, "Init TCP/IP adapter");
     tcpip_adapter_init();
-
-
-    tcpip_adapter_dhcpc_stop(TCPIP_ADAPTER_IF_STA); // Don't run a DHCP client
-    tcpip_adapter_ip_info_t ipInfo;
-    inet_pton(AF_INET, DEVICE_IP, &ipInfo.ip);
-    inet_pton(AF_INET, DEVICE_GW, &ipInfo.gw);
-    inet_pton(AF_INET, DEVICE_NETMASK, &ipInfo.netmask);
-    tcpip_adapter_set_ip_info(TCPIP_ADAPTER_IF_STA, &ipInfo); 
-
-
 
     ESP_LOGD(TAG, "Initializing Wi-Fi");
 
