@@ -138,10 +138,11 @@ extern "C" void app_main()
     radio_task->start();
 #endif
 
-   
+   HttpServerHandler* handler = new HttpServerHandler();
+   handler->helloworld();
    // handler.readDeviceInfoHandler();
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/read-device-info", &HttpServerHandler::readDeviceInfoHandler);
+  //  httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/read-device-info", &HttpServerHandler::readDeviceInfoHandler);
 
     //httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/turn-off-wap", &HttpServerHandler::turnWapHandler);
     //httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/turn-on-wap", &HttpServerHandler::turnWapHandler);
@@ -149,7 +150,7 @@ extern "C" void app_main()
 
     //httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/turn-off-wst", &HttpServerHandler::turnWstHandler);
     //httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/turn-on-wst", &HttpServerHandler::turnWstHandler);
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-wst-ap", &HttpServerHandler::setUpWstApHandler);
+   // httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-wst-ap", &HttpServerHandler::setUpWstApHandler);
 
     httpServer.start(2565);
 
