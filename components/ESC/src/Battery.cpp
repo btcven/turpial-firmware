@@ -32,12 +32,29 @@ Battery::Battery()
 }
 
 esp_err_t Battery::init(gpio_num_t gpout_io_num,
+                        gpio_num_t sysoff_io_num,
                         std::uint8_t soc_interval,
                         std::uint16_t max_capacity)
 {
     static Interrupt g_int_task;
     static gpio_num_t g_gpout_num = gpout_io_num;
 
+    // Configure SYSOFF pin as pull down
+    gpio_config_t sysoff_conf = {};
+    sysoff_conf.intr_type = GPIO_INTR_DISABLE;
+    sysoff_conf.pin_bit_mask = (1 << static_cast<std::uint32_t>(sysoff_io_num));
+    sysoff_conf.mode = GPIO_MODE_OUTPUT;
+    sysoff_conf.pull_up_en = GPIO_PULLUP_DISABLE;
+    sysoff_conf.pull_down_en = GPIO_PULLDOWN_ENABLE;
+
+    ESP_ERR_TRY(gpio_config(&sysoff_conf));
+
+    // Set SYSOFF to 0
+    ESP_ERR_TRY(gpio_set_level(sysoff_io_num, 0));
+
+    ESP_LOGI(TAG, "SYSOFF level = %d", gpio_get_level(sysoff_io_num));
+
+    // Configure FuelGauge
     FuelGauge& fuel_gauge = FuelGauge::getInstance();
 
     ESP_ERR_TRY(fuel_gauge.enterConfig(true));
@@ -55,6 +72,7 @@ esp_err_t Battery::init(gpio_num_t gpout_io_num,
     io_conf.pin_bit_mask = (1 << static_cast<std::uint32_t>(gpout_io_num));
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
+    io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
 
     ESP_ERR_TRY(gpio_config(&io_conf));
     ESP_ERR_TRY(gpio_set_intr_type(gpout_io_num, GPIO_INTR_LOW_LEVEL));
@@ -76,7 +94,7 @@ Interrupt::Interrupt()
 void Interrupt::run(void* task_data)
 {
     esp_err_t err = ESP_FAIL;
- 
+
     gpio_num_t io_pin = GPIO_NUM_MAX;
     FuelGauge& fuel_gauge = FuelGauge::getInstance();
 
