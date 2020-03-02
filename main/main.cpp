@@ -25,6 +25,7 @@
 #include <FuelGauge.h>
 
 #include <HttpServer.h>
+#include <HttpServerHandler.h>
 #include <WebSocket.h>
 #include <WsHandlerEvents.h>
 
@@ -141,6 +142,7 @@ extern "C" void app_main()
 #endif
 
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/read-device-info", http_server_handler::readDeviceInfoHandler);
     httpServer.start(80);
 
 
