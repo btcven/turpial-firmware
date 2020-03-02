@@ -27,7 +27,7 @@
 #include <HttpServer.h>
 #include <WebSocket.h>
 #include <WsHandlerEvents.h>
-
+#include "HttpServerHandler.h"
 #include "defaults.h"
 
 HttpServer httpServer;
@@ -97,6 +97,7 @@ extern "C" void app_main()
     }
 
     network::WiFi& wifi = network::WiFi::getInstance();
+    
     err = wifi.init();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", esp_err_to_name(err));
@@ -140,9 +141,10 @@ extern "C" void app_main()
     radio_task->start();
 #endif
 
+    HttpServerHandler* handler = new HttpServerHandler();
+    handler->helloWorld();
     httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
     httpServer.start(80);
-
 
 #if ESC_ENABLED == true
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
