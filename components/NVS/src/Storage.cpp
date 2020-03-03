@@ -100,6 +100,18 @@ esp_err_t NVS::get_bool(const char* key, bool& value)
     return ESP_OK;
 }
 
+esp_err_t NVS::setString(std::string key, std::string data) 
+{
+    return nvs_set_str(m_handle, key.c_str(), data.c_str());
+}
+
+esp_err_t NVS::getString(std::string key,  char* buffer, size_t* length)
+{
+
+    return  nvs_get_str(m_handle, key.c_str(), buffer, length);
+    //return ESP_OK;
+}
+
 esp_err_t NVS::commit()
 {
     return nvs_commit(m_handle);
