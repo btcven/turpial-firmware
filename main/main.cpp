@@ -17,7 +17,6 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-#include <BLEPreferences.h>
 #include <Battery.h>
 #include <FuelGauge.h>
 #include <Radio.h>
