@@ -54,15 +54,15 @@ esp_err_t getSetCredentials(void)
     size_t pl = MAX_USER_PASSWORD_LENGTH;
     err = app_nvs.getString(USER_NAME_KEY, user_name, &ul);
     if (err != ESP_OK) {
-        ESP_LOGI(TAG, "There arent any username in nvs, going to set it\n");
+        ESP_LOGI(TAG, "There is no username in nvs, going to set it");
         err = app_nvs.setString(USER_NAME_KEY, DEFAUL_USERNAME);
         if (err != ESP_OK) {
-            ESP_LOGE(TAG, "There are any errors , was not possible to save in NVS the username /n");
+            ESP_LOGE(TAG, "There are errors , was not possible to save in NVS the username");
             return ESP_FAIL;
         }
         err = app_nvs.setString(USER_PASSWORD_KEY, DEFAULT_USER_PASSWORD);
         if (err != ESP_OK) {
-            ESP_LOGI(TAG,"Error trying to save default password/n");
+            ESP_LOGI(TAG,"Error trying to save default password");
             return ESP_FAIL;
         }
     } else {
