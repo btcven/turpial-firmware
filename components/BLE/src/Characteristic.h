@@ -119,7 +119,7 @@ class Characteristic;
 
 /**
  * @brief Callback handler class, this is intended to be used by
- * characteristics to know when a value has been written/readed.
+ * characteristics to know when a value has been write/read.
  * 
  */
 class CharacteristicCallback

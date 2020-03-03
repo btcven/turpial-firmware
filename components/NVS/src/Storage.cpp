@@ -123,7 +123,7 @@ esp_err_t NVS::getIsConfigured(bool& is_configured)
     err = app_nvs.get_bool(NVS_IS_CONFIGURED_KEY, is_configured);
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         // Set is_configured to true on flash so on next init the config is
-        // readed directly by the ESP-IDF Wi-Fi library component.
+        // read directly by the ESP-IDF Wi-Fi library component.
         err = app_nvs.set_bool(NVS_IS_CONFIGURED_KEY, true);
         if (err != ESP_OK) return err;
         err = app_nvs.commit();

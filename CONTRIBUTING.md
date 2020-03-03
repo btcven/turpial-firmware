@@ -108,7 +108,7 @@ more easy.
 
 ### Guideline goals.
 
-The goals as we see them actually are based to optimize the code to be readed
+The goals as we see them actually are based to optimize the code to be read
 efficiently; We expect the codebase to last long and we prioritize reading over
 writing.
 
