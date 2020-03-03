@@ -292,7 +292,6 @@ void HttpServerHandler::setUpCredentialHandler(HttpRequest* pHttpRequest, HttpRe
     std::istringstream ss(body);
     std::string token[4]; //length of json object, hoe many field there are
     std::map<std::string, std::string> json_map;
-    esp_err_t err;
 
     std::string user;
     std::string pass;
