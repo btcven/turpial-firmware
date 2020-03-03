@@ -22,6 +22,7 @@ public:
     HttpServerHandler();
     static void readDeviceInfoHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse);
     static void setUpStaApHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse);
+    static void setUpCredentialHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse);
 }; // HttpServerHandler
 
 #endif 

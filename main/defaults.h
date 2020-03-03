@@ -38,4 +38,10 @@
 #define WAP_MAXCONN 4                       /*!< AP Maximum connections */
 #define WAP_AUTHMODE WIFI_AUTH_WPA_WPA2_PSK /*!< AP Authentication mode */
 
+#define USER_NAME_KEY "username"                   /*default user_name for app to do request to server*/
+#define USER_PASSWORD_KEY "password"               /*default user_password app to do request to server*/
+#define DEFAUL_USERNAME   "admin"                  /*default username*/
+#define DEFAULT_USER_PASSWORD "admin"              /*default user password*/
+#define MAX_USER_NAME_LENGTH 20                    /*length of thr username*/
+#define MAX_USER_PASSWORD_LENGTH 20                /* max length of password for user */
 #endif // DEFAULTS_H
