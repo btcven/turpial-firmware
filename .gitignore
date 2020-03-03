@@ -7,4 +7,6 @@ doc/api
 doc/doxyoutput
 build/
 sdkconfig.old
+sdkconfig
+test/sdkconfig
 .DS_Store
