@@ -74,8 +74,7 @@ esp_err_t getSetCredentials(void)
                 return ESP_FAIL;
             }
         }
-        ESP_LOGI(TAG, "\n");
-        ESP_LOGI(TAG, "Username: %s, Password: %s --> inside eeprom", &user_name[0], &user_password[0]);
+        ESP_LOGI(TAG, "\nUsername: %s, Password: %s --> inside eeprom", &user_name[0], &user_password[0]);
     }
 
     return ESP_OK;
