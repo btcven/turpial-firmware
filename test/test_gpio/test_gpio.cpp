@@ -56,12 +56,12 @@
 #define LED_G 0  
 #define LED_B 4   */
 
-#define LED_R 25  //34 wrong in schematic
-#define LED_G 26  //35 wrong in schematic
-#define LED_B 33  //4 
+#define LED_R 25  // 34 wrong in schematic
+#define LED_G 26  // 35 wrong in schematic
+#define LED_B 33  // 4 
 
-#define USER_BUTTON 21   //32 in schematic but not work with interrupt service  //works 27,25,23,21,26   //not work 32,34,36 this pins not work with interrupt handler
-#define SYSOFF 27    //32 wrong in schematic not accept IRQ
+#define USER_BUTTON 21  // 32 in schematic but not work with interrupt service  // works 27,25,23,21,26   //not work 32,34,36 this pins not work with interrupt handler
+#define SYSOFF 27       // 32 wrong in schematic not accept IRQ
 
 #define GPIO_OUTPUT_PIN_SEL ((1ULL << SYSOFF))
 #define GPIO_INPUT_PIN_SEL ((1ULL << USER_BUTTON))
@@ -111,7 +111,7 @@ static void gpioInit(void)
     io_conf.pull_up_en = static_cast<gpio_pullup_t>(1);
     gpio_config(&io_conf);
 
-    //change gpio intrrupt type
+    //change gpio interrupt type
     gpio_set_intr_type(static_cast<gpio_num_t>(USER_BUTTON), GPIO_INTR_ANYEDGE);
 
     //create a queue to handle gpio event from isr

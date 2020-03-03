@@ -48,7 +48,7 @@ public:
     /**
      * @brief Open namespace
      * 
-     * @attention 1. If a namespace is already opened it's going to be clossed.
+     * @attention 1. If a namespace is already opened it's going to be closed.
      * 
      * @param name: namespace name 
      * @param open_mode: opening mode

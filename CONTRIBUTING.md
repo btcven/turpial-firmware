@@ -108,12 +108,12 @@ more easy.
 
 ### Guideline goals.
 
-The goals as we see them actually are based to optimize the code to be readed
+The goals as we see them actually are based to optimize the code to be read
 efficiently; We expect the codebase to last long and we prioritize reading over
 writing.
 
 - We choose to explicitly optimize the user experience of the programmers
-reading the source code, mantaining and debugging the code in our codebase.
+reading the source code, maintaining and debugging the code in our codebase.
 We "leave a trace to the reader" to give a hint to who is reading by making
 the code very explicit about the intentions.
 
@@ -372,14 +372,14 @@ Structures don't use the `m_` prefix.
 
 ##### Return parameters.
 
-1. Use the return value when possible, otherwise return through paramters using
+1. Use the return value when possible, otherwise return through parameters using
 pointers.
 2. The input parameters go first, returns parameters go at the last position.
 
 ##### Write short functions.
 
 1. We prefer short and concise functions.
-2. Somethings more large functions are needed and appropiate, if a function
+2. Somethings more large functions are needed and appropriate, if a function
 is over 40 lines, think if it can be broken in smaller pieces. Divide and
 conquer.
 3. Some functions are complex and big, don't be afraid to modify them if you
@@ -441,7 +441,7 @@ codebase.
 ### Indentation.
 
 1. Do not use tabs.
-2. Use 4 spaces as default identation.
+2. Use 4 spaces as default indentation.
 
 ## Documentation styleguide
 
