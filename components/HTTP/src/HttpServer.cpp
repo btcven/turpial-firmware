@@ -35,7 +35,7 @@ HttpServer::HttpServer()
 
 HttpServer::~HttpServer()
 {
-    ESP_LOGD(LOG_TAG, "~HttpServer");
+    ESP_LOGI(LOG_TAG, "~HttpServer");
 }
 
 
@@ -69,7 +69,7 @@ private:
 	 */
     void processRequest(HttpRequest& request)
     {
-        ESP_LOGD("HttpServerTask", ">> processRequest: Method: %s, Path: %s",
+        ESP_LOGI("HttpServerTask", ">> processRequest: Method: %s, Path: %s",
             request.getMethod().c_str(), request.getPath().c_str());
 
         // Loop over all the path handlers we have looking for the first one that matches.  Note that none of them
@@ -78,10 +78,10 @@ private:
              pathHandlerIterartor != m_pHttpServer->m_pathHandlers.end();
              ++pathHandlerIterartor) {
             if (pathHandlerIterartor->match(request.getMethod(), request.getPath())) { // Did we match the handler?
-                ESP_LOGD("HttpServerTask", "Found a path handler match!!");
+                ESP_LOGI("HttpServerTask", "Found a path handler match!!");
                 if (request.isWebsocket()) {
-                    ESP_LOGD("HTTPSERVER-PROCCESS REQUEST", ">>>>>>>>>>>>>>>>this is a websocket>>>>>>>>>>>>>>>>>>>>>>>>>>!!");
-                    ESP_LOGD("HTTPSERVER PROCCESS REQUEST", ">>>>>>>>>>>>>>>>start reader>>>>>>>>>>>>>>>>>>>>>>>>>>!!"); // Is this handler to be invoked for a web socket?
+                    ESP_LOGI("HTTPSERVER-PROCCESS REQUEST", ">>>>>>>>>>>>>>>>this is a websocket>>>>>>>>>>>>>>>>>>>>>>>>>>!!");
+                    ESP_LOGI("HTTPSERVER PROCCESS REQUEST", ">>>>>>>>>>>>>>>>start reader>>>>>>>>>>>>>>>>>>>>>>>>>>!!"); // Is this handler to be invoked for a web socket?
                     request.getWebSocket()->addClientToQueue(request.getSocket().getFD(), request.getWebSocket());
                     pathHandlerIterartor->invokePathHandler(&request, nullptr); // Invoke the handler.
                     request.getWebSocket()->startReader();
@@ -93,7 +93,7 @@ private:
             }           // Path handler match
         }               // For each path handler
 
-        ESP_LOGD("HttpServerTask", "No Path handler found");
+        ESP_LOGI("HttpServerTask", "No Path handler found");
         // If we reach here, then we did not find a handler for the request.
 
 
@@ -117,10 +117,10 @@ private:
     {
         m_pHttpServer = (HttpServer*)data; // The passed in data is an instance of an HttpServer.
         m_pHttpServer->m_socket.listen(m_pHttpServer->m_portNumber, false /* is datagram */, true /* Allow address reuse */);
-        ESP_LOGD("HttpServerTask", "Listening on port %d", m_pHttpServer->getPort());
+        ESP_LOGI("HttpServerTask", "Listening on port %d", m_pHttpServer->getPort());
         Socket clientSocket;
         while (true) { // Loop forever.
-            ESP_LOGD("HttpServerTask", "Waiting for new peer client");
+            ESP_LOGI("HttpServerTask", "Waiting for new peer client");
 
             try {
                 clientSocket = m_pHttpServer->m_socket.accept(); // Block waiting for a new external client connection.
@@ -131,7 +131,7 @@ private:
                 return;
             }
 
-            ESP_LOGD("HttpServerTask", "HttpServer that was listening on port %d has received a new client connection; sockFd=%d", m_pHttpServer->getPort(), clientSocket.getFD());
+            ESP_LOGI("HttpServerTask", "HttpServer that was listening on port %d has received a new client connection; sockFd=%d", m_pHttpServer->getPort(), clientSocket.getFD());
 
             HttpRequest request(clientSocket); // Build the HTTP Request from the socket.
             if (request.isWebsocket()) {       // If this is a WebSocket
@@ -219,12 +219,12 @@ void HttpServer::start(uint16_t portNumber)
 {
     // Design:
     // The start of the HTTP server should be as fast as possible.
-    ESP_LOGD(LOG_TAG, ">> start: port: %d", portNumber);
+    ESP_LOGI(LOG_TAG, ">> start: port: %d", portNumber);
 
     // Take the semaphore that says that we are now running.  If we are already running, then end here as
     // there is nothing further to do.
     if (!m_semaphoreServerStarted.take(100)) {
-        ESP_LOGD(LOG_TAG, "<< start: Already running");
+        ESP_LOGI(LOG_TAG, "<< start: Already running");
         return;
     }
 
@@ -232,7 +232,7 @@ void HttpServer::start(uint16_t portNumber)
 
     HttpServerTask* pHttpServerTask = new HttpServerTask("HttpServerTask");
     pHttpServerTask->start(this);
-    ESP_LOGD(LOG_TAG, "<< start");
+    ESP_LOGI(LOG_TAG, "<< start");
 } // start
 
 
@@ -244,10 +244,10 @@ void HttpServer::stop()
     // Shutdown the HTTP Server.  The high level is that we will stop the server socket
     // that is listening for incoming connections.  That will then shutdown all the other
     // activities.
-    ESP_LOGD(LOG_TAG, ">> stop");
+    ESP_LOGI(LOG_TAG, ">> stop");
     m_socket.close();                      // Close the socket that is being used to watch for incoming requests.
     m_semaphoreServerStarted.wait(); // Wait for the server to stop.
-    ESP_LOGD(LOG_TAG, "<< stop");
+    ESP_LOGI(LOG_TAG, "<< stop");
 } // stop
 
 
@@ -277,7 +277,7 @@ PathHandler::PathHandler(std::string method, std::string matchPath, void (*pWebS
 bool PathHandler::match(std::string method, std::string path)
 {
     if (method != m_method) return false;
-    ESP_LOGD("PathHandler", "plain matching: %s with %s", m_textPattern.c_str(), path.c_str());
+    ESP_LOGI("PathHandler", "plain matching: %s with %s", m_textPattern.c_str(), path.c_str());
     return m_textPattern.compare(0, m_textPattern.length(), path) == 0;
 } // match
 
