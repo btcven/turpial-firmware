@@ -129,7 +129,7 @@ extern "C" void app_main()
     esp_err_t err;
 
     hmi::UserButton* usr_btn = new hmi::UserButton();
-    UserButtonHandler::initRGB();
+    UserButtonHandler::initRGBPort();
     usr_btn->init(DEFAULT_USER_BUTTON, true, UserButtonHandler::click, UserButtonHandler::doubleClick, UserButtonHandler::longClick);
 
     err = storage::init();

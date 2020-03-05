@@ -1,8 +1,8 @@
 #include "UserButton.h"
+#include "defaults.h"
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include <esp_log.h>
-#include "defaults.h"
 namespace hmi {
 
 static xQueueHandle gpio_evt_queue = nullptr;
@@ -37,7 +37,7 @@ void UserButton::init(gpio_num_t user_button,
     Button* btn = new Button(user_button, true);
 
     btn->_gpio_btn = user_button;
-    active ? btn->_buttonPressed = LOW : btn->_buttonPressed = HIGH;
+    active ? btn->_button_pressed = LOW : btn->_button_pressed = HIGH;
 
     btn->attachClick(fnClick);
     btn->attachDoubleClick(fn2Click);
@@ -102,10 +102,10 @@ void Interrupt::run(void* task_data)
                     btn->reset();
             }
         } while (uxQueueMessagesWaiting(gpio_evt_queue));
-        
+
         do {
             time_now = esp_timer_get_time();
-            btn->tick(gpio_get_level(btn->_gpio_btn) == btn->_buttonPressed, time_now);
+            btn->tick(gpio_get_level(btn->_gpio_btn) == btn->_button_pressed, time_now);
         } while ((btn->_state != 0 || btn->_state == 2 || btn->_state == 1)); // to ensure the state machine is able to detect long click and release the resource in right time
     }
 }

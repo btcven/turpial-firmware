@@ -29,10 +29,10 @@ Button::Button()
  * @brief Construct a new Button:: Button object
  * 
  * @param gpio 
- * @param activeLow 
- * @param pullupActive 
+ * @param active_low 
+ * @param pullup_active 
  */
-Button::Button(gpio_num_t gpio, int activeLow, bool pullupActive)
+Button::Button(gpio_num_t gpio, int active_low, bool pullup_active)
 {
 } //Button
 
@@ -47,37 +47,12 @@ void Button::attachClick(callbackFunction newFunction)
     _clickFunc = newFunction;
 } // attachClick
 
-/**
- * @brief save function for parameterized click event
- * 
- * @param newFunction 
- * @param parameter 
- */
-void Button::attachClick(parameterizedCallbackFunction newFunction, void* parameter)
-{
-    _paramClickFunc = newFunction;
-    _clickFuncParam = parameter;
-} // attachClick
-
-
 // save function for doubleClick event
 void Button::attachDoubleClick(callbackFunction newFunction)
 {
     _doubleClickFunc = newFunction;
 } // attachDoubleClick
 
-
-/**
- * @brief save function for parameterized doubleClick event
- * 
- * @param newFunction 
- * @param parameter 
- */
-void Button::attachDoubleClick(parameterizedCallbackFunction newFunction, void* parameter)
-{
-    _paramDoubleClickFunc = newFunction;
-    _doubleClickFuncParam = parameter;
-} // attachDoubleClick
 
 /**
  * @brief save function for long click event
@@ -91,27 +66,15 @@ void Button::attachLongClick(callbackFunction newFunction)
 
 
 /**
- * @brief save function for parameterized long click event
- * 
- * @param newFunction 
- * @param parameter 
- */
-void Button::attachLongClick(parameterizedCallbackFunction newFunction, void* parameter)
-{
-    _paramLongClickFunc = newFunction;
-    _longClickFuncParam = parameter;
-} // attachClick
-
-/**
  * @brief reset the state machine, the proccess function was finished
  * 
  */
 void Button::reset(void)
 {
     _state = 0; // restart.
-    _startTime = 0;
-    _stopTime = 0;
-    _isLongPressed = false;
+    _start_time = 0;
+    _stop_time = 0;
+    _is_long_pressed = false;
     state = BTN_RELEASE_0;
 }
 
@@ -119,36 +82,36 @@ void Button::reset(void)
  * @brief Advance the finite state machine (FSM) using the given level.
  */
 
-void Button::tick(bool activeLevel, unsigned long time_now)
+void Button::tick(bool active_level, unsigned long time_now)
 {
     unsigned long now = time_now / 1000;
     static unsigned long press_time;
 
     // Implementation of the state machine
     if (_state == 0) { // waiting for menu pin being pressed.
-        if (activeLevel) {
-            _state = 1;       // step to state 1
-            _startTime = now; // remember starting time
-        }                     // if
+        if (active_level) {
+            _state = 1;        // step to state 1
+            _start_time = now; // remember starting time
+        }                      // if
 
     } else if (_state == 1) { // waiting for menu pin being released.
 
-        press_time = (now - _startTime);
-       // printf("state = 1  work time = %lu\n", press_time);
-        if ((!activeLevel) && //si se libera
-            (press_time < _debounceTicks)) {
+        press_time = (now - _start_time);
+        // printf("state = 1  work time = %lu\n", press_time);
+        if ((!active_level) && //si se libera
+            (press_time < _debounce_ticks)) {
             // button was released to quickly so I assume some debouncing.
             // go back to state 0 without calling a function.
             _state = 0;
 
-        } else if (!activeLevel) { //si se libra y es valido
-            _state = 2;            // step to state 2
-            _stopTime = now;       // remember stopping time
-            printf("stop time : %lu", _stopTime);
+        } else if (!active_level) { //si se libra y es valido
+            _state = 2;             // step to state 2
+            _stop_time = now;       // remember stopping time
+            printf("stop time : %lu", _stop_time);
 
-        } else if ((activeLevel) &&
+        } else if ((active_level) &&
                    (press_time > _long_press_ticks)) {
-            _isLongPressed = true; // Keep track of long press state
+            _is_long_pressed = true; // Keep track of long press state
             printf("LONG -------  pres_time : %lu", press_time);
             //attach callback here
             if (_longClickFunc != NULL) {
@@ -160,31 +123,29 @@ void Button::tick(bool activeLevel, unsigned long time_now)
         } // if
 
     } else if (_state == 2) {
-        if (now - _stopTime > _timeout) {
-            if (press_time > _clickTicks) {
+        if (now - _stop_time > _timeout) {
+            if (press_time > _click_ticks) {
                 // this was only a single short click
                 if (_clickFunc != NULL) {
                     _clickFunc();
                 }
                 _state = 0; // restart.
             }
-        } else if (activeLevel) {
+        } else if (active_level) {
             _state = 3;
         }
 
     } else if (_state == 3) { // waiting for menu pin being released finally.
-        // Stay here for at least _debounceTicks because else we might end up in
+        // Stay here for at least _debounce_ticks because else we might end up in
         // state 1 if the button bounces for too long.
-        if ((!activeLevel) &&
-            ((unsigned long)(now - _startTime) > _debounceTicks)) {
+        if ((!active_level) &&
+            ((unsigned long)(now - _start_time) > _debounce_ticks)) {
             // this was a 2 click sequence.
             if (_doubleClickFunc)
                 _doubleClickFunc();
-            if (_paramDoubleClickFunc)
-                _paramDoubleClickFunc(_doubleClickFuncParam);
-            _state = 0;      // restart.
-            _stopTime = now; // remember stopping time
-        }                    // if
+            _state = 0;       // restart.
+            _stop_time = now; // remember stopping time
+        }                     // if
     }
 } // Button.tick()
 

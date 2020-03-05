@@ -12,13 +12,9 @@
 #ifndef HMI_HUMAN_INTERFACE_H
 #define HMI_HUMAN_INTERFACE_H
 
-#include "driver/gpio.h"
-#include <cstdint>
-#include <esp_err.h>
-
 #include "Task.h"
 #include "UserButton.h"
-#include "freertos/FreeRTOS.h"
+#include "driver/gpio.h"
 #include "freertos/queue.h"
 
 
@@ -45,16 +41,13 @@ class Button //: Task
 {
 public:
     Button();
-    Button(gpio_num_t gpio, int active, bool pullupActive = true);
+    Button(gpio_num_t gpio, int active, bool pullup_active = true);
 
     // attach functions that will be called when button was pressed in the
     // specified way.
     void attachClick(callbackFunction newFunction);
-    void attachClick(parameterizedCallbackFunction newFunction, void* parameter);
     void attachDoubleClick(callbackFunction newFunction);
-    void attachDoubleClick(parameterizedCallbackFunction newFunction, void* parameter);
     void attachLongClick(callbackFunction newFunction);
-    void attachLongClick(parameterizedCallbackFunction newFunction, void* parameter);
 
     // ----- State machine functions -----
 
@@ -76,37 +69,27 @@ public:
 private:
     void gpioInit();
     bool _updated_level;                    // hardware gpio number.
-    unsigned int _debounceTicks = 200;      // number of ticks for debounce times.
-    unsigned long _clickTicks = 250;        // number of ticks that have to pass by
+    unsigned int _debounce_ticks = 200;     // number of ticks for debounce times.
+    unsigned long _click_ticks = 250;       // number of ticks that have to pass by
                                             // before a click is detected.
     unsigned long _long_press_ticks = 1500; // number of ticks that have to pass by
                                             // before a long button press is detected
 
-    int _buttonPressed;
-    bool _isLongPressed = false;
+    int _button_pressed;
+    bool _is_long_pressed = false;
     long int _timeout = 500;
 
     // These variables that hold information across the upcoming tick calls.
     // They are initialized once on program start and are updated every time the
     // tick function is called.
     int _state = 0;
-    unsigned long _startTime; // will be set in state 1
-    unsigned long _stopTime;  // will be set in state 2
+    unsigned long _start_time; // will be set in state 1
+    unsigned long _stop_time;  // will be set in state 2
 
     // These variables will hold functions acting as event source.
     callbackFunction _clickFunc = NULL;
-    parameterizedCallbackFunction _paramClickFunc = NULL;
-    void* _clickFuncParam = NULL;
-
     callbackFunction _doubleClickFunc = NULL;
-    parameterizedCallbackFunction _paramDoubleClickFunc = NULL;
-    void* _doubleClickFuncParam = NULL;
-
-
     callbackFunction _longClickFunc = NULL;
-    parameterizedCallbackFunction _paramLongClickFunc = NULL;
-    void* _longClickFuncParam = NULL;
-
 };
 } // namespace hmi
 
