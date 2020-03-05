@@ -46,7 +46,6 @@ class Button //: Task
 public:
     Button();
     Button(gpio_num_t gpio, int active, bool pullupActive = true);
-    //virtual void run(void* arg);
 
     // attach functions that will be called when button was pressed in the
     // specified way.

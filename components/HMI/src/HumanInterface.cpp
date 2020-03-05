@@ -134,7 +134,7 @@ void Button::tick(bool activeLevel, unsigned long time_now)
     } else if (_state == 1) { // waiting for menu pin being released.
 
         press_time = (now - _startTime);
-        printf("state = 1  work time = %lu\n", press_time);
+       // printf("state = 1  work time = %lu\n", press_time);
         if ((!activeLevel) && //si se libera
             (press_time < _debounceTicks)) {
             // button was released to quickly so I assume some debouncing.

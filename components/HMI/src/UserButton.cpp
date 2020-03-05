@@ -2,7 +2,7 @@
 #include "freertos/FreeRTOS.h"
 #include "freertos/queue.h"
 #include <esp_log.h>
-
+#include "defaults.h"
 namespace hmi {
 
 static xQueueHandle gpio_evt_queue = nullptr;
@@ -10,7 +10,6 @@ static xQueueHandle gpio_evt_queue = nullptr;
 static void IRAM_ATTR interruptIsrHandler(void* arg)
 {
     gpio_num_t* button = static_cast<gpio_num_t*>(arg);
-    // gpio_intr_disable(GPIO_NUM_21);
     xQueueSendFromISR(gpio_evt_queue, arg, NULL);
 }
 
@@ -46,13 +45,11 @@ void UserButton::init(gpio_num_t user_button,
 
     static Interrupt g_int_task;
     gpio_num_t USER_BUTTON = btn->_gpio_btn;
-    gpio_num_t SYSOFF = GPIO_NUM_27;
     const int ESP_INTR_FLAG_DEFAULT = 0;
 
     gpio_config_t io_conf = {};
     io_conf.intr_type = GPIO_INTR_DISABLE;
     io_conf.mode = GPIO_MODE_OUTPUT;
-    io_conf.pin_bit_mask = (1 << SYSOFF);
     io_conf.pull_down_en = GPIO_PULLDOWN_DISABLE;
     io_conf.pull_up_en = GPIO_PULLUP_DISABLE;
     gpio_config(&io_conf);
@@ -104,7 +101,6 @@ void Interrupt::run(void* task_data)
                 if (btn->_state == 6) //restart the loop
                     btn->reset();
             }
-
         } while (uxQueueMessagesWaiting(gpio_evt_queue));
         
         do {
