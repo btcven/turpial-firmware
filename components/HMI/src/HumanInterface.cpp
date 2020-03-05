@@ -66,7 +66,7 @@ void Button::attachLongClick(callbackFunction newFunction)
 
 
 /**
- * @brief reset the state machine, the proccess function was finished
+ * @brief reset the state machine, the process function was finished
  * 
  */
 void Button::reset(void)

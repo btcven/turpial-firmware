@@ -60,7 +60,7 @@ void UserButton::init(gpio_num_t user_button,
     io_conf.mode = GPIO_MODE_INPUT;
     io_conf.pull_up_en = GPIO_PULLUP_ENABLE;
     gpio_config(&io_conf);
-    //change gpio intrrupt type
+    //change gpio interrupt type
     gpio_set_intr_type(btn->_gpio_btn, GPIO_INTR_ANYEDGE);
     gpio_install_isr_service(ESP_INTR_FLAG_DEFAULT);
     gpio_isr_handler_add(btn->_gpio_btn, interruptIsrHandler, &btn->_gpio_btn);
@@ -82,7 +82,7 @@ Interrupt::Interrupt()
  * The task first blocks waiting for a communications event inside firs do-while loop. 
  * The block time is relatively short. 
  * the second do-while block waiting for some states to decode the button input.
- * The methid run is getting and instance of Button class as a parameter 
+ * The method run is getting an instance of Button class as a parameter 
  * 
  * @param task_data 
  */
