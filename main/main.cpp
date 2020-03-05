@@ -24,6 +24,7 @@
 #include <WiFi.h>
 
 #include "HttpServerHandler.h"
+#include "UserButton.h"
 #include "defaults.h"
 #include <HttpServer.h>
 #include <WebSocket.h>
