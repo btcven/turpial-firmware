@@ -44,4 +44,8 @@
 #define MAX_USER_PASSWORD_LENGTH 20                /*!< max length of password for user */
 
 #define DEFAULT_USER_BUTTON GPIO_NUM_21             /*!< default user button to control device */
+
+#define DEFAULT_RGB_LED_R  0                         /*!< default led red */
+#define DEFAULT_RGB_LED_G  2                         /*!< default led green */
+#define DEFAULT_RGB_LED_B  4                         /*!< default led blue */
 #endif // DEFAULTS_H

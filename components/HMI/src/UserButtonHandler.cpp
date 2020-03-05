@@ -3,16 +3,15 @@
 #include <esp_log.h>
 
 
-#define LED_R 0  
-#define LED_G 2  
-#define LED_B 4   
+#define LED_R DEFAULT_RGB_LED_R 
+#define LED_G DEFAULT_RGB_LED_G
+#define LED_B DEFAULT_RGB_LED_B
 
 #define RGB_GPIO_OUTPUT_PIN_SEL ( ( 1ULL<<LED_R ) | ( 1ULL<<LED_G ) | ( 1ULL<<LED_B ) )
 
-
 static const char* TAG = "USER-BUTTON-HANDLER";
 
-void UserButtonHandler::initRGB()
+void UserButtonHandler::initRGBPort(void)
 {
     //disable interrupt
     io_conf.intr_type = static_cast<gpio_int_type_t>(GPIO_PIN_INTR_DISABLE);

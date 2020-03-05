@@ -15,7 +15,7 @@ public:
     static void click(void);
     static void doubleClick(void);
     static void longClick(void);
-    static void initRGB(void);
+    static void initRGBPort(void);
 }; // UserButtonHandler
 
 #endif 

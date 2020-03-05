@@ -128,8 +128,9 @@ extern "C" void app_main()
 {
     esp_err_t err;
 
-    hmi::UserButton* usrBtn = new hmi::UserButton();
-    usrBtn->init(DEFAULT_USER_BUTTON, true, UserButtonHandler::click, UserButtonHandler::doubleClick, UserButtonHandler::longClick);
+    hmi::UserButton* usr_btn = new hmi::UserButton();
+    UserButtonHandler::initRGB();
+    usr_btn->init(DEFAULT_USER_BUTTON, true, UserButtonHandler::click, UserButtonHandler::doubleClick, UserButtonHandler::longClick);
 
     err = storage::init();
 
