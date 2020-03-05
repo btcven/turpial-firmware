@@ -1,10 +1,10 @@
 /**
  * @file WiFi.cpp
  * @author Locha Mesh project developers (locha.io)
- * @brief 
+ * @brief
  * @version 0.1.1
  * @date 2019-08-15
- * 
+ *
  * @copyright Copyright (c) 2019 Locha Mesh project developers
  * @license Apache 2.0, see LICENSE file for details
  */
@@ -14,7 +14,6 @@
 #include <cstdint>
 #include <cstring>
 
-#include <esp_event_loop.h>
 #include <esp_log.h>
 #include <esp_wifi.h>
 
@@ -46,10 +45,10 @@ static const std::uint8_t VALID_CHARACTERS[0xFF] = {
 
 /**
  * @brief Copy bytes from a `const char*`
- * 
+ *
  * @param dest: destination buffer, should be large enough to hold `max` bytes.
  * @param src: source buffer
- * 
+ *
  * @param max: destination maximum length
  */
 void copy_bytes(std::uint8_t* dest, const char* src, std::size_t max)
@@ -110,16 +109,32 @@ esp_err_t WiFi::init()
     esp_err_t err;
 
     ESP_LOGD(TAG, "Init TCP/IP adapter");
-    tcpip_adapter_init();
+    err = esp_netif_init();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "esp_netif_init failed, err = %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = esp_event_loop_create_default();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't create event loop, err = %s", esp_err_to_name(err));
+        return err;
+    }
+    esp_netif_create_default_wifi_ap();
 
     ESP_LOGD(TAG, "Initializing Wi-Fi");
-
-    esp_event_loop_init(&WiFi::eventHandler, this);
 
     wifi_init_config_t init_config = WIFI_INIT_CONFIG_DEFAULT();
     err = esp_wifi_init(&init_config);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "esp_wifi_init failed, err = %s", esp_err_to_name(err));
+        return err;
+    }
+
+    err = esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID,
+                                     &WiFi::eventHandler, this);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't register Wi-Fi event handler, err = %s", esp_err_to_name(err));
         return err;
     }
 
@@ -284,25 +299,26 @@ esp_err_t WiFi::stop()
     return ESP_OK;
 }
 
-esp_err_t WiFi::eventHandler(void* ctx, system_event_t* event)
+void WiFi::eventHandler(void *event_handler_arg,
+                        esp_event_base_t event_base,
+                        std::int32_t event_id,
+                        void *event_data)
 {
-    ESP_LOGD(TAG, "Wi-Fi Event Handler Called");
-    WiFi* wifi = reinterpret_cast<WiFi*>(ctx);
 
-    esp_err_t err = wifi->m_event_handler.eventDispatcher(event);
+    ESP_LOGD(TAG, "Wi-Fi Event Handler Called");
+    WiFi* wifi = reinterpret_cast<WiFi*>(event_handler_arg);
+
+    esp_err_t err = wifi->m_event_handler.eventDispatcher(event_id, event_data);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Event handler error, err = %s", esp_err_to_name(err));
-        return err;
     }
-
-    return ESP_OK;
 }
 
 /**
  * @brief Checks if a character is a valid SSID character
- * 
+ *
  * @param c: the character
- * 
+ *
  * @return true: is valid
  * @return false: not valid
  */
