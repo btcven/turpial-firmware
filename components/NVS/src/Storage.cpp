@@ -100,6 +100,18 @@ esp_err_t NVS::get_bool(const char* key, bool& value)
     return ESP_OK;
 }
 
+esp_err_t NVS::setString(std::string key, std::string data) 
+{
+    return nvs_set_str(m_handle, key.c_str(), data.c_str());
+}
+
+esp_err_t NVS::getString(std::string key,  char* buffer, size_t* length)
+{
+
+    return  nvs_get_str(m_handle, key.c_str(), buffer, length);
+    //return ESP_OK;
+}
+
 esp_err_t NVS::commit()
 {
     return nvs_commit(m_handle);
@@ -123,7 +135,7 @@ esp_err_t NVS::getIsConfigured(bool& is_configured)
     err = app_nvs.get_bool(NVS_IS_CONFIGURED_KEY, is_configured);
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         // Set is_configured to true on flash so on next init the config is
-        // readed directly by the ESP-IDF Wi-Fi library component.
+        // read directly by the ESP-IDF Wi-Fi library component.
         err = app_nvs.set_bool(NVS_IS_CONFIGURED_KEY, true);
         if (err != ESP_OK) return err;
         err = app_nvs.commit();

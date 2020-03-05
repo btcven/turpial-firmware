@@ -33,7 +33,7 @@ public:
 
     virtual void onError(std::string error) override
     {
-        ESP_LOGI("EVENTS--->", "THERE ARE ERRROS HERE-----:(");
+        ESP_LOGI("EVENTS--->", "THERE ARE ERRORS HERE-----:(");
     }
 };
 

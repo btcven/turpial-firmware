@@ -277,13 +277,19 @@ private:
     /**
      * @brief Wi-Fi event handler
      * 
-     * @param ctx: application specific data (currently a pointer to the class
-     * instance)
-     * @param event: Wi-Fi event
+     * @param[in] event_handler_arg callback handler argument (in this case
+     *                              our object).
+     * @param[in] event_base        WIFI_EVENT
+     * @param[in] event_id          Id of the event.
+     * @param[in] event_data        Data of the event (event_id specifies the
+     *                              type to use).
      */
-    static esp_err_t eventHandler(void* ctx, system_event_t* event);
+    static void eventHandler(void *event_handler_arg,
+                             esp_event_base_t event_base,
+                             std::int32_t event_id,
+                             void* event_data);
 
-    WiFiDefaultEventHandler m_event_handler; /*!< Pointer to desired hanlder events */
+    WiFiDefaultEventHandler m_event_handler; /*!< Pointer to desired handler event */
 };
 
 /**

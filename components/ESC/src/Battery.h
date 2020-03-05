@@ -53,6 +53,7 @@ public:
      * @param[in] max_capacity:
      */
     esp_err_t init(gpio_num_t gpout_io_num,
+                   gpio_num_t sysoff_num_t,
                    std::uint8_t soc_interval,
                    std::uint16_t max_capacity);
 

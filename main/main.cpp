@@ -17,22 +17,69 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-#include <BLEPreferences.h>
-#include <Storage.h>
-#include <Radio.h>
-#include <WiFi.h>
 #include <Battery.h>
 #include <FuelGauge.h>
+#include <Radio.h>
+#include <Storage.h>
+#include <WiFi.h>
 
+#include "HttpServerHandler.h"
+#include "UserButton.h"
+#include "UserButtonHandler.h"
+#include "defaults.h"
 #include <HttpServer.h>
 #include <WebSocket.h>
 #include <WsHandlerEvents.h>
 
-#include "defaults.h"
-
 HttpServer httpServer;
 
 static const char* TAG = "app_main";
+
+esp_err_t getSetCredentials(void)
+{
+    esp_err_t err;
+    storage::NVS app_nvs;
+
+    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
+    if (err != ESP_OK) {
+        const char* err_str = esp_err_to_name(err);
+        ESP_LOGE(TAG,
+            "Couldn't open namespace \"%s\" (%s)",
+            NVS_APP_NAMESPACE,
+            err_str);
+        return err;
+    }
+
+    char user_name[MAX_USER_NAME_LENGTH];
+    char user_password[MAX_USER_PASSWORD_LENGTH];
+    size_t ul = MAX_USER_NAME_LENGTH;
+    size_t pl = MAX_USER_PASSWORD_LENGTH;
+    err = app_nvs.getString(USER_NAME_KEY, user_name, &ul);
+    if (err != ESP_OK) {
+        ESP_LOGI(TAG, "There is no username in nvs, going to set it");
+        err = app_nvs.setString(USER_NAME_KEY, DEFAUL_USERNAME);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "There are errors , was not possible to save in NVS the username");
+            return ESP_FAIL;
+        }
+        err = app_nvs.setString(USER_PASSWORD_KEY, DEFAULT_USER_PASSWORD);
+        if (err != ESP_OK) {
+            ESP_LOGI(TAG,"Error trying to save default password");
+            return ESP_FAIL;
+        }
+    } else {
+        err = app_nvs.getString(USER_PASSWORD_KEY, user_password, &pl);
+        if (err != ESP_OK) {
+            err = app_nvs.setString(USER_PASSWORD_KEY, DEFAULT_USER_PASSWORD);
+            if (err != ESP_OK) {
+                return ESP_FAIL;
+            }
+        }
+        ESP_LOGI(TAG, "\nUsername: %s, Password: %s --> inside eeprom", &user_name[0], &user_password[0]);
+    }
+
+    return ESP_OK;
+}
 
 esp_err_t getIsConfigured(bool& is_configured)
 {
@@ -52,7 +99,7 @@ esp_err_t getIsConfigured(bool& is_configured)
     err = app_nvs.get_bool(NVS_IS_CONFIGURED_KEY, is_configured);
     if (err == ESP_ERR_NVS_NOT_FOUND) {
         // Set is_configured to true on flash so on next init the config is
-        // readed directly by the ESP-IDF Wi-Fi library component.
+        // read directly by the ESP-IDF Wi-Fi library component.
         err = app_nvs.set_bool(NVS_IS_CONFIGURED_KEY, true);
         if (err != ESP_OK) return err;
         err = app_nvs.commit();
@@ -81,6 +128,10 @@ extern "C" void app_main()
 {
     esp_err_t err;
 
+    hmi::UserButton* usr_btn = new hmi::UserButton();
+    UserButtonHandler::initRGBPort();
+    usr_btn->init(DEFAULT_USER_BUTTON, true, UserButtonHandler::click, UserButtonHandler::doubleClick, UserButtonHandler::longClick);
+
     err = storage::init();
 
     if (err != ESP_OK) {
@@ -96,10 +147,13 @@ extern "C" void app_main()
             esp_err_to_name(err));
     }
 
+    getSetCredentials();
+
     network::WiFi& wifi = network::WiFi::getInstance();
+
     err = wifi.init();
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't initalize Wi-Fi interface (%s)", esp_err_to_name(err));
+        ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface (%s)", esp_err_to_name(err));
         return;
     }
 
@@ -128,31 +182,26 @@ extern "C" void app_main()
         return;
     }
 
-
-    ble::ServerParams server_params;
-    server_params.device_name = "Turpial-1234";
-    server_params.static_passkey = 123456;
-    server_params.app_id = 0;
-    ble_preferences::start(server_params);
-
 #if RAD_ENABLED == true
     radio::Radio* radio_task = new radio::Radio();
     radio_task->start();
 #endif
 
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/", webSocketHandler);
-    httpServer.start(80);
-
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/stream", webSocketHandler);
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/get-device-info", HttpServerHandler::readDeviceInfoHandler);
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-sta-ap", HttpServerHandler::setUpStaApHandler);
+    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-credentials", HttpServerHandler::setUpCredentialHandler);
+    httpServer.start(2565);
 
 #if ESC_ENABLED == true
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
 
     esc::Battery& battery = esc::Battery::getInstance();
 
-    err = battery.init(ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
+    err = battery.init(ESC_SYSOFF_PIN, ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Can't setup ESC, err = %s",
-                 esp_err_to_name(err));
+            esp_err_to_name(err));
         return;
     }
 

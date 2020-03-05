@@ -14,6 +14,7 @@
 
 #include <esp_err.h>
 #include <nvs_flash.h>
+#include <string>
 
 namespace storage {
 
@@ -48,7 +49,7 @@ public:
     /**
      * @brief Open namespace
      * 
-     * @attention 1. If a namespace is already opened it's going to be clossed.
+     * @attention 1. If a namespace is already opened it's going to be closed.
      * 
      * @param name: namespace name 
      * @param open_mode: opening mode
@@ -99,6 +100,24 @@ public:
      *      - (others): failed
      */
     esp_err_t getIsConfigured(bool& is_configured);
+
+    /**
+     * @brief Set the String object
+     * 
+     * @param key 
+     * @param username 
+     * @return esp_err_t 
+     */
+    esp_err_t setString(std::string key, std::string data);
+
+    /**
+     * @brief Get the String object
+     * 
+     * @param key 
+     * @param data 
+     * @return esp_err_t 
+     */
+    esp_err_t getString(std::string key,  char* buffer, size_t* length);
 
     /**
      * @brief Commit changes to flash
