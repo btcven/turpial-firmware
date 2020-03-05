@@ -24,6 +24,8 @@
 #include <WiFi.h>
 
 #include "HttpServerHandler.h"
+#include "UserButton.h"
+#include "UserButtonHandler.h"
 #include "defaults.h"
 #include <HttpServer.h>
 #include <WebSocket.h>
@@ -125,6 +127,10 @@ void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
 extern "C" void app_main()
 {
     esp_err_t err;
+
+    hmi::UserButton* usr_btn = new hmi::UserButton();
+    UserButtonHandler::initRGBPort();
+    usr_btn->init(DEFAULT_USER_BUTTON, true, UserButtonHandler::click, UserButtonHandler::doubleClick, UserButtonHandler::longClick);
 
     err = storage::init();
 
