@@ -1,4 +1,4 @@
 file(GLOB_RECURSE SOURCES src/*.cpp)
 idf_component_register(SRCS ${SOURCES}
                        INCLUDE_DIRS src
-                       REQUIRES Task Util mbedtls lwip ESC Network NVS)
+                       REQUIRES esp_http_server json ESC Network NVS)

@@ -13,6 +13,8 @@
 #include <memory>
 #include <sstream>
 
+#include "defaults.h"
+
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
@@ -23,15 +25,10 @@
 #include <Storage.h>
 #include <WiFi.h>
 
-#include "HttpServerHandler.h"
 #include "UserButton.h"
 #include "UserButtonHandler.h"
-#include "defaults.h"
-#include <HttpServer.h>
-#include <WebSocket.h>
-#include <WsHandlerEvents.h>
 
-HttpServer httpServer;
+#include "RESTServer.h"
 
 static const char* TAG = "app_main";
 
@@ -114,16 +111,6 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
-
-void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
-{
-    WsHandlerEvents* myHandler = new WsHandlerEvents();
-    if (pHttpRequest->isWebsocket()) {
-        pHttpRequest->getWebSocket()->setHandler(myHandler);
-        ESP_LOGI("available clients---->>", "%d", pHttpRequest->getWebSocket()->availableClients());
-    }
-}
-
 extern "C" void app_main()
 {
     esp_err_t err;
@@ -187,11 +174,7 @@ extern "C" void app_main()
     radio_task->start();
 #endif
 
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/stream", webSocketHandler);
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/get-device-info", HttpServerHandler::readDeviceInfoHandler);
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-sta-ap", HttpServerHandler::setUpStaApHandler);
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-credentials", HttpServerHandler::setUpCredentialHandler);
-    httpServer.start(2565);
+    rest_server::start_server(2656);
 
 #if ESC_ENABLED == true
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
