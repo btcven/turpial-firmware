@@ -10,6 +10,7 @@
  */
 
 #include <cstdio>
+#include <cstring>
 #include <memory>
 #include <sstream>
 
@@ -147,19 +148,20 @@ extern "C" void app_main()
     if (!is_configured) {
         wifi.setMode(WIFI_MODE);
 
-        network::APConfig ap_config = {
-            .ssid = WAP_SSID,
-            .password = WAP_PASS,
-            .authmode = WAP_AUTHMODE,
-            .max_conn = WAP_MAXCONN,
-            .channel = WAP_CHANNEL,
-        };
+        // Default configuration for AP
+        wifi_config_t ap_config;
+        ap_config.ap.ssid_len = 0;
+        std::memcpy(ap_config.ap.ssid, WAP_SSID, sizeof(WAP_SSID));
+        std::memcpy(ap_config.ap.password, WAP_PASS, sizeof(WAP_PASS));
+        ap_config.ap.authmode = WAP_AUTHMODE;
+        ap_config.ap.max_connection = WAP_MAXCONN;
+        ap_config.ap.channel = WAP_CHANNEL;
         wifi.setApConfig(ap_config);
 
-        network::STAConfig sta_config = {
-            .ssid = WST_SSID,
-            .password = WST_PASS,
-        };
+        // Default configuration for STA
+        wifi_config_t sta_config;
+        std::memcpy(sta_config.sta.ssid, WST_SSID, sizeof(WST_SSID));
+        std::memcpy(sta_config.sta.password, WST_PASS, sizeof(WST_PASS));
         wifi.setStaConfig(sta_config);
     }
 
