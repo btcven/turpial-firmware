@@ -4,8 +4,13 @@
 
 #include "RESTServer.h"
 
+#include <cstring>
+
 #include <cJSON.h>
 #include <esp_log.h>
+
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
 
 #include "FuelGauge.h"
 #include "HttpServer.h"
@@ -29,18 +34,46 @@ typedef struct {
 
 static const char* TAG = "RESTServer";
 
+esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
+{
+    std::size_t total_len = req->content_len;
+
+    // Verify that the request doesn't overflow our scratch buffer
+    if (total_len >= SCRATCH_BUFSIZE) {
+        return ESP_FAIL;
+    }
+
+    // Buffer where we'll be reading
+    char* buf = reinterpret_cast<rest_server_context_t*>(req->user_ctx)->scratch;
+
+    // Read request content
+    std::size_t cur_len = 0;
+    std::size_t received = 0;
+    while (cur_len < total_len) {
+        received = httpd_req_recv(req, buf + cur_len, total_len);
+        if (received <= 0) {
+            return ESP_FAIL;
+        }
+        cur_len += received;
+    }
+    buf[total_len] = '\0';
+
+    *root = cJSON_Parse(buf);
+    return ESP_OK;
+}
 
 void sendErrorResponse(httpd_req_t* req, const char* msg)
 {
+    ESP_LOGI(TAG, "Request failed");
     cJSON* root = cJSON_CreateObject();
 
     // Construct error response
-    cJSON_AddStringToObject(root, "error", "Content too long");
+    cJSON_AddStringToObject(root, "error", msg);
 
     char* payload = cJSON_Print(root);
 
     // Send response
-    httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, payload);
+    httpd_resp_sendstr(req, payload);
 
     // Free memory allocated by cJSON
     free(payload);
@@ -49,6 +82,7 @@ void sendErrorResponse(httpd_req_t* req, const char* msg)
 
 void sendOkResponse(httpd_req_t* req)
 {
+    ESP_LOGI(TAG, "Request successful");
     cJSON* root = cJSON_CreateObject();
 
     // Construct error response
@@ -57,7 +91,7 @@ void sendOkResponse(httpd_req_t* req)
     char* payload = cJSON_Print(root);
 
     // Send response
-    httpd_resp_send_err(req, HTTPD_500_INTERNAL_SERVER_ERROR, payload);
+    httpd_resp_sendstr(req, payload);
 
     // Free memory allocated by cJSON
     free(payload);
@@ -84,14 +118,17 @@ esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
 /**
  * @brief   Get device information
  */
-esp_err_t getDeviceInfo(httpd_req_t* req)
+esp_err_t systemInfoHandler(httpd_req_t* req)
 {
     std::uint16_t voltage = 0;
     std::int16_t avg_current = 0;
     std::int16_t avg_power = 0;
     std::uint16_t temp = 0;
     std::size_t free_memory = 0;
+    char ap_ssid[32] = {};
+    char sta_ssid[32] = {};
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
+    network::WiFi& wifi = network::WiFi::getInstance();
 
     // Obtain response values
     REST_CHECK(fuel_gauge.voltage(&voltage) == ESP_OK, "Can't get voltage\n");
@@ -101,6 +138,32 @@ esp_err_t getDeviceInfo(httpd_req_t* req)
                "Can't get internal temperature\n");
     free_memory = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
 
+
+    wifi_config_t ap_config;
+    wifi_config_t sta_config;
+
+    // Read AP configuration
+    if (wifi.getApConfig(ap_config) == ESP_OK) {
+        // Get AP SSID
+        std::size_t ssid_len = 0;
+        if (ap_config.ap.ssid_len != 0) {
+            ssid_len = ap_config.ap.ssid_len;
+        } else {
+            ssid_len = std::strlen(reinterpret_cast<char*>(ap_config.ap.ssid));
+        }
+
+        std::memcpy(ap_ssid, ap_config.ap.ssid, ssid_len);
+        ap_ssid[ssid_len] = '\0';
+    }
+
+    // Read STA configuration
+    if (wifi.getStaConfig(sta_config) == ESP_OK) {
+        // Get STA SSID
+        std::size_t ssid_len = std::strlen(reinterpret_cast<char*>(sta_config.sta.ssid));
+        std::memcpy(sta_ssid, sta_config.ap.ssid, ssid_len);
+        sta_ssid[ssid_len] = '\0';
+    }
+
     // Construct JSON object
     cJSON* root = cJSON_CreateObject();
 
@@ -109,6 +172,12 @@ esp_err_t getDeviceInfo(httpd_req_t* req)
     cJSON_AddNumberToObject(root, "avg_power", avg_power * 1.0);
     cJSON_AddNumberToObject(root, "avg_temp", avg_power * 1.0);
     cJSON_AddNumberToObject(root, "free_memory", free_memory * 1.0);
+
+    cJSON* ap_root = cJSON_AddObjectToObject(root, "ap");
+    cJSON_AddStringToObject(ap_root, "ssid", ap_ssid);
+
+    cJSON* sta_root = cJSON_AddObjectToObject(root, "sta");
+    cJSON_AddStringToObject(sta_root, "ssid", sta_ssid);
 
     char* payload = cJSON_Print(root);
 
@@ -123,88 +192,57 @@ esp_err_t getDeviceInfo(httpd_req_t* req)
     return ESP_OK;
 }
 
-/**
- * @brief   Setup STA/AP configuration
- */
-esp_err_t setupStaAp(httpd_req_t *req)
+esp_err_t systemCredentialsHandler(httpd_req_t *req)
 {
-    std::size_t total_len = req->content_len;
+    return ESP_OK;
+}
 
+/**
+ * @brief   Setup AP configuration
+ */
+esp_err_t wifiApHandler(httpd_req_t *req)
+{
     httpd_resp_set_type(req, "application/json");
 
-    // Verify that the request doesn't overflow our scratch buffer
-    if (total_len >= SCRATCH_BUFSIZE) {
-        sendErrorResponse(req, "Content too long");
+    // Read JSON from the Request
+    cJSON* req_root;
+    if (receiveJson(req, &req_root) != ESP_OK) {
+        sendErrorResponse(req, "Couldn't receive JSON data");
         return ESP_FAIL;
     }
 
-    // Buffer where we'll be reading
-    char* buf = reinterpret_cast<rest_server_context_t*>(req->user_ctx)->scratch;
+    // Read current AP configuration
+    network::WiFi& wifi = network::WiFi::getInstance();
 
-    // Read request content
-    std::size_t cur_len = 0;
-    std::size_t received = 0;
-    while (cur_len < total_len) {
-        received = httpd_req_recv(req, buf + cur_len, total_len);
-        if (received <= 0) {
-            sendErrorResponse(req, "Content receive data");
-            return ESP_FAIL;
-        }
-        cur_len += received;
-    }
-    buf[total_len] = '\0';
+    bool change_config = false;
+    wifi_config_t config;
+    wifi.getApConfig(config);
 
-    cJSON* req_root = cJSON_Parse(buf);
-    if (req_root != nullptr) {
+    if (!cJSON_IsObject(req_root)) {
         sendErrorResponse(req, "Malformed JSON");
         return ESP_FAIL;
     }
 
-    wifi_config_t ap_config;
-    wifi_config_t sta_config;
-
-    bool change_ap_config = false;
-    bool change_sta_config = false;
-
-    cJSON* ap_root = cJSON_GetObjectItemCaseSensitive(req_root, "ap");
-    cJSON* sta_root = cJSON_GetObjectItemCaseSensitive(req_root, "sta");
-
-    if (cJSON_IsObject(ap_root)) {
-        change_ap_config = true;
-
-        cJSON* ap_ssid = cJSON_GetObjectItemCaseSensitive(ap_root, "ssid");
-        cJSON* ap_password = cJSON_GetObjectItemCaseSensitive(ap_root, "password");
+    cJSON* ssid = cJSON_GetObjectItemCaseSensitive(req_root, "ssid");
+    if (!cJSON_IsNull(ssid) && cJSON_IsString(ssid)) {
+        change_config = true;
 
         // SSID should be null terminated
-        ap_config.ap.ssid_len = 0;
+        config.ap.ssid_len = 0;
 
-        if (parseString(ap_ssid, ap_config.ap.ssid, 31) != ESP_OK) {
-            sendErrorResponse(req, "Invalid AP configuration");
-            cJSON_Delete(req_root);
-            return ESP_FAIL;
-        }
-
-        if (parseString(ap_password, ap_config.ap.password, 63) != ESP_OK) {
-            sendErrorResponse(req, "Invalid AP configuration");
+        if (parseString(ssid, config.ap.ssid, 31) != ESP_OK) {
+            sendErrorResponse(req, "Invalid AP SSID");
             cJSON_Delete(req_root);
             return ESP_FAIL;
         }
     }
 
-    if (cJSON_IsObject(sta_root)) {
-        change_sta_config = true;
+    cJSON* password = cJSON_GetObjectItemCaseSensitive(req_root, "password");
+    if (!cJSON_IsNull(password) && cJSON_IsString(password)) {
+        change_config = true;
 
-        cJSON* sta_ssid = cJSON_GetObjectItemCaseSensitive(sta_root, "ssid");
-        cJSON* sta_password = cJSON_GetObjectItemCaseSensitive(sta_root, "password");
-
-        if (parseString(sta_ssid, sta_config.sta.ssid, 31) != ESP_OK) {
-            sendErrorResponse(req, "Invalid STA configuration");
-            cJSON_Delete(req_root);
-            return ESP_FAIL;
-        }
-
-        if (parseString(sta_password, sta_config.sta.password, 63) != ESP_OK) {
-            sendErrorResponse(req, "Invalid STA configuration");
+        if (parseString(password, config.ap.password, 63) != ESP_OK) {
+            sendErrorResponse(req, "Invalid AP password");
             cJSON_Delete(req_root);
             return ESP_FAIL;
         }
@@ -217,24 +255,93 @@ esp_err_t setupStaAp(httpd_req_t *req)
     // Free the memory allocated by cJSON (for the request)
     cJSON_Delete(req_root);
 
-    network::WiFi& wifi = network::WiFi::getInstance();
-    if (change_ap_config) {
+    if (change_config) {
+        vTaskDelay(5000000);
         ESP_LOGI(TAG, "Updating AP config");
-        REST_CHECK(wifi.setApConfig(ap_config) == ESP_OK, "Couldn't update AP config.");
-    }
-
-    if (change_sta_config) {
-        ESP_LOGI(TAG, "Updating STA config");
-        REST_CHECK(wifi.setStaConfig(sta_config) == ESP_OK, "Couldn't update STA config.");
+        REST_CHECK(wifi.setApConfig(config) == ESP_OK, "Couldn't update AP config.");
     }
 
     return ESP_OK;
 }
 
-esp_err_t setupCredentials(httpd_req_t *req)
+/**
+ * @brief   Setup STA configuration
+ */
+esp_err_t wifiStaHandler(httpd_req_t *req)
 {
+    httpd_resp_set_type(req, "application/json");
+
+    // Read JSON from the Request
+    cJSON* req_root;
+    if (receiveJson(req, &req_root) != ESP_OK) {
+        sendErrorResponse(req, "Couldn't receive JSON data");
+        return ESP_FAIL;
+    }
+
+    // Read current STA configuration
+    network::WiFi& wifi = network::WiFi::getInstance();
+
+    bool change_config = false;
+    wifi_config_t config;
+    wifi.getStaConfig(config);
+
+    if (!cJSON_IsObject(req_root)) {
+        sendErrorResponse(req, "Malformed JSON");
+        return ESP_FAIL;
+    }
+
+    cJSON* ssid = cJSON_GetObjectItemCaseSensitive(req_root, "ssid");
+    if (!cJSON_IsNull(ssid) && cJSON_IsString(ssid)) {
+        change_config = true;
+
+        // SSID should be null terminated
+        config.ap.ssid_len = 0;
+
+        if (parseString(ssid, config.ap.ssid, 31) != ESP_OK) {
+            sendErrorResponse(req, "Invalid STA SSID");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+    }
+
+    cJSON* password = cJSON_GetObjectItemCaseSensitive(req_root, "password");
+    if (!cJSON_IsNull(password) && cJSON_IsString(password)) {
+        change_config = true;
+
+        if (parseString(password, config.ap.password, 63) != ESP_OK) {
+            sendErrorResponse(req, "Invalid STA password");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+    }
+
+    // Free the memory allocated by cJSON (for the request)
+    cJSON_Delete(req_root);
+
+    // Update config if new parameters are provided
+    if (change_config) {
+        ESP_LOGI(TAG, "Updating STA config");
+
+        // Check if we need to enable STA
+        if (!wifi.isSta()) {
+            if (wifi.setMode(WIFI_MODE_APSTA) != ESP_OK) {
+                sendErrorResponse(req, "Couldn't set mode to AP/STA.");
+                return ESP_FAIL;
+            }
+        }
+
+        if (wifi.setStaConfig(config) != ESP_OK) {
+            sendErrorResponse(req, "Couldn't update STA config.");
+            return ESP_FAIL;
+        }
+    }
+
+    // Finally send the response
+    sendOkResponse(req);
+
     return ESP_OK;
 }
+
 
 void start_server(std::uint16_t port)
 {
@@ -243,9 +350,10 @@ void start_server(std::uint16_t port)
 
     rest_server_context_t *ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));
 
-    http_server.registerUri("/get-device-info", HTTP_GET, getDeviceInfo, ctx);
-    http_server.registerUri("/set-up-sta-ap", HTTP_POST, setupStaAp, ctx);
-    http_server.registerUri("/set-up-credentials", HTTP_POST, setupCredentials, ctx);
+    http_server.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx);
+    http_server.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx);
+    http_server.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx);
+    http_server.registerUri("/wifi/ap", HTTP_POST, wifiApHandler, ctx);
 }
 
 } // namespace rest_server
