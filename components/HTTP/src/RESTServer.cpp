@@ -128,6 +128,7 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
     std::size_t free_memory = 0;
     char ap_ssid[32] = {};
     char sta_ssid[32] = {};
+    bool sta_enabled = false;
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
     network::WiFi& wifi = network::WiFi::getInstance();
 
@@ -165,6 +166,8 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
         sta_ssid[ssid_len] = '\0';
     }
 
+    sta_enabled = wifi.isSta();
+
     // Construct JSON object
     cJSON* root = cJSON_CreateObject();
 
@@ -182,6 +185,7 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
 
     cJSON* sta_root = cJSON_AddObjectToObject(root, "sta");
     cJSON_AddStringToObject(sta_root, "ssid", sta_ssid);
+    cJSON_AddBoolToObject(sta_root, "enabled", sta_enabled);
 
     char* payload = cJSON_Print(root);
 
