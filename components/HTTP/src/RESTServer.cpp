@@ -286,12 +286,18 @@ esp_err_t wifiStaHandler(httpd_req_t *req)
     network::WiFi& wifi = network::WiFi::getInstance();
 
     bool change_config = false;
+    bool enable = false;
     wifi_config_t config;
     wifi.getStaConfig(config);
 
     if (!cJSON_IsObject(req_root)) {
         sendErrorResponse(req, "Malformed JSON");
         return ESP_FAIL;
+    }
+
+    cJSON* enable_root = cJSON_GetObjectItemCaseSensitive(req_root, "enable");
+    if (cJSON_IsTrue(enable_root)) {
+        enable = true;
     }
 
     cJSON* ssid = cJSON_GetObjectItemCaseSensitive(req_root, "ssid");
@@ -326,10 +332,17 @@ esp_err_t wifiStaHandler(httpd_req_t *req)
     if (change_config) {
         ESP_LOGI(TAG, "Updating STA config");
 
+        bool is_sta = wifi.isSta();
+
         // Check if we need to enable STA
-        if (!wifi.isSta()) {
+        if (!is_sta && enable) {
             if (wifi.setMode(WIFI_MODE_APSTA) != ESP_OK) {
                 sendErrorResponse(req, "Couldn't set mode to AP/STA.");
+                return ESP_FAIL;
+            }
+        } else if (is_sta && !enable) {
+            if (wifi.setMode(WIFI_MODE_AP) != ESP_OK) {
+                sendErrorResponse(req, "Couldn't set mode to AP.");
                 return ESP_FAIL;
             }
         }
