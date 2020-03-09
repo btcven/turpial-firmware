@@ -1,16 +1,19 @@
 /**
  * @file defaults.h
  * @author Locha Mesh project developers (locha.io)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2019-11-07
- * 
+ *
  * @copyright Copyright (c) 2019 Locha Mesh project developers
  * @license Apache 2.0, see LICENSE file for details
  */
 
 #ifndef DEFAULTS_H
 #define DEFAULTS_H
+
+#define DEVICE_NAME    "turpial" /*!< Device name */
+#define DEVICE_VERSION "v0.1.0"  /*!< Firmware version */
 
 #define NVS_APP_NAMESPACE "turpial"           /*!< NVS application namespace */
 #define NVS_IS_CONFIGURED_KEY "is_configured" /*!< Is turpial configured? */
@@ -36,16 +39,16 @@
 #define WAP_MAXCONN 4                       /*!< AP Maximum connections */
 #define WAP_AUTHMODE WIFI_AUTH_WPA_WPA2_PSK /*!< AP Authentication mode */
 
-#define USER_NAME_KEY "username"                   /*!< default user_name for app to do request to server */
-#define USER_PASSWORD_KEY "password"               /*!< default user_password app to do request to server */
-#define DEFAUL_USERNAME   "admin"                  /*!< default username */
-#define DEFAULT_USER_PASSWORD "admin"              /*!< default user password */
-#define MAX_USER_NAME_LENGTH 20                    /*!< length of thr username */
-#define MAX_USER_PASSWORD_LENGTH 20                /*!< max length of password for user */
+#define USER_NAME_KEY "username"            /*!< default user_name for app to do request to server */
+#define USER_PASSWORD_KEY "password"        /*!< default user_password app to do request to server */
+#define DEFAUL_USERNAME   "admin"           /*!< default username */
+#define DEFAULT_USER_PASSWORD "admin"       /*!< default user password */
+#define MAX_USER_NAME_LENGTH 20             /*!< length of thr username */
+#define MAX_USER_PASSWORD_LENGTH 20         /*!< max length of password for user */
 
-#define DEFAULT_USER_BUTTON GPIO_NUM_21             /*!< default user button to control device */
+#define DEFAULT_USER_BUTTON GPIO_NUM_21     /*!< default user button to control device */
 
-#define DEFAULT_RGB_LED_R  0                         /*!< default led red */
-#define DEFAULT_RGB_LED_G  2                         /*!< default led green */
-#define DEFAULT_RGB_LED_B  4                         /*!< default led blue */
+#define DEFAULT_RGB_LED_R  0                /*!< default led red */
+#define DEFAULT_RGB_LED_G  2                /*!< default led green */
+#define DEFAULT_RGB_LED_B  4                /*!< default led blue */
 #endif // DEFAULTS_H

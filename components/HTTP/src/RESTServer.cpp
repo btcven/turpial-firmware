@@ -15,6 +15,7 @@
 #include "FuelGauge.h"
 #include "HttpServer.h"
 #include "WiFi.h"
+#include "defaults.h"
 
 #define REST_CHECK(expr, msg)                \
     do {                                     \
@@ -166,6 +167,9 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
 
     // Construct JSON object
     cJSON* root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "device_name", DEVICE_NAME);
+    cJSON_AddStringToObject(root, "device_version", DEVICE_VERSION);
 
     cJSON_AddNumberToObject(root, "voltage", voltage * 1.0);
     cJSON_AddNumberToObject(root, "avg_current", avg_current * 1.0);
