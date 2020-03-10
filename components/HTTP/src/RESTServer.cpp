@@ -101,9 +101,9 @@ void sendOkResponse(httpd_req_t* req)
 
 esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
 {
-    if (cJSON_IsString(item)) {
-        const char* val = cJSON_GetStringValue(item);
-        std::size_t len = strlen(val);
+    const char* val = cJSON_GetStringValue(item);
+    std::size_t len = strlen(val);
+    if (val != NULL) {
         if (len <= max_len) {
             memcpy(dst, val, len + 1);
         } else {
@@ -232,7 +232,7 @@ esp_err_t wifiApHandler(httpd_req_t *req)
     }
 
     cJSON* ssid = cJSON_GetObjectItemCaseSensitive(req_root, "ssid");
-    if (!cJSON_IsNull(ssid) && cJSON_IsString(ssid)) {
+    if (cJSON_IsString(ssid)) {
         change_config = true;
 
         // SSID should be null terminated
@@ -246,11 +246,17 @@ esp_err_t wifiApHandler(httpd_req_t *req)
     }
 
     cJSON* password = cJSON_GetObjectItemCaseSensitive(req_root, "password");
-    if (!cJSON_IsNull(password) && cJSON_IsString(password)) {
+    if (cJSON_IsString(password)) {
         change_config = true;
 
         if (parseString(password, config.ap.password, 63) != ESP_OK) {
             sendErrorResponse(req, "Invalid AP password");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+
+        if (std::strlen(reinterpret_cast<char*>(config.ap.password)) < 8) {
+            sendErrorResponse(req, "Password is less than 8 characters");
             cJSON_Delete(req_root);
             return ESP_FAIL;
         }
@@ -264,8 +270,8 @@ esp_err_t wifiApHandler(httpd_req_t *req)
     cJSON_Delete(req_root);
 
     if (change_config) {
-        vTaskDelay(5000000);
         ESP_LOGI(TAG, "Updating AP config");
+        vTaskDelay(50 / portTICK_PERIOD_MS);
         REST_CHECK(wifi.setApConfig(config) == ESP_OK, "Couldn't update AP config.");
     }
 
@@ -311,7 +317,7 @@ esp_err_t wifiStaHandler(httpd_req_t *req)
         // SSID should be null terminated
         config.ap.ssid_len = 0;
 
-        if (parseString(ssid, config.ap.ssid, 31) != ESP_OK) {
+        if (parseString(ssid, config.sta.ssid, 31) != ESP_OK) {
             sendErrorResponse(req, "Invalid STA SSID");
             cJSON_Delete(req_root);
             return ESP_FAIL;
@@ -322,8 +328,14 @@ esp_err_t wifiStaHandler(httpd_req_t *req)
     if (!cJSON_IsNull(password) && cJSON_IsString(password)) {
         change_config = true;
 
-        if (parseString(password, config.ap.password, 63) != ESP_OK) {
+        if (parseString(password, config.sta.password, 63) != ESP_OK) {
             sendErrorResponse(req, "Invalid STA password");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+
+        if (std::strlen(reinterpret_cast<char*>(config.sta.password)) < 8) {
+            sendErrorResponse(req, "Password is less than 8 characters");
             cJSON_Delete(req_root);
             return ESP_FAIL;
         }
