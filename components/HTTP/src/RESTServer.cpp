@@ -126,10 +126,12 @@ void sendOkResponse(httpd_req_t* req)
 /**
  * @brief Parse string
  * 
- * @param item 
- * @param dst 
- * @param max_len 
- * @return esp_err_t 
+ * @param[in]  item    cJSON string.
+ * @param[out] dst     Destination
+ * @param[in]  max_len Maximum length of the field.
+ *
+ * @return ESP_OK   Function succeed.
+ * @return ESP_FAIL Invalid parameters.
  */
 esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
 {
