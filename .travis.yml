@@ -42,9 +42,8 @@ install:
 # in https://docs.espressif.com/projects/esp-idf/en/latest/get-started/#get-started-get-prerequisites
 - mkdir -p ~/esp
 - cd ~/esp
-- git clone --recursive https://github.com/espressif/esp-idf.git
+- git clone --recursive https://github.com/espressif/esp-idf.git -b release/v4.0
 - cd ~/esp/esp-idf
-# - git checkout release/v4.0
 - ./install.sh
 - export IDF_PATH=~/esp/esp-idf
 - export PATH=$PATH:$HOME/esp/esp-idf/tools
