@@ -27,7 +27,6 @@ addons:
       - libncurses-dev
       - doxygen
 
-
 before_install:
 # - sudo apt-get -y install doxygen
 # Save path to the git repository
