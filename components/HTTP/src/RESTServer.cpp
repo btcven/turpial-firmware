@@ -79,8 +79,8 @@ esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
 /**
  * @brief 
  * 
- * @param req 
- * @param msg 
+ * @param[in] req   The request we should send the error response to.
+ * @param[in] msg The error message.
  */
 void sendErrorResponse(httpd_req_t* req, const char* msg)
 {
