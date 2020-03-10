@@ -12,7 +12,7 @@ addons:
       - gperf
       - python3
       - python3-pip
-      - python-setuptools
+      - python3-setuptools
       - python-serial
       - python-click
       - python-cryptography
@@ -34,11 +34,11 @@ before_install:
 - PROJECT_PATH=$(pwd)
 
 install:
-- pip install -U codespell
-- pip install -U travis-sphinx
-- pip install -U sphinx-rtd-theme
-- pip install -U breathe
-- pip install -U exhale
+- pip3 install -U codespell
+- pip3 install -U travis-sphinx
+- pip3 install -U sphinx-rtd-theme
+- pip3 install -U breathe
+- pip3 install -U exhale
 # Install ESP32 toochain following steps as described
 # in https://docs.espressif.com/projects/esp-idf/en/latest/get-started/#get-started-get-prerequisites
 - mkdir -p ~/esp
