@@ -26,11 +26,11 @@ before_install:
 - PROJECT_PATH=$(pwd)
 
 install:
-- sudo pip install -U codespell
-- sudo pip install -U travis-sphinx
-- sudo pip install -U sphinx-rtd-theme
-- sudo pip install -U breathe
-- sudo pip install -U exhale
+- sudo pip3 install -U codespell
+- sudo pip3 install -U travis-sphinx
+- sudo pip3 install -U sphinx-rtd-theme
+- sudo pip3 install -U breathe
+- sudo pip3 install -U exhale
 # Install ESP32 toochain following steps as described
 # in https://docs.espressif.com/projects/esp-idf/en/latest/get-started/#get-started-get-prerequisites
 - mkdir -p ~/esp
