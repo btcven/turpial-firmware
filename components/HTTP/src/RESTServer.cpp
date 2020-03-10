@@ -1,5 +1,12 @@
 /**
- * @brief   HTTP Server
+ * @file RESTServer.cpp
+ * @author Locha Mesh Developers (contact@locha.io)
+ * @brief 
+ * @version 0.1
+ * @date 2020-03-10
+ * 
+ * @copyright Copyright (c) 2020 Locha Mesh Developers
+ * 
  */
 
 #include "RESTServer.h"
@@ -35,6 +42,13 @@ typedef struct {
 
 static const char* TAG = "RESTServer";
 
+/**
+ * @brief 
+ * 
+ * @param req 
+ * @param root 
+ * @return esp_err_t 
+ */
 esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
 {
     std::size_t total_len = req->content_len;
@@ -62,7 +76,12 @@ esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
     *root = cJSON_Parse(buf);
     return ESP_OK;
 }
-
+/**
+ * @brief 
+ * 
+ * @param req 
+ * @param msg 
+ */
 void sendErrorResponse(httpd_req_t* req, const char* msg)
 {
     ESP_LOGI(TAG, "Request failed");
@@ -81,6 +100,11 @@ void sendErrorResponse(httpd_req_t* req, const char* msg)
     cJSON_Delete(root);
 }
 
+/**
+ * @brief 
+ * 
+ * @param req 
+ */
 void sendOkResponse(httpd_req_t* req)
 {
     ESP_LOGI(TAG, "Request successful");
@@ -99,6 +123,14 @@ void sendOkResponse(httpd_req_t* req)
     cJSON_Delete(root);
 }
 
+/**
+ * @brief Parse string
+ * 
+ * @param item 
+ * @param dst 
+ * @param max_len 
+ * @return esp_err_t 
+ */
 esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
 {
     const char* val = cJSON_GetStringValue(item);
@@ -378,7 +410,6 @@ esp_err_t wifiStaHandler(httpd_req_t *req)
 
 void start_server(std::uint16_t port)
 {
-    // TODO(jeandudey): move port to defaults.h
     http::HttpServer http_server(port);
 
     rest_server_context_t *ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));

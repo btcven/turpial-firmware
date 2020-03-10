@@ -1,5 +1,14 @@
+/**
+ * @file HttpServer.cpp
+ * @author Locha Mesh Developers (contact@locha.io)
+ * @brief 
+ * @version 0.1
+ * @date 2020-03-10
+ * 
+ * @copyright Copyright (c) 2020 Locha Mesh Developers
+ * 
+ */
 #include "HttpServer.h"
-
 #include <esp_log.h>
 
 static const char* TAG = "HttpServer";

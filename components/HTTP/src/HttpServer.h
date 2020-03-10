@@ -1,3 +1,14 @@
+/**
+ * @file HttpServer.h
+ * @author Locha Mesh Developers (contact@locha.io)
+ * @brief 
+ * @version 0.1
+ * @date 2020-03-10
+ * 
+ * @copyright Copyright (c) 2020 Locha Mesh Developers
+ * 
+ */
+
 #ifndef HTTP_HTTP_SERVER_H
 #define HTTP_HTTP_SERVER_H
 

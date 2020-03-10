@@ -5,7 +5,7 @@
  * @version 0.1
  * @date 2019-09-11
  *
- * @copyright Copyright (c) 2019
+ * @copyright Copyright (c) 2020 Locha Mesh Developers
  *
  */
 
@@ -176,7 +176,7 @@ extern "C" void app_main()
     radio_task->start();
 #endif
 
-    rest_server::start_server(2656);
+    rest_server::start_server(DEFAULT_REST_PORT);
 
 #if ESC_ENABLED == true
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
