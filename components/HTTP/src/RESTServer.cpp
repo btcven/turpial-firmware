@@ -344,8 +344,9 @@ esp_err_t wifiStaHandler(httpd_req_t *req)
         enable = true;
     }
 
+
     cJSON* ssid = cJSON_GetObjectItemCaseSensitive(req_root, "ssid");
-    if (!cJSON_IsNull(ssid) && cJSON_IsString(ssid)) {
+    if (cJSON_IsString(ssid)) {
         change_config = true;
 
         // SSID should be null terminated
@@ -359,7 +360,7 @@ esp_err_t wifiStaHandler(httpd_req_t *req)
     }
 
     cJSON* password = cJSON_GetObjectItemCaseSensitive(req_root, "password");
-    if (!cJSON_IsNull(password) && cJSON_IsString(password)) {
+    if (cJSON_IsString(password)) {
         change_config = true;
 
         if (parseString(password, config.sta.password, 63) != ESP_OK) {
@@ -378,24 +379,24 @@ esp_err_t wifiStaHandler(httpd_req_t *req)
     // Free the memory allocated by cJSON (for the request)
     cJSON_Delete(req_root);
 
+    // Check if we need to enable STA
+    bool is_sta = wifi.isSta();
+
+    if (!is_sta && enable) {
+        if (wifi.setMode(WIFI_MODE_APSTA) != ESP_OK) {
+            sendErrorResponse(req, "Couldn't set mode to AP/STA.");
+            return ESP_FAIL;
+        }
+    } else if (is_sta && !enable) {
+        if (wifi.setMode(WIFI_MODE_AP) != ESP_OK) {
+            sendErrorResponse(req, "Couldn't set mode to AP.");
+            return ESP_FAIL;
+        }
+    }
+
     // Update config if new parameters are provided
     if (change_config) {
         ESP_LOGI(TAG, "Updating STA config");
-
-        bool is_sta = wifi.isSta();
-
-        // Check if we need to enable STA
-        if (!is_sta && enable) {
-            if (wifi.setMode(WIFI_MODE_APSTA) != ESP_OK) {
-                sendErrorResponse(req, "Couldn't set mode to AP/STA.");
-                return ESP_FAIL;
-            }
-        } else if (is_sta && !enable) {
-            if (wifi.setMode(WIFI_MODE_AP) != ESP_OK) {
-                sendErrorResponse(req, "Couldn't set mode to AP.");
-                return ESP_FAIL;
-            }
-        }
 
         if (wifi.setStaConfig(config) != ESP_OK) {
             sendErrorResponse(req, "Couldn't update STA config.");
