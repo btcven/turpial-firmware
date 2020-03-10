@@ -1,7 +1,5 @@
 dist: xenial
 language: generic
-python:
-  - '3.8'
 os: 
   - linux
 
@@ -12,7 +10,8 @@ addons:
       - wget
       - make
       - gperf
-      - python
+      - python3
+      - python3-pip
       - python-serial
       - python-future
       - python-cryptography
