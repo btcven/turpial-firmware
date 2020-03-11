@@ -28,7 +28,6 @@ addons:
       - doxygen
 
 before_install:
-# - sudo apt-get -y install doxygen
 # Save path to the git repository
 - PROJECT_PATH=$(pwd)
 
