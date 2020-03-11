@@ -54,21 +54,19 @@ WiFi::WiFi()
 
 esp_err_t WiFi::init()
 {
+    ESP_LOGD(TAG, "Initializing TCP/IP adapter");
+    // Important: as described in the ESP_IDF documentation;
+    // __ tcpip_adapter_init() should be called exactly once from application code, 
+    // when the application starts up. __
+    tcpip_adapter_init();
+    
     esp_err_t err;
-
-    ESP_LOGD(TAG, "Init TCP/IP adapter");
-    err = esp_netif_init();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "esp_netif_init failed, err = %s", esp_err_to_name(err));
-        return err;
-    }
 
     err = esp_event_loop_create_default();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't create event loop, err = %s", esp_err_to_name(err));
         return err;
     }
-    esp_netif_create_default_wifi_ap();
 
     ESP_LOGD(TAG, "Initializing Wi-Fi");
 

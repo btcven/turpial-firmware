@@ -130,7 +130,7 @@ esp_err_t WiFiEventHandler::eventDispatcher(std::int32_t event_id,
         return apStaDisconnected(reinterpret_cast<wifi_event_ap_stadisconnected_t*>(event_data));
 
     default:
-        ESP_LOGD(TAG, "unknown event = %d", event_id);
+        ESP_LOGD(TAG, "Unknown event = %d", event_id);
         break;
     }
 
