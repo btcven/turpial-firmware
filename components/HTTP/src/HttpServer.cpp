@@ -18,7 +18,6 @@ namespace http {
 HttpServer::HttpServer(std::uint16_t port)
     : m_server(nullptr)
 {
-    httpd_handle_t server = NULL;
 
     ESP_LOGI(TAG, "Starting HTTP server on port %u", port);
     httpd_ssl_config_t conf = HTTPD_SSL_CONFIG_DEFAULT();
