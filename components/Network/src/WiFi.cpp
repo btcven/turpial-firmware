@@ -58,7 +58,7 @@ esp_err_t WiFi::init()
     // Important: as described in the ESP_IDF documentation;
     // __ tcpip_adapter_init() should be called exactly once from application code, 
     // when the application starts up. __
-    tcpip_adapter_init();
+    esp_netif_init();
     
     esp_err_t err;
 

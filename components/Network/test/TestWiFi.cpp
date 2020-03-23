@@ -21,7 +21,7 @@ TEST_CASE("Wi-Fi initialize", "[network]")
 
     esp_err_t err;
 
-    tcpip_adapter_init();
+    esp_netif_init();
 
     network::WiFi& wifi = network::WiFi::getInstance();
     err = wifi.init();
