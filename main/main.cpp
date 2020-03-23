@@ -144,7 +144,8 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface (%s)", esp_err_to_name(err));
         return;
     }
-
+    
+    is_configured = false;
     if (!is_configured) {
         wifi.setMode(WIFI_MODE);
 

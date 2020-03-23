@@ -18,13 +18,28 @@ namespace http {
 HttpServer::HttpServer(std::uint16_t port)
     : m_server(nullptr)
 {
+
     ESP_LOGI(TAG, "Starting HTTP server on port %u", port);
-    httpd_config_t config = HTTPD_DEFAULT_CONFIG();
-    config.server_port = port;
-    esp_err_t err = httpd_start(&m_server, &config);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Coudln't initialize RESTServer");
+    httpd_ssl_config_t conf = HTTPD_SSL_CONFIG_DEFAULT();
+
+    extern const unsigned char cacert_pem_start[] asm("_binary_cacert_pem_start");
+    extern const unsigned char cacert_pem_end[]   asm("_binary_cacert_pem_end");
+    extern const unsigned char prvtkey_pem_start[] asm("_binary_prvtkey_pem_start");
+    extern const unsigned char prvtkey_pem_end[]   asm("_binary_prvtkey_pem_end");
+
+    conf.cacert_pem = cacert_pem_start;
+    conf.cacert_len = cacert_pem_end - cacert_pem_start;
+
+    conf.prvtkey_pem = prvtkey_pem_start;
+    conf.prvtkey_len = prvtkey_pem_end - prvtkey_pem_start;
+    conf.port_secure = port;
+   
+    esp_err_t ret = httpd_ssl_start(&m_server, &conf);
+    if (ESP_OK != ret) {
+        ESP_LOGI(TAG, "Error starting server!");
     }
+
+    ESP_LOGI(TAG, "Start HTTPS server on port %u", port);
 }
 
 void HttpServer::registerUri(const char* uri, httpd_method_t method,
