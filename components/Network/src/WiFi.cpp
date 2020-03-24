@@ -51,6 +51,7 @@ WiFi::WiFi()
     : m_event_handler()
 {
 }
+
 esp_err_t WiFi::init()
 {
     esp_err_t err;
@@ -79,7 +80,7 @@ esp_err_t WiFi::init()
     }
 
     err = esp_event_handler_register(WIFI_EVENT, ESP_EVENT_ANY_ID,
-        &WiFi::eventHandler, this);
+                                     &WiFi::eventHandler, this);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't register Wi-Fi event handler, err = %s", esp_err_to_name(err));
         return err;
@@ -198,11 +199,12 @@ esp_err_t WiFi::stop()
     return ESP_OK;
 }
 
-void WiFi::eventHandler(void* event_handler_arg,
-    esp_event_base_t event_base,
-    std::int32_t event_id,
-    void* event_data)
+void WiFi::eventHandler(void *event_handler_arg,
+                        esp_event_base_t event_base,
+                        std::int32_t event_id,
+                        void *event_data)
 {
+
     ESP_LOGD(TAG, "Wi-Fi Event Handler Called");
     WiFi* wifi = reinterpret_cast<WiFi*>(event_handler_arg);
 

@@ -12,15 +12,6 @@ CONFIG_PARTITION_TABLE_FILENAME="partitions_custom.csv"
 # end of Partition Table
 
 #
-# SPI RAM options
-#
-CONFIG_ESP32_SPIRAM_SUPPORT=y
-CONFIG_SPIRAM_BOOT_INIT=y
-CONFIG_SPIRAM_USE_MALLOC=y
-CONFIG_SPIRAM_TYPE_AUTO=y
-# end of SPI RAM options
-
-#
 # Compiler options
 #
 CONFIG_COMPILER_CXX_EXCEPTIONS=y
@@ -30,7 +21,6 @@ CONFIG_COMPILER_CXX_EXCEPTIONS=y
 # HTTPS Server Config
 #
 CONFIG_ESP_HTTPS_SERVER_ENABLE=y
-# end of HTTPS Server Config
 
 #
 # Serial Flasher Config
