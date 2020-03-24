@@ -24,12 +24,12 @@
 #include "WiFi.h"
 #include "defaults.h"
 
-#define REST_CHECK(expr, msg)                \
-    do {                                     \
-        if (!(expr)) {                       \
-            ESP_LOGE(TAG, msg);              \
-        }                                    \
-    } while(false)
+#define REST_CHECK(expr, msg)   \
+    do {                        \
+        if (!(expr)) {          \
+            ESP_LOGE(TAG, msg); \
+        }                       \
+    } while (false)
 
 // 1 kB
 #define SCRATCH_BUFSIZE (1024)
@@ -171,7 +171,7 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
     REST_CHECK(fuel_gauge.avgCurrent(&avg_current) == ESP_OK, "Can't get avg. current\n");
     REST_CHECK(fuel_gauge.avgPower(&avg_power) == ESP_OK, "Can't get avg. power\n");
     REST_CHECK(fuel_gauge.temperature(esc::TempMeasure::Internal, &temp) == ESP_OK,
-               "Can't get internal temperature\n");
+        "Can't get internal temperature\n");
     free_memory = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
 
 
@@ -234,7 +234,7 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
     return ESP_OK;
 }
 
-esp_err_t systemCredentialsHandler(httpd_req_t *req)
+esp_err_t systemCredentialsHandler(httpd_req_t* req)
 {
     return ESP_OK;
 }
@@ -242,7 +242,7 @@ esp_err_t systemCredentialsHandler(httpd_req_t *req)
 /**
  * @brief   Setup AP configuration
  */
-esp_err_t wifiApHandler(httpd_req_t *req)
+esp_err_t wifiApHandler(httpd_req_t* req)
 {
     httpd_resp_set_type(req, "application/json");
 
@@ -315,7 +315,7 @@ esp_err_t wifiApHandler(httpd_req_t *req)
 /**
  * @brief   Setup STA configuration
  */
-esp_err_t wifiStaHandler(httpd_req_t *req)
+esp_err_t wifiStaHandler(httpd_req_t* req)
 {
     httpd_resp_set_type(req, "application/json");
 
