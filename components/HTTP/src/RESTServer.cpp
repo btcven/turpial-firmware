@@ -458,6 +458,7 @@ esp_err_t trigger_async_send(httpd_handle_t handle, httpd_req_t* req)
 
 esp_err_t weboscket(httpd_req_t* req)
 {
+  ESP_LOGI(TAG, "here");
     uint8_t buf[128] = {0};
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
@@ -470,10 +471,10 @@ esp_err_t weboscket(httpd_req_t* req)
     }
     ESP_LOGI(TAG, "Got packet with message: %s", ws_pkt.payload);
     ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
-    if (ws_pkt.type == HTTPD_WS_TYPE_TEXT &&
-        strcmp((char*)ws_pkt.payload, "Trigger async") == 0) {
-        return trigger_async_send(req->handle, req);
-    }
+    // if (ws_pkt.type == HTTPD_WS_TYPE_TEXT &&
+    //     strcmp((char*)ws_pkt.payload, "Trigger async") == 0) {
+    //     return trigger_async_send(req->handle, req);
+    // }
 
     ret = httpd_ws_send_frame(req, &ws_pkt);
     if (ret != ESP_OK) {
