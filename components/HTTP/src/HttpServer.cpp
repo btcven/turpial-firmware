@@ -48,14 +48,16 @@ HttpServer::HttpServer(std::uint16_t port)
     ESP_LOGI(TAG, "Start HTTPS server on port %u", port);
 }
 
-void HttpServer::registerUri(const char* uri, httpd_method_t method, esp_err_t (*handler)(httpd_req_t* r), void* ctx)
+void HttpServer::registerUri(const char* uri, httpd_method_t method, esp_err_t (*handler)(httpd_req_t* r), void* ctx, bool is_websocket)
 {
     ESP_LOGD(TAG, "Registering URI handler");
     httpd_uri_t uri_description = {
         .uri = uri,
         .method = method,
         .handler = handler,
-        .user_ctx = ctx};
+        .user_ctx = ctx,
+        .is_websocket = is_websocket
+    };
     httpd_register_uri_handler(m_server, &uri_description);
 }
 
