@@ -21,8 +21,10 @@
 
 #include "FuelGauge.h"
 #include "HttpServer.h"
+#include "Websocket.h"
 #include "WiFi.h"
 #include "defaults.h"
+
 
 #define REST_CHECK(expr, msg)   \
     do {                        \
@@ -41,7 +43,6 @@ typedef struct {
 } rest_server_context_t;
 
 
-
 /*
  * Structure holding server handle
  * and internal socket fd in order
@@ -54,7 +55,6 @@ struct async_resp_arg {
 };
 
 static const char* TAG = "RESTServer";
-
 /**
  * @brief 
  * 
@@ -62,7 +62,8 @@ static const char* TAG = "RESTServer";
  * @param root 
  * @return esp_err_t 
  */
-esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
+esp_err_t
+receiveJson(httpd_req_t* req, cJSON** root)
 {
     std::size_t total_len = req->content_len;
 
@@ -424,7 +425,6 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
 }
 
 
-
 /*
  * async send function, which we put into the httpd work queue
  */
@@ -456,9 +456,10 @@ esp_err_t trigger_async_send(httpd_handle_t handle, httpd_req_t* req)
 }
 
 
-esp_err_t weboscket(httpd_req_t* req)
+esp_err_t websocketHandler(httpd_req_t* req)
 {
-  ESP_LOGI(TAG, "here");
+    Websocket& ws_instanse = Websocket::getInstance();
+
     uint8_t buf[128] = {0};
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
@@ -469,32 +470,35 @@ esp_err_t weboscket(httpd_req_t* req)
         ESP_LOGE(TAG, "httpd_ws_recv_frame failed with %d", ret);
         return ret;
     }
-    ESP_LOGI(TAG, "Got packet with message: %s", ws_pkt.payload);
-    ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
-    // if (ws_pkt.type == HTTPD_WS_TYPE_TEXT &&
-    //     strcmp((char*)ws_pkt.payload, "Trigger async") == 0) {
-    //     return trigger_async_send(req->handle, req);
-    // }
 
-    ret = httpd_ws_send_frame(req, &ws_pkt);
-    if (ret != ESP_OK) {
-        ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", ret);
-    }
+    ws_instanse.onReceive(ws_pkt);
+
+
+    // ESP_LOGI(TAG, "Got packet with message: %s", ws_pkt.payload);
+    // ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
+    // // if (ws_pkt.type == HTTPD_WS_TYPE_TEXT &&
+    // //     strcmp((char*)ws_pkt.payload, "Trigger async") == 0) {
+    // //     return trigger_async_send(req->handle, req);
+    // // }
+
+    // ret = httpd_ws_send_frame(req, &ws_pkt);
+    // if (ret != ESP_OK) {
+    //     ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", ret);
+    // }
     return ESP_OK;
 }
 
 
-void start_server(std::uint16_t port)
+void start_server()
 {
-    http::HttpServer http_server(port);
-
+    http::HttpServer server_instanse = http::HttpServer();
     rest_server_context_t* ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));
 
-    http_server.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx, false);
-    http_server.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx, false);
-    http_server.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx, false);
-    http_server.registerUri("/wifi/ap", HTTP_POST, wifiApHandler, ctx, false);
-    http_server.registerUri("/ws", HTTP_GET, weboscket, ctx, true);
+    server_instanse.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx, false);
+    server_instanse.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx, false);
+    server_instanse.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx, false);
+    server_instanse.registerUri("/wifi/ap", HTTP_POST, wifiApHandler, ctx, false);
+    server_instanse.registerUri("/ws", HTTP_GET, websocketHandler, ctx, true);
 }
 
 } // namespace rest_server

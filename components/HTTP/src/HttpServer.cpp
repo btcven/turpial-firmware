@@ -15,7 +15,7 @@ static const char* TAG = "HttpServer";
 
 namespace http {
 
-HttpServer::HttpServer(std::uint16_t port)
+HttpServer::HttpServer()
     : m_server(nullptr)
 {
     ESP_LOGI(TAG, "Starting Web server ...");
@@ -45,9 +45,7 @@ HttpServer::HttpServer(std::uint16_t port)
         ESP_LOGI(TAG, "Error starting server!");
     }
 
-     m_websocket = new Websocket()
-
-    ESP_LOGI(TAG, "Start HTTPS server on port %u", port);
+    ESP_LOGI(TAG, "Start HTTPS server");
 }
 
 void HttpServer::registerUri(const char* uri, httpd_method_t method, esp_err_t (*handler)(httpd_req_t* r), void* ctx, bool is_websocket)
@@ -61,11 +59,5 @@ void HttpServer::registerUri(const char* uri, httpd_method_t method, esp_err_t (
         .is_websocket = is_websocket};
     httpd_register_uri_handler(m_server, &uri_description);
 }
-
-// Websocket HttpServer::websocket_instance()
-// {
-//     return m_websocket;
-// }
-
 
 } // namespace http

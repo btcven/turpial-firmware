@@ -177,7 +177,7 @@ extern "C" void app_main()
     radio_task->start();
 #endif
 
-    rest_server::start_server(DEFAULT_REST_PORT);
+    rest_server::start_server();
 
 #if ESC_ENABLED == true
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();

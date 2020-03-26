@@ -14,7 +14,6 @@
 
 #include <cstdint>
 #include <esp_https_server.h>
-#include "Socket.h"
 
 #define HTTP_SSL_CONFIG()                                                                                                                                                                                                               \
     {                                                                                                                                                                                                                                   \
@@ -46,13 +45,12 @@ namespace http {
 class HttpServer
 {
 public:
-    HttpServer(std::uint16_t port);
+    HttpServer();
 
     void registerUri(const char* uri, httpd_method_t method, esp_err_t (*handler)(httpd_req_t* r), void* ctx, bool is_websocket);
-    // Websocket websocket_instance();
+
 private:
-    httpd_handle_t m_server; 
-    Websocket m_websocket;
+    httpd_handle_t m_server;
 };
 
 } // namespace http
