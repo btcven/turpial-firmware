@@ -54,16 +54,17 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
     case WebsocketType::msg:
         ESP_LOGI(TAG, "!!!!!msg");
         for (size_t i = 0; i < m_client.size(); i++) {
-            err = trigger_async_send(req->handle, m_client[1].fd);
-            if (err != ESP_OK) {
-                ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
-            };
-
-            // normal response method
-            // err = httpd_ws_send_frame(m_client[i].req, &ws_pkt);
+            // err = trigger_async_send(req->handle, m_client[i].fd);
             // if (err != ESP_OK) {
             //     ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
             // };
+
+            // normal response method
+            err = httpd_ws_send_frame(m_client[i].req, &ws_pkt);
+            std::cout <<httpd_req_to_sockfd(m_client[i].req)   << std::endl;
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
+            };
         }
 
         break;
