@@ -25,6 +25,7 @@ struct client_data_t {
     int timestamp;
     bool is_alive;
     httpd_req_t* req;
+    int fd;
 };
 
 
@@ -33,6 +34,12 @@ enum class WebsocketType {
     msg,
     status,
     action
+};
+
+
+struct async_resp_arg {
+    httpd_handle_t hd;
+    int fd;
 };
 
 class Websocket
@@ -57,6 +64,8 @@ private:
     Websocket();
     int getTypeMessage(uint8_t* payload);
     esp_err_t getClientData(uint8_t* payload, client_data_t* client, httpd_req_t* req);
+    esp_err_t trigger_async_send(httpd_handle_t handle, int fd);
+    // void ws_async_send(void* arg);
     std::vector<client_data_t> m_client;
 };
 

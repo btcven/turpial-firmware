@@ -49,10 +49,6 @@ typedef struct {
  * to use out of request send
  */
 
-struct async_resp_arg {
-    httpd_handle_t hd;
-    int fd;
-};
 
 static const char* TAG = "RESTServer";
 /**
@@ -424,37 +420,9 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
     return ESP_OK;
 }
 
-
 /*
  * async send function, which we put into the httpd work queue
  */
-
-
-void ws_async_send(void* arg)
-{
-    static const char* data = "Async data";
-    struct async_resp_arg* resp_arg = (struct async_resp_arg*)arg;
-    httpd_handle_t hd = resp_arg->hd;
-    int fd = resp_arg->fd;
-    httpd_ws_frame_t ws_pkt;
-    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
-    ws_pkt.payload = (uint8_t*)data;
-    ws_pkt.len = strlen(data);
-    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
-
-    httpd_ws_send_frame_async(hd, fd, &ws_pkt);
-    free(resp_arg);
-}
-
-
-esp_err_t trigger_async_send(httpd_handle_t handle, httpd_req_t* req)
-{
-    struct async_resp_arg* resp_arg = (struct async_resp_arg*)malloc(sizeof(struct async_resp_arg));
-    resp_arg->hd = req->handle;
-    resp_arg->fd = httpd_req_to_sockfd(req);
-    return httpd_queue_work(handle, ws_async_send, resp_arg);
-}
-
 
 esp_err_t websocketHandler(httpd_req_t* req)
 {
@@ -471,7 +439,7 @@ esp_err_t websocketHandler(httpd_req_t* req)
         return ret;
     }
 
-    ws_instanse.onReceive(ws_pkt, req );
+    ws_instanse.onReceive(ws_pkt, req);
 
 
     // ESP_LOGI(TAG, "Got packet with message: %s", ws_pkt.payload);
@@ -485,7 +453,7 @@ esp_err_t websocketHandler(httpd_req_t* req)
     // if (ret != ESP_OK) {
     //     ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", ret);
     // }
-    return ESP_OK;
+    return ret;
 }
 
 

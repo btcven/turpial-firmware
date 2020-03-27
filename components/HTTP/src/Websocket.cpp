@@ -35,11 +35,13 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "type must be numeric");
         };
+
+        std::cout << client.fd << std::endl;
         if (m_client.size() != 0) {
             for (size_t i = 0; i < m_client.size(); i++) {
-                std::cout << m_client[i].shaUID << std::endl;
                 if (m_client[i].shaUID == client.shaUID) {
                     m_client[i].req = client.req;
+                    m_client[i].fd = client.fd;
                 } else {
                     m_client.push_back(client);
                 }
@@ -51,10 +53,19 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         break;
     case WebsocketType::msg:
         ESP_LOGI(TAG, "!!!!!msg");
-        err = httpd_ws_send_frame(m_client[1].req, &ws_pkt);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
+        for (size_t i = 0; i < m_client.size(); i++) {
+            err = trigger_async_send(req->handle, m_client[1].fd);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
+            };
+
+            // normal response method
+            // err = httpd_ws_send_frame(m_client[i].req, &ws_pkt);
+            // if (err != ESP_OK) {
+            //     ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
+            // };
         }
+
         break;
     case WebsocketType::status:
         ESP_LOGI(TAG, "!!!!!status");
@@ -95,8 +106,36 @@ esp_err_t Websocket::getClientData(uint8_t* payload, client_data_t* client, http
         client->timestamp = timestamp;
         client->is_alive = true;
         client->req = req;
+        client->fd = httpd_req_to_sockfd(req);
         return ESP_OK;
     };
 
     return ESP_FAIL;
+}
+
+
+void ws_async_send(void* arg)
+{
+    static const char* data = "Async data";
+    struct async_resp_arg* resp_arg = (struct async_resp_arg*)arg;
+    httpd_handle_t hd = resp_arg->hd;
+    int fd = resp_arg->fd;
+    httpd_ws_frame_t ws_pkt;
+    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+    ws_pkt.payload = (uint8_t*)data;
+    ws_pkt.len = strlen(data);
+    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
+
+    std::cout << ws_pkt.payload << std::endl;
+
+    httpd_ws_send_frame_async(hd, fd, &ws_pkt);
+    free(resp_arg);
+}
+
+esp_err_t Websocket::trigger_async_send(httpd_handle_t handle, int fd)
+{
+    struct async_resp_arg* resp_arg = (struct async_resp_arg*)malloc(sizeof(struct async_resp_arg));
+    resp_arg->hd = handle;
+    resp_arg->fd = fd;
+    return httpd_queue_work(handle, ws_async_send, resp_arg);
 }
