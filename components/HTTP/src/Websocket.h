@@ -21,9 +21,18 @@
 #include <cJSON.h>
 
 struct client_data_t {
-    uint8_t shaUID;
+    char* shaUID;
     int timestamp;
     bool is_alive;
+    httpd_req_t* req;
+};
+
+
+enum class WebsocketType {
+    handshake,
+    msg,
+    status,
+    action
 };
 
 class Websocket
@@ -42,11 +51,12 @@ public:
         return instance;
     }
 
-    void onReceive(httpd_ws_frame_t ws_pkt);
+    void onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req);
 
 private:
     Websocket();
-    char* parseJson(uint8_t* payload);
+    int getTypeMessage(uint8_t* payload);
+    esp_err_t getClientData(uint8_t* payload, client_data_t* client, httpd_req_t* req);
     std::vector<client_data_t> m_client;
 };
 

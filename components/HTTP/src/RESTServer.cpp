@@ -471,7 +471,7 @@ esp_err_t websocketHandler(httpd_req_t* req)
         return ret;
     }
 
-    ws_instanse.onReceive(ws_pkt);
+    ws_instanse.onReceive(ws_pkt, req );
 
 
     // ESP_LOGI(TAG, "Got packet with message: %s", ws_pkt.payload);
