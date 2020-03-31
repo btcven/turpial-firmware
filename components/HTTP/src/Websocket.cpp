@@ -25,48 +25,68 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 {
     int type = getTypeMessage(ws_pkt.payload);
 
+    std::cout << "############### EL TYPE: " << type << std::endl;
+
     WebsocketType r = static_cast<WebsocketType>(type);
     client_data_t client;
     esp_err_t err;
+    uid_message_t client_uid;
 
     switch (r) {
     case WebsocketType::handshake:
+        ESP_LOGI(TAG, "!!!!!hanshake");
         err = getClientData(ws_pkt.payload, &client, req);
         if (err != ESP_OK) {
-            ESP_LOGE(TAG, "type must be numeric");
+            ESP_LOGE(TAG, "type must be numeric 0 ");
         };
 
-        std::cout << client.fd << std::endl;
-        if (m_client.size() != 0) {
+        std::cout << "shaUID: " << client.shaUID << std::endl;
+        if (m_client.size() > 0) {
             for (size_t i = 0; i < m_client.size(); i++) {
-                if (m_client[i].shaUID == client.shaUID) {
-                    m_client[i].req = client.req;
+                if (memcmp(m_client[i].shaUID, client.shaUID, sizeof(m_client[i].shaUID)) == 0) {
                     m_client[i].fd = client.fd;
                 } else {
                     m_client.push_back(client);
                 }
             }
+            std::cout << "size vector: " << m_client.size() << std::endl;
         } else {
             m_client.push_back(client);
         }
-
         break;
     case WebsocketType::msg:
         ESP_LOGI(TAG, "!!!!!msg");
-        for (size_t i = 0; i < m_client.size(); i++) {
-            // err = trigger_async_send(req->handle, m_client[i].fd);
-            // if (err != ESP_OK) {
-            //     ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
-            // };
+        err = messageRecipient(ws_pkt.payload, &client_uid);
+        ESP_LOGI(TAG, "PASO ESTO");
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Error getting message uids %d", err);
+        };
 
-            // normal response method
-            err = httpd_ws_send_frame(m_client[i].req, &ws_pkt);
-            std::cout <<httpd_req_to_sockfd(m_client[i].req)   << std::endl;
-            if (err != ESP_OK) {
-                ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
-            };
+
+        std::cout << "toUID: " << client_uid.from_uid << std::endl;
+        std::cout << "toUID: " << client_uid.to_uid << std::endl;
+
+        if (client_uid.to_uid == NULL) {
+            std::cout << "size vector: " << m_client.size() << std::endl;
         }
 
+
+        // for (size_t i = 0; i < m_client.size(); i++) {
+        //     if (client_uid.to_uid == NULL) {
+        //         ESP_LOGI(TAG, "TO UID IS  NULL");
+        //         err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
+        //         if (err != ESP_OK) {
+        //             ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
+        //         };
+        //     };
+        //     else if (client_uid.to_uid == m_client[i].shaUID) {
+        //     ESP_LOGI(TAG, "TO UID IS NOT NULL");
+        //     err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
+        //     if (err != ESP_OK) {
+        //         ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
+        //     };
+        // }
+        // }
         break;
     case WebsocketType::status:
         ESP_LOGI(TAG, "!!!!!status");
@@ -103,10 +123,14 @@ esp_err_t Websocket::getClientData(uint8_t* payload, client_data_t* client, http
     char* sha_uid = cjson_shaUID->valuestring;
     int timestamp = cjson_timestamp->valueint;
     if (cJSON_IsNumber(cjson_timestamp) && cJSON_IsString(cjson_shaUID)) {
-        client->shaUID = sha_uid;
+        if (strlen(sha_uid) != 64) {
+            return ESP_FAIL;
+        }
+
+        memcpy(client->shaUID, sha_uid, strlen(sha_uid) + 1);
+
         client->timestamp = timestamp;
         client->is_alive = true;
-        client->req = req;
         client->fd = httpd_req_to_sockfd(req);
         return ESP_OK;
     };
@@ -118,7 +142,7 @@ esp_err_t Websocket::getClientData(uint8_t* payload, client_data_t* client, http
 void ws_async_send(void* arg)
 {
     static const char* data = "Async data";
-    struct async_resp_arg* resp_arg = (struct async_resp_arg*)arg;
+    struct async_resp_arg_t* resp_arg = (struct async_resp_arg_t*)arg;
     httpd_handle_t hd = resp_arg->hd;
     int fd = resp_arg->fd;
     httpd_ws_frame_t ws_pkt;
@@ -135,8 +159,43 @@ void ws_async_send(void* arg)
 
 esp_err_t Websocket::trigger_async_send(httpd_handle_t handle, int fd)
 {
-    struct async_resp_arg* resp_arg = (struct async_resp_arg*)malloc(sizeof(struct async_resp_arg));
+    struct async_resp_arg_t* resp_arg = (struct async_resp_arg_t*)malloc(sizeof(struct async_resp_arg_t));
     resp_arg->hd = handle;
     resp_arg->fd = fd;
     return httpd_queue_work(handle, ws_async_send, resp_arg);
+}
+
+esp_err_t Websocket::messageRecipient(uint8_t* payload, uid_message_t* uid_receiving)
+{
+    char* res = reinterpret_cast<char*>(payload);
+    cJSON* req_root = cJSON_Parse(res);
+    cJSON* cjson_fromUID = cJSON_GetObjectItemCaseSensitive(req_root, "fromUID");
+    cJSON* cjson_toUID = cJSON_GetObjectItemCaseSensitive(req_root, "toUID");
+
+    char* from_uid = cjson_fromUID->valuestring;
+    char* to_uid = cjson_toUID->valuestring;
+
+    if (!cJSON_IsNull(cjson_toUID)) {
+        if (cJSON_IsString(cjson_toUID)) {
+            if (strlen(to_uid) != 64) {
+                ESP_LOGI(TAG, "toUID length  is less than 64 ");
+                return ESP_FAIL;
+            };
+
+            std::cout << to_uid << std::endl;
+
+            memcpy(uid_receiving->to_uid, to_uid, strlen(to_uid) + 1);
+        }
+    }
+    if (cJSON_IsInvalid(cjson_fromUID) || cJSON_IsNull(cjson_fromUID)) {
+        return ESP_FAIL;
+    } else {
+        if (strlen(from_uid) != 64) {
+            ESP_LOGI(TAG, "  FromUID length  is less than 64 ");
+            return ESP_FAIL;
+        };
+        memcpy(uid_receiving->from_uid, from_uid, strlen(from_uid) + 1);
+    }
+
+    return ESP_OK;
 }

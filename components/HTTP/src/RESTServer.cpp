@@ -428,12 +428,12 @@ esp_err_t websocketHandler(httpd_req_t* req)
 {
     Websocket& ws_instanse = Websocket::getInstance();
 
-    uint8_t buf[128] = {0};
+    uint8_t buf[256] = {0};
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
     ws_pkt.payload = buf;
     ws_pkt.type = HTTPD_WS_TYPE_TEXT;
-    esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, 128);
+    esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, 256);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "httpd_ws_recv_frame failed with %d", ret);
         return ret;

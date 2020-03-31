@@ -21,10 +21,9 @@
 #include <cJSON.h>
 
 struct client_data_t {
-    char* shaUID;
+    uint8_t shaUID[32];
     int timestamp;
     bool is_alive;
-    httpd_req_t* req;
     int fd;
 };
 
@@ -37,10 +36,16 @@ enum class WebsocketType {
 };
 
 
-struct async_resp_arg {
+struct async_resp_arg_t {
     httpd_handle_t hd;
     int fd;
 };
+
+struct uid_message_t {
+    uint8_t from_uid[32];
+    uint8_t to_uid[32];
+};
+
 
 class Websocket
 {
@@ -67,6 +72,7 @@ private:
     esp_err_t trigger_async_send(httpd_handle_t handle, int fd);
     // void ws_async_send(void* arg);
     std::vector<client_data_t> m_client;
+    esp_err_t messageRecipient(uint8_t* payload, uid_message_t* uid_receiving);
 };
 
 
