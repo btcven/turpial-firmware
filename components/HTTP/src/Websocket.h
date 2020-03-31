@@ -13,6 +13,7 @@
 #ifndef HTTP_WEBSOCKET_H
 #define HTTP_WEBSOCKET_H
 
+#include "hex.h"
 #include <esp_https_server.h>
 #include <stdint.h>
 #include <string>
@@ -21,7 +22,7 @@
 #include <cJSON.h>
 
 struct client_data_t {
-    uint8_t shaUID[32];
+    std::uint8_t shaUID[32];
     int timestamp;
     bool is_alive;
     int fd;
@@ -42,8 +43,8 @@ struct async_resp_arg_t {
 };
 
 struct uid_message_t {
-    uint8_t from_uid[32];
-    uint8_t to_uid[32];
+    std::uint8_t from_uid[32];
+    std::uint8_t to_uid[32];
 };
 
 
@@ -72,7 +73,7 @@ private:
     esp_err_t trigger_async_send(httpd_handle_t handle, int fd);
     // void ws_async_send(void* arg);
     std::vector<client_data_t> m_client;
-    esp_err_t messageRecipient(uint8_t* payload, uid_message_t* uid_receiving);
+    esp_err_t messageRecipient(uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid);
 };
 
 
