@@ -68,12 +68,13 @@ public:
 
 private:
     Websocket();
+    std::vector<client_data_t> m_client;
     int getTypeMessage(uint8_t* payload);
     esp_err_t getClientData(uint8_t* payload, client_data_t* client, httpd_req_t* req);
     esp_err_t trigger_async_send(httpd_handle_t handle, int fd);
     // void ws_async_send(void* arg);
-    std::vector<client_data_t> m_client;
     esp_err_t messageRecipient(uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid);
+    esp_err_t sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid, httpd_req_t* req);
 };
 
 

@@ -24,16 +24,11 @@ Websocket::Websocket()
 void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 {
     int type = getTypeMessage(ws_pkt.payload);
-
-    std::cout << "############### EL TYPE: " << type << std::endl;
-
     WebsocketType r = static_cast<WebsocketType>(type);
     client_data_t client;
     esp_err_t err;
     uid_message_t client_uid;
-
     const char* null_to_uid = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
-    std::uint8_t compare_uid[32];
     bool update = false;
 
     switch (r) {
@@ -43,7 +38,6 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "type must be numeric 0 ");
         };
-
 
         if (m_client.size() > 0) {
             int size = m_client.size();
@@ -66,90 +60,51 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         break;
     case WebsocketType::msg:
         ESP_LOGI(TAG, "!!!!!msg");
+
         err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error getting message uids %d", err);
+            return;
         };
 
-
-        err = util::hexToBytes(null_to_uid, compare_uid);
+        err = sendWsData(client_uid, ws_pkt, null_to_uid, req);
         if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Error getting uid %d", err);
+            ESP_LOGE(TAG, "Error sending message %d", err);
+            return;
         };
 
-        for (size_t i = 0; i < m_client.size(); i++) {
-            if (memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
-                if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
-                    err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
-                    if (err != ESP_OK) {
-                        ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
-                    };
-                }
-            } else if (memcmp(client_uid.to_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) == 0) {
-                err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
-                if (err != ESP_OK) {
-                    ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
-                };
-            }
-        }
         break;
     case WebsocketType::status:
         ESP_LOGI(TAG, "!!!!!status");
+
         err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error getting message uids %d", err);
+            return;
         };
 
-
-        err = util::hexToBytes(null_to_uid, compare_uid);
+        err = sendWsData(client_uid, ws_pkt, null_to_uid, req);
         if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Error getting uid %d", err);
+            ESP_LOGE(TAG, "Error sending message %d", err);
+            return;
         };
 
-        for (size_t i = 0; i < m_client.size(); i++) {
-            if (memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
-                if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
-                    err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
-                    if (err != ESP_OK) {
-                        ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
-                    };
-                }
-            } else if (memcmp(client_uid.to_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) == 0) {
-                err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
-                if (err != ESP_OK) {
-                    ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
-                };
-            }
-        }
         break;
     case WebsocketType::action:
         ESP_LOGI(TAG, "!!!!!action");
+
         err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error getting message uids %d", err);
+            return;
         };
 
-
-        err = util::hexToBytes(null_to_uid, compare_uid);
+        err = sendWsData(client_uid, ws_pkt, null_to_uid, req);
         if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Error getting uid %d", err);
+            ESP_LOGE(TAG, "Error sending message %d", err);
+            return;
         };
 
-        for (size_t i = 0; i < m_client.size(); i++) {
-            if (memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
-                if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
-                    err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
-                    if (err != ESP_OK) {
-                        ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
-                    };
-                }
-            } else if (memcmp(client_uid.to_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) == 0) {
-                err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
-                if (err != ESP_OK) {
-                    ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", err);
-                };
-            }
-        }
         break;
     default:
         break;
@@ -255,6 +210,54 @@ esp_err_t Websocket::messageRecipient(uint8_t* payload, uid_message_t* uid_recei
             return ESP_FAIL;
         };
         util::hexToBytes(from_uid, uid_receiving->from_uid);
+    }
+
+    return ESP_OK;
+}
+
+
+esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid, httpd_req_t* req)
+{
+    esp_err_t err;
+    std::uint8_t compare_uid[32];
+
+    if (m_client.size() == 0) {
+        ESP_LOGE(TAG, "No clients connected");
+        return ESP_FAIL;
+    }
+
+    err = util::hexToBytes(null_to_uid, compare_uid);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error getting uid %d", err);
+        return ESP_FAIL;
+    };
+
+    if (sizeof(client_uid.to_uid) != 32) {
+        ESP_LOGE(TAG, "toUID does not have the correct length");
+        return ESP_FAIL;
+    }
+
+    if (sizeof(client_uid.from_uid) != 32) {
+        ESP_LOGE(TAG, "fromUID does not have the correct length");
+        return ESP_FAIL;
+    }
+
+    for (size_t i = 0; i < m_client.size(); i++) {
+        if (memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
+            if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
+                err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
+                if (err != ESP_OK) {
+                    ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with %d", err);
+                    return ESP_FAIL;
+                };
+            }
+        } else if (memcmp(client_uid.to_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) == 0) {
+            err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with %d", err);
+                return ESP_FAIL;
+            };
+        }
     }
 
     return ESP_OK;
