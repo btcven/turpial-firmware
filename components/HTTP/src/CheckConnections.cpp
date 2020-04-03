@@ -1,5 +1,5 @@
 /**
- * @file Socket.h
+ * @file CheckConnections.cpp
  * @author Locha Mesh Developers (contact@locha.io)
  * @brief 
  * @version 0.1
@@ -21,7 +21,7 @@ void CheckConnections::run(void* task_data)
     Websocket& ws_instanse = Websocket::getInstance();
 
     TickType_t xLastWakeTime;
-    const TickType_t xFrequency = 1600;
+    const TickType_t xFrequency = 15000 / portTICK_PERIOD_MS;
     while (true) {
         vTaskDelayUntil(&xLastWakeTime, xFrequency);
         ws_instanse.checkConnection();

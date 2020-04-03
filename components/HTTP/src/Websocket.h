@@ -1,5 +1,5 @@
 /**
- * @file Socket.h
+ * @file Websocket.h
  * @author Locha Mesh Developers (contact@locha.io)
  * @brief 
  * @version 0.1
@@ -38,10 +38,10 @@ struct client_data_t {
  * @brief message type
  */
 enum class WebsocketType {
-    handshake,
-    msg,
-    status,
-    action
+    Handshake,
+    Message,
+    Status,
+    Action
 };
 
 

@@ -56,7 +56,8 @@ void HttpServer::registerUri(const char* uri, httpd_method_t method, esp_err_t (
         .method = method,
         .handler = handler,
         .user_ctx = ctx,
-        .is_websocket = is_websocket};
+        .is_websocket = is_websocket
+    };
     httpd_register_uri_handler(m_server, &uri_description);
 }
 

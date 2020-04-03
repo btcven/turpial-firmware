@@ -58,8 +58,7 @@ static const char* TAG = "RESTServer";
  * @param root 
  * @return esp_err_t 
  */
-esp_err_t
-receiveJson(httpd_req_t* req, cJSON** root)
+esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
 {
     std::size_t total_len = req->content_len;
 
@@ -432,14 +431,14 @@ esp_err_t websocketHandler(httpd_req_t* req)
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
     ws_pkt.payload = buf;
-    esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, 256);
+    esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, sizeof(buf));
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "httpd_ws_recv_frame failed with %d", ret);
         return ret;
     }
 
     ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
-     ws_instanse.onReceive(ws_pkt, req);
+    ws_instanse.onReceive(ws_pkt, req);
     return ret;
 }
 

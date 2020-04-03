@@ -1,5 +1,5 @@
 /**
- * @file Socket.cpp
+ * @file Websocket.cpp
  * @author Locha Mesh Developers (contact@locha.io)
  * @brief 
  * @version 0.1
@@ -34,7 +34,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
     bool update = false;
 
     switch (r) {
-    case WebsocketType::handshake:
+    case WebsocketType::Handshake:
         ESP_LOGI(TAG, "!!!!!hanshake");
         err = getClientData(ws_pkt.payload, &client);
         if (err != ESP_OK) {
@@ -60,7 +60,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 
         std::cout << "vector: " << m_client.size() << std::endl;
         break;
-    case WebsocketType::msg:
+    case WebsocketType::Message:
         ESP_LOGI(TAG, "!!!!!msg");
 
         err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
@@ -76,7 +76,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         };
 
         break;
-    case WebsocketType::status:
+    case WebsocketType::Status:
         ESP_LOGI(TAG, "!!!!!status");
 
         err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
@@ -92,7 +92,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         };
 
         break;
-    case WebsocketType::action:
+    case WebsocketType::Action:
         ESP_LOGI(TAG, "!!!!!action");
 
         err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
@@ -268,7 +268,7 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
 
 void Websocket::pong(httpd_req_t* req)
 {
-    ESP_LOGI(TAG, "SENDING PONG ")
+    ESP_LOGI(TAG, "SENDING PONG ");
 
     if (m_client.size() != 0) {
         return;

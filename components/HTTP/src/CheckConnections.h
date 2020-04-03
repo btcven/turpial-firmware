@@ -1,5 +1,5 @@
 /**
- * @file Socket.h
+ * @file CheckConnections.h
  * @author Locha Mesh Developers (contact@locha.io)
  * @brief 
  * @version 0.1
