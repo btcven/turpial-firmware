@@ -428,9 +428,6 @@ esp_err_t websocketHandler(httpd_req_t* req)
 {
     Websocket& ws_instanse = Websocket::getInstance();
 
-
-    ESP_LOGI(TAG, "ENTRANDO AQUI");
-
     uint8_t buf[256] = {0};
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
@@ -442,23 +439,7 @@ esp_err_t websocketHandler(httpd_req_t* req)
     }
 
     ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
-
-    std::cout << "final frame:" << ws_pkt.final << std::endl;
-
-    ws_instanse.onReceive(ws_pkt, req);
-
-
-    // ESP_LOGI(TAG, "Got packet with message: %s", ws_pkt.payload);
-    // ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
-    // // if (ws_pkt.type == HTTPD_WS_TYPE_TEXT &&
-    // //     strcmp((char*)ws_pkt.payload, "Trigger async") == 0) {
-    // //     return trigger_async_send(req->handle, req);
-    // // }
-
-    // ret = httpd_ws_send_frame(req, &ws_pkt);
-    // if (ret != ESP_OK) {
-    //     ESP_LOGE(TAG, "httpd_ws_send_frame failed with %d", ret);
-    // }
+     ws_instanse.onReceive(ws_pkt, req);
     return ret;
 }
 

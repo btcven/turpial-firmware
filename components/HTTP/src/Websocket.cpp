@@ -10,22 +10,16 @@
  */
 
 #include "Websocket.h"
+#include "CheckConnections.h"
 #include <esp_log.h>
 #include <iostream>
-
 static const char* TAG = "Websocket";
 
 
 Websocket::Websocket()
 {
-    TickType_t xLastWakeTime;
-    const TickType_t xFrequency = 10;
-    while (true) {
-        if (m_client.size() != 0) {
-            vTaskDelayUntil(&xLastWakeTime, xFrequency);
-            Websocket::pong(req_handler);
-        }
-    }
+    static CheckConnections g_check_connections;
+    g_check_connections.start(NULL);
 }
 
 void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
@@ -274,6 +268,8 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
 
 void Websocket::pong(httpd_req_t* req)
 {
+    ESP_LOGI(TAG, "SENDING PONG ")
+
     if (m_client.size() != 0) {
         return;
     }
@@ -296,5 +292,12 @@ void Websocket::pong(httpd_req_t* req)
 
             m_client.erase(m_client.begin() + i);
         }
+    }
+}
+
+void Websocket::checkConnection()
+{
+    if (m_client.size() != 0) {
+        Websocket::pong(req_handler);
     }
 }
