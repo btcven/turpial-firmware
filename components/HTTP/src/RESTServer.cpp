@@ -16,14 +16,14 @@
 #include <cJSON.h>
 #include <esp_log.h>
 
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-
 #include "FuelGauge.h"
 #include "HttpServer.h"
 #include "Websocket.h"
 #include "WiFi.h"
 #include "defaults.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <iostream>
 
 
 #define REST_CHECK(expr, msg)   \
@@ -428,16 +428,22 @@ esp_err_t websocketHandler(httpd_req_t* req)
 {
     Websocket& ws_instanse = Websocket::getInstance();
 
+
+    ESP_LOGI(TAG, "ENTRANDO AQUI");
+
     uint8_t buf[256] = {0};
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
     ws_pkt.payload = buf;
-    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
     esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, 256);
     if (ret != ESP_OK) {
         ESP_LOGE(TAG, "httpd_ws_recv_frame failed with %d", ret);
         return ret;
     }
+
+    ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
+
+    std::cout << "final frame:" << ws_pkt.final << std::endl;
 
     ws_instanse.onReceive(ws_pkt, req);
 

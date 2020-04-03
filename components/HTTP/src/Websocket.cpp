@@ -18,11 +18,19 @@ static const char* TAG = "Websocket";
 
 Websocket::Websocket()
 {
-    ESP_LOGI(TAG, "Execute contructor websocket");
+    TickType_t xLastWakeTime;
+    const TickType_t xFrequency = 10;
+    while (true) {
+        if (m_client.size() != 0) {
+            vTaskDelayUntil(&xLastWakeTime, xFrequency);
+            Websocket::pong(req_handler);
+        }
+    }
 }
 
 void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 {
+    req_handler = req;
     int type = getTypeMessage(ws_pkt.payload);
     WebsocketType r = static_cast<WebsocketType>(type);
     client_data_t client;
@@ -34,7 +42,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
     switch (r) {
     case WebsocketType::handshake:
         ESP_LOGI(TAG, "!!!!!hanshake");
-        err = getClientData(ws_pkt.payload, &client, req);
+        err = getClientData(ws_pkt.payload, &client);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "type must be numeric 0 ");
         };
@@ -67,7 +75,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
             return;
         };
 
-        err = sendWsData(client_uid, ws_pkt, null_to_uid, req);
+        err = sendWsData(client_uid, ws_pkt, null_to_uid);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error sending message %d", err);
             return;
@@ -83,7 +91,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
             return;
         };
 
-        err = sendWsData(client_uid, ws_pkt, null_to_uid, req);
+        err = sendWsData(client_uid, ws_pkt, null_to_uid);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error sending message %d", err);
             return;
@@ -99,7 +107,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
             return;
         };
 
-        err = sendWsData(client_uid, ws_pkt, null_to_uid, req);
+        err = sendWsData(client_uid, ws_pkt, null_to_uid);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error sending message %d", err);
             return;
@@ -125,7 +133,7 @@ int Websocket::getTypeMessage(uint8_t* payload)
 }
 
 
-esp_err_t Websocket::getClientData(uint8_t* payload, client_data_t* client, httpd_req_t* req)
+esp_err_t Websocket::getClientData(uint8_t* payload, client_data_t* client)
 {
     char* res = reinterpret_cast<char*>(payload);
     cJSON* req_root = cJSON_Parse(res);
@@ -143,7 +151,7 @@ esp_err_t Websocket::getClientData(uint8_t* payload, client_data_t* client, http
 
         client->timestamp = timestamp;
         client->is_alive = true;
-        client->fd = httpd_req_to_sockfd(req);
+        client->fd = httpd_req_to_sockfd(req_handler);
         return ESP_OK;
     };
 
@@ -216,7 +224,7 @@ esp_err_t Websocket::messageRecipient(uint8_t* payload, uid_message_t* uid_recei
 }
 
 
-esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid, httpd_req_t* req)
+esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid)
 {
     esp_err_t err;
     std::uint8_t compare_uid[32];
@@ -245,14 +253,14 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
     for (size_t i = 0; i < m_client.size(); i++) {
         if (memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
             if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
-                err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
+                err = httpd_ws_send_frame_async(req_handler->handle, m_client[i].fd, &ws_pkt);
                 if (err != ESP_OK) {
                     ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with %d", err);
                     return ESP_FAIL;
                 };
             }
         } else if (memcmp(client_uid.to_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) == 0) {
-            err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
+            err = httpd_ws_send_frame_async(req_handler->handle, m_client[i].fd, &ws_pkt);
             if (err != ESP_OK) {
                 ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with %d", err);
                 return ESP_FAIL;
@@ -261,4 +269,32 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
     }
 
     return ESP_OK;
+}
+
+
+void Websocket::pong(httpd_req_t* req)
+{
+    if (m_client.size() != 0) {
+        return;
+    }
+
+    static const char* data = "Async data";
+    httpd_ws_frame_t ws_pkt;
+    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+    ws_pkt.payload = (uint8_t*)data;
+    ws_pkt.type = HTTPD_WS_TYPE_PONG;
+    ws_pkt.len = strlen(data);
+    ws_pkt.final = 1;
+
+    for (size_t i = 0; i < m_client.size(); i++) {
+        ESP_LOGI(TAG, "Packet type: %d", m_client[i].fd);
+
+        esp_err_t err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with %d", err);
+            // remove client not connected
+
+            m_client.erase(m_client.begin() + i);
+        }
+    }
 }
