@@ -26,7 +26,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 {
     req_handler = req;
     int type = getTypeMessage(ws_pkt.payload);
-    WebsocketType r = static_cast<WebsocketType>(type);
+    WsMsgType r = static_cast<WsMsgType>(type);
     client_data_t client;
     esp_err_t err;
     uid_message_t client_uid;
@@ -34,7 +34,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
     bool update = false;
 
     switch (r) {
-    case WebsocketType::Handshake:
+    case WsMsgType::Handshake:
         ESP_LOGI(TAG, "!!!!!hanshake");
         err = getClientData(ws_pkt.payload, &client);
         if (err != ESP_OK) {
@@ -60,7 +60,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 
         std::cout << "vector: " << m_client.size() << std::endl;
         break;
-    case WebsocketType::Message:
+    case WsMsgType::Message:
         ESP_LOGI(TAG, "!!!!!msg");
 
         err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
@@ -76,7 +76,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         };
 
         break;
-    case WebsocketType::Status:
+    case WsMsgType::Status:
         ESP_LOGI(TAG, "!!!!!status");
 
         err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
@@ -92,7 +92,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         };
 
         break;
-    case WebsocketType::Action:
+    case WsMsgType::Action:
         ESP_LOGI(TAG, "!!!!!action");
 
         err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
@@ -103,12 +103,13 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 
         err = sendWsData(client_uid, ws_pkt, null_to_uid);
         if (err != ESP_OK) {
-            ESP_LOGE(TAG, "Error sending message %d", err);
+            ESP_LOGE(TAG, "Sending message: %s", esp_err_to_name(err));
             return;
         };
 
         break;
     default:
+        ESP_LOGE(TAG, "Unknow message type");
         break;
     }
 }
@@ -138,6 +139,7 @@ esp_err_t Websocket::getClientData(uint8_t* payload, client_data_t* client)
     int timestamp = cjson_timestamp->valueint;
     if (cJSON_IsNumber(cjson_timestamp) && cJSON_IsString(cjson_shaUID)) {
         if (strlen(sha_uid) != 64) {
+            cJSON_Delete(req_root);
             return ESP_FAIL;
         }
 
@@ -146,9 +148,10 @@ esp_err_t Websocket::getClientData(uint8_t* payload, client_data_t* client)
         client->timestamp = timestamp;
         client->is_alive = true;
         client->fd = httpd_req_to_sockfd(req_handler);
+        cJSON_Delete(req_root);
         return ESP_OK;
     };
-
+     cJSON_Delete(req_root);
     return ESP_FAIL;
 }
 
@@ -194,26 +197,26 @@ esp_err_t Websocket::messageRecipient(uint8_t* payload, uid_message_t* uid_recei
 
     } else if (cJSON_IsString(cjson_toUID)) {
         if (strlen(to_uid) != 64) {
+            cJSON_Delete(req_root);
             ESP_LOGI(TAG, "toUID length  is less than 64 ");
-            return ESP_FAIL;
+            return ESP_ERR_INVALID_SIZE;
         };
-
-        ESP_LOGI(TAG, "ANTES DE SETEAR EL DATO");
-        std::cout << "entro aqui" << to_uid << std::endl;
 
         util::hexToBytes(to_uid, uid_receiving->to_uid);
     }
 
     if (cJSON_IsInvalid(cjson_fromUID) || cJSON_IsNull(cjson_fromUID)) {
+         cJSON_Delete(req_root);
         return ESP_FAIL;
     } else {
         if (strlen(from_uid) != 64) {
+            cJSON_Delete(req_root);
             ESP_LOGI(TAG, "  FromUID length  is less than 64 ");
-            return ESP_FAIL;
+            return ESP_ERR_INVALID_SIZE;
         };
         util::hexToBytes(from_uid, uid_receiving->from_uid);
     }
-
+     cJSON_Delete(req_root);
     return ESP_OK;
 }
 

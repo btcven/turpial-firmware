@@ -43,13 +43,6 @@ typedef struct {
 } rest_server_context_t;
 
 
-/*
- * Structure holding server handle
- * and internal socket fd in order
- * to use out of request send
- */
-
-
 static const char* TAG = "RESTServer";
 /**
  * @brief 

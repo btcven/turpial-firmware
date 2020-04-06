@@ -13,7 +13,7 @@
 #ifndef HTTP_WEBSOCKET_H
 #define HTTP_WEBSOCKET_H
 
-#include "hex.h"
+#include "Hex.h"
 #include <cJSON.h>
 #include <esp_https_server.h>
 
@@ -37,7 +37,7 @@ struct client_data_t {
 /**
  * @brief message type
  */
-enum class WebsocketType {
+enum class WsMsgType {
     Handshake,
     Message,
     Status,
