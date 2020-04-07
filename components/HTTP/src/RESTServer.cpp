@@ -16,13 +16,15 @@
 #include <cJSON.h>
 #include <esp_log.h>
 
-#include <freertos/FreeRTOS.h>
-#include <freertos/task.h>
-
 #include "FuelGauge.h"
 #include "HttpServer.h"
+#include "Websocket.h"
 #include "WiFi.h"
 #include "defaults.h"
+#include <freertos/FreeRTOS.h>
+#include <freertos/task.h>
+#include <iostream>
+
 
 #define REST_CHECK(expr, msg)   \
     do {                        \
@@ -40,8 +42,8 @@ typedef struct {
     char scratch[SCRATCH_BUFSIZE];
 } rest_server_context_t;
 
-static const char* TAG = "RESTServer";
 
+static const char* TAG = "RESTServer";
 /**
  * @brief 
  * 
@@ -410,17 +412,40 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
     return ESP_OK;
 }
 
+/*
+ * async send function, which we put into the httpd work queue
+ */
 
-void start_server(std::uint16_t port)
+esp_err_t websocketHandler(httpd_req_t* req)
 {
-    http::HttpServer http_server(port);
+    Websocket& ws_instanse = Websocket::getInstance();
 
-    rest_server_context_t *ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));
+    uint8_t buf[256] = {0};
+    httpd_ws_frame_t ws_pkt;
+    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+    ws_pkt.payload = buf;
+    esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, sizeof(buf));
+    if (ret != ESP_OK) {
+        ESP_LOGE(TAG, "httpd_ws_recv_frame failed with %d", ret);
+        return ret;
+    }
 
-    http_server.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx);
-    http_server.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx);
-    http_server.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx);
-    http_server.registerUri("/wifi/ap", HTTP_POST, wifiApHandler, ctx);
+    ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
+    ws_instanse.onReceive(ws_pkt, req);
+    return ret;
+}
+
+
+void start_server()
+{
+    http::HttpServer server_instanse = http::HttpServer();
+    rest_server_context_t* ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));
+
+    server_instanse.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx, false);
+    server_instanse.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx, false);
+    server_instanse.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx, false);
+    server_instanse.registerUri("/wifi/ap", HTTP_POST, wifiApHandler, ctx, false);
+    server_instanse.registerUri("/ws", HTTP_GET, websocketHandler, ctx, true);
 }
 
 } // namespace rest_server

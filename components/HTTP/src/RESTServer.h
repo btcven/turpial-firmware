@@ -11,7 +11,9 @@
 #ifndef RESTSERVER_H
 #define RESTSERVER_H
 
+#include "HttpServer.h"
 #include <cstdint>
+#include <cstring>
 
 namespace rest_server {
 
@@ -20,8 +22,9 @@ namespace rest_server {
  * 
  * @param port 
  */
-void start_server(std::uint16_t port);
+void start_server();
 
-} /* namespace restserver */
+} // namespace rest_server
+
 
 #endif /* RESTSERVER_H */
