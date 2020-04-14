@@ -3,7 +3,7 @@ idf_component_register(SRCS ${SOURCES}
                        INCLUDE_DIRS
                            src
                            ../../main
-                       REQUIRES esp_https_server Util json ESC Network NVS Task
+                       REQUIRES esp_https_server Util json ESC Network NVS Task cbor
                        EMBED_TXTFILES "certs/cacert.pem"
                                    "certs/prvtkey.pem")
                   

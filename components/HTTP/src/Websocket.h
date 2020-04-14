@@ -14,12 +14,13 @@
 #define HTTP_WEBSOCKET_H
 
 #include "Hex.h"
+#include "Serialization.h"
 #include <cJSON.h>
 #include <esp_https_server.h>
 
+#include <cbor.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
-
 #include <stdint.h>
 #include <string>
 #include <vector>
@@ -44,7 +45,6 @@ enum class WsMsgType {
     Action
 };
 
-
 struct async_resp_arg_t {
     httpd_handle_t hd;
     int fd;
@@ -55,7 +55,7 @@ struct async_resp_arg_t {
  */
 struct uid_message_t {
     std::uint8_t from_uid[32]; // uid who's sending the message
-    std::uint8_t to_uid[32];  // id of who receives the message
+    std::uint8_t to_uid[32];   // id of who receives the message
 };
 
 
@@ -153,6 +153,8 @@ private:
      * 
      */
     void pong(httpd_req_t* req);
+    void sendUart(httpd_ws_frame_t ws_pkt);
+    void receiveFromUart(std::uint8_t* data_received);
 };
 
 
