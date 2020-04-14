@@ -1,80 +1,58 @@
-/*
- * HttpServer.h
- *
- *  Created on: Aug 30, 2017
- *      Author: kolban
- *
- * Implementation of an HTTP server for the ESP32.
- *
- */
-
-#ifndef COMPONENTS_CPP_UTILS_HTTPSERVER_H_
-#define COMPONENTS_CPP_UTILS_HTTPSERVER_H_
-
-#include <stdint.h>
-
-#include "Sema.h"
-#include "HttpRequest.h"
-#include "HttpResponse.h"
-#include <regex>
-#include <vector>
-
-class HttpServerTask;
-
 /**
- * @brief Handle path matching for an incoming HTTP request.
+ * @file HttpServer.h
+ * @author Locha Mesh Developers (contact@locha.io)
+ * @brief 
+ * @version 0.1
+ * @date 2020-03-10
+ * 
+ * @copyright Copyright (c) 2020 Locha Mesh Developers
+ * 
  */
-class PathHandler
-{
-public:
-    PathHandler(
-        std::string method,             // The method in the request to be matched.
-        std::string pathPattern,        // The pattern in the request to be matched
-        void(*pWebServerRequestHandler) // The handler function to be invoked upon a match.
-        (
-            HttpRequest* pHttpRequest,
-            HttpResponse* pHttpResponse));
 
-    bool match(std::string method, std::string path); // Does the request method and pattern match?
-    void invokePathHandler(HttpRequest* request, HttpResponse* response);
+#ifndef HTTP_HTTP_SERVER_H
+#define HTTP_HTTP_SERVER_H
 
-private:
-    std::string m_method;
-    bool m_isRegex;
-    std::string m_textPattern;
-    void (*m_pRequestHandler)(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse);
-}; // PathHandler
+#include <cstdint>
+#include <esp_https_server.h>
 
+#define HTTP_SSL_CONFIG()                                                                                                                                                                                                               \
+    {                                                                                                                                                                                                                                   \
+        .httpd = {                                                                                                                                                                                                                      \
+            .task_priority = tskIDLE_PRIORITY + 5,                                                                                                                                                                                      \
+            .stack_size = 10240,                                                                                                                                                                                                        \
+            .core_id = tskNO_AFFINITY,                                                                                                                                                                                                  \
+            .server_port = 0,                                                                                                                                                                                                           \
+            .ctrl_port = 32768,                                                                                                                                                                                                         \
+            .max_open_sockets = 4,                                                                                                                                                                                                      \
+            .max_uri_handlers = 8,                                                                                                                                                                                                      \
+            .max_resp_headers = 8,                                                                                                                                                                                                      \
+            .backlog_conn = 5,                                                                                                                                                                                                          \
+            .lru_purge_enable = true,                                                                                                                                                                                                   \
+            .recv_wait_timeout = 5,                                                                                                                                                                                                     \
+            .send_wait_timeout = 5,                                                                                                                                                                                                     \
+            .global_user_ctx = NULL,                                                                                                                                                                                                    \
+            .global_user_ctx_free_fn = NULL,                                                                                                                                                                                            \
+            .global_transport_ctx = NULL,                                                                                                                                                                                               \
+            .global_transport_ctx_free_fn = NULL,                                                                                                                                                                                       \
+            .open_fn = NULL,                                                                                                                                                                                                            \
+            .close_fn = NULL,                                                                                                                                                                                                           \
+            .uri_match_fn = NULL},                                                                                                                                                                                                      \
+        .cacert_pem = NULL, .cacert_len = 0, .client_verify_cert_pem = NULL, .client_verify_cert_len = 0, .prvtkey_pem = NULL, .prvtkey_len = 0, .transport_mode = HTTPD_SSL_TRANSPORT_SECURE, .port_secure = 443, .port_insecure = 80, \
+    }
+
+namespace http {
 
 class HttpServer
 {
 public:
-    /* typedef std::map<int, WebSocket*> ws_list_t; */
     HttpServer();
-    virtual ~HttpServer();
 
-    void addPathHandler(
-        std::string method,
-        std::string pathExpr,
-        void (*webServerRequestHandler)(
-            HttpRequest* pHttpRequest,
-            HttpResponse* pHttpResponse));
-
-    uint32_t getClientTimeout();             // Get client's socket timeout
-    uint16_t getPort();                      // Get the port on which the Http server is listening.
-    void setClientTimeout(uint32_t timeout); // Set client's socket timeout
-    void start(uint16_t portNumber);
-    void stop(); // Stop a previously started server.
-
+    void registerUri(const char* uri, httpd_method_t method, esp_err_t (*handler)(httpd_req_t* r), void* ctx, bool is_websocket);
 
 private:
-    friend class HttpServerTask;
-    friend class WebSocket;
-    std::vector<PathHandler> m_pathHandlers; // Vector of path handlers.
-    uint16_t m_portNumber;                   // Port number on which server is listening.
-    Socket m_socket;
-    uint32_t m_clientTimeout; // Default Timeout
-    util::Semaphore m_semaphoreServerStarted;
-}; // HttpServer
+    httpd_handle_t m_server;
+};
 
-#endif /* COMPONENTS_CPP_UTILS_HTTPSERVER_H_ */
+} // namespace http
+
+#endif /* HTTP_HTTP_SERVER_H */

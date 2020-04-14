@@ -88,7 +88,7 @@ description on how to work with the code and to compile
 
 Development happens in the `dev` branch. All Pull-Requests should be
 pointed to that branch. Please, make sure you follow the
-[CONTRIBUTING.md](blob/master/CONTRIBUTING.md) guidelines. All Pull-Requests
+[CONTRIBUTING.md](CONTRIBUTING.md) guidelines. All Pull-Requests
 require that at least two developers review them first before merging to `dev`
 branch.
 

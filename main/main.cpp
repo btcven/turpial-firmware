@@ -5,13 +5,16 @@
  * @version 0.1
  * @date 2019-09-11
  *
- * @copyright Copyright (c) 2019
+ * @copyright Copyright (c) 2020 Locha Mesh Developers
  *
  */
 
 #include <cstdio>
+#include <cstring>
 #include <memory>
 #include <sstream>
+
+#include "defaults.h"
 
 #include <esp_log.h>
 #include <freertos/FreeRTOS.h>
@@ -23,15 +26,10 @@
 #include <Storage.h>
 #include <WiFi.h>
 
-#include "HttpServerHandler.h"
 #include "UserButton.h"
 #include "UserButtonHandler.h"
-#include "defaults.h"
-#include <HttpServer.h>
-#include <WebSocket.h>
-#include <WsHandlerEvents.h>
 
-HttpServer httpServer;
+#include "RESTServer.h"
 
 static const char* TAG = "app_main";
 
@@ -114,16 +112,6 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
-
-void webSocketHandler(HttpRequest* pHttpRequest, HttpResponse* pHttpResponse)
-{
-    WsHandlerEvents* myHandler = new WsHandlerEvents();
-    if (pHttpRequest->isWebsocket()) {
-        pHttpRequest->getWebSocket()->setHandler(myHandler);
-        ESP_LOGI("available clients---->>", "%d", pHttpRequest->getWebSocket()->availableClients());
-    }
-}
-
 extern "C" void app_main()
 {
     esp_err_t err;
@@ -156,23 +144,25 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface (%s)", esp_err_to_name(err));
         return;
     }
-
+    
+    is_configured = false;
     if (!is_configured) {
         wifi.setMode(WIFI_MODE);
 
-        network::APConfig ap_config = {
-            .ssid = WAP_SSID,
-            .password = WAP_PASS,
-            .authmode = WAP_AUTHMODE,
-            .max_conn = WAP_MAXCONN,
-            .channel = WAP_CHANNEL,
-        };
+        // Default configuration for AP
+        wifi_config_t ap_config;
+        ap_config.ap.ssid_len = 0;
+        std::memcpy(ap_config.ap.ssid, WAP_SSID, sizeof(WAP_SSID));
+        std::memcpy(ap_config.ap.password, WAP_PASS, sizeof(WAP_PASS));
+        ap_config.ap.authmode = WAP_AUTHMODE;
+        ap_config.ap.max_connection = WAP_MAXCONN;
+        ap_config.ap.channel = WAP_CHANNEL;
         wifi.setApConfig(ap_config);
 
-        network::STAConfig sta_config = {
-            .ssid = WST_SSID,
-            .password = WST_PASS,
-        };
+        // Default configuration for STA
+        wifi_config_t sta_config;
+        std::memcpy(sta_config.sta.ssid, WST_SSID, sizeof(WST_SSID));
+        std::memcpy(sta_config.sta.password, WST_PASS, sizeof(WST_PASS));
         wifi.setStaConfig(sta_config);
     }
 
@@ -187,11 +177,7 @@ extern "C" void app_main()
     radio_task->start();
 #endif
 
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/stream", webSocketHandler);
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_GET, "/get-device-info", HttpServerHandler::readDeviceInfoHandler);
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-sta-ap", HttpServerHandler::setUpStaApHandler);
-    httpServer.addPathHandler(HttpRequest::HTTP_METHOD_POST, "/set-up-credentials", HttpServerHandler::setUpCredentialHandler);
-    httpServer.start(2565);
+    rest_server::start_server();
 
 #if ESC_ENABLED == true
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
