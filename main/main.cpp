@@ -174,6 +174,8 @@ extern "C" void app_main()
 
 #if RAD_ENABLED == true
     radio::Radio* radio_task = new radio::Radio();
+    //this function could has parameters to configure differents serial ports
+    radio_task->init();
     radio_task->start();
 #endif
 

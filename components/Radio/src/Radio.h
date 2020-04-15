@@ -31,6 +31,7 @@ public:
      * 
      */
     Radio();
+    void init(void);
 
     /**
      * @brief Start the Radio task communication

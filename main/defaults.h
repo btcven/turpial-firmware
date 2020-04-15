@@ -26,7 +26,7 @@
 #define ESC_SYSOFF_PIN GPIO_NUM_27    /*!< SYSOFF pin number */
 #define ESC_SOC_DELTA 1               /*!< SoC change delta */
 
-#define RAD_ENABLED false /*!< Radio subsystem enabled? */
+#define RAD_ENABLED true /*!< Radio subsystem enabled? */
 #define RAD_TX_PIN 5      /*!< Radio UART TX pin */
 #define RAD_RX_PIN 4      /*!< Radio UART RX pin */
 
