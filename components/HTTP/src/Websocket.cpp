@@ -109,7 +109,6 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         break;
     default:
         ESP_LOGE(TAG, "Unknown message type");
-
         break;
     }
 }
@@ -223,12 +222,11 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
 {
     esp_err_t err;
     std::uint8_t compare_uid[32];
-    bool send_uart = false;
 
-    // if (m_client.size() == 0) {
-    //     ESP_LOGE(TAG, "No clients connected");
-    //     return ESP_FAIL;
-    // }
+    if (m_client.size() == 0) {
+        ESP_LOGE(TAG, "No clients connected");
+        return ESP_FAIL;
+    }
 
     err = util::hexToBytes(null_to_uid, compare_uid);
     if (err != ESP_OK) {
@@ -272,6 +270,8 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
 
 void Websocket::pong(httpd_req_t* req)
 {
+    ESP_LOGI(TAG, "SENDING PONG ");
+
     if (m_client.size() != 0) {
         return;
     }
@@ -302,38 +302,4 @@ void Websocket::checkConnection()
     if (m_client.size() != 0) {
         Websocket::pong(req_handler);
     }
-}
-
-void Websocket::sendUart(httpd_ws_frame_t ws_pkt)
-{
-    std::uint8_t* buf = malloc(ws_pkt.len);
-    esp_err_t err;
-    err = util::encode(ws_pkt.payload, buf, ws_pkt.len);
-    if (err != ESP_OK) {
-        ESP_LOGI(TAG, "error encoding payload");
-        return;
-    }
-
-    // send payload encrypted via radio
-
-    free(buf);
-}
-
-void Websocket::receiveFromUart(std::uint8_t* data_received)
-{
-    char payload[500];
-    esp_err_t err;
-    err = util::decode(data_received, payload);
-    if (err) {
-        ESP_LOGI(TAG, "error decoding the value");
-    }
-
-    httpd_ws_frame_t ws_pkt;
-    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
-    ws_pkt.payload = (uint8_t*)payload;
-    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
-    ws_pkt.len = strlen(payload);
-    ws_pkt.final = 1;
-
-    // send message to customers
 }

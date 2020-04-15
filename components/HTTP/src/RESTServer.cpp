@@ -420,7 +420,7 @@ esp_err_t websocketHandler(httpd_req_t* req)
 {
     Websocket& ws_instanse = Websocket::getInstance();
 
-    uint8_t buf[2000] = {0};
+    uint8_t buf[256] = {0};
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
     ws_pkt.payload = buf;
