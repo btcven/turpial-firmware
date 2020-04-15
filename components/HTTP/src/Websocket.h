@@ -153,7 +153,17 @@ private:
      * 
      */
     void pong(httpd_req_t* req);
+
+    /**
+     * @brief send encrypted message by radio
+     * @param ws_pkt frame that delivers the socket this contains the data that the client sent
+     */
     void sendUart(httpd_ws_frame_t ws_pkt);
+
+    /**
+     * @brief received encrypted message by radio
+     * @param data_received encrypted message
+     */
     void receiveFromUart(std::uint8_t* data_received);
 };
 

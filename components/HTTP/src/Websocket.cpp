@@ -306,7 +306,7 @@ void Websocket::checkConnection()
 
 void Websocket::sendUart(httpd_ws_frame_t ws_pkt)
 {
-    uint8_t buf[ws_pkt.len];
+    std::uint8_t* buf = malloc(ws_pkt.len);
     esp_err_t err;
     err = util::encode(ws_pkt.payload, buf, ws_pkt.len);
     if (err != ESP_OK) {
@@ -315,6 +315,8 @@ void Websocket::sendUart(httpd_ws_frame_t ws_pkt)
     }
 
     // send payload encrypted via radio
+
+    free(buf);
 }
 
 void Websocket::receiveFromUart(std::uint8_t* data_received)
