@@ -146,7 +146,7 @@ private:
      * @param  null_to_uid variable assigned to the toUID if it reaches null
      * @return esp_err_t
      */
-    esp_err_t sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid);
+    esp_err_t sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid, bool uart);
 
     /**
      * @brief send pong messages to verify connected clients
@@ -165,6 +165,7 @@ private:
      * @param data_received encrypted message
      */
     void receiveFromUart(std::uint8_t* data_received);
+    void checkMessageType(httpd_ws_frame_t ws_pkt, bool uart);
 };
 
 

@@ -22,9 +22,16 @@ Websocket::Websocket()
     g_check_connections.start(NULL);
 }
 
+
 void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 {
     req_handler = req;
+    Websocket::checkMessageType(ws_pkt, false);
+}
+
+
+void Websocket::checkMessageType(httpd_ws_frame_t ws_pkt, bool uart)
+{
     int type = getTypeMessage(ws_pkt.payload);
     WsMsgType r = static_cast<WsMsgType>(type);
     client_data_t client;
@@ -68,7 +75,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
             return;
         };
 
-        err = sendWsData(client_uid, ws_pkt, null_to_uid);
+        err = sendWsData(client_uid, ws_pkt, null_to_uid, uart);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error sending message %s", esp_err_to_name(err));
             return;
@@ -84,7 +91,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
             return;
         };
 
-        err = sendWsData(client_uid, ws_pkt, null_to_uid);
+        err = sendWsData(client_uid, ws_pkt, null_to_uid, uart);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error sending message %s", esp_err_to_name(err));
             return;
@@ -100,7 +107,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
             return;
         };
 
-        err = sendWsData(client_uid, ws_pkt, null_to_uid);
+        err = sendWsData(client_uid, ws_pkt, null_to_uid, uart);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Sending message: %s", esp_err_to_name(err));
             return;
@@ -113,6 +120,7 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
         break;
     }
 }
+
 
 int Websocket::getTypeMessage(uint8_t* payload)
 {
@@ -219,16 +227,16 @@ esp_err_t Websocket::messageRecipient(uint8_t* payload, uid_message_t* uid_recei
 }
 
 
-esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid)
+esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid, bool uart)
 {
     esp_err_t err;
     std::uint8_t compare_uid[32];
-    bool send_uart = false;
 
-    // if (m_client.size() == 0) {
-    //     ESP_LOGE(TAG, "No clients connected");
-    //     return ESP_FAIL;
-    // }
+
+    if (m_client.size() == 0) {
+        ESP_LOGE(TAG, "No clients connected");
+        return ESP_FAIL;
+    }
 
     err = util::hexToBytes(null_to_uid, compare_uid);
     if (err != ESP_OK) {
@@ -244,6 +252,10 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
     if (sizeof(client_uid.from_uid) != 32) {
         ESP_LOGE(TAG, "fromUID does not have the correct length");
         return ESP_FAIL;
+    }
+
+    if (uart == false && memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
+        sendUart(ws_pkt);
     }
 
     for (size_t i = 0; i < m_client.size(); i++) {
@@ -263,6 +275,8 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
                     esp_err_to_name(err));
                 return ESP_FAIL;
             };
+        } else if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
+            sendUart(ws_pkt);
         }
     }
 
@@ -306,7 +320,7 @@ void Websocket::checkConnection()
 
 void Websocket::sendUart(httpd_ws_frame_t ws_pkt)
 {
-    std::uint8_t* buf = malloc(ws_pkt.len);
+    std::uint8_t* buf = (std::uint8_t*)malloc(ws_pkt.len);
     esp_err_t err;
     err = util::encode(ws_pkt.payload, buf, ws_pkt.len);
     if (err != ESP_OK) {
@@ -335,5 +349,6 @@ void Websocket::receiveFromUart(std::uint8_t* data_received)
     ws_pkt.len = strlen(payload);
     ws_pkt.final = 1;
 
+    checkMessageType(ws_pkt, true);
     // send message to customers
 }
