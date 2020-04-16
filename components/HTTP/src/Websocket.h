@@ -38,6 +38,29 @@ typedef std::uint8_t chat_id_t[32];
 extern chat_id_t chat_id_unspecified;
 
 /**
+ * @brief Check if IDs are equal
+ *
+ * @param[in] a ID to compare.
+ * @param[in] b ID to compare.
+ *
+ * @return true if equal.
+ */
+static inline bool chat_id_equal(chat_id_t a, chat_id_t b)
+{
+    return memcmp(a, b, sizeof(chat_id_t)) == 0;
+}
+
+struct chat_msg_t {
+    chat_id_t from_uid;
+    chat_id_t to_uid;
+    std::uint8_t msg[128];
+    std::size_t msg_len;
+    chat_id_t msg_id;
+    std::uint64_t timestamp;
+    std::uint64_t type;
+};
+
+/**
  * @brief Customer data structure
  */
 struct client_data_t {
