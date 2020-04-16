@@ -113,7 +113,7 @@ private:
      * 4 : when the message type is action 
      * -1: when the message type is invalid
      */
-    int getTypeMessage(uint8_t* payload);
+    int getTypeMessage(std::uint8_t* payload);
 
     /**
      * @brief get the client data that comes from the websocket client 
@@ -121,7 +121,7 @@ private:
      * @param  client  where all customer data will be saved
      * @return esp_err_t
      */
-    esp_err_t getClientData(uint8_t* payload, client_data_t* client);
+    esp_err_t getClientData(std::uint8_t* payload, client_data_t* client);
 
     /**
      * @brief function for sending asynchronous messages 
@@ -138,7 +138,7 @@ private:
      * @param  null_to_uid  variable assigned to the toUID if it reaches null
      * @return esp_err_t
      */
-    esp_err_t messageRecipient(uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid);
+    esp_err_t messageRecipient(std::uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid);
     /**
      * @brief Verify that the data received is correct and send the message
      * @param  client_uid contains the uid to which the message will be sent 
@@ -146,7 +146,7 @@ private:
      * @param  null_to_uid variable assigned to the toUID if it reaches null
      * @return esp_err_t
      */
-    esp_err_t sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid);
+    esp_err_t sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid, bool uart);
 
     /**
      * @brief send pong messages to verify connected clients
@@ -158,13 +158,14 @@ private:
      * @brief send encrypted message by radio
      * @param ws_pkt frame that delivers the socket this contains the data that the client sent
      */
-    void sendUart(httpd_ws_frame_t ws_pkt);
+    esp_err_t sendUart(httpd_ws_frame_t ws_pkt);
 
     /**
      * @brief received encrypted message by radio
      * @param data_received encrypted message
      */
-    void receiveFromUart(std::uint8_t* data_received);
+    esp_err_t receiveFromUart(std::uint8_t* data_received);
+    void checkMessageType(httpd_ws_frame_t ws_pkt, bool uart);
 };
 
 
