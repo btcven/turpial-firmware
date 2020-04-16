@@ -9,7 +9,6 @@ static xQueueHandle gpio_evt_queue = nullptr;
 
 static void IRAM_ATTR interruptIsrHandler(void* arg)
 {
-    gpio_num_t* button = static_cast<gpio_num_t*>(arg);
     xQueueSendFromISR(gpio_evt_queue, arg, NULL);
 }
 
@@ -44,7 +43,6 @@ void UserButton::init(gpio_num_t user_button,
     btn->attachLongClick(fnLongClick);
 
     static Interrupt g_int_task;
-    gpio_num_t USER_BUTTON = btn->_gpio_btn;
     const int ESP_INTR_FLAG_DEFAULT = 0;
 
     gpio_config_t io_conf = {};
