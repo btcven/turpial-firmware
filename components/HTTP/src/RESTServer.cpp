@@ -418,7 +418,8 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
 
 esp_err_t websocketHandler(httpd_req_t* req)
 {
-    Websocket& ws_instanse = Websocket::getInstance();
+
+    Websocket& ws_instance = Websocket::getInstance();
 
     uint8_t buf[2000] = {0};
     httpd_ws_frame_t ws_pkt;
@@ -431,21 +432,30 @@ esp_err_t websocketHandler(httpd_req_t* req)
     }
 
     ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
-    ws_instanse.onReceive(ws_pkt, req);
+    ws_instance.onReceive(ws_pkt, req);
     return ret;
 }
+
+/**
+ * @brief this function aims to setting up the api rest end points,
+ * start the server amd initialize Radio module serial communication
+ * 
+ */
 
 
 void start_server()
 {
-    http::HttpServer server_instanse = http::HttpServer();
+    http::HttpServer server_instance = http::HttpServer();
     rest_server_context_t* ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));
+    
+    Websocket& ws_instance = Websocket::getInstance();
+    ws_instance.initRadioSerialLine();
 
-    server_instanse.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx, false);
-    server_instanse.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx, false);
-    server_instanse.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx, false);
-    server_instanse.registerUri("/wifi/ap", HTTP_POST, wifiApHandler, ctx, false);
-    server_instanse.registerUri("/ws", HTTP_GET, websocketHandler, ctx, true);
+    server_instance.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx, false);
+    server_instance.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx, false);
+    server_instance.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx, false);
+    server_instance.registerUri("/wifi/ap", HTTP_POST, wifiApHandler, ctx, false);
+    server_instance.registerUri("/ws", HTTP_GET, websocketHandler, ctx, true);
 }
 
 } // namespace rest_server

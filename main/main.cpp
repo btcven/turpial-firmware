@@ -112,6 +112,10 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
+// void hello(void* buffer, void* size) {
+//     ESP_LOGE(TAG,"------------------execelnte prueba\n");
+//     fwrite(buffer, (size_t)size, 1, stdout);
+// }
 extern "C" void app_main()
 {
     esp_err_t err;
@@ -172,12 +176,6 @@ extern "C" void app_main()
         return;
     }
 
-#if RAD_ENABLED == true
-    radio::Radio* radio_task = new radio::Radio();
-    //this function could has parameters to configure differents serial ports
-    radio_task->init();
-    radio_task->start();
-#endif
 
     rest_server::start_server();
 

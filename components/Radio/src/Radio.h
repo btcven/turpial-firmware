@@ -18,6 +18,8 @@
 namespace radio {
 
 #if RAD_ENABLED == true
+//this type of data represent the callback to send data to websocket server
+typedef void (*callbackFunction)(void*,void*);
 
 /**
  * @brief Radio communication task
@@ -31,7 +33,20 @@ public:
      * 
      */
     Radio();
-    void init(void);
+    //the user of this module will need to provide a callback function
+    //in order to receive the data from serial port
+    /**
+     * @brief This function need to receive the callback to return the data from UART interface
+     * 
+     * @param fn callback function to receive data out of this class
+     * void myCallback(void* buffer, void* size)
+     * {
+     *  //some implementation
+     * }
+     */
+    void init(callbackFunction fn);
+    void sendDataToRadio(void* data, size_t length);
+    callbackFunction callback_handler;
 
     /**
      * @brief Start the Radio task communication

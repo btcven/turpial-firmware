@@ -24,6 +24,9 @@
 #include <stdint.h>
 #include <string>
 #include <vector>
+#include <esp_log.h>
+#include <Radio.h>
+
 
 /**
  * @brief customer structure
@@ -67,7 +70,9 @@ public:
 
     Websocket& operator=(Websocket const&) = delete; // Copy assign
     Websocket& operator=(Websocket&&) = delete;      // Move assign
+    void initRadioSerialLine(void);
 
+    
     /**
      * @brief Get the unique instance of the object
      *
@@ -102,6 +107,7 @@ private:
     std::vector<client_data_t> m_client; // array of connected clients
 
     httpd_req_t* req_handler; // http_esp_server connection handler
+    radio::Radio* radio_task;
 
     /**
      * @brief  get message type
@@ -160,11 +166,6 @@ private:
      */
     esp_err_t sendUart(httpd_ws_frame_t ws_pkt);
 
-    /**
-     * @brief received encrypted message by radio
-     * @param data_received encrypted message
-     */
-    esp_err_t receiveFromUart(std::uint8_t* data_received);
     void checkMessageType(httpd_ws_frame_t ws_pkt, bool uart);
 };
 

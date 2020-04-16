@@ -15,6 +15,8 @@
 #include <cstdint>
 #include <cstring>
 
+
+
 namespace rest_server {
 
 /**
@@ -22,9 +24,9 @@ namespace rest_server {
  * 
  * @param port 
  */
+
 void start_server();
 
 } // namespace rest_server
-
 
 #endif /* RESTSERVER_H */
