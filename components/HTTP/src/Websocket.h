@@ -72,7 +72,6 @@ public:
     Websocket& operator=(Websocket&&) = delete;      // Move assign
     void initRadioSerialLine(void);
 
-    
     /**
      * @brief Get the unique instance of the object
      *
