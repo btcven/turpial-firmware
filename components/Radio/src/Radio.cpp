@@ -15,30 +15,25 @@
 #include <driver/uart.h>
 #include <esp_log.h>
 #include <string.h>
-
-
-
-#define FTDI_PORT UART_NUM_0
-#define BUF_SIZE (1024)
-#define RD_BUF_SIZE (BUF_SIZE)
+#include "defaults.h"
 
 namespace radio {
 
 #if RAD_ENABLED == true
 
 static const char* TAG = "UART";
-static QueueHandle_t uart0_queue;
+static QueueHandle_t g_uart0_queue;
 
 Radio::Radio()
     : Task("UART", 4096, 5)
 {
 }
 
-void Radio::init(callbackFunction fn) 
+void Radio::init(radio_rx_cb_t fn) 
 {
    //The callback handler represent the function passed from any module that implement 
    //serial communication and want to receive serial through callback
-   callback_handler = fn;
+   forward_data_callback = fn;
    
     ESP_LOGD(TAG, "Initializing UART");
     uart_config_t uart_config = {
@@ -55,43 +50,43 @@ void Radio::init(callbackFunction fn)
     ESP_ERROR_CHECK(uart_param_config(UART_NUM_0, &uart_config));
 
     ESP_LOGD(TAG, "Configuring UART pins");
-   //ESP_ERROR_CHECK(uart_set_pin(UART_NUM_0, RAD_TX_PIN, RAD_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
+    ESP_ERROR_CHECK(uart_set_pin(UART_NUM_0, RAD_TX_PIN, RAD_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
 
     ESP_LOGD(TAG, "Installing UART driver");
-    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0, BUF_SIZE * 2, BUF_SIZE * 2, 10, &uart0_queue, 0));
+    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0, BUF_SIZE * 2, BUF_SIZE * 2, 10, &g_uart0_queue, 0));
 
 }
 
 void Radio::sendDataToRadio(void* data, size_t length)
 {
-    uart_write_bytes(FTDI_PORT, (const char*) data, length);
+    uart_write_bytes(RAD_PORT, (const char*) data, length);
 }
 
 void Radio::run(void* data)
 {   
     uart_event_t event;
     size_t buffered_size;
-    uint8_t* dtmp = (uint8_t*) malloc(RD_BUF_SIZE);
+    uint8_t dtmp[RAD_BUF_SIZE];
     for(;;) {
         //Waiting for UART event.
-        if(xQueueReceive(uart0_queue, (void * )&event, (portTickType)portMAX_DELAY)) {
-            bzero(dtmp, RD_BUF_SIZE);
+        if(xQueueReceive(g_uart0_queue, (void * )&event, (portTickType)portMAX_DELAY)) {
+            bzero(dtmp, RAD_BUF_SIZE);
             switch(event.type) {
                 case UART_DATA:
-                    uart_read_bytes(FTDI_PORT, dtmp, event.size, portMAX_DELAY);
-                    callback_handler((void*)dtmp,(void*)event.size);
+                    uart_read_bytes(RAD_PORT, dtmp, event.size, portMAX_DELAY);
+                    forward_data_callback((void*)dtmp,(void*)event.size);
                     break;
                 //Event of HW FIFO overflow detected
                 case UART_FIFO_OVF:
                     ESP_LOGI(TAG, "hw fifo overflow"); 
-                    uart_flush_input(FTDI_PORT);
-                    xQueueReset(uart0_queue);
+                    uart_flush_input(RAD_PORT);
+                    xQueueReset(g_uart0_queue);
                     break;
                 //Event of UART ring buffer full
                 case UART_BUFFER_FULL:
-                    ESP_LOGI(TAG, "ring buffer full");
-                    uart_flush_input(FTDI_PORT);
-                    xQueueReset(uart0_queue);
+                    ESP_LOGW(TAG, "ring buffer full");
+                    uart_flush_input(RAD_PORT);
+                    xQueueReset(g_uart0_queue);
                     break;
                 //Event of UART RX break detected
                 case UART_BREAK:
@@ -99,20 +94,18 @@ void Radio::run(void* data)
                     break;
                 //Event of UART parity check error
                 case UART_PARITY_ERR:
-                    ESP_LOGI(TAG, "uart parity error");
+                    ESP_LOGW(TAG, "uart parity error");
                     break;
                 //Event of UART frame error
                 case UART_FRAME_ERR:
-                    ESP_LOGI(TAG, "uart frame error");
+                    ESP_LOGE(TAG, "uart frame error");
                     break;
                 default:
-                    ESP_LOGI(TAG, "uart event type: %d", event.type);
+                    ESP_LOGE(TAG, "uart event type: %d", event.type);
                     break;
             }
         }
     }
-    free(dtmp);
-    dtmp = NULL;
     vTaskDelete(NULL);
 }
 

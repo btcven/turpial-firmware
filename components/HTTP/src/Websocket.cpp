@@ -28,21 +28,19 @@ Websocket::Websocket()
  */
 static void receiveFromUart(void* data_received, void* length)
 {
-        char payload[500];
-        esp_err_t err;
-        fwrite(data_received, (size_t)length, 1, stdout);
-        err = util::decode((std::uint8_t*)data_received, payload);
-        if (err) {
-            ESP_LOGI("TEST", "error decoding the value");
-        }
+    char payload[500];
+    esp_err_t err;
+    err = util::decode((std::uint8_t*)data_received, payload);
+    if (err) {
+        ESP_LOGE("TEST", "error decoding the value");
+    }
 
-        httpd_ws_frame_t ws_pkt;
-        memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
-        ws_pkt.payload = (std::uint8_t*)payload;
-        ws_pkt.type = HTTPD_WS_TYPE_TEXT;
-        ws_pkt.len = strlen(payload);
-        ws_pkt.final = 1;
-       
+    httpd_ws_frame_t ws_pkt;
+    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+    ws_pkt.payload = (std::uint8_t*)payload;
+    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
+    ws_pkt.len = strlen(payload);
+    ws_pkt.final = 1;
     // send message to customers
 }
 

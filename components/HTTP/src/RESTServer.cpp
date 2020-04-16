@@ -436,13 +436,6 @@ esp_err_t websocketHandler(httpd_req_t* req)
     return ret;
 }
 
-/**
- * @brief this function aims to setting up the api rest end points,
- * start the server amd initialize Radio module serial communication
- * 
- */
-
-
 void start_server()
 {
     http::HttpServer server_instance = http::HttpServer();

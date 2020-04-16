@@ -15,18 +15,12 @@
 #include <cstdint>
 #include <cstring>
 
-
-
 namespace rest_server {
-
 /**
- * @brief Start the request server in a given port
- * 
- * @param port 
+ * @brief this function aims to setting up the api rest end points,
+ * start the server amd initialize Radio module serial communication
  */
-
 void start_server();
-
 } // namespace rest_server
 
 #endif /* RESTSERVER_H */
