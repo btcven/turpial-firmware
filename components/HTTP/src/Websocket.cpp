@@ -335,6 +335,7 @@ esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
     err = util::encode(ws_pkt.payload, buf, ws_pkt.len);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "error encoding payload");
+        free(buf);
         return ESP_FAIL;
     }
 
