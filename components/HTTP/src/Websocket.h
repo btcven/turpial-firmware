@@ -158,13 +158,13 @@ private:
      * @brief send encrypted message by radio
      * @param ws_pkt frame that delivers the socket this contains the data that the client sent
      */
-    void sendUart(httpd_ws_frame_t ws_pkt);
+    esp_err_t sendUart(httpd_ws_frame_t ws_pkt);
 
     /**
      * @brief received encrypted message by radio
      * @param data_received encrypted message
      */
-    void receiveFromUart(std::uint8_t* data_received);
+    esp_err_t receiveFromUart(std::uint8_t* data_received);
     void checkMessageType(httpd_ws_frame_t ws_pkt, bool uart);
 };
 

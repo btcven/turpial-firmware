@@ -255,7 +255,10 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
     }
 
     if (uart == false && memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
-        sendUart(ws_pkt);
+        err = sendUart(ws_pkt);
+        if (err != ESP_OK) {
+            return ESP_FAIL;
+        }
     }
 
     for (size_t i = 0; i < m_client.size(); i++) {
@@ -276,7 +279,10 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
                 return ESP_FAIL;
             };
         } else if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
-            sendUart(ws_pkt);
+            err = sendUart(ws_pkt);
+            if (err != ESP_OK) {
+                return ESP_FAIL;
+            }
         }
     }
 
@@ -318,28 +324,31 @@ void Websocket::checkConnection()
     }
 }
 
-void Websocket::sendUart(httpd_ws_frame_t ws_pkt)
+esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
 {
     std::uint8_t* buf = (std::uint8_t*)malloc(ws_pkt.len);
     esp_err_t err;
     err = util::encode(ws_pkt.payload, buf, ws_pkt.len);
     if (err != ESP_OK) {
-        ESP_LOGI(TAG, "error encoding payload");
-        return;
+        ESP_LOGE(TAG, "error encoding payload");
+        return ESP_FAIL;
     }
 
     // send payload encrypted via radio
 
     free(buf);
+
+    return ESP_OK;
 }
 
-void Websocket::receiveFromUart(std::uint8_t* data_received)
+esp_err_t Websocket::receiveFromUart(std::uint8_t* data_received)
 {
     char payload[500];
     esp_err_t err;
     err = util::decode(data_received, payload);
     if (err) {
-        ESP_LOGI(TAG, "error decoding the value");
+        ESP_LOGE(TAG, "error decoding the value");
+        return ESP_FAIL;
     }
 
     httpd_ws_frame_t ws_pkt;
@@ -351,4 +360,6 @@ void Websocket::receiveFromUart(std::uint8_t* data_received)
 
     checkMessageType(ws_pkt, true);
     // send message to customers
+
+    return ESP_OK;
 }
