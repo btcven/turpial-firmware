@@ -1,10 +1,10 @@
 /**
  * @file Radio.cpp
  * @author Locha Mesh project developers (locha.io)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2019-12-08
- * 
+ *
  * @copyright Copyright (c) 2019 Locha Mesh project developers
  * @license Apache 2.0, see LICENSE file for details
  */
@@ -29,12 +29,12 @@ Radio::Radio()
 {
 }
 
-void Radio::init(radio_rx_cb_t fn) 
+void Radio::init(radio_rx_cb_t fn)
 {
-   //The callback handler represent the function passed from any module that implement 
+   //The callback handler represent the function passed from any module that implement
    //serial communication and want to receive serial through callback
    forward_data_callback = fn;
-   
+
     ESP_LOGD(TAG, "Initializing UART");
     uart_config_t uart_config = {
         .baud_rate = 115200,
@@ -63,9 +63,8 @@ void Radio::sendDataToRadio(void* data, size_t length)
 }
 
 void Radio::run(void* data)
-{   
+{
     uart_event_t event;
-    size_t buffered_size;
     uint8_t dtmp[RAD_BUF_SIZE];
     for(;;) {
         //Waiting for UART event.
@@ -78,7 +77,7 @@ void Radio::run(void* data)
                     break;
                 //Event of HW FIFO overflow detected
                 case UART_FIFO_OVF:
-                    ESP_LOGI(TAG, "hw fifo overflow"); 
+                    ESP_LOGI(TAG, "hw fifo overflow");
                     uart_flush_input(RAD_PORT);
                     xQueueReset(g_uart0_queue);
                     break;
