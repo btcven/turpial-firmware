@@ -113,7 +113,7 @@ private:
      * 4 : when the message type is action 
      * -1: when the message type is invalid
      */
-    int getTypeMessage(uint8_t* payload);
+    int getTypeMessage(std::uint8_t* payload);
 
     /**
      * @brief get the client data that comes from the websocket client 
@@ -121,7 +121,7 @@ private:
      * @param  client  where all customer data will be saved
      * @return esp_err_t
      */
-    esp_err_t getClientData(uint8_t* payload, client_data_t* client);
+    esp_err_t getClientData(std::uint8_t* payload, client_data_t* client);
 
     /**
      * @brief function for sending asynchronous messages 
@@ -138,7 +138,7 @@ private:
      * @param  null_to_uid  variable assigned to the toUID if it reaches null
      * @return esp_err_t
      */
-    esp_err_t messageRecipient(uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid);
+    esp_err_t messageRecipient(std::uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid);
     /**
      * @brief Verify that the data received is correct and send the message
      * @param  client_uid contains the uid to which the message will be sent 

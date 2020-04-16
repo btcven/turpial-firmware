@@ -122,7 +122,7 @@ void Websocket::checkMessageType(httpd_ws_frame_t ws_pkt, bool uart)
 }
 
 
-int Websocket::getTypeMessage(uint8_t* payload)
+int Websocket::getTypeMessage(std::uint8_t* payload)
 {
     char* res = reinterpret_cast<char*>(payload);
     cJSON* req_root = cJSON_Parse(res);
@@ -172,7 +172,7 @@ void ws_async_send(void* arg)
     int fd = resp_arg->fd;
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
-    ws_pkt.payload = (uint8_t*)data;
+    ws_pkt.payload = (std::uint8_t*)data;
     ws_pkt.len = strlen(data);
     ws_pkt.type = HTTPD_WS_TYPE_TEXT;
 
@@ -188,7 +188,7 @@ esp_err_t Websocket::trigger_async_send(httpd_handle_t handle, int fd)
     return httpd_queue_work(handle, ws_async_send, resp_arg);
 }
 
-esp_err_t Websocket::messageRecipient(uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid)
+esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid)
 {
     char* res = reinterpret_cast<char*>(payload);
     cJSON* req_root = cJSON_Parse(res);
@@ -257,6 +257,7 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
     if (uart == false && memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
         err = sendUart(ws_pkt);
         if (err != ESP_OK) {
+            ESP_LOGE(TAG, "Error sending data by uart");
             return ESP_FAIL;
         }
     }
@@ -281,85 +282,88 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
         } else if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
             err = sendUart(ws_pkt);
             if (err != ESP_OK) {
-                return ESP_FAIL;
+                ESP_LOGE(TAG, "Error sending data by uart");
+                if (err != ESP_OK) {
+                    ESP_LOGE(TAG, "Error when sending data by the uart");
+                    return ESP_FAIL;
+                }
+            }
+        }
+
+        return ESP_OK;
+    }
+
+
+    void Websocket::pong(httpd_req_t * req)
+    {
+        if (m_client.size() != 0) {
+            return;
+        }
+
+        static const char* data = "Async data";
+        httpd_ws_frame_t ws_pkt;
+        memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+        ws_pkt.payload = (std::uint8_t*)data;
+        ws_pkt.type = HTTPD_WS_TYPE_PONG;
+        ws_pkt.len = strlen(data);
+        ws_pkt.final = 1;
+
+        for (size_t i = 0; i < m_client.size(); i++) {
+            ESP_LOGI(TAG, "Packet type: %d", m_client[i].fd);
+
+            esp_err_t err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with %d", err);
+                // remove client not connected
+
+                m_client.erase(m_client.begin() + i);
             }
         }
     }
 
-    return ESP_OK;
-}
-
-
-void Websocket::pong(httpd_req_t* req)
-{
-    if (m_client.size() != 0) {
-        return;
-    }
-
-    static const char* data = "Async data";
-    httpd_ws_frame_t ws_pkt;
-    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
-    ws_pkt.payload = (uint8_t*)data;
-    ws_pkt.type = HTTPD_WS_TYPE_PONG;
-    ws_pkt.len = strlen(data);
-    ws_pkt.final = 1;
-
-    for (size_t i = 0; i < m_client.size(); i++) {
-        ESP_LOGI(TAG, "Packet type: %d", m_client[i].fd);
-
-        esp_err_t err = httpd_ws_send_frame_async(req->handle, m_client[i].fd, &ws_pkt);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with %d", err);
-            // remove client not connected
-
-            m_client.erase(m_client.begin() + i);
+    void Websocket::checkConnection()
+    {
+        if (m_client.size() != 0) {
+            Websocket::pong(req_handler);
         }
     }
-}
 
-void Websocket::checkConnection()
-{
-    if (m_client.size() != 0) {
-        Websocket::pong(req_handler);
-    }
-}
+    esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
+    {
+        std::uint8_t* buf = (std::uint8_t*)malloc(ws_pkt.len);
+        esp_err_t err;
+        err = util::encode(ws_pkt.payload, buf, ws_pkt.len);
+        if (err != ESP_OK) {
+            ESP_LOGE(TAG, "error encoding payload");
+            return ESP_FAIL;
+        }
 
-esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
-{
-    std::uint8_t* buf = (std::uint8_t*)malloc(ws_pkt.len);
-    esp_err_t err;
-    err = util::encode(ws_pkt.payload, buf, ws_pkt.len);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "error encoding payload");
-        return ESP_FAIL;
-    }
+        // send payload encrypted via radio
 
-    // send payload encrypted via radio
+        free(buf);
 
-    free(buf);
-
-    return ESP_OK;
-}
-
-esp_err_t Websocket::receiveFromUart(std::uint8_t* data_received)
-{
-    char payload[500];
-    esp_err_t err;
-    err = util::decode(data_received, payload);
-    if (err) {
-        ESP_LOGE(TAG, "error decoding the value");
-        return ESP_FAIL;
+        return ESP_OK;
     }
 
-    httpd_ws_frame_t ws_pkt;
-    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
-    ws_pkt.payload = (uint8_t*)payload;
-    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
-    ws_pkt.len = strlen(payload);
-    ws_pkt.final = 1;
+    esp_err_t Websocket::receiveFromUart(std::uint8_t * data_received)
+    {
+        char payload[500];
+        esp_err_t err;
+        err = util::decode(data_received, payload);
+        if (err) {
+            ESP_LOGE(TAG, "error decoding the value");
+            return ESP_FAIL;
+        }
 
-    checkMessageType(ws_pkt, true);
-    // send message to customers
+        httpd_ws_frame_t ws_pkt;
+        memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+        ws_pkt.payload = (std::uint8_t*)payload;
+        ws_pkt.type = HTTPD_WS_TYPE_TEXT;
+        ws_pkt.len = strlen(payload);
+        ws_pkt.final = 1;
 
-    return ESP_OK;
-}
+        checkMessageType(ws_pkt, true);
+        // send message to customers
+
+        return ESP_OK;
+    
