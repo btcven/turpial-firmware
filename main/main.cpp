@@ -172,10 +172,6 @@ extern "C" void app_main()
         return;
     }
 
-#if RAD_ENABLED == true
-    radio::Radio* radio_task = new radio::Radio();
-    radio_task->start();
-#endif
 
     rest_server::start_server();
 

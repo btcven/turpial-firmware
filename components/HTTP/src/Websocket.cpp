@@ -22,6 +22,34 @@ Websocket::Websocket()
     g_check_connections.start(NULL);
 }
 
+/**
+ * @brief received encrypted message by radio
+ * @param data_received encrypted message
+ */
+static void receiveFromUart(void* data_received, void* length)
+{
+    char payload[500];
+    esp_err_t err;
+    err = util::decode((std::uint8_t*)data_received, payload);
+    if (err) {
+        ESP_LOGE("TEST", "error decoding the value");
+    }
+
+    httpd_ws_frame_t ws_pkt;
+    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+    ws_pkt.payload = (std::uint8_t*)payload;
+    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
+    ws_pkt.len = strlen(payload);
+    ws_pkt.final = 1;
+    // send message to customers
+}
+
+void Websocket::initRadioSerialLine(void) 
+{
+    radio_task = new radio::Radio();
+    radio_task->init(receiveFromUart);
+    radio_task->start();
+}
 
 void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 {
@@ -339,32 +367,11 @@ esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
         return ESP_FAIL;
     }
 
+    radio_task->sendDataToRadio((void*)buf, (size_t)ws_pkt.len);
+
     // send payload encrypted via radio
 
     free(buf);
-
-    return ESP_OK;
-}
-
-esp_err_t Websocket::receiveFromUart(std::uint8_t * data_received)
-{
-    char payload[500];
-    esp_err_t err;
-    err = util::decode(data_received, payload);
-    if (err) {
-        ESP_LOGE(TAG, "error decoding the value");
-        return ESP_FAIL;
-    }
-
-    httpd_ws_frame_t ws_pkt;
-    memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
-    ws_pkt.payload = (std::uint8_t*)payload;
-    ws_pkt.type = HTTPD_WS_TYPE_TEXT;
-    ws_pkt.len = strlen(payload);
-    ws_pkt.final = 1;
-
-    checkMessageType(ws_pkt, true);
-    // send message to customers
 
     return ESP_OK;
 }
