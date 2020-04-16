@@ -144,13 +144,9 @@ bool WiFi::isSta()
 
 esp_err_t WiFi::start()
 {
-    esp_err_t err;
-
     ESP_LOGD(TAG, "Starting Wi-Fi");
 
-    bool is_sta = isSta();
-
-    err = esp_wifi_start();
+    esp_err_t err = esp_wifi_start();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "esp_wifi_start failed");
         return err;
