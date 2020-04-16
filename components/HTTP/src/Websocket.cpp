@@ -26,13 +26,6 @@ chat_id_t chat_id_unspecified = { 0xff, 0xff, 0xff, 0xff,
                                   0xff, 0xff, 0xff, 0xff,
                                   0xff, 0xff, 0xff, 0xff };
 
-
-Websocket::Websocket()
-{
-    static CheckConnections g_check_connections;
-    g_check_connections.start(NULL);
-}
-
 /**
  * @brief received encrypted message by radio
  * @param data_received encrypted message
@@ -55,11 +48,14 @@ static void receiveFromUart(void* data_received, void* length)
     // send message to customers
 }
 
-void Websocket::initRadioSerialLine(void)
+Websocket::Websocket()
+    : m_radio()
 {
-    radio_task = new radio::Radio();
-    radio_task->init(receiveFromUart);
-    radio_task->start();
+    static CheckConnections g_check_connections;
+    g_check_connections.start(NULL);
+
+    m_radio.init(receiveFromUart);
+    m_radio.start();
 }
 
 void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
@@ -370,9 +366,7 @@ esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
         return ESP_FAIL;
     }
 
-    radio_task->sendDataToRadio((void*)buf, (size_t)ws_pkt.len);
-
-    // send payload encrypted via radio
+    m_radio.sendDataToRadio((void*)buf, (size_t)ws_pkt.len);
 
     free(buf);
 

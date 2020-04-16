@@ -441,9 +441,6 @@ void start_server()
     server_instance.start();
     rest_server_context_t* ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));
 
-    Websocket& ws_instance = Websocket::getInstance();
-    ws_instance.initRadioSerialLine();
-
     server_instance.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx, false);
     server_instance.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx, false);
     server_instance.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx, false);

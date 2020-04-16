@@ -115,7 +115,7 @@ private:
 
     httpd_req_t* req_handler; // http_esp_server connection handler
 
-    radio::Radio* radio_task;
+    radio::Radio m_radio;
 
     /**
      * @brief get message type
