@@ -27,12 +27,21 @@
 #include <esp_log.h>
 #include <Radio.h>
 
+/**
+ * @brief Chat ID
+ */
+typedef std::uint8_t chat_id_t[32];
+
+/**
+ * @brief Value for unspecified chat ID
+ */
+extern chat_id_t chat_id_unspecified;
 
 /**
  * @brief Customer data structure
  */
 struct client_data_t {
-    std::uint8_t shaUID[32]; /**< Customer id */
+    chat_id_t shaUID; /**< Customer id */
     int timestamp; /**< Time the connection was made */
     bool is_alive; /**< Indicates if the connection is alive or not */
     int fd; /**< Connection identifier */
@@ -57,8 +66,8 @@ struct async_resp_arg_t {
  * @brief UID of incoming messages
  */
 struct uid_message_t {
-    std::uint8_t from_uid[32]; /**< UID who's sending the message */
-    std::uint8_t to_uid[32]; /**< UID of who's receving the message */
+    chat_id_t from_uid; /**< UID who's sending the message */
+    chat_id_t to_uid; /**< UID of who's receving the message */
 };
 
 
@@ -142,18 +151,17 @@ private:
      * @brief validate and obtain the uid of who sends the message and who will receive it
      * @param  payload data sent by the client
      * @param  uid_receiving  variable where the fromUID and toUID of the message will be stored
-     * @param  null_to_uid  variable assigned to the toUID if it reaches null
      * @return esp_err_t
      */
-    esp_err_t messageRecipient(std::uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid);
+    esp_err_t messageRecipient(std::uint8_t* payload, uid_message_t* uid_receiving);
+
     /**
      * @brief Verify that the data received is correct and send the message
      * @param  client_uid contains the uid to which the message will be sent
      * @param  ws_pkt  message sent by the client and that will be returned by the socket
-     * @param  null_to_uid variable assigned to the toUID if it reaches null
      * @return esp_err_t
      */
-    esp_err_t sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid, bool uart);
+    esp_err_t sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, bool uart);
 
     /**
      * @brief send pong messages to verify connected clients
