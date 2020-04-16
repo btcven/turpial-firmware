@@ -112,10 +112,6 @@ esp_err_t getIsConfigured(bool& is_configured)
     return ESP_OK;
 }
 
-// void hello(void* buffer, void* size) {
-//     ESP_LOGE(TAG,"------------------execelnte prueba\n");
-//     fwrite(buffer, (size_t)size, 1, stdout);
-// }
 extern "C" void app_main()
 {
     esp_err_t err;
