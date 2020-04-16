@@ -15,8 +15,10 @@
 #include <esp_log.h>
 
 namespace hmi {
-static xQueueHandle gpio_evt_queue = nullptr;
-// ----- Initialization and Default Values -----
+
+/* TODO: remove global */
+static states_t state;
+
 /**
  * @brief Construct a new OneButton object but not (yet) initialize the IO pin.
  */

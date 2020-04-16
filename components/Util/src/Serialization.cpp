@@ -22,8 +22,6 @@ esp_err_t encode(uint8_t* payload, std::uint8_t* encode, size_t buf_size)
 {
     char* res = reinterpret_cast<char*>(payload);
     CborEncoder root_encoder;
-    CborParser root_parser;
-    CborValue it;
     CborError err = CborNoError;
 
 

@@ -29,13 +29,13 @@ typedef void (*callbackFunction)(void);
 
 typedef void (*parameterizedCallbackFunction)(void*);
 
-static enum states {
+enum states_t {
     BTN_RELEASE_0,
     BTN_PRESS_0,
     BTN_RELEASE_1,
     BTN_PRESS_1,
     BTN_END_PROCESS,
-} state;
+};
 
 class Button //: Task
 {

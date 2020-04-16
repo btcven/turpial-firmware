@@ -10,11 +10,9 @@
 
 #define RGB_GPIO_OUTPUT_PIN_SEL ((1ULL << LED_R) | (1ULL << LED_G) | (1ULL << LED_B))
 
-static const char* TAG = "USER-BUTTON-HANDLER";
 static bool toggle_r = false;
 static bool toggle_g = false;
 static bool toggle_b = false;
-
 
 void UserButtonHandler::initRGBPort(void)
 {
