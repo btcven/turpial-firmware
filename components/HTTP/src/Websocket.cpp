@@ -271,16 +271,6 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
         return ESP_FAIL;
     }
 
-    if (sizeof(client_uid.to_uid) != 32) {
-        ESP_LOGE(TAG, "toUID does not have the correct length");
-        return ESP_FAIL;
-    }
-
-    if (sizeof(client_uid.from_uid) != 32) {
-        ESP_LOGE(TAG, "fromUID does not have the correct length");
-        return ESP_FAIL;
-    }
-
     if (uart == false && memcmp(client_uid.to_uid, chat_id_unspecified, sizeof(chat_id_unspecified)) == 0) {
         err = sendUart(ws_pkt);
         if (err != ESP_OK) {
