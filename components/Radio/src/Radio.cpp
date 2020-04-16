@@ -89,7 +89,7 @@ void Radio::run(void* data)
                     break;
                 //Event of UART RX break detected
                 case UART_BREAK:
-                    ESP_LOGI(TAG, "uart rx break");
+                    ESP_LOGE(TAG, "uart rx break");
                     break;
                 //Event of UART parity check error
                 case UART_PARITY_ERR:
