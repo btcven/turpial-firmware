@@ -46,8 +46,8 @@ class HttpServer
 {
 public:
     HttpServer();
-
-    void registerUri(const char* uri, httpd_method_t method, esp_err_t (*handler)(httpd_req_t* r), void* ctx, bool is_websocket);
+    esp_err_t start();
+    esp_err_t registerUri(const char* uri, httpd_method_t method, esp_err_t (*handler)(httpd_req_t* r), void* ctx, bool is_websocket);
 
 private:
     httpd_handle_t m_server;
