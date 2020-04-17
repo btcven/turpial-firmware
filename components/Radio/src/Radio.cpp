@@ -11,31 +11,105 @@
 
 #include "Radio.h"
 
-#include "freertos/queue.h"
 #include <driver/uart.h>
 #include <esp_log.h>
-#include <string.h>
-#include "defaults.h"
+
+#include "freertos/queue.h"
+
+#include <cstring>
 
 namespace radio {
 
-#if RAD_ENABLED == true
-
 static const char* TAG = "UART";
-static QueueHandle_t g_uart0_queue;
 
-Radio::Radio()
-    : Task("UART", 4096, 5)
+static QueueHandle_t g_uart0_queue;
+static radio_rx_cb_t g_rx_cb;
+
+static void _event_loop(void* data)
 {
+    uart_event_t event;
+    std::uint8_t rx_buf[CONFIG_RADIO_RX_BUF_SIZE];
+
+    while (1) {
+        void *ev = reinterpret_cast<void*>(&event);
+        portTickType wait_time = static_cast<portTickType>(portMAX_DELAY);
+
+        // Wait for UART event
+        if (xQueueReceive(g_uart0_queue, ev, wait_time)) {
+            bzero(rx_buf, sizeof(rx_buf));
+            switch(event.type) {
+                case UART_DATA:
+                    uart_read_bytes(CONFIG_RADIO_UART, rx_buf, event.size,
+                                    portMAX_DELAY);
+                    g_rx_cb(rx_buf, event.size);
+                    break;
+
+                case UART_FIFO_OVF:
+                    ESP_LOGI(TAG, "hw fifo overflow");
+                    uart_flush_input(CONFIG_RADIO_UART);
+                    xQueueReset(g_uart0_queue);
+                    break;
+
+                case UART_BUFFER_FULL:
+                    ESP_LOGW(TAG, "ring buffer full");
+                    uart_flush_input(CONFIG_RADIO_UART);
+                    xQueueReset(g_uart0_queue);
+                    break;
+
+                case UART_BREAK:
+                    ESP_LOGE(TAG, "uart rx break");
+                    break;
+
+                case UART_PARITY_ERR:
+                    ESP_LOGW(TAG, "uart parity error");
+                    break;
+
+                case UART_FRAME_ERR:
+                    ESP_LOGE(TAG, "uart frame error");
+                    break;
+
+                default:
+                    ESP_LOGE(TAG, "uart event type: %d", event.type);
+                    break;
+            }
+        }
+    }
+    vTaskDelete(NULL);
 }
 
-void Radio::init(radio_rx_cb_t fn)
+int write(const std::uint8_t *buffer, std::size_t length)
 {
-   //The callback handler represent the function passed from any module that implement
-   //serial communication and want to receive serial through callback
-   forward_data_callback = fn;
+    int cnt;
+    assert(length <= UINT8_MAX);
 
-    ESP_LOGD(TAG, "Initializing UART");
+    /* Write the length byte */
+    std::uint8_t len_byte = static_cast<std::uint8_t>(length);
+    cnt = uart_write_bytes(CONFIG_RADIO_UART,
+                           reinterpret_cast<const char*>(&len_byte),
+                           sizeof(len_byte));
+    if (cnt < 0) {
+        return -1;
+    }
+
+    /* Write the rest of the packet */
+    cnt = uart_write_bytes(CONFIG_RADIO_UART,
+                           reinterpret_cast<const char*>(buffer), length);
+    if (cnt < 0) {
+        return -1;
+    } else {
+        return cnt + 1;
+    }
+}
+
+esp_err_t init(radio_rx_cb_t rx_cb)
+{
+    esp_err_t err;
+
+    ESP_LOGI(TAG, "Initializing radio");
+
+    // Save the RX handler
+    g_rx_cb = rx_cb;
+
     uart_config_t uart_config = {
         .baud_rate = 115200,
         .data_bits = UART_DATA_8_BITS,
@@ -46,68 +120,35 @@ void Radio::init(radio_rx_cb_t fn)
         .use_ref_tick = false,
     };
 
-    ESP_LOGD(TAG, "Configuring UART parameters");
-    ESP_ERROR_CHECK(uart_param_config(UART_NUM_0, &uart_config));
-
-    ESP_LOGD(TAG, "Configuring UART pins");
-    ESP_ERROR_CHECK(uart_set_pin(UART_NUM_0, RAD_TX_PIN, RAD_RX_PIN, UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE));
-
-    ESP_LOGD(TAG, "Installing UART driver");
-    ESP_ERROR_CHECK(uart_driver_install(UART_NUM_0, BUF_SIZE * 2, BUF_SIZE * 2, 10, &g_uart0_queue, 0));
-
-}
-
-void Radio::sendDataToRadio(void* data, size_t length)
-{
-    uart_write_bytes(RAD_PORT, (const char*) data, length);
-}
-
-void Radio::run(void* data)
-{
-    uart_event_t event;
-    uint8_t dtmp[RAD_BUF_SIZE];
-    for(;;) {
-        //Waiting for UART event.
-        if(xQueueReceive(g_uart0_queue, (void * )&event, (portTickType)portMAX_DELAY)) {
-            bzero(dtmp, RAD_BUF_SIZE);
-            switch(event.type) {
-                case UART_DATA:
-                    uart_read_bytes(RAD_PORT, dtmp, event.size, portMAX_DELAY);
-                    forward_data_callback((void*)dtmp,(void*)event.size);
-                    break;
-                //Event of HW FIFO overflow detected
-                case UART_FIFO_OVF:
-                    ESP_LOGI(TAG, "hw fifo overflow");
-                    uart_flush_input(RAD_PORT);
-                    xQueueReset(g_uart0_queue);
-                    break;
-                //Event of UART ring buffer full
-                case UART_BUFFER_FULL:
-                    ESP_LOGW(TAG, "ring buffer full");
-                    uart_flush_input(RAD_PORT);
-                    xQueueReset(g_uart0_queue);
-                    break;
-                //Event of UART RX break detected
-                case UART_BREAK:
-                    ESP_LOGE(TAG, "uart rx break");
-                    break;
-                //Event of UART parity check error
-                case UART_PARITY_ERR:
-                    ESP_LOGW(TAG, "uart parity error");
-                    break;
-                //Event of UART frame error
-                case UART_FRAME_ERR:
-                    ESP_LOGE(TAG, "uart frame error");
-                    break;
-                default:
-                    ESP_LOGE(TAG, "uart event type: %d", event.type);
-                    break;
-            }
-        }
+    ESP_LOGI(TAG, "Configuring UART parameters");
+    err = uart_param_config(CONFIG_RADIO_UART, &uart_config);
+    if (err != ESP_OK) {
+        return err;
     }
-    vTaskDelete(NULL);
+
+    ESP_LOGI(TAG, "Configuring UART pins");
+    err = uart_set_pin(CONFIG_RADIO_UART, CONFIG_RADIO_TX, CONFIG_RADIO_RX,
+                       UART_PIN_NO_CHANGE, UART_PIN_NO_CHANGE);
+    if (err != ESP_OK) {
+        return err;
+    }
+
+    ESP_LOGI(TAG, "Installing UART driver");
+    err = uart_driver_install(CONFIG_RADIO_UART, CONFIG_RADIO_RX_BUF_SIZE * 2,
+                              CONFIG_RADIO_RX_BUF_SIZE * 2, 10, &g_uart0_queue,
+                              0);
+    if (err != ESP_OK) {
+        return err;
+    }
+
+    BaseType_t ret = xTaskCreatePinnedToCore(_event_loop, "radio", 1024, NULL,
+                                             5, NULL, tskNO_AFFINITY);
+    if (ret != pdPASS) {
+        return ESP_FAIL;
+    }
+
+    return ESP_OK;
 }
 
-#endif
 
 } // namespace radio

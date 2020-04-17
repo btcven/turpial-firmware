@@ -25,6 +25,7 @@
 #include <Radio.h>
 #include <Storage.h>
 #include <WiFi.h>
+#include <Websocket.h>
 
 #include "UserButton.h"
 #include "UserButtonHandler.h"
@@ -144,7 +145,7 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface (%s)", esp_err_to_name(err));
         return;
     }
-    
+
     is_configured = false;
     if (!is_configured) {
         wifi.setMode(WIFI_MODE);
@@ -172,8 +173,14 @@ extern "C" void app_main()
         return;
     }
 
-
     rest_server::start_server();
+
+    err = radio::init(websocketRadioRx);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't initialize radio, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
 
 #if ESC_ENABLED == true
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
