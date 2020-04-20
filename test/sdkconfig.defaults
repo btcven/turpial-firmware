@@ -18,6 +18,13 @@ CONFIG_COMPILER_CXX_EXCEPTIONS=y
 # end of Compiler Options
 
 #
+# HTTPS Server Config
+#
+CONFIG_ESP_HTTPS_SERVER_ENABLE=y
+CONFIG_HTTPD_WS_SUPPORT=y
+# end of HTTPS Server Config
+
+#
 # Serial Flasher Config
 #
 CONFIG_ESPTOOLPY_BAUD_OTHER_VAL=115200

@@ -418,7 +418,6 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
 
 esp_err_t websocketHandler(httpd_req_t* req)
 {
-
     Websocket& ws_instance = Websocket::getInstance();
 
     uint8_t buf[2000] = {0};
@@ -439,8 +438,10 @@ esp_err_t websocketHandler(httpd_req_t* req)
 void start_server()
 {
     http::HttpServer server_instance = http::HttpServer();
+
+    server_instance.start();
     rest_server_context_t* ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));
-    
+
     Websocket& ws_instance = Websocket::getInstance();
     ws_instance.initRadioSerialLine();
 
