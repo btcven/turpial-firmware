@@ -47,11 +47,6 @@ namespace radio {
 #endif
 
 /**
- * @brief   Callback called by the UART when data is available
- */
-typedef void (* radio_rx_cb_t)(const std::uint8_t* buffer, std::size_t len);
-
-/**
  * @brief   Write data to the radio
  *
  * @param[in] buffer Buffer to write.
@@ -67,7 +62,7 @@ int write(const std::uint8_t *buffer, std::size_t length);
  *
  * @param[in] rx_cb Callback that will be called on data reception.
  */
-esp_err_t init(radio_rx_cb_t rx_cb);
+esp_err_t init();
 
 } // namespace radio
 
