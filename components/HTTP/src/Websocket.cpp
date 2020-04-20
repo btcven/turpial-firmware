@@ -499,9 +499,9 @@ esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
         }
 
         if (_json_parse_hex(to_uid_root, msg.to_uid, sizeof(chat_id_t)) == ESP_OK) {
-            ESP_LOGI(TAG, "unicast message!");
+            ESP_LOGI(TAG, "toUID provided!");
         } else {
-            ESP_LOGI(TAG, "multicast message!");
+            ESP_LOGI(TAG, "toUID not provided, defaulting to broadcast!");
             std::memcpy(msg.to_uid, chat_id_unspecified, sizeof(chat_id_t));
         }
 
@@ -563,6 +563,8 @@ esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
 
     cbor_encoder_close_container(&encoder, &map_encoder);
     std::size_t length = cbor_encoder_get_buffer_size(&encoder, buffer);
+
+    ESP_LOG_BUFFER_HEXDUMP(TAG, buffer, length, ESP_LOG_INFO);
 
     int cnt = radio::write(buffer, length);
     if (cnt < 0) {

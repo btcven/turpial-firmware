@@ -30,10 +30,10 @@ enum class State {
 static const char* TAG = "Radio";
 
 static QueueHandle_t g_uart0_queue;
+static std::uint8_t g_rx_buf[CONFIG_RADIO_RX_BUF_SIZE];
 
 static void _event_loop(void* data)
 {
-    std::uint8_t rx_buf[CONFIG_RADIO_RX_BUF_SIZE];
     std::size_t bytes_read = 0;
     std::size_t total_len = 0;
     int cnt = 0;
@@ -65,7 +65,7 @@ static void _event_loop(void* data)
                     ESP_LOGI(TAG, "total len = %d, bytes_read = %d, remaining = %d",
                           (size_t)total_len, bytes_read, remaining);
                     cnt = uart_read_bytes(CONFIG_RADIO_UART,
-                                          rx_buf + bytes_read, remaining,
+                                          g_rx_buf + bytes_read, remaining,
                                           portMAX_DELAY);
                     bytes_read += cnt;
                     if (bytes_read < total_len) {
@@ -84,7 +84,7 @@ static void _event_loop(void* data)
                     // TODO: call websockets uart rx function
                     state = State::Length;
                     // Reset buffer
-                    std::memset(rx_buf, 0, sizeof(rx_buf));
+                    std::memset(g_rx_buf, 0, sizeof(g_rx_buf));
                 }
                 break;
         }
@@ -155,7 +155,7 @@ esp_err_t init()
         return err;
     }
 
-    BaseType_t ret = xTaskCreatePinnedToCore(_event_loop, "radio", 1024, NULL,
+    BaseType_t ret = xTaskCreatePinnedToCore(_event_loop, "radio", 2048, NULL,
                                              5, NULL, tskNO_AFFINITY);
     if (ret != pdPASS) {
         return ESP_FAIL;

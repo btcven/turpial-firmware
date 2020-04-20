@@ -43,7 +43,7 @@ namespace radio {
 /**
  * @brief   RX buffer size
  */
-#define CONFIG_RADIO_RX_BUF_SIZE (257)
+#define CONFIG_RADIO_RX_BUF_SIZE (512)
 #endif
 
 /**
