@@ -1,36 +1,58 @@
 /**
  * @file Websocket.cpp
  * @author Locha Mesh Developers (contact@locha.io)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2020-03-25
- * 
+ *
  * @copyright Copyright (c) 2020 Locha Mesh Developers
- * 
+ *
  */
 
 #include "Websocket.h"
 #include "CheckConnections.h"
 #include <esp_log.h>
 #include <iostream>
+#include <cstdlib>
+#include <cstring>
+
+#include <cbor.h>
+
 static const char* TAG = "Websocket";
 
+chat_id_t chat_id_unspecified = { 0xff, 0xff, 0xff, 0xff,
+                                  0xff, 0xff, 0xff, 0xff,
+                                  0xff, 0xff, 0xff, 0xff,
+                                  0xff, 0xff, 0xff, 0xff,
+                                  0xff, 0xff, 0xff, 0xff,
+                                  0xff, 0xff, 0xff, 0xff,
+                                  0xff, 0xff, 0xff, 0xff,
+                                  0xff, 0xff, 0xff, 0xff };
 
-Websocket::Websocket()
+static esp_err_t _json_parse_hex(cJSON* root, std::uint8_t *buf,
+                                 std::size_t max_size)
 {
-    static CheckConnections g_check_connections;
-    g_check_connections.start(NULL);
+    if (!cJSON_IsString(root)) {
+        ESP_LOGE(TAG, "Field is not a string");
+        return ESP_FAIL;
+    } else {
+        char *from_uid_str = cJSON_GetStringValue(root);
+        if (strlen(from_uid_str) > (max_size * 2)) {
+            ESP_LOGE(TAG, "Invalid fromUID size");
+            return ESP_FAIL;
+        }
+        util::hexToBytes(cJSON_GetStringValue(root), buf);
+    }
+
+    return ESP_OK;
 }
 
-/**
- * @brief received encrypted message by radio
- * @param data_received encrypted message
- */
-static void receiveFromUart(void* data_received, void* length)
+void websocketRadioRx(const std::uint8_t* buffer, std::size_t length)
 {
+    /*
     char payload[500];
     esp_err_t err;
-    err = util::decode((std::uint8_t*)data_received, payload);
+    err = util::decode((std::uint8_t*)buffer, payload);
     if (err) {
         ESP_LOGE("TEST", "error decoding the value");
     }
@@ -41,14 +63,14 @@ static void receiveFromUart(void* data_received, void* length)
     ws_pkt.type = HTTPD_WS_TYPE_TEXT;
     ws_pkt.len = strlen(payload);
     ws_pkt.final = 1;
+    */
     // send message to customers
 }
 
-void Websocket::initRadioSerialLine(void) 
+Websocket::Websocket()
 {
-    radio_task = new radio::Radio();
-    radio_task->init(receiveFromUart);
-    radio_task->start();
+    static CheckConnections g_check_connections;
+    g_check_connections.start(NULL);
 }
 
 void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
@@ -65,7 +87,6 @@ void Websocket::checkMessageType(httpd_ws_frame_t ws_pkt, bool uart)
     client_data_t client;
     esp_err_t err;
     uid_message_t client_uid;
-    const char* null_to_uid = "ffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffffff";
     bool update = false;
 
     switch (r) {
@@ -79,7 +100,7 @@ void Websocket::checkMessageType(httpd_ws_frame_t ws_pkt, bool uart)
         if (m_client.size() > 0) {
             int size = m_client.size();
             for (size_t i = 0; i < size; i++) {
-                if (memcmp(m_client[i].shaUID, client.shaUID, sizeof(client.shaUID)) == 0) {
+                if (chat_id_equal(m_client[i].shaUID, client.shaUID)) {
                     m_client[i].fd = client.fd;
                     update = true;
                 }
@@ -97,13 +118,13 @@ void Websocket::checkMessageType(httpd_ws_frame_t ws_pkt, bool uart)
     case WsMsgType::Message:
         ESP_LOGI(TAG, "!!!!!msg");
 
-        err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
+        err = messageRecipient(ws_pkt.payload, &client_uid);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error getting message uids %s", esp_err_to_name(err));
             return;
         };
 
-        err = sendWsData(client_uid, ws_pkt, null_to_uid, uart);
+        err = sendWsData(client_uid, ws_pkt, uart);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error sending message %s", esp_err_to_name(err));
             return;
@@ -113,13 +134,13 @@ void Websocket::checkMessageType(httpd_ws_frame_t ws_pkt, bool uart)
     case WsMsgType::Status:
         ESP_LOGI(TAG, "!!!!!status");
 
-        err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
+        err = messageRecipient(ws_pkt.payload, &client_uid);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error getting message uids %s", esp_err_to_name(err));
             return;
         };
 
-        err = sendWsData(client_uid, ws_pkt, null_to_uid, uart);
+        err = sendWsData(client_uid, ws_pkt, uart);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error sending message %s", esp_err_to_name(err));
             return;
@@ -129,13 +150,13 @@ void Websocket::checkMessageType(httpd_ws_frame_t ws_pkt, bool uart)
     case WsMsgType::Action:
         ESP_LOGI(TAG, "!!!!!action");
 
-        err = messageRecipient(ws_pkt.payload, &client_uid, null_to_uid);
+        err = messageRecipient(ws_pkt.payload, &client_uid);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error getting message uids %s", esp_err_to_name(err));
             return;
         };
 
-        err = sendWsData(client_uid, ws_pkt, null_to_uid, uart);
+        err = sendWsData(client_uid, ws_pkt, uart);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Sending message: %s", esp_err_to_name(err));
             return;
@@ -216,7 +237,7 @@ esp_err_t Websocket::trigger_async_send(httpd_handle_t handle, int fd)
     return httpd_queue_work(handle, ws_async_send, resp_arg);
 }
 
-esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_receiving, const char* null_to_uid)
+esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_receiving)
 {
     char* res = reinterpret_cast<char*>(payload);
     cJSON* req_root = cJSON_Parse(res);
@@ -227,8 +248,8 @@ esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_
     const char* to_uid = cjson_toUID->valuestring;
 
     if (cJSON_IsNull(cjson_toUID)) {
-        util::hexToBytes(null_to_uid, uid_receiving->to_uid);
-
+        /* Set ID to unspeficied */
+        std::memcpy(uid_receiving->to_uid, chat_id_unspecified, sizeof(chat_id_t));
     } else if (cJSON_IsString(cjson_toUID)) {
         if (strlen(to_uid) != 64) {
             cJSON_Delete(req_root);
@@ -236,6 +257,7 @@ esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_
             return ESP_ERR_INVALID_SIZE;
         };
 
+        // Parse hex UID
         util::hexToBytes(to_uid, uid_receiving->to_uid);
     }
 
@@ -255,59 +277,41 @@ esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_
 }
 
 
-esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, const char* null_to_uid, bool uart)
+esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, bool uart)
 {
     esp_err_t err;
-    std::uint8_t compare_uid[32];
-
 
     if (m_client.size() == 0) {
         ESP_LOGE(TAG, "No clients connected");
         return ESP_FAIL;
     }
 
-    err = util::hexToBytes(null_to_uid, compare_uid);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Error getting uid %d", err);
-        return ESP_FAIL;
-    };
-
-    if (sizeof(client_uid.to_uid) != 32) {
-        ESP_LOGE(TAG, "toUID does not have the correct length");
-        return ESP_FAIL;
-    }
-
-    if (sizeof(client_uid.from_uid) != 32) {
-        ESP_LOGE(TAG, "fromUID does not have the correct length");
-        return ESP_FAIL;
-    }
-
-    if (uart == false && memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
+    if (uart == false && chat_id_equal(client_uid.to_uid, chat_id_unspecified)) {
         err = sendUart(ws_pkt);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error sending data by uart");
-            return ESP_FAIL;
+            return err;
         }
     }
 
     for (size_t i = 0; i < m_client.size(); i++) {
-        if (memcmp(client_uid.to_uid, compare_uid, sizeof(compare_uid)) == 0) {
-            if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
+        if (chat_id_equal(client_uid.to_uid, chat_id_unspecified)) {
+            if (chat_id_equal(client_uid.from_uid, m_client[i].shaUID)) {
                 err = httpd_ws_send_frame_async(req_handler->handle, m_client[i].fd, &ws_pkt);
                 if (err != ESP_OK) {
                     ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with: %s",
                         esp_err_to_name(err));
                     return ESP_FAIL;
-                };
+                }
             }
-        } else if (memcmp(client_uid.to_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) == 0) {
+        } else if (chat_id_equal(client_uid.to_uid, m_client[i].shaUID)) {
             err = httpd_ws_send_frame_async(req_handler->handle, m_client[i].fd, &ws_pkt);
             if (err != ESP_OK) {
                 ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with: %s",
                     esp_err_to_name(err));
                 return ESP_FAIL;
-            };
-        } else if (memcmp(client_uid.from_uid, m_client[i].shaUID, sizeof(m_client[i].shaUID)) != 0) {
+            }
+        } else {
             err = sendUart(ws_pkt);
             if (err != ESP_OK) {
                 ESP_LOGE(TAG, "Error sending data by uart");
@@ -358,20 +362,108 @@ void Websocket::checkConnection()
 
 esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
 {
-    std::uint8_t* buf = (std::uint8_t*)malloc(ws_pkt.len);
-    esp_err_t err;
-    err = util::encode(ws_pkt.payload, buf, ws_pkt.len);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "error encoding payload");
-        free(buf);
+    chat_msg_t msg;
+
+    ESP_LOG_BUFFER_CHAR(TAG, ws_pkt.payload, ws_pkt.len);
+
+    /* Parse JSON */
+    cJSON *msg_root = cJSON_Parse((const char*)ws_pkt.payload);
+
+    cJSON* type_root = cJSON_GetObjectItemCaseSensitive(msg_root, "type");
+
+    if (cJSON_IsNumber(type_root)) {
+        msg.type = (uint64_t)type_root->valuedouble;
+    } else {
         return ESP_FAIL;
     }
 
-    radio_task->sendDataToRadio((void*)buf, (size_t)ws_pkt.len);
+    ESP_LOGI(TAG, "%lld", msg.type);
 
-    // send payload encrypted via radio
+    if (msg.type != 2) {
+        /* Gather message fields */
+        cJSON* from_uid_root = cJSON_GetObjectItemCaseSensitive(msg_root, "fromUID");
+        cJSON* to_uid_root = cJSON_GetObjectItemCaseSensitive(msg_root, "toUID");
+        cJSON* msg_msg_root = cJSON_GetObjectItemCaseSensitive(msg_root, "msg");
+        cJSON* msg_msg_text_root = cJSON_GetObjectItemCaseSensitive(msg_msg_root, "text");
+        cJSON* msg_id_root = cJSON_GetObjectItemCaseSensitive(msg_root, "msgID");
+        cJSON* timestamp_root = cJSON_GetObjectItemCaseSensitive(msg_root, "timestamp");
 
-    free(buf);
+        if (_json_parse_hex(from_uid_root, msg.from_uid, sizeof(chat_id_t)) != ESP_OK) {
+            return ESP_FAIL;
+        }
+
+        if (_json_parse_hex(to_uid_root, msg.to_uid, sizeof(chat_id_t)) != ESP_OK) {
+            ESP_LOGI(TAG, "unicast message!");
+        } else {
+            ESP_LOGI(TAG, "multicast message!");
+            std::memcpy(msg.to_uid, chat_id_unspecified, sizeof(chat_id_t));
+        }
+
+        if (cJSON_IsObject(msg_msg_root) && cJSON_IsString(msg_msg_text_root)) {
+            char *msg_text = cJSON_GetStringValue(msg_msg_text_root);
+            std::size_t len = strlen(msg_text);
+            if (len > sizeof(msg.msg)) {
+                ESP_LOGE(TAG, "sorry mate, we don't do that here (yet).");
+                return ESP_FAIL;
+            } else {
+                std::memcpy(msg.msg, msg_text, len);
+                msg.msg_len = len;
+            }
+        } else {
+            return ESP_FAIL;
+        }
+
+        if (_json_parse_hex(msg_id_root, msg.msg_id, sizeof(chat_id_t)) != ESP_OK) {
+            return ESP_FAIL;
+        }
+
+        if (cJSON_IsNumber(timestamp_root)) {
+            msg.timestamp = (uint64_t)timestamp_root->valuedouble;
+        } else {
+            return ESP_FAIL;
+        }
+    } else {
+        /* TODO: handle these messages */
+        return ESP_OK;
+    }
+
+    cJSON_Delete(msg_root);
+
+    std::uint8_t buffer[256];
+
+    CborEncoder encoder;
+    cbor_encoder_init(&encoder, buffer, sizeof(buffer), 0);
+
+    CborEncoder map_encoder;
+    cbor_encoder_create_map(&encoder, &map_encoder, 6);
+
+    cbor_encode_text_stringz(&map_encoder, "fromUID");
+    cbor_encode_byte_string(&map_encoder, msg.from_uid, sizeof(chat_id_t));
+
+    cbor_encode_text_stringz(&map_encoder, "toUID");
+    cbor_encode_byte_string(&map_encoder, msg.to_uid, sizeof(chat_id_t));
+
+    cbor_encode_text_stringz(&map_encoder, "msgID");
+    cbor_encode_byte_string(&map_encoder, msg.msg_id, sizeof(chat_id_t));
+
+    cbor_encode_text_stringz(&map_encoder, "msg");
+    cbor_encode_byte_string(&map_encoder, msg.msg, msg.msg_len);
+
+    cbor_encode_text_stringz(&map_encoder, "timestamp");
+    cbor_encode_uint(&map_encoder, msg.timestamp);
+
+    cbor_encode_text_stringz(&map_encoder, "type");
+    cbor_encode_uint(&map_encoder, msg.type);
+
+    cbor_encoder_close_container(&encoder, &map_encoder);
+    std::size_t length = cbor_encoder_get_buffer_size(&encoder, buffer);
+
+    int cnt = radio::write(buffer, length);
+    if (cnt < 0) {
+        return ESP_FAIL;
+    }
+
+    ESP_LOGI(TAG, "mate this just worked!\n");
 
     return ESP_OK;
 }

@@ -1,12 +1,12 @@
 /**
  * @file RESTServer.cpp
  * @author Locha Mesh Developers (contact@locha.io)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2020-03-10
- * 
+ *
  * @copyright Copyright (c) 2020 Locha Mesh Developers
- * 
+ *
  */
 
 #include "RESTServer.h"
@@ -45,11 +45,11 @@ typedef struct {
 
 static const char* TAG = "RESTServer";
 /**
- * @brief 
- * 
- * @param req 
- * @param root 
- * @return esp_err_t 
+ * @brief
+ *
+ * @param req
+ * @param root
+ * @return esp_err_t
  */
 esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
 {
@@ -79,8 +79,8 @@ esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
     return ESP_OK;
 }
 /**
- * @brief 
- * 
+ * @brief
+ *
  * @param[in] req   The request we should send the error response to.
  * @param[in] msg The error message.
  */
@@ -103,9 +103,9 @@ void sendErrorResponse(httpd_req_t* req, const char* msg)
 }
 
 /**
- * @brief 
- * 
- * @param req 
+ * @brief
+ *
+ * @param req
  */
 void sendOkResponse(httpd_req_t* req)
 {
@@ -127,7 +127,7 @@ void sendOkResponse(httpd_req_t* req)
 
 /**
  * @brief Parse string
- * 
+ *
  * @param[in]  item    cJSON string.
  * @param[out] dst     Destination
  * @param[in]  max_len Maximum length of the field.
@@ -413,9 +413,8 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
 }
 
 /*
- * async send function, which we put into the httpd work queue
+ * @brief Async send function, which we put into the httpd work queue
  */
-
 esp_err_t websocketHandler(httpd_req_t* req)
 {
     Websocket& ws_instance = Websocket::getInstance();
@@ -441,9 +440,6 @@ void start_server()
 
     server_instance.start();
     rest_server_context_t* ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));
-
-    Websocket& ws_instance = Websocket::getInstance();
-    ws_instance.initRadioSerialLine();
 
     server_instance.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx, false);
     server_instance.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx, false);
