@@ -90,7 +90,7 @@ struct async_resp_arg_t {
  */
 struct uid_message_t {
     chat_id_t from_uid; /**< UID who's sending the message */
-    chat_id_t to_uid; /**< UID of who's receving the message */
+    chat_id_t to_uid; /**< UID of who's receiving the message */
 };
 
 /**

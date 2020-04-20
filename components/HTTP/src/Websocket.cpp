@@ -33,12 +33,12 @@ static esp_err_t _json_parse_hex(cJSON* root, std::uint8_t *buf,
                                  std::size_t max_size)
 {
     if (!cJSON_IsString(root)) {
-        ESP_LOGE(TAG, "Field is not a string\n");
+        ESP_LOGE(TAG, "Field is not a string");
         return ESP_FAIL;
     } else {
         char *from_uid_str = cJSON_GetStringValue(root);
         if (strlen(from_uid_str) > (max_size * 2)) {
-            ESP_LOGE(TAG, "Invalid fromUID size\n");
+            ESP_LOGE(TAG, "Invalid fromUID size");
             return ESP_FAIL;
         }
         util::hexToBytes(cJSON_GetStringValue(root), buf);
@@ -393,8 +393,9 @@ esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
         }
 
         if (_json_parse_hex(to_uid_root, msg.to_uid, sizeof(chat_id_t)) != ESP_OK) {
-            ESP_LOGI(TAG, "multicast message!");
+            ESP_LOGI(TAG, "unicast message!");
         } else {
+            ESP_LOGI(TAG, "multicast message!");
             std::memcpy(msg.to_uid, chat_id_unspecified, sizeof(chat_id_t));
         }
 
@@ -443,7 +444,7 @@ esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
     cbor_encode_byte_string(&map_encoder, msg.to_uid, sizeof(chat_id_t));
 
     cbor_encode_text_stringz(&map_encoder, "msgID");
-    cbor_encode_byte_string(&map_encoder, msg.to_uid, sizeof(chat_id_t));
+    cbor_encode_byte_string(&map_encoder, msg.msg_id, sizeof(chat_id_t));
 
     cbor_encode_text_stringz(&map_encoder, "msg");
     cbor_encode_byte_string(&map_encoder, msg.msg, msg.msg_len);

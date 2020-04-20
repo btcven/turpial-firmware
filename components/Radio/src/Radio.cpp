@@ -82,6 +82,8 @@ int write(const std::uint8_t *buffer, std::size_t length)
     int cnt;
     assert(length <= UINT8_MAX);
 
+    ESP_LOGI(TAG, "length = %d", length);
+
     /* Write the length byte */
     std::uint8_t len_byte = static_cast<std::uint8_t>(length);
     cnt = uart_write_bytes(CONFIG_RADIO_UART,
@@ -134,9 +136,8 @@ esp_err_t init(radio_rx_cb_t rx_cb)
     }
 
     ESP_LOGI(TAG, "Installing UART driver");
-    err = uart_driver_install(CONFIG_RADIO_UART, CONFIG_RADIO_RX_BUF_SIZE * 2,
-                              CONFIG_RADIO_RX_BUF_SIZE * 2, 10, &g_uart0_queue,
-                              0);
+    err = uart_driver_install(CONFIG_RADIO_UART, CONFIG_RADIO_RX_BUF_SIZE,
+                              0, 10, &g_uart0_queue, 0);
     if (err != ESP_OK) {
         return err;
     }
