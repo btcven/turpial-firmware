@@ -18,14 +18,14 @@
 #include <cJSON.h>
 #include <esp_https_server.h>
 
+#include <Radio.h>
 #include <cbor.h>
+#include <esp_log.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <stdint.h>
 #include <string>
 #include <vector>
-#include <esp_log.h>
-#include <Radio.h>
 
 /**
  * @brief Chat ID
@@ -50,11 +50,15 @@ static inline bool chat_id_equal(chat_id_t a, chat_id_t b)
     return memcmp(a, b, sizeof(chat_id_t)) == 0;
 }
 
+typedef struct {
+    uint8_t buf[128]; /**< Buffer with contents */
+    size_t len;       /**< Bytes used in buf */
+} chat_msg_content_t;
+
 struct chat_msg_t {
     chat_id_t from_uid;
     chat_id_t to_uid;
-    std::uint8_t msg[128];
-    std::size_t msg_len;
+    chat_msg_content_t msg;
     chat_id_t msg_id;
     std::uint64_t timestamp;
     std::uint64_t type;
@@ -65,9 +69,9 @@ struct chat_msg_t {
  */
 struct client_data_t {
     chat_id_t shaUID; /**< Customer id */
-    int timestamp; /**< Time the connection was made */
-    bool is_alive; /**< Indicates if the connection is alive or not */
-    int fd; /**< Connection identifier */
+    int timestamp;    /**< Time the connection was made */
+    bool is_alive;    /**< Indicates if the connection is alive or not */
+    int fd;           /**< Connection identifier */
 };
 
 /**
@@ -90,8 +94,9 @@ struct async_resp_arg_t {
  */
 struct uid_message_t {
     chat_id_t from_uid; /**< UID who's sending the message */
-    chat_id_t to_uid; /**< UID of who's receiving the message */
+    chat_id_t to_uid;   /**< UID of who's receiving the message */
 };
+
 
 /**
  * @brief   Handles data received from radio UART
@@ -101,7 +106,8 @@ struct uid_message_t {
  */
 void websocketRadioRx(const std::uint8_t* buffer, std::size_t length);
 
-class Websocket {
+class Websocket
+{
 public:
     Websocket(Websocket const&) = delete; // Copy construct
     Websocket(Websocket&&) = delete;      // Move construct
@@ -133,8 +139,11 @@ public:
      */
     void checkConnection();
 
+
+    esp_err_t parseMessage(std::uint8_t* buffer, chat_msg_t* msg, size_t length);
+
 private:
-   /**
+    /**
     * @brief check active customers
     *
     */
