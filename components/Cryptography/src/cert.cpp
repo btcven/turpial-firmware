@@ -22,29 +22,86 @@
 
 namespace crypto {
 
-class certificate
-{
-private:
-    uint16_t _cert_length;
-    unsigned char* _cert_data;
-    uint16_t _pk_length;
-    unsigned char* _pk_data;
-
-public:
-    certificate(/* args */);
-    ~certificate();
-};
-
-certificate::certificate(unsigned char* certData, uint16_t certLength, unsigned char* pkData, uint16_t pkLength) : _certLength(certLength),
-                                                                                                                   _certData(certData),
-                                                                                                                   _pkLength(pkLength),
-                                                                                                                   _pkData(pkData)
-{
-}
+certificate::certificate(
+    unsigned char* cert_data,
+    std::uint16_t cert_len,
+    unsigned char* pk_data,
+    std::uint16_t pk_len) : m_cert_len(cert_len),
+                            m_cert_data(cert_data),
+                            m_pk_len(pk_len),
+                            m_pk_data(pk_data) {}
 
 certificate::~certificate()
 {
+    // destructor
 }
 
+std::uint16_t certificate::getCertLen(void)
+{
+    return m_cert_len;
+}
+
+std::uint16_t certificate::getPKLen(void)
+{
+    return m_pk_len;
+}
+
+unsigned char* certificate::getCertData(void)
+{
+    return m_cert_data;
+}
+
+unsigned char* certificate::getPKData(void)
+{
+    return m_pk_data;
+}
+
+void certificate::setPK(unsigned char* _pk_data, std::uint16_t _len)
+{
+    m_pk_data = _pk_data;
+    m_pk_len = _len;
+}
+void certificate::setData(unsigned char* _cert_data, std::uint16_t _len)
+{
+    m_cert_data = _cert_data;
+    m_cert_len = _len;
+}
+
+void certificate::clear(void)
+{
+    delete m_cert_data;
+    delete m_pk_data;
+    m_cert_len = 0;
+    m_pk_len = 0;
+}
+
+esp_err_t certificate::init_entropy(void)
+{
+    mbedtls_entropy_init(&m_entropy);
+    mbedtls_ctr_drbg_init(&m_rng);
+    int res = mbedtls_ctr_drbg_seed(&m_rng, mbedtls_entropy_func, &m_entropy, NULL, 0);
+    // ToDo handle errors defined into: mbedtls/ctr_drbg.h
+    if (res != 0) {
+        ESP_LOGE(__func__, "SEED_ERROR ID: %d ", res);
+        mbedtls_entropy_free(&m_entropy);
+        return ESP_FAIL;
+    } else {
+        return ESP_OK;
+    }
+}
+
+esp_err_t certificate::init_pk(void)
+{
+    mbedtls_pk_init(&m_pk);
+    int res = mbedtls_pk_setup(&m_pk, mbedtls_pk_info_from_type(MBEDTLS_PK_RSA));
+    if (res != 0) {
+        ESP_LOGE(__func__, "KEYGEN_ERROR ID: %d", res);
+        mbedtls_ctr_drbg_free(&m_rng);
+        mbedtls_entropy_free(&m_entropy);
+        return ESP_FAIL;
+    } else {
+        return ESP_OK;
+    }
+}
 
 } // namespace crypto
