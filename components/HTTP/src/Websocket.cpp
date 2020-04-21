@@ -48,15 +48,17 @@ static esp_err_t _json_parse_hex(cJSON* root, std::uint8_t* buf, std::size_t max
 
 esp_err_t bytesToHex(std::uint8_t* buf, char* dst, std::size_t len)
 {
-    static const char hexmap[] = {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'a', 'b', 'c', 'd', 'e', 'f'};
+    static const char hexmap[] = {
+        '0', '1', '2', '3', '4', '5',
+        '6', '7', '8', '9', 'a', 'b',
+        'c', 'd', 'e', 'f'};
+
     for (size_t i = 0; i < len; i++) {
         const uint8_t upper = (buf[i] & 0xf0) >> 4;
         const uint8_t lower = (buf[i] & 0x0f);
         dst[i * 2] = hexmap[upper];
         dst[i * 2 + 1] = hexmap[lower];
     }
-
-    std::cout << "dios meo" << dst << std::endl;
 
     return ESP_OK;
 }
@@ -77,7 +79,7 @@ esp_err_t _parse_chat_id(CborValue* map_it, const char* key, chat_id_t* id)
     size_t len;
     cbor_value_calculate_string_length(&id_it, &len);
     if (len != sizeof(chat_id_t)) {
-        return ESP_FAIL;
+        return ESP_ERR_INVALID_SIZE;
     }
 
     /* Copy byte string */
@@ -135,48 +137,48 @@ esp_err_t parseMessage(std::uint8_t* buffer, chat_msg_t* msg, size_t length)
     CborValue it;
 
     if (cbor_parser_init(buffer, length, 0, &parser, &it) != CborNoError) {
-        ESP_LOGE(TAG, "chat: couldn't parse chat cbor input\n");
+        ESP_LOGE(TAG, "chat: couldn't parse chat cbor input");
         return ESP_FAIL;
     }
 
     if (!cbor_value_is_map(&it)) {
-        ESP_LOGE(TAG, "chat: not a map\n");
+        ESP_LOGE(TAG, "chat: not a map");
         return ESP_FAIL;
     }
 
     /* Parse fromUID */
-    if (_parse_chat_id(&it, "fromUID", &msg->from_uid) < 0) {
-        ESP_LOGE(TAG, "chat: fromUID is invalid!\n");
+    if (_parse_chat_id(&it, "fromUID", &msg->from_uid) != ESP_OK) {
+        ESP_LOGE(TAG, "chat: fromUID is invalid!");
         return ESP_FAIL;
     }
 
     /* Parse toUID */
-    if (_parse_chat_id(&it, "toUID", &msg->to_uid) < 0) {
-        ESP_LOGE(TAG, "chat: toUID is invalid!\n");
+    if (_parse_chat_id(&it, "toUID", &msg->to_uid) != ESP_OK) {
+        ESP_LOGE(TAG, "chat: toUID is invalid!");
         return ESP_FAIL;
     }
 
     /* Parse msgID */
-    if (_parse_chat_id(&it, "msgID", &msg->msg_id) < 0) {
-        ESP_LOGE(TAG, "chat: msgID is invalid!\n");
+    if (_parse_chat_id(&it, "msgID", &msg->msg_id) != ESP_OK) {
+        ESP_LOGE(TAG, "chat: msgID is invalid!");
         return ESP_FAIL;
     }
 
     /* Parse message content */
-    if (_parse_msg_content(&it, "msg", &msg->msg) < 0) {
-        ESP_LOGE(TAG, "chat: msg is invalid!\n");
+    if (_parse_msg_content(&it, "msg", &msg->msg) != ESP_OK) {
+        ESP_LOGE(TAG, "chat: msg is invalid!");
         return ESP_FAIL;
     }
 
     /* Parse timestamp */
-    if (_parse_uint64(&it, "timestamp", &msg->timestamp) < 0) {
-        ESP_LOGE(TAG, "chat: invalid timestamp!\n");
+    if (_parse_uint64(&it, "timestamp", &msg->timestamp) != ESP_OK) {
+        ESP_LOGE(TAG, "chat: invalid timestamp!");
         return ESP_FAIL;
     }
 
     /* Parse type */
-    if (_parse_uint64(&it, "type", &msg->type) < 0) {
-        ESP_LOGE(TAG, "chat: invalid type!\n");
+    if (_parse_uint64(&it, "type", &msg->type) != ESP_OK) {
+        ESP_LOGE(TAG, "chat: invalid type!");
         return ESP_FAIL;
     }
 
@@ -610,9 +612,10 @@ void Websocket::websocketRadioRx(const std::uint8_t* buffer, std::size_t length)
     if (chat_id_equal(msg.to_uid, chat_id_unspecified)) {
         cJSON_AddStringToObject(root, "toUID", NULL);
     } else {
-        char* toUID = (char*)malloc((len * 2) + 1);
-        bytesToHex(msg.to_uid, toUID, len);
+        char* toUID = (char*)malloc((uidlen * 2) + 1);
+        bytesToHex(msg.to_uid, toUID, uidlen);
         cJSON_AddStringToObject(root, "toUID", toUID);
+        free(toUID);
     }
 
     char* msgID = (char*)malloc((uidlen * 2) + 1);
@@ -633,10 +636,8 @@ void Websocket::websocketRadioRx(const std::uint8_t* buffer, std::size_t length)
     ws_pkt.len = strlen(payload);
     ws_pkt.final = 1;
 
-    // httpd_ws_send_frame(req_handler, &ws_pkt);
-
     checkMessageType(ws_pkt, true);
 
-
-    // send message to customers
+    free(fromUID);
+    free(msgID);
 }
