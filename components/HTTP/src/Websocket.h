@@ -50,6 +50,16 @@ static inline bool chat_id_equal(chat_id_t a, chat_id_t b)
     return memcmp(a, b, sizeof(chat_id_t)) == 0;
 }
 
+
+/**
+ * @brief Check if the IDs are different
+ *
+ * @param[in] a ID to compare.
+ * @param[in] b ID to compare.
+ *
+ * @return true if equal.
+ */
+
 typedef struct {
     uint8_t buf[128]; /**< Buffer with contents */
     size_t len;       /**< Bytes used in buf */

@@ -414,13 +414,12 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
         err = sendUart(ws_pkt);
         if (err != ESP_OK) {
             ESP_LOGE(TAG, "Error sending data by uart");
-            return err;
         }
     }
 
     for (size_t i = 0; i < m_client.size(); i++) {
         if (chat_id_equal(client_uid.to_uid, chat_id_unspecified)) {
-            if (chat_id_equal(client_uid.from_uid, m_client[i].shaUID)) {
+            if (!chat_id_equal(client_uid.from_uid, m_client[i].shaUID)) {
                 err = httpd_ws_send_frame_async(req_handler->handle, m_client[i].fd, &ws_pkt);
                 if (err != ESP_OK) {
                     ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with: %s",
@@ -428,24 +427,23 @@ esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pk
                     return ESP_FAIL;
                 }
             }
-        } else if (chat_id_equal(client_uid.to_uid, m_client[i].shaUID)) {
+        } else if (!chat_id_equal(client_uid.to_uid, m_client[i].shaUID)) {
             err = httpd_ws_send_frame_async(req_handler->handle, m_client[i].fd, &ws_pkt);
             if (err != ESP_OK) {
                 ESP_LOGE(TAG, "httpd_ws_send_frame_async failed with: %s",
                     esp_err_to_name(err));
                 return ESP_FAIL;
             }
+        } else {
+            err = sendUart(ws_pkt);
+            if (err != ESP_OK) {
+                ESP_LOGE(TAG, "Error sending data by uart");
+                if (err != ESP_OK) {
+                    ESP_LOGE(TAG, "Error when sending data by the uart");
+                    return ESP_FAIL;
+                }
+            }
         }
-        // else {
-        //     err = sendUart(ws_pkt);
-        //     if (err != ESP_OK) {
-        //         ESP_LOGE(TAG, "Error sending data by uart");
-        //         if (err != ESP_OK) {
-        //             ESP_LOGE(TAG, "Error when sending data by the uart");
-        //             return ESP_FAIL;
-        //         }
-        //     }
-        // }
     }
 
     return ESP_OK;
