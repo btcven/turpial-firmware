@@ -97,15 +97,6 @@ struct uid_message_t {
     chat_id_t to_uid;   /**< UID of who's receiving the message */
 };
 
-
-/**
- * @brief   Handles data received from radio UART
- *
- * @param[in] buffer Received data.
- * @param[in] length Length of buffer.
- */
-void websocketRadioRx(const std::uint8_t* buffer, std::size_t length);
-
 class Websocket
 {
 public:
@@ -140,7 +131,13 @@ public:
     void checkConnection();
 
 
-    esp_err_t parseMessage(std::uint8_t* buffer, chat_msg_t* msg, size_t length);
+    /**
+     * @brief   Handles data received from radio UART
+     *
+     * @param[in] buffer Received data.
+     * @param[in] length Length of buffer.
+     */
+    void websocketRadioRx(const std::uint8_t* buffer, std::size_t length);
 
 private:
     /**
