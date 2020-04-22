@@ -13,8 +13,6 @@
 #include <esp_log.h>
 #include <mbedtls/sha256.h>
 
-
-
 namespace crypto {
 
 int sha256(const unsigned char* data_in, unsigned char* sha256_out)

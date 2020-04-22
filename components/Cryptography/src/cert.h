@@ -9,10 +9,12 @@
  * @license Apache 2.0, see LICENSE file for details
  * 
  */
-#include <cstdint>
 #include <cstddef>
+#include <cstdint>
 #include <esp_err.h>
-
+#include <mbedtls/entropy.h>
+#include <mbedtls/ctr_drbg.h>
+#include <mbedtls/pk.h>
 namespace crypto {
 
 class certificate
@@ -58,6 +60,7 @@ public:
     void clear(void);
 
     esp_err_t init_entropy(void);
+    
     esp_err_t init_pk(void);
 };
 

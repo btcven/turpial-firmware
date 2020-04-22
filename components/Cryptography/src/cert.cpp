@@ -13,7 +13,7 @@
 #include "cert.h"
 #include <esp_log.h>
 #include <mbedtls/ctr_drbg.h>
-#include <mbedtls/entropy.h>
+
 #include <mbedtls/pk.h>
 #include <mbedtls/rsa.h>
 #include <mbedtls/x509.h>
