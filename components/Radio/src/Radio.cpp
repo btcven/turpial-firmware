@@ -31,6 +31,7 @@ static const char* TAG = "Radio";
 
 static QueueHandle_t g_uart0_queue;
 static std::uint8_t g_rx_buf[CONFIG_RADIO_RX_BUF_SIZE];
+static std::uint8_t g_len = 0;
 
 static void _event_loop(void* data)
 {
@@ -44,15 +45,18 @@ static void _event_loop(void* data)
             case State::Length:
                 ESP_LOGI(TAG, "reading length");
                 {
-                    std::uint8_t len = 0;
-                    cnt = uart_read_bytes(CONFIG_RADIO_UART, &len, sizeof(len),
+                    ESP_LOGI(TAG, "oh no");
+                    cnt = uart_read_bytes(CONFIG_RADIO_UART, &g_len, sizeof(g_len),
                                           portMAX_DELAY);
-                    if (cnt != sizeof(len) || len == 0) {
+                    ESP_LOGI(TAG, "read");
+                    if (cnt != sizeof(g_len) || g_len == 0) {
+                        ESP_LOGI(TAG, "true");
                         // We didn't read a valid length, so do it again.
                         state = State::Length;
                     } else {
+                        ESP_LOGI(TAG, "false");
                         // Go to the read payload state
-                        total_len = static_cast<std::size_t>(len);
+                        total_len = static_cast<std::size_t>(g_len);
                         state = State::Payload;
                     }
                 }
@@ -78,13 +82,16 @@ static void _event_loop(void* data)
                 break;
 
             case State::Finished:
-                ESP_LOGI(TAG, "finished, we don't do anything! (yet)");
+                ESP_LOGI(TAG, "finished websocket is in charge!");
                 {
                     Websocket& ws = Websocket::getInstance();
-                    // TODO: call websockets uart rx function
+                    ws.websocketRadioRx(g_rx_buf, total_len);
                     state = State::Length;
                     // Reset buffer
                     std::memset(g_rx_buf, 0, sizeof(g_rx_buf));
+                    bytes_read = 0;
+                    cnt = 0;
+                    total_len = 0;
                 }
                 break;
         }
@@ -155,7 +162,7 @@ esp_err_t init()
         return err;
     }
 
-    BaseType_t ret = xTaskCreatePinnedToCore(_event_loop, "radio", 2048, NULL,
+    BaseType_t ret = xTaskCreatePinnedToCore(_event_loop, "radio", 8192, NULL,
                                              5, NULL, tskNO_AFFINITY);
     if (ret != pdPASS) {
         return ESP_FAIL;
