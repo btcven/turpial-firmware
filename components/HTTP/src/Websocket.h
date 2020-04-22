@@ -97,6 +97,7 @@ enum class WsMsgType {
 struct async_resp_arg_t {
     httpd_handle_t hd;
     int fd;
+    httpd_ws_frame_t ws_pkt;
 };
 
 /**
@@ -159,7 +160,8 @@ private:
 
     std::vector<client_data_t> m_client; // array of connected clients
 
-    httpd_req_t* req_handler; // http_esp_server connection handler
+    httpd_handle_t m_server; // http_esp_server connection handle
+    httpd_req_t* req_handler;
 
     /**
      * @brief get message type
@@ -189,7 +191,7 @@ private:
      * @param  client  where all customer data will be saved
      * @return esp_err_t
      */
-    esp_err_t trigger_async_send(httpd_handle_t handle, int fd);
+    esp_err_t async_send(httpd_handle_t handle, int fd, httpd_ws_frame_t &ws_pkt);
 
     /**
      * @brief validate and obtain the uid of who sends the message and who will receive it
