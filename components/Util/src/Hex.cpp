@@ -68,6 +68,8 @@ esp_err_t bytesToHex(std::uint8_t* buf, char* dst, std::size_t len)
         dst[i * 2 + 1] = hexmap[lower];
     }
 
+    dst[len * 2] = '\0';
+
     return ESP_OK;
 }
 

@@ -11,69 +11,92 @@
 
 #include "Radio.h"
 
+#include <cstring>
+
 #include <driver/uart.h>
 #include <esp_log.h>
-
 #include "freertos/queue.h"
 
-#include <cstring>
+#include "Websocket.h"
 
 namespace radio {
 
-static const char* TAG = "UART";
+enum class State {
+    Length,
+    Payload,
+    Finished,
+};
+
+static const char* TAG = "Radio";
 
 static QueueHandle_t g_uart0_queue;
-static radio_rx_cb_t g_rx_cb;
+static std::uint8_t g_rx_buf[CONFIG_RADIO_RX_BUF_SIZE];
+static std::uint8_t g_len = 0;
 
 static void _event_loop(void* data)
 {
-    uart_event_t event;
-    std::uint8_t rx_buf[CONFIG_RADIO_RX_BUF_SIZE];
+    std::size_t bytes_read = 0;
+    std::size_t total_len = 0;
+    int cnt = 0;
+    State state = State::Length;
 
     while (1) {
-        void *ev = reinterpret_cast<void*>(&event);
-        portTickType wait_time = static_cast<portTickType>(portMAX_DELAY);
+        switch (state) {
+            case State::Length:
+                ESP_LOGI(TAG, "reading length");
+                {
+                    ESP_LOGI(TAG, "oh no");
+                    cnt = uart_read_bytes(CONFIG_RADIO_UART, &g_len, sizeof(g_len),
+                                          portMAX_DELAY);
+                    ESP_LOGI(TAG, "read");
+                    if (cnt != sizeof(g_len) || g_len == 0) {
+                        ESP_LOGI(TAG, "true");
+                        // We didn't read a valid length, so do it again.
+                        state = State::Length;
+                    } else {
+                        ESP_LOGI(TAG, "false");
+                        // Go to the read payload state
+                        total_len = static_cast<std::size_t>(g_len);
+                        state = State::Payload;
+                    }
+                }
+                break;
 
-        // Wait for UART event
-        if (xQueueReceive(g_uart0_queue, ev, wait_time)) {
-            bzero(rx_buf, sizeof(rx_buf));
-            switch(event.type) {
-                case UART_DATA:
-                    uart_read_bytes(CONFIG_RADIO_UART, rx_buf, event.size,
-                                    portMAX_DELAY);
-                    g_rx_cb(rx_buf, event.size);
-                    break;
+            case State::Payload:
+                ESP_LOGI(TAG, "reading payload");
+                {
+                    std::size_t remaining = total_len - bytes_read;
+                    ESP_LOGI(TAG, "total len = %d, bytes_read = %d, remaining = %d",
+                          (size_t)total_len, bytes_read, remaining);
+                    cnt = uart_read_bytes(CONFIG_RADIO_UART,
+                                          g_rx_buf + bytes_read, remaining,
+                                          portMAX_DELAY);
+                    bytes_read += cnt;
+                    if (bytes_read < total_len) {
+                        state = State::Payload;
+                    } else {
+                        // We're done
+                        state = State::Finished;
+                    }
+                }
+                break;
 
-                case UART_FIFO_OVF:
-                    ESP_LOGI(TAG, "hw fifo overflow");
-                    uart_flush_input(CONFIG_RADIO_UART);
-                    xQueueReset(g_uart0_queue);
-                    break;
-
-                case UART_BUFFER_FULL:
-                    ESP_LOGW(TAG, "ring buffer full");
-                    uart_flush_input(CONFIG_RADIO_UART);
-                    xQueueReset(g_uart0_queue);
-                    break;
-
-                case UART_BREAK:
-                    ESP_LOGE(TAG, "uart rx break");
-                    break;
-
-                case UART_PARITY_ERR:
-                    ESP_LOGW(TAG, "uart parity error");
-                    break;
-
-                case UART_FRAME_ERR:
-                    ESP_LOGE(TAG, "uart frame error");
-                    break;
-
-                default:
-                    ESP_LOGE(TAG, "uart event type: %d", event.type);
-                    break;
-            }
+            case State::Finished:
+                ESP_LOGI(TAG, "finished websocket is in charge!");
+                {
+                    Websocket& ws = Websocket::getInstance();
+                    ws.websocketRadioRx(g_rx_buf, total_len);
+                    state = State::Length;
+                    // Reset buffer
+                    std::memset(g_rx_buf, 0, sizeof(g_rx_buf));
+                    bytes_read = 0;
+                    cnt = 0;
+                    total_len = 0;
+                }
+                break;
         }
     }
+
     vTaskDelete(NULL);
 }
 
@@ -103,14 +126,11 @@ int write(const std::uint8_t *buffer, std::size_t length)
     }
 }
 
-esp_err_t init(radio_rx_cb_t rx_cb)
+esp_err_t init()
 {
     esp_err_t err;
 
     ESP_LOGI(TAG, "Initializing radio");
-
-    // Save the RX handler
-    g_rx_cb = rx_cb;
 
     uart_config_t uart_config = {
         .baud_rate = 115200,
@@ -142,7 +162,7 @@ esp_err_t init(radio_rx_cb_t rx_cb)
         return err;
     }
 
-    BaseType_t ret = xTaskCreatePinnedToCore(_event_loop, "radio", 1024, NULL,
+    BaseType_t ret = xTaskCreatePinnedToCore(_event_loop, "radio", 8192, NULL,
                                              5, NULL, tskNO_AFFINITY);
     if (ret != pdPASS) {
         return ESP_FAIL;
