@@ -12,8 +12,8 @@
 #include <cstddef>
 #include <cstdint>
 #include <esp_err.h>
-#include <mbedtls/entropy.h>
 #include <mbedtls/ctr_drbg.h>
+#include <mbedtls/entropy.h>
 #include <mbedtls/pk.h>
 namespace crypto {
 
@@ -31,17 +31,23 @@ private:
     unsigned char* m_cert_data;
     std::uint16_t m_pk_len;
     unsigned char* m_pk_data;
+    /*
+    mbedtls_entropy_context m_entropy;
+    mbedtls_ctr_drbg_context m_rng;
+    mbedtls_pk_context m_pk;
+    */
+public:
 
     mbedtls_entropy_context m_entropy;
     mbedtls_ctr_drbg_context m_rng;
     mbedtls_pk_context m_pk;
 
-public:
     certificate(
         unsigned char* cert_data = NULL,
         std::uint16_t cert_len = 0,
         unsigned char* pk_data = NULL,
         std::uint16_t pk_len = 0);
+
 
     virtual ~certificate();
 
@@ -60,8 +66,10 @@ public:
     void clear(void);
 
     esp_err_t init_entropy(void);
-    
+
     esp_err_t init_pk(void);
+
+
 };
 
 } // namespace crypto

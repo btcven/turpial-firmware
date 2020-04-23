@@ -38,33 +38,33 @@ certificate::~certificate()
 
 std::uint16_t certificate::getCertLen(void)
 {
-    return m_cert_len;
+    return this->m_cert_len;
 }
 
 std::uint16_t certificate::getPKLen(void)
 {
-    return m_pk_len;
+    return this->m_pk_len;
 }
 
 unsigned char* certificate::getCertData(void)
 {
-    return m_cert_data;
+    return this->m_cert_data;
 }
 
 unsigned char* certificate::getPKData(void)
 {
-    return m_pk_data;
+    return this->m_pk_data;
 }
 
 void certificate::setPK(unsigned char* _pk_data, std::uint16_t _len)
 {
-    m_pk_data = _pk_data;
-    m_pk_len = _len;
+    this->m_pk_data = _pk_data;
+    this->m_pk_len = _len;
 }
 void certificate::setData(unsigned char* _cert_data, std::uint16_t _len)
 {
-    m_cert_data = _cert_data;
-    m_cert_len = _len;
+    this->m_cert_data = _cert_data;
+    this->m_cert_len = _len;
 }
 
 void certificate::clear(void)
