@@ -46,6 +46,20 @@ esp_err_t hexToInt(const char c, int& r);
  */
 esp_err_t hexToBytes(const char* src, std::uint8_t* target);
 
+/**
+ * @brief Converts an array of bytes to a hexadecimal string
+ * 
+ *
+ * @param      buf: null terminated hexadecimal source string
+ * @param      len: byte size
+ * @param[out] dst: hex array
+ * 
+ * @return
+ *      - ESP_OK: succeed
+ *      - ESP_FAIL: an invalid character was found
+ */
+esp_err_t bytesToHex(std::uint8_t* buf, char* dst, std::size_t len);
+
 } // namespace util
 
 

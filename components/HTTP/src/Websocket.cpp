@@ -46,23 +46,6 @@ static esp_err_t _json_parse_hex(cJSON* root, std::uint8_t* buf, std::size_t max
     return ESP_OK;
 }
 
-esp_err_t bytesToHex(std::uint8_t* buf, char* dst, std::size_t len)
-{
-    static const char hexmap[] = {
-        '0', '1', '2', '3', '4', '5',
-        '6', '7', '8', '9', 'a', 'b',
-        'c', 'd', 'e', 'f'};
-
-    for (size_t i = 0; i < len; i++) {
-        const uint8_t upper = (buf[i] & 0xf0) >> 4;
-        const uint8_t lower = (buf[i] & 0x0f);
-        dst[i * 2] = hexmap[upper];
-        dst[i * 2 + 1] = hexmap[lower];
-    }
-
-    return ESP_OK;
-}
-
 esp_err_t _parse_chat_id(CborValue* map_it, const char* key, chat_id_t* id)
 {
     /* Find value in map */
@@ -604,20 +587,20 @@ void Websocket::websocketRadioRx(const std::uint8_t* buffer, std::size_t length)
     cJSON* root = cJSON_CreateObject();
 
     char* fromUID = (char*)malloc((uidlen * 2) + 1);
-    bytesToHex(msg.from_uid, fromUID, uidlen);
+    util::bytesToHex(msg.from_uid, fromUID, uidlen);
     cJSON_AddStringToObject(root, "fromUID", fromUID);
 
     if (chat_id_equal(msg.to_uid, chat_id_unspecified)) {
         cJSON_AddStringToObject(root, "toUID", NULL);
     } else {
         char* toUID = (char*)malloc((uidlen * 2) + 1);
-        bytesToHex(msg.to_uid, toUID, uidlen);
+        util::bytesToHex(msg.to_uid, toUID, uidlen);
         cJSON_AddStringToObject(root, "toUID", toUID);
         free(toUID);
     }
 
     char* msgID = (char*)malloc((uidlen * 2) + 1);
-    bytesToHex(msg.msg_id, msgID, uidlen);
+    util::bytesToHex(msg.msg_id, msgID, uidlen);
     cJSON_AddStringToObject(root, "msgID", msgID);
 
 

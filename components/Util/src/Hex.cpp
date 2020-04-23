@@ -53,4 +53,22 @@ esp_err_t hexToBytes(const char* src, std::uint8_t* target)
     return ESP_OK;
 }
 
+
+esp_err_t bytesToHex(std::uint8_t* buf, char* dst, std::size_t len)
+{
+    static const char hexmap[] = {
+        '0', '1', '2', '3', '4', '5',
+        '6', '7', '8', '9', 'a', 'b',
+        'c', 'd', 'e', 'f'};
+
+    for (size_t i = 0; i < len; i++) {
+        const uint8_t upper = (buf[i] & 0xf0) >> 4;
+        const uint8_t lower = (buf[i] & 0x0f);
+        dst[i * 2] = hexmap[upper];
+        dst[i * 2 + 1] = hexmap[lower];
+    }
+
+    return ESP_OK;
+}
+
 } // namespace util
