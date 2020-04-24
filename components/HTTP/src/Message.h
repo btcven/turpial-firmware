@@ -81,7 +81,7 @@ namespace message {
  * @return esp_err_t
  * 
  */
-esp_err_t _parse_msg_content(CborValue* map_it, const char* key, chat_msg_content_t* content);
+esp_err_t parseMsgContent(CborValue* map_it, const char* key, chat_msg_content_t* content);
 /**
  * @brief uid data decoder
  *
@@ -91,7 +91,7 @@ esp_err_t _parse_msg_content(CborValue* map_it, const char* key, chat_msg_conten
  * @return esp_err_t
  * 
  */
-esp_err_t _parse_chat_id(CborValue* map_it, const char* key, chat_id_t* id);
+esp_err_t parseChatId(CborValue* map_it, const char* key, chat_id_t* id);
 
 /**
  * @brief int data decoder
@@ -102,7 +102,7 @@ esp_err_t _parse_chat_id(CborValue* map_it, const char* key, chat_id_t* id);
  * @return esp_err_t
  * 
  */
-esp_err_t _parse_uint64(CborValue* map_it, const char* key, uint64_t* out);
+esp_err_t parseUint64(CborValue* map_it, const char* key, uint64_t* out);
 
 
 /**
@@ -126,7 +126,7 @@ esp_err_t parseMessage(std::uint8_t* buffer, chat_msg_t* msg, size_t length);
  * @return esp_err_t
  * 
  */
-esp_err_t _json_parse_hex(cJSON* root, std::uint8_t* buf, std::size_t max_size);
+esp_err_t jsonParseHex(cJSON* root, std::uint8_t* buf, std::size_t max_size);
 
 /**
  * @brief get all the data from the message

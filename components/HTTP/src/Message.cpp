@@ -16,7 +16,7 @@ static const char* TAG = "Message";
 
 namespace message {
 
-esp_err_t _json_parse_hex(cJSON* root, std::uint8_t* buf, std::size_t max_size)
+esp_err_t jsonParseHex(cJSON* root, std::uint8_t* buf, std::size_t max_size)
 {
     if (!cJSON_IsString(root)) {
         ESP_LOGE(TAG, "Field is not a string");
@@ -33,7 +33,7 @@ esp_err_t _json_parse_hex(cJSON* root, std::uint8_t* buf, std::size_t max_size)
     return ESP_OK;
 }
 
-esp_err_t _parse_chat_id(CborValue* map_it, const char* key, chat_id_t* id)
+esp_err_t parseChatId(CborValue* map_it, const char* key, chat_id_t* id)
 {
     /* Find value in map */
     CborValue id_it;
@@ -60,7 +60,7 @@ esp_err_t _parse_chat_id(CborValue* map_it, const char* key, chat_id_t* id)
     return ESP_OK;
 }
 
-esp_err_t _parse_msg_content(CborValue* map_it, const char* key, chat_msg_content_t* content)
+esp_err_t parseMsgContent(CborValue* map_it, const char* key, chat_msg_content_t* content)
 {
     CborValue content_it;
     cbor_value_map_find_value(map_it, key, &content_it);
@@ -83,7 +83,7 @@ esp_err_t _parse_msg_content(CborValue* map_it, const char* key, chat_msg_conten
     return ESP_OK;
 }
 
-esp_err_t _parse_uint64(CborValue* map_it, const char* key, uint64_t* out)
+esp_err_t parseUint64(CborValue* map_it, const char* key, uint64_t* out)
 {
     /* Find value in the map */
     CborValue int_it;
@@ -117,37 +117,37 @@ esp_err_t parseMessage(std::uint8_t* buffer, chat_msg_t* msg, size_t length)
     }
 
     /* Parse fromUID */
-    if (_parse_chat_id(&it, "fromUID", &msg->from_uid) != ESP_OK) {
+    if (parseChatId(&it, "fromUID", &msg->from_uid) != ESP_OK) {
         ESP_LOGE(TAG, "chat: fromUID is invalid!");
         return ESP_FAIL;
     }
 
     /* Parse toUID */
-    if (_parse_chat_id(&it, "toUID", &msg->to_uid) != ESP_OK) {
+    if (parseChatId(&it, "toUID", &msg->to_uid) != ESP_OK) {
         ESP_LOGE(TAG, "chat: toUID is invalid!");
         return ESP_FAIL;
     }
 
     /* Parse msgID */
-    if (_parse_chat_id(&it, "msgID", &msg->msg_id) != ESP_OK) {
+    if (parseChatId(&it, "msgID", &msg->msg_id) != ESP_OK) {
         ESP_LOGE(TAG, "chat: msgID is invalid!");
         return ESP_FAIL;
     }
 
     /* Parse message content */
-    if (_parse_msg_content(&it, "msg", &msg->msg) != ESP_OK) {
+    if (parseMsgContent(&it, "msg", &msg->msg) != ESP_OK) {
         ESP_LOGE(TAG, "chat: msg is invalid!");
         return ESP_FAIL;
     }
 
     /* Parse timestamp */
-    if (_parse_uint64(&it, "timestamp", &msg->timestamp) != ESP_OK) {
+    if (parseUint64(&it, "timestamp", &msg->timestamp) != ESP_OK) {
         ESP_LOGE(TAG, "chat: invalid timestamp!");
         return ESP_FAIL;
     }
 
     /* Parse type */
-    if (_parse_uint64(&it, "type", &msg->type) != ESP_OK) {
+    if (parseUint64(&it, "type", &msg->type) != ESP_OK) {
         ESP_LOGE(TAG, "chat: invalid type!");
         return ESP_FAIL;
     }
@@ -193,11 +193,11 @@ esp_err_t getAllMessage(chat_msg_t* msg, std::uint8_t* payload)
     cJSON* msg_id_root = cJSON_GetObjectItemCaseSensitive(msg_root, "msgID");
     cJSON* timestamp_root = cJSON_GetObjectItemCaseSensitive(msg_root, "timestamp");
 
-    if (message::_json_parse_hex(from_uid_root, msg->from_uid, sizeof(chat_id_t)) != ESP_OK) {
+    if (message::jsonParseHex(from_uid_root, msg->from_uid, sizeof(chat_id_t)) != ESP_OK) {
         return ESP_FAIL;
     }
 
-    if (message::_json_parse_hex(to_uid_root, msg->to_uid, sizeof(chat_id_t)) == ESP_OK) {
+    if (message::jsonParseHex(to_uid_root, msg->to_uid, sizeof(chat_id_t)) == ESP_OK) {
         ESP_LOGI(TAG, "toUID provided!");
     } else {
         ESP_LOGI(TAG, "toUID not provided, defaulting to broadcast!");
@@ -218,7 +218,7 @@ esp_err_t getAllMessage(chat_msg_t* msg, std::uint8_t* payload)
         return ESP_FAIL;
     }
 
-    if (message::_json_parse_hex(msg_id_root, msg->msg_id, sizeof(chat_id_t)) != ESP_OK) {
+    if (message::jsonParseHex(msg_id_root, msg->msg_id, sizeof(chat_id_t)) != ESP_OK) {
         return ESP_FAIL;
     }
 
