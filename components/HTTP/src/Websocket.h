@@ -18,6 +18,7 @@
 #include <cJSON.h>
 #include <esp_https_server.h>
 
+#include "Message.h"
 #include <Radio.h>
 #include <cbor.h>
 #include <esp_log.h>
@@ -27,52 +28,7 @@
 #include <string>
 #include <vector>
 
-/**
- * @brief Chat ID
- */
-typedef std::uint8_t chat_id_t[32];
 
-/**
- * @brief Value for unspecified chat ID
- */
-extern chat_id_t chat_id_unspecified;
-
-/**
- * @brief Check if IDs are equal
- *
- * @param[in] a ID to compare.
- * @param[in] b ID to compare.
- *
- * @return true if equal.
- */
-static inline bool chat_id_equal(chat_id_t a, chat_id_t b)
-{
-    return memcmp(a, b, sizeof(chat_id_t)) == 0;
-}
-
-
-/**
- * @brief Check if the IDs are different
- *
- * @param[in] a ID to compare.
- * @param[in] b ID to compare.
- *
- * @return true if equal.
- */
-
-typedef struct {
-    uint8_t buf[128]; /**< Buffer with contents */
-    size_t len;       /**< Bytes used in buf */
-} chat_msg_content_t;
-
-struct chat_msg_t {
-    chat_id_t from_uid;
-    chat_id_t to_uid;
-    chat_msg_content_t msg;
-    chat_id_t msg_id;
-    std::uint64_t timestamp;
-    std::uint64_t type;
-};
 
 /**
  * @brief Customer data structure
@@ -162,20 +118,6 @@ private:
 
     httpd_handle_t m_server; // http_esp_server connection handle
     httpd_req_t* req_handler;
-
-    /**
-     * @brief get message type
-     *
-     * @param[in] payload data sent by the client
-     *
-     * @return
-     * -  0: when the message type is handshakey
-     * -  1: when the message type is message
-     * -  2: when the message type is status
-     * -  4: when the message type is action
-     * - -1: when the message type is invalid
-     */
-    int getTypeMessage(std::uint8_t* payload);
 
     /**
      * @brief get the client data that comes from the websocket client
