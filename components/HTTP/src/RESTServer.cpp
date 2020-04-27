@@ -24,6 +24,7 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <iostream>
+#include <Storage.h>
 
 
 #define REST_CHECK(expr, msg)   \
@@ -78,6 +79,38 @@ esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
     *root = cJSON_Parse(buf);
     return ESP_OK;
 }
+
+bool verifyCredentials(httpd_req_t* req)
+{
+    size_t user_len;
+    size_t password_len;
+    char* user;
+    char* password;
+    esp_err_t err;
+    storage::NVS app_nvs;
+
+    user_len = httpd_req_get_hdr_value_len(req, "user") + 1;
+    password_len = httpd_req_get_hdr_value_len(req, "password") + 1;
+
+    if (user_len < 1 && password_len < 1) {
+        return false;
+    }
+
+    // get_header_username
+    user = (char*)malloc(user_len);
+    httpd_req_get_hdr_value_str(req, "user", user, user_len);
+
+    // get_header_password
+    password = (char*)malloc(password_len + 1);
+    httpd_req_get_hdr_value_str(req, "password", password, password_len);
+
+    
+    std::cout << "user: " << user << std::endl;
+    std::cout << "user: " << password << std::endl;
+    return false;
+}
+
+
 /**
  * @brief
  *
@@ -95,7 +128,7 @@ void sendErrorResponse(httpd_req_t* req, const char* msg)
     char* payload = cJSON_Print(root);
 
     // Send response
-    httpd_resp_sendstr(req, payload);
+    httpd_resp_send_err(req, HTTPD_404_NOT_FOUND, payload);
 
     // Free memory allocated by cJSON
     free(payload);
@@ -157,6 +190,11 @@ esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
  */
 esp_err_t systemInfoHandler(httpd_req_t* req)
 {
+    if (verifyCredentials(req) != 1) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
     std::uint16_t voltage = 0;
     std::int16_t avg_current = 0;
     std::int16_t avg_power = 0;

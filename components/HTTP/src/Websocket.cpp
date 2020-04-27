@@ -354,11 +354,11 @@ esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
     cbor_encoder_close_container(&encoder, &map_encoder);
     std::size_t length = cbor_encoder_get_buffer_size(&encoder, buffer);
 
-    websocketRadioRx(buffer, length);
-    // int cnt = radio::write(buffer, length);
-    // if (cnt < 0) {
-    //     return ESP_FAIL;
-    // }
+    // websocketRadioRx(buffer, length);
+    int cnt = radio::write(buffer, length);
+    if (cnt < 0) {
+        return ESP_FAIL;
+    }
 
     ESP_LOGI(TAG, "mate this just worked!\n");
     return ESP_OK;
