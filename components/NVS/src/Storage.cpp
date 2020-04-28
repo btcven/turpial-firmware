@@ -109,7 +109,7 @@ esp_err_t NVS::getString(std::string key,  char* buffer, size_t* length)
 {
 
     return  nvs_get_str(m_handle, key.c_str(), buffer, length);
-    //return ESP_OK;
+    return ESP_OK;
 }
 
 esp_err_t NVS::commit()

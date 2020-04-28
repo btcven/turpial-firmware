@@ -91,7 +91,7 @@ extern "C" void app_main()
             esp_err_to_name(err));
     }
 
-    credentials::getSetCredentials();
+    credentials::setInitialCredentials();
 
     network::WiFi& wifi = network::WiFi::getInstance();
 

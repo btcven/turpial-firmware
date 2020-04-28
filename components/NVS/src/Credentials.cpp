@@ -11,9 +11,10 @@
 
 #include "Credentials.h"
 
+static const char* TAG = "Credentials";
 namespace credentials {
 
-esp_err_t getSetCredentials()
+esp_err_t setInitialCredentials()
 {
     esp_err_t err;
     storage::NVS app_nvs;
@@ -59,9 +60,39 @@ esp_err_t getSetCredentials()
     return ESP_OK;
 }
 
- esp_err_t test(){
-   ESP_LOGI("aqui", "Hello word");
+esp_err_t getCredentials(store_credentials_t* user_credentials)
+{
+    esp_err_t err;
+    storage::NVS app_nvs;
+    size_t username_size = MAX_USER_NAME_LENGTH;
+    size_t password_size = MAX_USER_PASSWORD_LENGTH;
 
-   return ESP_OK
- }
+    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
+    if (err != ESP_OK) {
+        const char* err_str = esp_err_to_name(err);
+        ESP_LOGE(TAG,
+            "Couldn't open namespace \"%s\" (%s)",
+            NVS_APP_NAMESPACE,
+            err_str);
+        return err;
+    }
+
+    err = app_nvs.getString(USER_NAME_KEY, user_credentials->nvs_username, &username_size);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "error getting username");
+        return ESP_FAIL;
+    }
+
+    err = app_nvs.getString(USER_PASSWORD_KEY, user_credentials->nvs_password, &password_size);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "error getting password");
+        return ESP_FAIL;
+    }
+    return ESP_OK;
+}
+
+bool credentialCompare(char* a, char* b)
+{
+    return strcmp(a, b) == 0;
+}
 } // namespace credentials

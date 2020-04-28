@@ -16,16 +16,16 @@
 #include <cJSON.h>
 #include <esp_log.h>
 
+#include "Credentials.h"
 #include "FuelGauge.h"
 #include "HttpServer.h"
 #include "Websocket.h"
 #include "WiFi.h"
 #include "defaults.h"
+#include <Storage.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <iostream>
-#include <Storage.h>
-
 
 #define REST_CHECK(expr, msg)   \
     do {                        \
@@ -87,6 +87,7 @@ bool verifyCredentials(httpd_req_t* req)
     char* user;
     char* password;
     esp_err_t err;
+    store_credentials_t user_credentials;
     storage::NVS app_nvs;
 
     user_len = httpd_req_get_hdr_value_len(req, "user") + 1;
@@ -101,12 +102,24 @@ bool verifyCredentials(httpd_req_t* req)
     httpd_req_get_hdr_value_str(req, "user", user, user_len);
 
     // get_header_password
-    password = (char*)malloc(password_len + 1);
+    password = (char*)malloc(password_len);
     httpd_req_get_hdr_value_str(req, "password", password, password_len);
 
-    
-    std::cout << "user: " << user << std::endl;
-    std::cout << "user: " << password << std::endl;
+    credentials::getCredentials(&user_credentials);
+
+    if (
+        credentials::credentialCompare(user, user_credentials.nvs_username) &&
+        credentials::credentialCompare(password, user_credentials.nvs_password)) {
+        return true;
+
+    } else {
+        return false;
+    }
+
+    std::cout << "user: " << user_credentials.nvs_username << std::endl;
+    std::cout << "password: " << user_credentials.nvs_password << std::endl;
+
+
     return false;
 }
 
@@ -284,6 +297,11 @@ esp_err_t systemCredentialsHandler(httpd_req_t* req)
  */
 esp_err_t wifiApHandler(httpd_req_t* req)
 {
+    if (verifyCredentials(req) != 1) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
     httpd_resp_set_type(req, "application/json");
 
     // Read JSON from the Request
@@ -357,6 +375,12 @@ esp_err_t wifiApHandler(httpd_req_t* req)
  */
 esp_err_t wifiStaHandler(httpd_req_t* req)
 {
+    if (verifyCredentials(req) != 1) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
+
     httpd_resp_set_type(req, "application/json");
 
     // Read JSON from the Request

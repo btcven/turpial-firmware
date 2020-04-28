@@ -14,11 +14,23 @@
 #define NVS_CREDENTIALS_H
 
 #include "Storage.h"
+#include <iostream>
+#include "defaults.h"
+#include <esp_log.h>
+#include <cstring>
+
+
+struct store_credentials_t 
+{
+  char nvs_username[MAX_USER_NAME_LENGTH];
+  char nvs_password[MAX_USER_PASSWORD_LENGTH];
+};
 
 namespace credentials {
  
- esp_err_t getSetCredentials();
- esp_err_t test();
+ esp_err_t setInitialCredentials();
+ esp_err_t getCredentials(store_credentials_t* user_credentials);
+ bool credentialCompare(char* a, char* b );
 }
 
 #endif //
