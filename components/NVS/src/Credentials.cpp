@@ -10,6 +10,7 @@
  */
 
 #include "Credentials.h"
+#include <esp_log.h>
 
 static const char* TAG = "Credentials";
 namespace credentials {
@@ -91,7 +92,7 @@ esp_err_t getCredentials(store_credentials_t* user_credentials)
     return ESP_OK;
 }
 
-bool credentialCompare(char* a, char* b)
+bool credentialCompare(const char* a, const char* b)
 {
     return strcmp(a, b) == 0;
 }
