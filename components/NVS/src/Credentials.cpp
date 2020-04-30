@@ -95,4 +95,34 @@ bool credentialCompare(char* a, char* b)
 {
     return strcmp(a, b) == 0;
 }
+
+
+esp_err_t saveNewCredentials(store_credentials_t credentials)
+{
+    esp_err_t err;
+    storage::NVS app_nvs;
+    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
+    if (err != ESP_OK) {
+        const char* err_str = esp_err_to_name(err);
+        ESP_LOGE(TAG,
+            "Couldn't open namespace \"%s\" (%s)",
+            NVS_APP_NAMESPACE,
+            err_str);
+        return err;
+    }
+
+    err = app_nvs.setString(USER_NAME_KEY, credentials.nvs_username);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error the save new username");
+        return ESP_FAIL;
+    }
+
+    err = app_nvs.setString(USER_PASSWORD_KEY, credentials.nvs_password);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error the save new password");
+        return ESP_FAIL;
+    }
+
+    return err;
+}
 } // namespace credentials

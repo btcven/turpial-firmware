@@ -30,7 +30,9 @@ namespace credentials {
  
  esp_err_t setInitialCredentials();
  esp_err_t getCredentials(store_credentials_t* user_credentials);
- bool credentialCompare(char* a, char* b );
-}
+ bool credentialCompare(const char* a, const char* b );
+ esp_err_t saveNewCredentials(store_credentials_t credentials); 
+ 
+ }
 
 #endif //

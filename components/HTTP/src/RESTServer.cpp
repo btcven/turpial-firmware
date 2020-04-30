@@ -86,7 +86,6 @@ bool verifyCredentials(httpd_req_t* req)
     size_t password_len;
     char* user;
     char* password;
-    esp_err_t err;
     store_credentials_t user_credentials;
     storage::NVS app_nvs;
 
@@ -110,15 +109,15 @@ bool verifyCredentials(httpd_req_t* req)
     if (
         credentials::credentialCompare(user, user_credentials.nvs_username) &&
         credentials::credentialCompare(password, user_credentials.nvs_password)) {
+        free(user);
+        free(password);
         return true;
 
     } else {
+        free(user);
+        free(password);
         return false;
     }
-
-    std::cout << "user: " << user_credentials.nvs_username << std::endl;
-    std::cout << "password: " << user_credentials.nvs_password << std::endl;
-
 
     return false;
 }
@@ -289,6 +288,56 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
 
 esp_err_t systemCredentialsHandler(httpd_req_t* req)
 {
+    cJSON* req_root;
+    store_credentials_t new_credencial;
+    esp_err_t err;
+    bool result = verifyCredentials(req);
+    if (result != true) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
+
+    httpd_resp_set_type(req, "application/json");
+    if (receiveJson(req, &req_root) != ESP_OK) {
+        sendErrorResponse(req, "Couldn't receive JSON data");
+        return ESP_FAIL;
+    }
+
+    if (!cJSON_IsObject(req_root)) {
+        sendErrorResponse(req, "Malformed JSON");
+        return ESP_FAIL;
+    }
+
+    cJSON* username = cJSON_GetObjectItemCaseSensitive(req_root, "username");
+    cJSON* password = cJSON_GetObjectItemCaseSensitive(req_root, "password");
+
+    if (cJSON_IsString(username) && cJSON_IsString(password)) {
+        if (parseString(username, &new_credencial.nvs_username, MAX_USER_NAME_LENGTH) != ESP_OK) {
+            sendErrorResponse(req, "username type invalid");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+
+        if (parseString(password, &new_credencial.nvs_password, MAX_USER_PASSWORD_LENGTH) != ESP_OK) {
+            sendErrorResponse(req, "password invalid");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+    } else {
+        sendErrorResponse(req, "invalid format");
+        cJSON_Delete(req_root);
+        return ESP_FAIL;
+    }
+
+    err = credentials::saveNewCredentials(new_credencial);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error the save new credentials");
+        cJSON_Delete(req_root);
+        return err;
+    }
+    sendOkResponse(req);
+    cJSON_Delete(req_root);
     return ESP_OK;
 }
 
