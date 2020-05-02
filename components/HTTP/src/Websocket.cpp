@@ -360,7 +360,7 @@ esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
         return ESP_FAIL;
     }
 
-    ESP_LOGI(TAG, "mate this just worked!\n");
+    ESP_LOGI(TAG, "mate this vaina just worked!");
     return ESP_OK;
 }
 
