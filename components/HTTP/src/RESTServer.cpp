@@ -118,8 +118,6 @@ bool verifyCredentials(httpd_req_t* req)
         free(password);
         return false;
     }
-
-    return false;
 }
 
 

@@ -12,9 +12,6 @@
 #include "Storage.h"
 
 #include <cstdint>
-
-#include "esp_system.h"
-
 #include "esp_log.h"
 #include "nvs_flash.h"
 #include "defaults.h"
@@ -109,7 +106,6 @@ esp_err_t NVS::getString(std::string key,  char* buffer, size_t* length)
 {
 
     return  nvs_get_str(m_handle, key.c_str(), buffer, length);
-    return ESP_OK;
 }
 
 esp_err_t NVS::commit()

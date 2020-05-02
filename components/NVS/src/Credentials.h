@@ -13,10 +13,8 @@
 #ifndef NVS_CREDENTIALS_H
 #define NVS_CREDENTIALS_H
 
-#include "Storage.h"
 #include "defaults.h"
-#include <cstring>
-#include <iostream>
+#include "esp_system.h"
 
 struct store_credentials_t {
     char nvs_username[MAX_USER_NAME_LENGTH];

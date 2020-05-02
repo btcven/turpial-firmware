@@ -11,6 +11,10 @@
 
 #include "Credentials.h"
 #include <esp_log.h>
+#include "Storage.h"
+
+#include <cstring>
+#include <iostream>
 
 static const char* TAG = "Credentials";
 namespace credentials {
