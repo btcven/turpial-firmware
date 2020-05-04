@@ -33,7 +33,7 @@ static QueueHandle_t g_uart0_queue;
 static std::uint8_t g_rx_buf[CONFIG_RADIO_RX_BUF_SIZE];
 static std::uint8_t g_len = 0;
 
-static void _event_loop(void* data)
+static void eventLoop(void* data)
 {
     std::size_t bytes_read = 0;
     std::size_t total_len = 0;
@@ -162,7 +162,7 @@ esp_err_t init()
         return err;
     }
 
-    BaseType_t ret = xTaskCreatePinnedToCore(_event_loop, "radio", 8192, NULL,
+    BaseType_t ret = xTaskCreatePinnedToCore(eventLoop, "radio", 8192, NULL,
                                              5, NULL, tskNO_AFFINITY);
     if (ret != pdPASS) {
         return ESP_FAIL;

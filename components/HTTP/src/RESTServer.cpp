@@ -45,13 +45,7 @@ typedef struct {
 
 
 static const char* TAG = "RESTServer";
-/**
- * @brief
- *
- * @param req
- * @param root
- * @return esp_err_t
- */
+
 esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
 {
     std::size_t total_len = req->content_len;
@@ -121,12 +115,6 @@ bool verifyCredentials(httpd_req_t* req)
 }
 
 
-/**
- * @brief
- *
- * @param[in] req   The request we should send the error response to.
- * @param[in] msg The error message.
- */
 void sendErrorResponse(httpd_req_t* req, const char* msg)
 {
     ESP_LOGI(TAG, "Request failed");
@@ -145,11 +133,6 @@ void sendErrorResponse(httpd_req_t* req, const char* msg)
     cJSON_Delete(root);
 }
 
-/**
- * @brief
- *
- * @param req
- */
 void sendOkResponse(httpd_req_t* req)
 {
     ESP_LOGI(TAG, "Request successful");
@@ -168,16 +151,6 @@ void sendOkResponse(httpd_req_t* req)
     cJSON_Delete(root);
 }
 
-/**
- * @brief Parse string
- *
- * @param[in]  item    cJSON string.
- * @param[out] dst     Destination
- * @param[in]  max_len Maximum length of the field.
- *
- * @return ESP_OK   Function succeed.
- * @return ESP_FAIL Invalid parameters.
- */
 esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
 {
     const char* val = cJSON_GetStringValue(item);
@@ -195,9 +168,7 @@ esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
     return ESP_OK;
 }
 
-/**
- * @brief   Get device information
- */
+
 esp_err_t systemInfoHandler(httpd_req_t* req)
 {
     if (verifyCredentials(req) != 1) {
@@ -339,9 +310,7 @@ esp_err_t systemCredentialsHandler(httpd_req_t* req)
     return ESP_OK;
 }
 
-/**
- * @brief   Setup AP configuration
- */
+
 esp_err_t wifiApHandler(httpd_req_t* req)
 {
     if (verifyCredentials(req) != 1) {
@@ -417,9 +386,7 @@ esp_err_t wifiApHandler(httpd_req_t* req)
     return ESP_OK;
 }
 
-/**
- * @brief   Setup STA configuration
- */
+
 esp_err_t wifiStaHandler(httpd_req_t* req)
 {
     if (verifyCredentials(req) != 1) {
@@ -521,9 +488,7 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
     return ESP_OK;
 }
 
-/*
- * @brief Async send function, which we put into the httpd work queue
- */
+
 esp_err_t websocketHandler(httpd_req_t* req)
 {
     Websocket& ws_instance = Websocket::getInstance();
