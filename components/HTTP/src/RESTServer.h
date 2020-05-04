@@ -78,7 +78,7 @@ esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len);
 /**
  * @brief  execute a successful answer
  *
- * @param req https handler
+ * @param[in] req https handler
  */
 void sendOkResponse(httpd_req_t* req);
 
@@ -91,7 +91,6 @@ void sendOkResponse(httpd_req_t* req);
 void sendErrorResponse(httpd_req_t* req, const char* msg);
 
 /**
- * 
  * @brief check credentials sent by client
  * @param[in] req  https handler
  * 
@@ -101,7 +100,7 @@ bool verifyCredentials(httpd_req_t* req);
 /**
  * @brief 
  *
- * @param req  https handler
+ * @param[in] req https handler
  * @param root cJSON object
  * @return esp_err_t
  */
