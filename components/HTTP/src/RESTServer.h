@@ -76,7 +76,7 @@ esp_err_t systemInfoHandler(httpd_req_t* req);
 esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len);
 
 /**
- * @brief  execute a successfull answer
+ * @brief  execute a successful answer
  *
  * @param req https handler
  */
