@@ -16,15 +16,16 @@
 #include <cJSON.h>
 #include <esp_log.h>
 
+#include "Credentials.h"
 #include "FuelGauge.h"
 #include "HttpServer.h"
 #include "Websocket.h"
 #include "WiFi.h"
 #include "defaults.h"
+#include <Storage.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <iostream>
-
 
 #define REST_CHECK(expr, msg)   \
     do {                        \
@@ -78,6 +79,48 @@ esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
     *root = cJSON_Parse(buf);
     return ESP_OK;
 }
+
+bool verifyCredentials(httpd_req_t* req)
+{
+    size_t user_len;
+    size_t password_len;
+    char* user;
+    char* password;
+    store_credentials_t user_credentials;
+    storage::NVS app_nvs;
+
+    user_len = httpd_req_get_hdr_value_len(req, "user") + 1;
+    password_len = httpd_req_get_hdr_value_len(req, "password") + 1;
+
+    if (user_len < 1 && password_len < 1) {
+        return false;
+    }
+
+    // get_header_username
+    user = (char*)malloc(user_len);
+    httpd_req_get_hdr_value_str(req, "user", user, user_len);
+
+    // get_header_password
+    password = (char*)malloc(password_len);
+    httpd_req_get_hdr_value_str(req, "password", password, password_len);
+
+    credentials::getCredentials(&user_credentials);
+
+    if (
+        credentials::credentialCompare(user, user_credentials.nvs_username) &&
+        credentials::credentialCompare(password, user_credentials.nvs_password)) {
+        free(user);
+        free(password);
+        return true;
+
+    } else {
+        free(user);
+        free(password);
+        return false;
+    }
+}
+
+
 /**
  * @brief
  *
@@ -95,7 +138,7 @@ void sendErrorResponse(httpd_req_t* req, const char* msg)
     char* payload = cJSON_Print(root);
 
     // Send response
-    httpd_resp_sendstr(req, payload);
+    httpd_resp_send_err(req, HTTPD_404_NOT_FOUND, payload);
 
     // Free memory allocated by cJSON
     free(payload);
@@ -157,6 +200,11 @@ esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
  */
 esp_err_t systemInfoHandler(httpd_req_t* req)
 {
+    if (verifyCredentials(req) != 1) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
     std::uint16_t voltage = 0;
     std::int16_t avg_current = 0;
     std::int16_t avg_power = 0;
@@ -238,6 +286,56 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
 
 esp_err_t systemCredentialsHandler(httpd_req_t* req)
 {
+    cJSON* req_root;
+    store_credentials_t new_credencial;
+    esp_err_t err;
+    bool result = verifyCredentials(req);
+    if (result != true) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
+
+    httpd_resp_set_type(req, "application/json");
+    if (receiveJson(req, &req_root) != ESP_OK) {
+        sendErrorResponse(req, "Couldn't receive JSON data");
+        return ESP_FAIL;
+    }
+
+    if (!cJSON_IsObject(req_root)) {
+        sendErrorResponse(req, "Malformed JSON");
+        return ESP_FAIL;
+    }
+
+    cJSON* username = cJSON_GetObjectItemCaseSensitive(req_root, "username");
+    cJSON* password = cJSON_GetObjectItemCaseSensitive(req_root, "password");
+
+    if (cJSON_IsString(username) && cJSON_IsString(password)) {
+        if (parseString(username, &new_credencial.nvs_username, MAX_USER_NAME_LENGTH) != ESP_OK) {
+            sendErrorResponse(req, "username type invalid");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+
+        if (parseString(password, &new_credencial.nvs_password, MAX_USER_PASSWORD_LENGTH) != ESP_OK) {
+            sendErrorResponse(req, "password invalid");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+    } else {
+        sendErrorResponse(req, "invalid format");
+        cJSON_Delete(req_root);
+        return ESP_FAIL;
+    }
+
+    err = credentials::saveNewCredentials(new_credencial);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error the save new credentials");
+        cJSON_Delete(req_root);
+        return err;
+    }
+    sendOkResponse(req);
+    cJSON_Delete(req_root);
     return ESP_OK;
 }
 
@@ -246,6 +344,11 @@ esp_err_t systemCredentialsHandler(httpd_req_t* req)
  */
 esp_err_t wifiApHandler(httpd_req_t* req)
 {
+    if (verifyCredentials(req) != 1) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
     httpd_resp_set_type(req, "application/json");
 
     // Read JSON from the Request
@@ -319,6 +422,12 @@ esp_err_t wifiApHandler(httpd_req_t* req)
  */
 esp_err_t wifiStaHandler(httpd_req_t* req)
 {
+    if (verifyCredentials(req) != 1) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
+
     httpd_resp_set_type(req, "application/json");
 
     // Read JSON from the Request
