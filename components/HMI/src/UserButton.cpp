@@ -36,13 +36,12 @@ void UserButton::init(gpio_num_t user_button,
     Button* btn = new Button(user_button, true);
 
     btn->_gpio_btn = user_button;
-    active ? btn->_button_pressed = LOW : btn->_button_pressed = HIGH;
+    active ? btn->button_pressed = LOW : btn->button_pressed = HIGH;
 
     btn->attachClick(fnClick);
     btn->attachDoubleClick(fn2Click);
     btn->attachLongClick(fnLongClick);
 
-    static Interrupt g_int_task;
     const int ESP_INTR_FLAG_DEFAULT = 0;
 
     gpio_config_t io_conf = {};
@@ -64,6 +63,7 @@ void UserButton::init(gpio_num_t user_button,
     gpio_isr_handler_add(btn->_gpio_btn, interruptIsrHandler, &btn->_gpio_btn);
     gpio_evt_queue = xQueueCreate(10, sizeof(gpio_num_t));
 
+    static Interrupt g_int_task;
     g_int_task.start(btn);
 }
 
@@ -89,7 +89,7 @@ void Interrupt::run(void* task_data)
 {
     Button* btn = static_cast<Button*>(task_data);
     unsigned long time_now;
-    if (btn->_doubleClickFunc != NULL) {
+    if (btn->doubleClickFunc != NULL) {
     }
     gpio_num_t io_pin = GPIO_NUM_MAX;
     while (true) {
@@ -103,7 +103,7 @@ void Interrupt::run(void* task_data)
 
         do {
             time_now = esp_timer_get_time();
-            btn->tick(gpio_get_level(btn->_gpio_btn) == btn->_button_pressed, time_now);
+            btn->tick(gpio_get_level(btn->_gpio_btn) == btn->button_pressed, time_now);
         } while ((btn->_state != 0 || btn->_state == 2 || btn->_state == 1)); // to ensure the state machine is able to detect long click and release the resource in right time
     }
 }

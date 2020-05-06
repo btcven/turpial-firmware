@@ -47,12 +47,12 @@ void Websocket::onReceive(httpd_ws_frame_t ws_pkt, httpd_req_t* req)
 
 void Websocket::checkMessageType(httpd_ws_frame_t ws_pkt, bool uart)
 {
-    int type = message::getTypeMessage(ws_pkt.payload);
-    WsMsgType r = static_cast<WsMsgType>(type);
     client_data_t client;
     esp_err_t err;
     uid_message_t client_uid;
     bool update = false;
+    int type = message::getTypeMessage(ws_pkt.payload);
+    WsMsgType r = static_cast<WsMsgType>(type);
 
     switch (r) {
     case WsMsgType::Handshake:
@@ -198,8 +198,6 @@ esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_
     cJSON* cjson_fromUID = cJSON_GetObjectItemCaseSensitive(req_root, "fromUID");
     cJSON* cjson_toUID = cJSON_GetObjectItemCaseSensitive(req_root, "toUID");
 
-
-    const char* from_uid = cjson_fromUID->valuestring;
     ESP_LOGI(TAG, "paso messageRecipient");
 
     if (cJSON_IsNull(cjson_toUID)) {
@@ -221,6 +219,7 @@ esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_
         cJSON_Delete(req_root);
         return ESP_FAIL;
     } else {
+        const char* from_uid = cjson_fromUID->valuestring;
         if (strlen(from_uid) != 64) {
             cJSON_Delete(req_root);
             ESP_LOGI(TAG, "  FromUID length  is less than 64 ");
@@ -235,13 +234,13 @@ esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_
 
 esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, bool uart)
 {
-    esp_err_t err;
 
     if (m_client.size() == 0) {
         ESP_LOGE(TAG, "No clients connected");
         return ESP_FAIL;
     }
 
+    esp_err_t err;
     if (uart == false && chat_id_equal(client_uid.to_uid, chat_id_unspecified)) {
         err = sendUart(ws_pkt);
         if (err != ESP_OK) {
@@ -321,8 +320,8 @@ void Websocket::checkConnection()
 
 esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
 {
-    chat_msg_t msg;
 
+    chat_msg_t msg;
     message::getAllMessage(&msg, ws_pkt.payload);
 
     std::uint8_t buffer[256];
@@ -367,7 +366,6 @@ void Websocket::websocketRadioRx(const std::uint8_t* buffer, std::size_t length)
 {
     chat_msg_t msg;
     esp_err_t err;
-    size_t uidlen = 32;
     err = message::parseMessage((std::uint8_t*)buffer, &msg, length);
     if (err) {
         ESP_LOGE("TEST", "error decoding the value");
@@ -375,6 +373,7 @@ void Websocket::websocketRadioRx(const std::uint8_t* buffer, std::size_t length)
 
     cJSON* root = cJSON_CreateObject();
 
+    size_t uidlen = 32;
     char fromUID[65];
     util::bytesToHex(msg.from_uid, fromUID, uidlen);
     cJSON_AddStringToObject(root, "fromUID", fromUID);

@@ -75,21 +75,21 @@ private:
     unsigned long _long_press_ticks = 1500; // number of ticks that have to pass by
                                             // before a long button press is detected
 
-    int _button_pressed;
-    bool _is_long_pressed = false;
-    long int _timeout = 500;
+    int button_pressed;
+    bool  is_long_pressed = false;
+    long int timeout = 500;
 
     // These variables that hold information across the upcoming tick calls.
     // They are initialized once on program start and are updated every time the
     // tick function is called.
     int _state = 0;
-    unsigned long _start_time; // will be set in state 1
-    unsigned long _stop_time;  // will be set in state 2
+    unsigned long start_time; // will be set in state 1
+    unsigned long stop_time;  // will be set in state 2
 
     // These variables will hold functions acting as event source.
-    callbackFunction _clickFunc = NULL;
-    callbackFunction _doubleClickFunc = NULL;
-    callbackFunction _longClickFunc = NULL;
+    callbackFunction clickFunc = NULL;
+    callbackFunction doubleClickFunc = NULL;
+    callbackFunction longClickFunc = NULL;
 };
 } // namespace hmi
 

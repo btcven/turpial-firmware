@@ -24,8 +24,6 @@ esp_err_t HttpServer::start()
 {
     ESP_LOGI(TAG, "Starting Web server ...");
 
-    // httpd_ssl_config_t conf = HTTPD_SSL_CONFIG_DEFAULT();
-
     // ToDo:
     // - The cert. must be generated on demand.
     // - first boot: a fresh Cert. MUST BE generated.
@@ -35,9 +33,7 @@ esp_err_t HttpServer::start()
     extern const unsigned char prvtkey_pem_start[] asm("_binary_prvtkey_pem_start");
     extern const unsigned char prvtkey_pem_end[] asm("_binary_prvtkey_pem_end");
 
-    // The next httpd_ssl_config_t is only a temporal workaround.
-    // As described in: https://github.com/espressif/esp-idf/pull/4981 | esp_https_server: fix HTTPD_SSL_CONFIG_DEFAULT (IDFGH-2948)
-    httpd_ssl_config_t conf = HTTP_SSL_CONFIG();
+    httpd_ssl_config_t conf = HTTPD_SSL_CONFIG_DEFAULT();
 
     conf.cacert_pem = cacert_pem_start;
     conf.cacert_len = cacert_pem_end - cacert_pem_start;
