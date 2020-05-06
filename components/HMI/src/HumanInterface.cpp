@@ -73,10 +73,10 @@ void Button::attachLongClick(callbackFunction newFunction)
  */
 void Button::reset(void)
 {
-    _state = 0; // restart.
-    start_time = 0;
-    stop_time = 0;
-    is_long_pressed = false;
+    m_state = 0; // restart.
+    m_start_time = 0;
+    m_stop_time = 0;
+    m_is_long_pressed = false;
     state = BTN_RELEASE_0;
 }
 
@@ -90,63 +90,63 @@ void Button::tick(bool active_level, unsigned long time_now)
     static unsigned long press_time;
 
     // Implementation of the state machine
-    if (_state == 0) { // waiting for menu pin being pressed.
+    if (m_state == 0) { // waiting for menu pin being pressed.
         if (active_level) {
-            _state = 1;        // step to state 1
-            start_time = now; // remember starting time
+            m_state = 1;        // step to state 1
+            m_start_time = now; // remember starting time
         }                      // if
 
-    } else if (_state == 1) { // waiting for menu pin being released.
+    } else if (m_state == 1) { // waiting for menu pin being released.
 
-        press_time = (now - start_time);
+        press_time = (now - m_start_time);
         // printf("state = 1  work time = %lu\n", press_time);
         if ((!active_level) && //si se libera
-            (press_time < _debounce_ticks)) {
+            (press_time < m_debounce_ticks)) {
             // button was released to quickly so I assume some debouncing.
             // go back to state 0 without calling a function.
-            _state = 0;
+            m_state = 0;
 
         } else if (!active_level) { //si se libra y es valido
-            _state = 2;             // step to state 2
-            stop_time = now;       // remember stopping time
-            printf("stop time : %lu", stop_time);
+           m_state = 2;             // step to state 2
+            m_stop_time = now;       // remember stopping time
+            printf("stop time : %lu", m_stop_time);
 
         } else if ((active_level) &&
                    (press_time > _long_press_ticks)) {
-            is_long_pressed = true; // Keep track of long press state
+            m_is_long_pressed = true; // Keep track of long press state
             printf("LONG -------  pres_time : %lu", press_time);
             //attach callback here
             if (longClickFunc != NULL) {
                 longClickFunc();
             }
-            _state = 0; // step to state 6
+            m_state = 0; // step to state 6
         } else {
             //just waitting
         } // if
 
-    } else if (_state == 2) {
-        if (now - stop_time > timeout) {
-            if (press_time > _click_ticks) {
+    } else if (m_state == 2) {
+        if (now - m_stop_time > m_timeout) {
+            if (press_time > m_click_ticks) {
                 // this was only a single short click
                 if (clickFunc != NULL) {
                     clickFunc();
                 }
-                _state = 0; // restart.
+                m_state = 0; // restart.
             }
         } else if (active_level) {
-            _state = 3;
+            m_state = 3;
         }
 
-    } else if (_state == 3) { // waiting for menu pin being released finally.
+    } else if (m_state == 3) { // waiting for menu pin being released finally.
         // Stay here for at least _debounce_ticks because else we might end up in
         // state 1 if the button bounces for too long.
         if ((!active_level) &&
-            ((unsigned long)(now - start_time) > _debounce_ticks)) {
+            ((unsigned long)(now - m_start_time) > m_debounce_ticks)) {
             // this was a 2 click sequence.
             if (doubleClickFunc)
                 doubleClickFunc();
-            _state = 0;       // restart.
-            stop_time = now; // remember stopping time
+            m_state = 0;       // restart.
+            m_stop_time = now; // remember stopping time
         }                     // if
     }
 } // Button.tick()

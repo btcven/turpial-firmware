@@ -36,7 +36,7 @@ void UserButton::init(gpio_num_t user_button,
     Button* btn = new Button(user_button, true);
 
     btn->_gpio_btn = user_button;
-    active ? btn->button_pressed = LOW : btn->button_pressed = HIGH;
+    active ? btn->m_button_pressed = LOW : btn->m_button_pressed = HIGH;
 
     btn->attachClick(fnClick);
     btn->attachDoubleClick(fn2Click);
@@ -96,15 +96,15 @@ void Interrupt::run(void* task_data)
         do {
             time_now = esp_timer_get_time();
             if (xQueueReceive(gpio_evt_queue, &io_pin, portMAX_DELAY)) {
-                if (btn->_state == 6) //restart the loop
+                if (btn->m_state == 6) //restart the loop
                     btn->reset();
             }
         } while (uxQueueMessagesWaiting(gpio_evt_queue));
 
         do {
             time_now = esp_timer_get_time();
-            btn->tick(gpio_get_level(btn->_gpio_btn) == btn->button_pressed, time_now);
-        } while ((btn->_state != 0 || btn->_state == 2 || btn->_state == 1)); // to ensure the state machine is able to detect long click and release the resource in right time
+            btn->tick(gpio_get_level(btn->_gpio_btn) == btn->m_button_pressed, time_now);
+        } while ((btn->m_state != 0 || btn->m_state == 2 || btn->m_state == 1)); // to ensure the state machine is able to detect long click and release the resource in right time
     }
 }
 

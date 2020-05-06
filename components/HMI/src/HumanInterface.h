@@ -68,23 +68,23 @@ public:
 
 private:
     void gpioInit();
-    bool _updated_level;                    // hardware gpio number.
-    unsigned int _debounce_ticks = 200;     // number of ticks for debounce times.
-    unsigned long _click_ticks = 250;       // number of ticks that have to pass by
+    bool m_updated_level;                    // hardware gpio number.
+    unsigned int m_debounce_ticks = 200;     // number of ticks for debounce times.
+    unsigned long m_click_ticks = 250;       // number of ticks that have to pass by
                                             // before a click is detected.
     unsigned long _long_press_ticks = 1500; // number of ticks that have to pass by
                                             // before a long button press is detected
 
-    int button_pressed;
-    bool  is_long_pressed = false;
-    long int timeout = 500;
+    int m_button_pressed;
+    bool  m_is_long_pressed = false;
+    long int m_timeout = 500;
 
     // These variables that hold information across the upcoming tick calls.
     // They are initialized once on program start and are updated every time the
     // tick function is called.
-    int _state = 0;
-    unsigned long start_time; // will be set in state 1
-    unsigned long stop_time;  // will be set in state 2
+    int m_state = 0;
+    unsigned long m_start_time; // will be set in state 1
+    unsigned long m_stop_time;  // will be set in state 2
 
     // These variables will hold functions acting as event source.
     callbackFunction clickFunc = NULL;
