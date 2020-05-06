@@ -12,19 +12,8 @@
 #ifndef DEFAULTS_H
 #define DEFAULTS_H
 
-#define DEVICE_NAME "turpial"   /*!< Device name */
-#define DEVICE_VERSION "v0.1.0" /*!< Firmware version */
-
 #define NVS_APP_NAMESPACE "turpial"           /*!< NVS application namespace */
 #define NVS_IS_CONFIGURED_KEY "is_configured" /*!< Is turpial configured? */
-
-#define ESC_ENABLED true              /*!< ESC feature enabled? */
-#define ESC_MAX_BATTERY_CAPACITY 2000 /*!< in mAh unit */
-#define ESC_LOW_BATTTERY_THRESHOLD 20 /*!< in % unit */
-#define ESC_CRITICAL_BAT_THRESHOLD 7  /*!< in % unit */
-#define ESC_GPOUT_PIN GPIO_NUM_18     /*!< GPOUT pin number */
-#define ESC_SYSOFF_PIN GPIO_NUM_27    /*!< SYSOFF pin number */
-#define ESC_SOC_DELTA 1               /*!< SoC change delta */
 
 #define RAD_ENABLED true /*!< Radio subsystem enabled? */
 #define RAD_TX_PIN 5      /*!< Radio UART TX pin */
@@ -55,4 +44,5 @@
 #define DEFAULT_RGB_LED_R 0 /*!< default led red */
 #define DEFAULT_RGB_LED_G 2 /*!< default led green */
 #define DEFAULT_RGB_LED_B 4 /*!< default led blue */
-#endif                      // DEFAULTS_H
+
+#endif // DEFAULTS_H

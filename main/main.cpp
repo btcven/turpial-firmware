@@ -137,12 +137,16 @@ extern "C" void app_main()
         return;
     }
 
-#if ESC_ENABLED == true
+#if CONFIG_ESC_ENABLED
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
 
     esc::Battery& battery = esc::Battery::getInstance();
 
-    err = battery.init(ESC_SYSOFF_PIN, ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
+    gpio_num_t sysoff = static_cast<gpio_num_t>(CONFIG_ESC_SYSOFF_PIN);
+    gpio_num_t gpout = static_cast<gpio_num_t>(CONFIG_ESC_GPOUT_PIN);
+
+    err = battery.init(sysoff, gpout, CONFIG_ESC_SOC_DELTA,
+                       CONFIG_ESC_MAX_BATTERY_CAPACITY);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Can't setup ESC, err = %s",
             esp_err_to_name(err));
