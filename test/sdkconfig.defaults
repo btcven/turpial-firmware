@@ -12,12 +12,6 @@ CONFIG_PARTITION_TABLE_FILENAME="../partitions_custom.csv"
 # end of Partition Table
 
 #
-# Compiler options
-#
-CONFIG_COMPILER_CXX_EXCEPTIONS=y
-# end of Compiler Options
-
-#
 # HTTPS Server Config
 #
 CONFIG_ESP_HTTPS_SERVER_ENABLE=y
