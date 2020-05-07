@@ -21,12 +21,6 @@ CONFIG_SPIRAM_TYPE_AUTO=y
 # end of SPI RAM options
 
 #
-# Compiler options
-#
-CONFIG_COMPILER_CXX_EXCEPTIONS=y
-# end of Compiler Options
-
-#
 # HTTPS Server Config
 #
 CONFIG_ESP_HTTPS_SERVER_ENABLE=y
@@ -41,3 +35,9 @@ CONFIG_ESPTOOLPY_FLASHSIZE_4MB=y
 CONFIG_ESPTOOLPY_FLASHSIZE="4MB"
 CONFIG_ESPTOOLPY_FLASHSIZE_DETECT=y
 # end of Serial flasher config
+
+#
+# LWIP Config
+#
+CONFIG_LWIP_IPV6_AUTOCONFIG=y
+# end of LWIP Config

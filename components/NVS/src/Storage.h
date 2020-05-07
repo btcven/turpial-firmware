@@ -16,37 +16,37 @@
 #include <nvs_flash.h>
 #include <string>
 
-namespace storage {
-
-/**
+namespace storage
+{
+    /**
  * @brief Initialize NVS
  * 
  * @return
  *      - ESP_OK: succeed
  *      - (others): failed
  */
-esp_err_t init();
+    esp_err_t init();
 
-/**
+    /**
  * @brief Representation of a NVS namespace.
  * 
  */
-class NVS
-{
-public:
-    /**
+    class NVS
+    {
+    public:
+        /**
      * @brief Construct a new Namespace
      * 
      */
-    NVS();
+        NVS();
 
-    /**
+        /**
      * @brief Close the Namespace
      * 
      */
-    ~NVS();
+        ~NVS();
 
-    /**
+        /**
      * @brief Open namespace
      * 
      * @attention 1. If a namespace is already opened it's going to be closed.
@@ -58,15 +58,15 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed 
      */
-    esp_err_t open(const char* name, nvs_open_mode open_mode);
+        esp_err_t open(const char* name, nvs_open_mode open_mode);
 
-    /**
+        /**
      * @brief Close the namespace
      * 
      */
-    void close();
+        void close();
 
-    /**
+        /**
      * @brief Set a boolean
      * 
      * @param key: key in the namespace 
@@ -76,9 +76,9 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t set_bool(const char* key, bool value);
+        esp_err_t set_bool(const char* key, bool value);
 
-    /**
+        /**
      * @brief Get a boolean
      * 
      * @param      key: key in the namespace
@@ -88,9 +88,9 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t get_bool(const char* key, bool& value);
+        esp_err_t get_bool(const char* key, bool& value);
 
-    /**
+        /**
      * @brief Checks whether the Turpial device is configured or not
      * 
      * @param is_configured: return value
@@ -99,40 +99,40 @@ public:
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t getIsConfigured(bool& is_configured);
+        esp_err_t getIsConfigured(bool& is_configured);
 
-    /**
+        /**
      * @brief Set the String object
      * 
      * @param key 
      * @param username 
      * @return esp_err_t 
      */
-    esp_err_t setString(std::string key, std::string data);
+        esp_err_t setString(std::string key, std::string data);
 
-    /**
+        /**
      * @brief Get the String object
      * 
      * @param key 
      * @param data 
      * @return esp_err_t 
      */
-    esp_err_t getString(std::string key,  char* buffer, size_t* length);
+        esp_err_t getString(std::string key, char* buffer, size_t* length);
 
-    /**
+        /**
      * @brief Commit changes to flash
      * 
      * @return
      *      - ESP_OK: succeed
      *      - (others): failed
      */
-    esp_err_t commit();
+        esp_err_t commit();
 
 
-private:
-    bool m_is_opened;
-    nvs_handle m_handle;
-};
+    private:
+        bool m_is_opened;
+        nvs_handle m_handle;
+    };
 
 } // namespace storage
 

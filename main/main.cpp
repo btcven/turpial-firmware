@@ -25,59 +25,15 @@
 #include <Radio.h>
 #include <Storage.h>
 #include <WiFi.h>
+#include <Websocket.h>
 
 #include "UserButton.h"
 #include "UserButtonHandler.h"
 
 #include "RESTServer.h"
+#include "Credentials.h"
 
 static const char* TAG = "app_main";
-
-esp_err_t getSetCredentials(void)
-{
-    esp_err_t err;
-    storage::NVS app_nvs;
-
-    err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
-    if (err != ESP_OK) {
-        const char* err_str = esp_err_to_name(err);
-        ESP_LOGE(TAG,
-            "Couldn't open namespace \"%s\" (%s)",
-            NVS_APP_NAMESPACE,
-            err_str);
-        return err;
-    }
-
-    char user_name[MAX_USER_NAME_LENGTH];
-    char user_password[MAX_USER_PASSWORD_LENGTH];
-    size_t ul = MAX_USER_NAME_LENGTH;
-    size_t pl = MAX_USER_PASSWORD_LENGTH;
-    err = app_nvs.getString(USER_NAME_KEY, user_name, &ul);
-    if (err != ESP_OK) {
-        ESP_LOGI(TAG, "There is no username in nvs, going to set it");
-        err = app_nvs.setString(USER_NAME_KEY, DEFAUL_USERNAME);
-        if (err != ESP_OK) {
-            ESP_LOGE(TAG, "There are errors , was not possible to save in NVS the username");
-            return ESP_FAIL;
-        }
-        err = app_nvs.setString(USER_PASSWORD_KEY, DEFAULT_USER_PASSWORD);
-        if (err != ESP_OK) {
-            ESP_LOGI(TAG,"Error trying to save default password");
-            return ESP_FAIL;
-        }
-    } else {
-        err = app_nvs.getString(USER_PASSWORD_KEY, user_password, &pl);
-        if (err != ESP_OK) {
-            err = app_nvs.setString(USER_PASSWORD_KEY, DEFAULT_USER_PASSWORD);
-            if (err != ESP_OK) {
-                return ESP_FAIL;
-            }
-        }
-        ESP_LOGI(TAG, "\nUsername: %s, Password: %s --> inside eeprom", &user_name[0], &user_password[0]);
-    }
-
-    return ESP_OK;
-}
 
 esp_err_t getIsConfigured(bool& is_configured)
 {
@@ -135,7 +91,7 @@ extern "C" void app_main()
             esp_err_to_name(err));
     }
 
-    getSetCredentials();
+    credentials::setInitialCredentials();
 
     network::WiFi& wifi = network::WiFi::getInstance();
 
@@ -144,7 +100,7 @@ extern "C" void app_main()
         ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface (%s)", esp_err_to_name(err));
         return;
     }
-    
+
     is_configured = false;
     if (!is_configured) {
         wifi.setMode(WIFI_MODE);
@@ -172,19 +128,25 @@ extern "C" void app_main()
         return;
     }
 
-#if RAD_ENABLED == true
-    radio::Radio* radio_task = new radio::Radio();
-    radio_task->start();
-#endif
-
     rest_server::start_server();
 
-#if ESC_ENABLED == true
+    err = radio::init();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't initialize radio, err = %s",
+                 esp_err_to_name(err));
+        return;
+    }
+
+#if CONFIG_ESC_ENABLED
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
 
     esc::Battery& battery = esc::Battery::getInstance();
 
-    err = battery.init(ESC_SYSOFF_PIN, ESC_GPOUT_PIN, ESC_SOC_DELTA, ESC_MAX_BATTERY_CAPACITY);
+    gpio_num_t sysoff = static_cast<gpio_num_t>(CONFIG_ESC_SYSOFF_PIN);
+    gpio_num_t gpout = static_cast<gpio_num_t>(CONFIG_ESC_GPOUT_PIN);
+
+    err = battery.init(sysoff, gpout, CONFIG_ESC_SOC_DELTA,
+                       CONFIG_ESC_MAX_BATTERY_CAPACITY);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Can't setup ESC, err = %s",
             esp_err_to_name(err));

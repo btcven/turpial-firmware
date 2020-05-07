@@ -3,4 +3,4 @@ idf_component_register(SRCS ${SOURCES}
                        INCLUDE_DIRS
                           src
                           ../../main
-                       REQUIRES Task)
+                       REQUIRES Task HTTP)

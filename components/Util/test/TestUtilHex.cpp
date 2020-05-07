@@ -57,3 +57,15 @@ TEST_CASE("Hexadecimal string to byte buffer", "[util]")
 
     TEST_ASSERT_EQUAL_MEMORY(EXPECTED, result, 6);
 }
+
+
+TEST_CASE(" byte buffer to Hexadecimal string", "[util]")
+{
+    char result[12];
+    std::uint8_t buf[6] = {0xaa, 0xbb, 0xcc, 0xdd, 0xee, 0xff};
+    char* EXPECTED = "aabbccddeeff";
+
+    util::bytesToHex(buf, result, 6);
+
+    TEST_ASSERT_EQUAL_MEMORY(EXPECTED, result, 6);
+}

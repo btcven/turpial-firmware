@@ -1,12 +1,12 @@
 /**
  * @file RESTServer.cpp
  * @author Locha Mesh Developers (contact@locha.io)
- * @brief 
+ * @brief
  * @version 0.1
  * @date 2020-03-10
- * 
+ *
  * @copyright Copyright (c) 2020 Locha Mesh Developers
- * 
+ *
  */
 
 #include "RESTServer.h"
@@ -16,15 +16,16 @@
 #include <cJSON.h>
 #include <esp_log.h>
 
+#include "Credentials.h"
 #include "FuelGauge.h"
 #include "HttpServer.h"
 #include "Websocket.h"
 #include "WiFi.h"
 #include "defaults.h"
+#include <Storage.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <iostream>
-
 
 #define REST_CHECK(expr, msg)   \
     do {                        \
@@ -44,13 +45,7 @@ typedef struct {
 
 
 static const char* TAG = "RESTServer";
-/**
- * @brief 
- * 
- * @param req 
- * @param root 
- * @return esp_err_t 
- */
+
 esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
 {
     std::size_t total_len = req->content_len;
@@ -78,12 +73,48 @@ esp_err_t receiveJson(httpd_req_t* req, cJSON** root)
     *root = cJSON_Parse(buf);
     return ESP_OK;
 }
-/**
- * @brief 
- * 
- * @param[in] req   The request we should send the error response to.
- * @param[in] msg The error message.
- */
+
+bool verifyCredentials(httpd_req_t* req)
+{
+    size_t user_len;
+    size_t password_len;
+    char* user;
+    char* password;
+    store_credentials_t user_credentials;
+    storage::NVS app_nvs;
+
+    user_len = httpd_req_get_hdr_value_len(req, "user") + 1;
+    password_len = httpd_req_get_hdr_value_len(req, "password") + 1;
+
+    if (user_len < 1 && password_len < 1) {
+        return false;
+    }
+
+    // get_header_username
+    user = (char*)malloc(user_len);
+    httpd_req_get_hdr_value_str(req, "user", user, user_len);
+
+    // get_header_password
+    password = (char*)malloc(password_len);
+    httpd_req_get_hdr_value_str(req, "password", password, password_len);
+
+    credentials::getCredentials(&user_credentials);
+
+    if (
+        credentials::credentialCompare(user, user_credentials.nvs_username) &&
+        credentials::credentialCompare(password, user_credentials.nvs_password)) {
+        free(user);
+        free(password);
+        return true;
+
+    } else {
+        free(user);
+        free(password);
+        return false;
+    }
+}
+
+
 void sendErrorResponse(httpd_req_t* req, const char* msg)
 {
     ESP_LOGI(TAG, "Request failed");
@@ -95,18 +126,13 @@ void sendErrorResponse(httpd_req_t* req, const char* msg)
     char* payload = cJSON_Print(root);
 
     // Send response
-    httpd_resp_sendstr(req, payload);
+    httpd_resp_send_err(req, HTTPD_404_NOT_FOUND, payload);
 
     // Free memory allocated by cJSON
     free(payload);
     cJSON_Delete(root);
 }
 
-/**
- * @brief 
- * 
- * @param req 
- */
 void sendOkResponse(httpd_req_t* req)
 {
     ESP_LOGI(TAG, "Request successful");
@@ -125,16 +151,6 @@ void sendOkResponse(httpd_req_t* req)
     cJSON_Delete(root);
 }
 
-/**
- * @brief Parse string
- * 
- * @param[in]  item    cJSON string.
- * @param[out] dst     Destination
- * @param[in]  max_len Maximum length of the field.
- *
- * @return ESP_OK   Function succeed.
- * @return ESP_FAIL Invalid parameters.
- */
 esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
 {
     const char* val = cJSON_GetStringValue(item);
@@ -152,28 +168,29 @@ esp_err_t parseString(cJSON* item, void* dst, std::size_t max_len)
     return ESP_OK;
 }
 
-/**
- * @brief   Get device information
- */
+
 esp_err_t systemInfoHandler(httpd_req_t* req)
 {
-    std::uint16_t voltage = 0;
-    std::int16_t avg_current = 0;
-    std::int16_t avg_power = 0;
-    std::uint16_t temp = 0;
-    std::size_t free_memory = 0;
-    char ap_ssid[32] = {};
-    char sta_ssid[32] = {};
-    bool sta_enabled = false;
+    if (verifyCredentials(req) != 1) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
+    
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
     network::WiFi& wifi = network::WiFi::getInstance();
 
     // Obtain response values
+    std::uint16_t voltage = 0;
     REST_CHECK(fuel_gauge.voltage(&voltage) == ESP_OK, "Can't get voltage\n");
+    std::int16_t avg_current = 0;
     REST_CHECK(fuel_gauge.avgCurrent(&avg_current) == ESP_OK, "Can't get avg. current\n");
+    std::int16_t avg_power = 0;
     REST_CHECK(fuel_gauge.avgPower(&avg_power) == ESP_OK, "Can't get avg. power\n");
+    std::uint16_t temp = 0;
     REST_CHECK(fuel_gauge.temperature(esc::TempMeasure::Internal, &temp) == ESP_OK,
         "Can't get internal temperature\n");
+    std::size_t free_memory = 0;
     free_memory = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
 
 
@@ -181,6 +198,7 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
     wifi_config_t sta_config;
 
     // Read AP configuration
+    char ap_ssid[32] = {};
     if (wifi.getApConfig(ap_config) == ESP_OK) {
         // Get AP SSID
         std::size_t ssid_len = 0;
@@ -195,20 +213,23 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
     }
 
     // Read STA configuration
+    char sta_ssid[32] = {};
     if (wifi.getStaConfig(sta_config) == ESP_OK) {
         // Get STA SSID
         std::size_t ssid_len = std::strlen(reinterpret_cast<char*>(sta_config.sta.ssid));
+        
         std::memcpy(sta_ssid, sta_config.ap.ssid, ssid_len);
         sta_ssid[ssid_len] = '\0';
     }
 
+    bool sta_enabled = false;
     sta_enabled = wifi.isSta();
 
     // Construct JSON object
     cJSON* root = cJSON_CreateObject();
 
-    cJSON_AddStringToObject(root, "device_name", DEVICE_NAME);
-    cJSON_AddStringToObject(root, "device_version", DEVICE_VERSION);
+    cJSON_AddStringToObject(root, "device_name", CONFIG_DEVICE_NAME);
+    cJSON_AddStringToObject(root, "device_version", CONFIG_DEVICE_VERSION);
 
     cJSON_AddNumberToObject(root, "voltage", voltage * 1.0);
     cJSON_AddNumberToObject(root, "avg_current", avg_current * 1.0);
@@ -238,14 +259,67 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
 
 esp_err_t systemCredentialsHandler(httpd_req_t* req)
 {
+
+    bool result = verifyCredentials(req);
+    if (result != true) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
+
+    httpd_resp_set_type(req, "application/json");
+    cJSON* req_root;
+    if (receiveJson(req, &req_root) != ESP_OK) {
+        sendErrorResponse(req, "Couldn't receive JSON data");
+        return ESP_FAIL;
+    }
+
+    if (!cJSON_IsObject(req_root)) {
+        sendErrorResponse(req, "Malformed JSON");
+        return ESP_FAIL;
+    }
+
+    cJSON* username = cJSON_GetObjectItemCaseSensitive(req_root, "username");
+    cJSON* password = cJSON_GetObjectItemCaseSensitive(req_root, "password");
+
+    store_credentials_t new_credencial;
+    if (cJSON_IsString(username) && cJSON_IsString(password)) {
+        if (parseString(username, &new_credencial.nvs_username, MAX_USER_NAME_LENGTH) != ESP_OK) {
+            sendErrorResponse(req, "username type invalid");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+
+        if (parseString(password, &new_credencial.nvs_password, MAX_USER_PASSWORD_LENGTH) != ESP_OK) {
+            sendErrorResponse(req, "password invalid");
+            cJSON_Delete(req_root);
+            return ESP_FAIL;
+        }
+    } else {
+        sendErrorResponse(req, "invalid format");
+        cJSON_Delete(req_root);
+        return ESP_FAIL;
+    }
+
+   esp_err_t err = credentials::saveNewCredentials(new_credencial);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Error the save new credentials");
+        cJSON_Delete(req_root);
+        return err;
+    }
+    sendOkResponse(req);
+    cJSON_Delete(req_root);
     return ESP_OK;
 }
 
-/**
- * @brief   Setup AP configuration
- */
+
 esp_err_t wifiApHandler(httpd_req_t* req)
 {
+    if (verifyCredentials(req) != 1) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
     httpd_resp_set_type(req, "application/json");
 
     // Read JSON from the Request
@@ -314,11 +388,15 @@ esp_err_t wifiApHandler(httpd_req_t* req)
     return ESP_OK;
 }
 
-/**
- * @brief   Setup STA configuration
- */
+
 esp_err_t wifiStaHandler(httpd_req_t* req)
 {
+    if (verifyCredentials(req) != 1) {
+        ESP_LOGE(TAG, "fail credential verification");
+        sendErrorResponse(req, "fail credential verification");
+        return ESP_FAIL;
+    }
+
     httpd_resp_set_type(req, "application/json");
 
     // Read JSON from the Request
@@ -329,11 +407,9 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
     }
 
     // Read current STA configuration
-    network::WiFi& wifi = network::WiFi::getInstance();
 
-    bool change_config = false;
-    bool enable = false;
     wifi_config_t config;
+    network::WiFi& wifi = network::WiFi::getInstance();
     wifi.getStaConfig(config);
 
     if (!cJSON_IsObject(req_root)) {
@@ -341,6 +417,7 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
         return ESP_FAIL;
     }
 
+    bool enable = false;
     cJSON* enable_root = cJSON_GetObjectItemCaseSensitive(req_root, "enable");
     if (cJSON_IsTrue(enable_root)) {
         enable = true;
@@ -348,6 +425,7 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
 
 
     cJSON* ssid = cJSON_GetObjectItemCaseSensitive(req_root, "ssid");
+    bool change_config = false;
     if (cJSON_IsString(ssid)) {
         change_config = true;
 
@@ -412,17 +490,14 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
     return ESP_OK;
 }
 
-/*
- * async send function, which we put into the httpd work queue
- */
 
 esp_err_t websocketHandler(httpd_req_t* req)
 {
-    Websocket& ws_instanse = Websocket::getInstance();
+    Websocket& ws_instance = Websocket::getInstance();
 
-    uint8_t buf[256] = {0};
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+    uint8_t buf[2000] = {0};
     ws_pkt.payload = buf;
     esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, sizeof(buf));
     if (ret != ESP_OK) {
@@ -431,21 +506,22 @@ esp_err_t websocketHandler(httpd_req_t* req)
     }
 
     ESP_LOGI(TAG, "Packet type: %d", ws_pkt.type);
-    ws_instanse.onReceive(ws_pkt, req);
+    ws_instance.onReceive(ws_pkt, req);
     return ret;
 }
 
-
 void start_server()
 {
-    http::HttpServer server_instanse = http::HttpServer();
+    http::HttpServer server_instance = http::HttpServer();
+
+    server_instance.start();
     rest_server_context_t* ctx = reinterpret_cast<rest_server_context_t*>(malloc(sizeof(rest_server_context_t)));
 
-    server_instanse.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx, false);
-    server_instanse.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx, false);
-    server_instanse.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx, false);
-    server_instanse.registerUri("/wifi/ap", HTTP_POST, wifiApHandler, ctx, false);
-    server_instanse.registerUri("/ws", HTTP_GET, websocketHandler, ctx, true);
+    server_instance.registerUri("/system/info", HTTP_GET, systemInfoHandler, ctx, false);
+    server_instance.registerUri("/system/credentials", HTTP_POST, systemCredentialsHandler, ctx, false);
+    server_instance.registerUri("/wifi/sta", HTTP_POST, wifiStaHandler, ctx, false);
+    server_instance.registerUri("/wifi/ap", HTTP_POST, wifiApHandler, ctx, false);
+    server_instance.registerUri("/ws", HTTP_GET, websocketHandler, ctx, true);
 }
 
 } // namespace rest_server

@@ -18,9 +18,11 @@ namespace http {
 HttpServer::HttpServer()
     : m_server(nullptr)
 {
-    ESP_LOGI(TAG, "Starting Web server ...");
+}
 
-    // httpd_ssl_config_t conf = HTTPD_SSL_CONFIG_DEFAULT();
+esp_err_t HttpServer::start()
+{
+    ESP_LOGI(TAG, "Starting Web server ...");
 
     // ToDo:
     // - The cert. must be generated on demand.
@@ -31,9 +33,7 @@ HttpServer::HttpServer()
     extern const unsigned char prvtkey_pem_start[] asm("_binary_prvtkey_pem_start");
     extern const unsigned char prvtkey_pem_end[] asm("_binary_prvtkey_pem_end");
 
-    // The next httpd_ssl_config_t is only a temporal workaround.
-    // As described in: https://github.com/espressif/esp-idf/pull/4981 | esp_https_server: fix HTTPD_SSL_CONFIG_DEFAULT (IDFGH-2948)
-    httpd_ssl_config_t conf = HTTP_SSL_CONFIG();
+    httpd_ssl_config_t conf = HTTPD_SSL_CONFIG_DEFAULT();
 
     conf.cacert_pem = cacert_pem_start;
     conf.cacert_len = cacert_pem_end - cacert_pem_start;
@@ -46,9 +46,11 @@ HttpServer::HttpServer()
     }
 
     ESP_LOGI(TAG, "Start HTTPS server");
+
+    return ret;
 }
 
-void HttpServer::registerUri(const char* uri, httpd_method_t method, esp_err_t (*handler)(httpd_req_t* r), void* ctx, bool is_websocket)
+esp_err_t HttpServer::registerUri(const char* uri, httpd_method_t method, esp_err_t (*handler)(httpd_req_t* r), void* ctx, bool is_websocket)
 {
     ESP_LOGD(TAG, "Registering URI handler");
     httpd_uri_t uri_description = {
@@ -56,9 +58,10 @@ void HttpServer::registerUri(const char* uri, httpd_method_t method, esp_err_t (
         .method = method,
         .handler = handler,
         .user_ctx = ctx,
-        .is_websocket = is_websocket
-    };
-    httpd_register_uri_handler(m_server, &uri_description);
+        .is_websocket = is_websocket};
+    esp_err_t ret = httpd_register_uri_handler(m_server, &uri_description);
+
+    return ret;
 }
 
 } // namespace http

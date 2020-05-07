@@ -26,13 +26,6 @@ static void a3_to_a4(std::uint8_t* a4, std::uint8_t* a3)
     a4[3] = (a3[2] & 0x3f);
 }
 
-static void a4_to_a3(std::uint8_t* a3, std::uint8_t* a4)
-{
-    a3[0] = (a4[0] << 2) + ((a4[1] & 0x30) >> 4);
-    a3[1] = ((a4[1] & 0xf) << 4) + ((a4[2] & 0x3c) >> 2);
-    a3[2] = ((a4[2] & 0x3) << 6) + a4[3];
-}
-
 bool base64Encode(const std::string& in, std::string* out)
 {
     int i = 0;
