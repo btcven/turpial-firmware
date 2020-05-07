@@ -102,13 +102,13 @@ static void eventLoop(void* data)
 
 int write(const std::uint8_t *buffer, std::size_t length)
 {
-    int cnt;
     assert(length <= UINT8_MAX);
 
     ESP_LOGI(TAG, "length = %d", length);
 
     /* Write the length byte */
     std::uint8_t len_byte = static_cast<std::uint8_t>(length);
+    int cnt;
     cnt = uart_write_bytes(CONFIG_RADIO_UART,
                            reinterpret_cast<const char*>(&len_byte),
                            sizeof(len_byte));

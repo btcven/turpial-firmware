@@ -176,23 +176,21 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
         sendErrorResponse(req, "fail credential verification");
         return ESP_FAIL;
     }
-    std::uint16_t voltage = 0;
-    std::int16_t avg_current = 0;
-    std::int16_t avg_power = 0;
-    std::uint16_t temp = 0;
-    std::size_t free_memory = 0;
-    char ap_ssid[32] = {};
-    char sta_ssid[32] = {};
-    bool sta_enabled = false;
+    
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
     network::WiFi& wifi = network::WiFi::getInstance();
 
     // Obtain response values
+    std::uint16_t voltage = 0;
     REST_CHECK(fuel_gauge.voltage(&voltage) == ESP_OK, "Can't get voltage\n");
+    std::int16_t avg_current = 0;
     REST_CHECK(fuel_gauge.avgCurrent(&avg_current) == ESP_OK, "Can't get avg. current\n");
+    std::int16_t avg_power = 0;
     REST_CHECK(fuel_gauge.avgPower(&avg_power) == ESP_OK, "Can't get avg. power\n");
+    std::uint16_t temp = 0;
     REST_CHECK(fuel_gauge.temperature(esc::TempMeasure::Internal, &temp) == ESP_OK,
         "Can't get internal temperature\n");
+    std::size_t free_memory = 0;
     free_memory = heap_caps_get_free_size(MALLOC_CAP_DEFAULT);
 
 
@@ -200,6 +198,7 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
     wifi_config_t sta_config;
 
     // Read AP configuration
+    char ap_ssid[32] = {};
     if (wifi.getApConfig(ap_config) == ESP_OK) {
         // Get AP SSID
         std::size_t ssid_len = 0;
@@ -214,13 +213,16 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
     }
 
     // Read STA configuration
+    char sta_ssid[32] = {};
     if (wifi.getStaConfig(sta_config) == ESP_OK) {
         // Get STA SSID
         std::size_t ssid_len = std::strlen(reinterpret_cast<char*>(sta_config.sta.ssid));
+        
         std::memcpy(sta_ssid, sta_config.ap.ssid, ssid_len);
         sta_ssid[ssid_len] = '\0';
     }
 
+    bool sta_enabled = false;
     sta_enabled = wifi.isSta();
 
     // Construct JSON object
@@ -257,9 +259,7 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
 
 esp_err_t systemCredentialsHandler(httpd_req_t* req)
 {
-    cJSON* req_root;
-    store_credentials_t new_credencial;
-    esp_err_t err;
+
     bool result = verifyCredentials(req);
     if (result != true) {
         ESP_LOGE(TAG, "fail credential verification");
@@ -268,6 +268,7 @@ esp_err_t systemCredentialsHandler(httpd_req_t* req)
     }
 
     httpd_resp_set_type(req, "application/json");
+    cJSON* req_root;
     if (receiveJson(req, &req_root) != ESP_OK) {
         sendErrorResponse(req, "Couldn't receive JSON data");
         return ESP_FAIL;
@@ -281,6 +282,7 @@ esp_err_t systemCredentialsHandler(httpd_req_t* req)
     cJSON* username = cJSON_GetObjectItemCaseSensitive(req_root, "username");
     cJSON* password = cJSON_GetObjectItemCaseSensitive(req_root, "password");
 
+    store_credentials_t new_credencial;
     if (cJSON_IsString(username) && cJSON_IsString(password)) {
         if (parseString(username, &new_credencial.nvs_username, MAX_USER_NAME_LENGTH) != ESP_OK) {
             sendErrorResponse(req, "username type invalid");
@@ -299,7 +301,7 @@ esp_err_t systemCredentialsHandler(httpd_req_t* req)
         return ESP_FAIL;
     }
 
-    err = credentials::saveNewCredentials(new_credencial);
+   esp_err_t err = credentials::saveNewCredentials(new_credencial);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Error the save new credentials");
         cJSON_Delete(req_root);
@@ -405,11 +407,9 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
     }
 
     // Read current STA configuration
-    network::WiFi& wifi = network::WiFi::getInstance();
 
-    bool change_config = false;
-    bool enable = false;
     wifi_config_t config;
+    network::WiFi& wifi = network::WiFi::getInstance();
     wifi.getStaConfig(config);
 
     if (!cJSON_IsObject(req_root)) {
@@ -417,6 +417,7 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
         return ESP_FAIL;
     }
 
+    bool enable = false;
     cJSON* enable_root = cJSON_GetObjectItemCaseSensitive(req_root, "enable");
     if (cJSON_IsTrue(enable_root)) {
         enable = true;
@@ -424,6 +425,7 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
 
 
     cJSON* ssid = cJSON_GetObjectItemCaseSensitive(req_root, "ssid");
+    bool change_config = false;
     if (cJSON_IsString(ssid)) {
         change_config = true;
 
@@ -493,9 +495,9 @@ esp_err_t websocketHandler(httpd_req_t* req)
 {
     Websocket& ws_instance = Websocket::getInstance();
 
-    uint8_t buf[2000] = {0};
     httpd_ws_frame_t ws_pkt;
     memset(&ws_pkt, 0, sizeof(httpd_ws_frame_t));
+    uint8_t buf[2000] = {0};
     ws_pkt.payload = buf;
     esp_err_t ret = httpd_ws_recv_frame(req, &ws_pkt, sizeof(buf));
     if (ret != ESP_OK) {

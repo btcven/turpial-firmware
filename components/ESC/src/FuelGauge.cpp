@@ -498,15 +498,14 @@ esp_err_t FuelGauge::softReset()
 esp_err_t FuelGauge::readControlWord(std::uint16_t function,
                                      std::uint16_t* result)
 {
-    std::uint8_t sub_command_msb = static_cast<std::uint8_t>(function >> 8);
-    std::uint8_t sub_command_lsb = static_cast<std::uint8_t>(function & 0x00FF);
-
-    std::uint8_t command[2] = {sub_command_lsb, sub_command_msb};
-    std::uint8_t data[2] = {0};
 
     if (result == nullptr) return ESP_FAIL;
 
+    std::uint8_t sub_command_lsb = static_cast<std::uint8_t>(function & 0x00FF);
+    std::uint8_t sub_command_msb = static_cast<std::uint8_t>(function >> 8);
+    std::uint8_t command[2] = {sub_command_lsb, sub_command_msb};
     ESP_ERR_TRY(i2cWriteBytes(0, command, 2));
+    std::uint8_t data[2] = {0};
     ESP_ERR_TRY(i2cReadBytes(0, data, 2));
 
     std::uint16_t d0 = static_cast<std::uint16_t>(data[1]) << 8;
@@ -529,10 +528,10 @@ esp_err_t FuelGauge::executeControlWord(std::uint16_t function)
 
 esp_err_t FuelGauge::readWord(std::uint8_t command, std::uint16_t* word)
 {
-    std::uint8_t data[2] = {0};
 
     if (word == nullptr) return ESP_FAIL;
 
+    std::uint8_t data[2] = {0};
     ESP_ERR_TRY(i2cReadBytes(command, data, 2));
 
     std::uint16_t d0 = static_cast<std::uint16_t>(data[1]) << 8;

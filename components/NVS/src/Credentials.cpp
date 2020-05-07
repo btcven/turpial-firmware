@@ -69,8 +69,6 @@ esp_err_t getCredentials(store_credentials_t* user_credentials)
 {
     esp_err_t err;
     storage::NVS app_nvs;
-    size_t username_size = MAX_USER_NAME_LENGTH;
-    size_t password_size = MAX_USER_PASSWORD_LENGTH;
 
     err = app_nvs.open(NVS_APP_NAMESPACE, NVS_READWRITE);
     if (err != ESP_OK) {
@@ -82,12 +80,14 @@ esp_err_t getCredentials(store_credentials_t* user_credentials)
         return err;
     }
 
+    size_t username_size = MAX_USER_NAME_LENGTH;
     err = app_nvs.getString(USER_NAME_KEY, user_credentials->nvs_username, &username_size);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "error getting username");
         return ESP_FAIL;
     }
 
+    size_t password_size = MAX_USER_PASSWORD_LENGTH;
     err = app_nvs.getString(USER_PASSWORD_KEY, user_credentials->nvs_password, &password_size);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "error getting password");

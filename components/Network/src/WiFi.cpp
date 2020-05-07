@@ -53,9 +53,10 @@ WiFi::WiFi()
 }
 esp_err_t WiFi::init()
 {
-    esp_err_t err;
 
     ESP_LOGD(TAG, "Init TCP/IP adapter");
+    
+    esp_err_t err;
     err = esp_netif_init();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "esp_netif_init failed, err = %s", esp_err_to_name(err));
@@ -183,8 +184,6 @@ void WiFi::setEventHandler(std::unique_ptr<WiFiEventHandler>&& event_handler)
 
 esp_err_t WiFi::stop()
 {
-    bool is_sta = isSta();
-
     esp_err_t err = esp_wifi_stop();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "esp_wifi_stop failed, err = %s", esp_err_to_name(err));
