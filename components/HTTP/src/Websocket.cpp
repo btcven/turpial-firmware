@@ -234,7 +234,6 @@ esp_err_t Websocket::messageRecipient(std::uint8_t* payload, uid_message_t* uid_
 
 esp_err_t Websocket::sendWsData(uid_message_t client_uid, httpd_ws_frame_t ws_pkt, bool uart)
 {
-
     if (m_client.size() == 0) {
         ESP_LOGE(TAG, "No clients connected");
         return ESP_FAIL;
@@ -320,7 +319,6 @@ void Websocket::checkConnection()
 
 esp_err_t Websocket::sendUart(httpd_ws_frame_t ws_pkt)
 {
-
     chat_msg_t msg;
     message::getAllMessage(&msg, ws_pkt.payload);
 
@@ -368,7 +366,7 @@ void Websocket::websocketRadioRx(const std::uint8_t* buffer, std::size_t length)
     esp_err_t err;
     err = message::parseMessage((std::uint8_t*)buffer, &msg, length);
     if (err) {
-        ESP_LOGE("TEST", "error decoding the value");
+        ESP_LOGE(TAG, "error decoding the value");
     }
 
     cJSON* root = cJSON_CreateObject();

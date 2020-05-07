@@ -108,13 +108,11 @@ void Button::tick(bool active_level, unsigned long time_now)
 
         } else if (!active_level) { //si se libra y es valido
            m_state = 2;             // step to state 2
-            m_stop_time = now;       // remember stopping time
-            printf("stop time : %lu", m_stop_time);
+           m_stop_time = now;       // remember stopping time
 
         } else if ((active_level) &&
-                   (press_time > _long_press_ticks)) {
+                   (press_time > m_long_press_ticks)) {
             m_is_long_pressed = true; // Keep track of long press state
-            printf("LONG -------  pres_time : %lu", press_time);
             //attach callback here
             if (longClickFunc != NULL) {
                 longClickFunc();
@@ -143,10 +141,12 @@ void Button::tick(bool active_level, unsigned long time_now)
         if ((!active_level) &&
             ((unsigned long)(now - m_start_time) > m_debounce_ticks)) {
             // this was a 2 click sequence.
-            if (doubleClickFunc)
+            if (doubleClickFunc){
                 doubleClickFunc();
-            m_state = 0;       // restart.
-            m_stop_time = now; // remember stopping time
+                m_state = 0;       // restart.
+                m_stop_time = now; // remember stopping time
+
+            }
         }                     // if
     }
 } // Button.tick()

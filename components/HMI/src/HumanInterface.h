@@ -72,7 +72,7 @@ private:
     unsigned int m_debounce_ticks = 200;     // number of ticks for debounce times.
     unsigned long m_click_ticks = 250;       // number of ticks that have to pass by
                                             // before a click is detected.
-    unsigned long _long_press_ticks = 1500; // number of ticks that have to pass by
+    unsigned long m_long_press_ticks = 1500; // number of ticks that have to pass by
                                             // before a long button press is detected
 
     int m_button_pressed;
