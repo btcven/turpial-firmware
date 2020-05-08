@@ -53,9 +53,8 @@ WiFi::WiFi()
 }
 esp_err_t WiFi::init()
 {
-
     ESP_LOGD(TAG, "Init TCP/IP adapter");
-    
+
     esp_err_t err;
     err = esp_netif_init();
     if (err != ESP_OK) {
@@ -206,5 +205,11 @@ void WiFi::eventHandler(void* event_handler_arg,
         ESP_LOGE(TAG, "Event handler error, err = %s", esp_err_to_name(err));
     }
 }
+
+esp_err_t WiFi::getConnectedList(wifi_sta_list_t& sta)
+{
+    return esp_wifi_ap_get_sta_list(&sta);
+}
+
 
 } // namespace network
