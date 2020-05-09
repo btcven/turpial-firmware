@@ -24,14 +24,15 @@
 #include <FuelGauge.h>
 #include <Radio.h>
 #include <Storage.h>
-#include <WiFi.h>
 #include <Websocket.h>
+#include <WiFi.h>
 
 #include "UserButton.h"
 #include "UserButtonHandler.h"
 
-#include "RESTServer.h"
 #include "Credentials.h"
+#include "RESTServer.h"
+#include "Vaina.h"
 
 static const char* TAG = "app_main";
 
@@ -133,9 +134,12 @@ extern "C" void app_main()
     err = radio::init();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initialize radio, err = %s",
-                 esp_err_to_name(err));
+            esp_err_to_name(err));
         return;
     }
+
+
+    Vaina::getInstance();
 
 #if CONFIG_ESC_ENABLED
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
@@ -146,7 +150,7 @@ extern "C" void app_main()
     gpio_num_t gpout = static_cast<gpio_num_t>(CONFIG_ESC_GPOUT_PIN);
 
     err = battery.init(sysoff, gpout, CONFIG_ESC_SOC_DELTA,
-                       CONFIG_ESC_MAX_BATTERY_CAPACITY);
+        CONFIG_ESC_MAX_BATTERY_CAPACITY);
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Can't setup ESC, err = %s",
             esp_err_to_name(err));

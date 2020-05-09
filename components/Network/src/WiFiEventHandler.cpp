@@ -11,6 +11,7 @@
 
 #include "WiFiEventHandler.h"
 
+#include "Vaina.h"
 #include <esp_err.h>
 #include <esp_log.h>
 #include <esp_wifi.h>
@@ -44,13 +45,13 @@ esp_err_t WiFiEventHandler::staStop()
 
 esp_err_t WiFiEventHandler::staConnected(wifi_event_sta_connected_t* info)
 {
-    ESP_LOGD(TAG, "default staConnected");
+    ESP_LOGI(TAG, "default staConnected");
     return ESP_OK;
 }
 
 esp_err_t WiFiEventHandler::staDisconnected(wifi_event_sta_disconnected_t* info)
 {
-    ESP_LOGD(TAG, "default staDisconnected");
+    ESP_LOGI(TAG, "default staDisconnected");
     return ESP_OK;
 }
 
@@ -79,20 +80,29 @@ esp_err_t WiFiEventHandler::apStop()
 }
 esp_err_t WiFiEventHandler::apStaConnected(wifi_event_ap_staconnected_t* info)
 {
-    ESP_LOGD(TAG, "default apStaConnected");
+    ESP_LOGI(TAG, "default apStaConnected");
+
+
+    Vaina& vaina = Vaina::getInstance();
+
+    vaina.staConnected(info);
     return ESP_OK;
 }
 
 esp_err_t WiFiEventHandler::apStaDisconnected(wifi_event_ap_stadisconnected_t* info)
 {
-    ESP_LOGD(TAG, "default apStaDisconnected");
+    ESP_LOGI(TAG, "default apStaDisconnected");
+
+    Vaina& vaina = Vaina::getInstance();
+
+    vaina.staDisconected(info);
     return ESP_OK;
 }
 
 esp_err_t WiFiEventHandler::eventDispatcher(std::int32_t event_id,
-                                            void* event_data)
+    void* event_data)
 {
-    ESP_LOGD(TAG, "eventHandler called, event = 0x%x", event_id);
+    ESP_LOGI(TAG, "eventHandler called, event = 0x%x", event_id);
 
     // Call the necessary event handler
     switch (event_id) {

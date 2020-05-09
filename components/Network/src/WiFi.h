@@ -204,7 +204,7 @@ public:
      */
     void setEventHandler(std::unique_ptr<WiFiEventHandler>&& event_handler);
 
-     /**
+    /**
      * @brief get connected client
      *
      * @return
@@ -212,6 +212,9 @@ public:
      *      - (others): failed
      */
     esp_err_t getConnectedList(wifi_sta_list_t& sta);
+
+    esp_err_t getApIpAddress();
+
 
 private:
     /**
@@ -235,7 +238,16 @@ private:
         std::int32_t event_id,
         void* event_data);
 
+    static void ipEventHandler(void* event_handler_arg,
+        esp_event_base_t event_base,
+        std::int32_t event_id,
+        void* event_data);
+
     WiFiDefaultEventHandler m_event_handler; /*!< Pointer to desired handler event */
+  
+
+    esp_netif_t* m_ap_netif;
+
 };
 
 } // namespace network
