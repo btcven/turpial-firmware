@@ -17,7 +17,7 @@
 #include <esp_err.h>
 #include <esp_event.h>
 #include <esp_wifi.h>
-
+#include <vector>
 #include "WiFiEventHandler.h"
 
 namespace network {

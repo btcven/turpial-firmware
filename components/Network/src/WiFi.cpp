@@ -14,6 +14,7 @@
 #include <cstdint>
 #include <cstring>
 
+#include "Vaina.h"
 #include <esp_log.h>
 #include <esp_wifi.h>
 #include <iostream>
@@ -21,7 +22,7 @@
 namespace network {
 
 static const char* TAG = "WiFi";
-static esp_ip4_addr_t s_ip_addr;
+
 
 WiFiDefaultEventHandler::WiFiDefaultEventHandler()
 {
@@ -230,16 +231,15 @@ void WiFi::ipEventHandler(void* event_handler_arg,
 {
     ip_event_got_ip_t* event = (ip_event_got_ip_t*)event_data;
 
-    memset(&s_ip_addr, 0, sizeof(esp_ip4_addr_t));
+    Vaina& vaina = Vaina::getInstance();
 
-    memcpy(&s_ip_addr, &event->ip_info.ip, sizeof(s_ip_addr));
-
-    ESP_LOGI(TAG, "12341241:" IPSTR, IP2STR(&s_ip_addr));
+    ESP_LOGI(TAG, "got ipin the  event:" IPSTR, IP2STR(&event->ip_info.ip));
+    vaina.setArrayIpv4(event->ip_info.ip);
 }
 
 esp_err_t WiFi::getApIpAddress()
 {
-    ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&s_ip_addr));
+    // ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&s_ip_addr));
 
     return ESP_OK;
 }
