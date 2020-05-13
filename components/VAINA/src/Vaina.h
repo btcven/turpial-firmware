@@ -109,7 +109,7 @@ public:
     esp_ip6_addr_t ipv4ToIpv6(uint32_t* ipv4);
     /**
      * 
-     * @brief funtion to convert of decimal to hex 
+     * @brief function to convert of decimal to hex 
      * @param[in] n decimal numbers
      *
      * @return char*
