@@ -14,11 +14,11 @@
 
 #include <cstdint>
 
+#include "WiFiEventHandler.h"
 #include <esp_err.h>
 #include <esp_event.h>
 #include <esp_wifi.h>
 #include <vector>
-#include "WiFiEventHandler.h"
 
 namespace network {
 
@@ -213,8 +213,6 @@ public:
      */
     esp_err_t getConnectedList(wifi_sta_list_t& sta);
 
-    esp_err_t getApIpAddress();
-
 
 private:
     /**
@@ -244,10 +242,9 @@ private:
         void* event_data);
 
     WiFiDefaultEventHandler m_event_handler; /*!< Pointer to desired handler event */
-  
+
 
     esp_netif_t* m_ap_netif;
-
 };
 
 } // namespace network

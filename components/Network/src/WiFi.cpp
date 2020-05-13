@@ -237,12 +237,5 @@ void WiFi::ipEventHandler(void* event_handler_arg,
     vaina.setArrayIpv4(event->ip_info.ip);
 }
 
-esp_err_t WiFi::getApIpAddress()
-{
-    // ESP_LOGI(TAG, "got ip:" IPSTR, IP2STR(&s_ip_addr));
-
-    return ESP_OK;
-}
-
 
 } // namespace network
