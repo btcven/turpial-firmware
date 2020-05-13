@@ -22,10 +22,10 @@
 
 #include <Battery.h>
 #include <FuelGauge.h>
-#include <Radio.h>
 #include <Storage.h>
-#include <Websocket.h>
 #include <WiFi.h>
+#include <Slip.h>
+#include <Websocket.h>
 
 #include "UserButton.h"
 #include "UserButtonHandler.h"
@@ -131,12 +131,15 @@ extern "C" void app_main()
 
     rest_server::start_server();
 
-    err = radio::init();
+#if CONFIG_RADIO_SLIP
+    network::Slip radio_slip;
+    err = radio_slip.start(CONFIG_RADIO_SLIP_UART, CONFIG_RADIO_SLIP_TX,
+                           CONFIG_RADIO_SLIP_RX, CONFIG_RADIO_SLIP_BAUDRATE);
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't initialize radio, err = %s",
-            esp_err_to_name(err));
-        return;
+        ESP_LOGE(TAG, "Couldn't initialize radio SLIP netif = %s",
+                 esp_err_to_name(err));
     }
+#endif
 
 
 #if CONFIG_ESC_ENABLED
