@@ -20,11 +20,25 @@
 
 struct sta_data_t {
     esp_ip4_addr_t sta_ipv4;
-    const char sta_mac[12];
-    const char sta_ipv6;
+    char sta_mac[13];
+    esp_ip6_addr_t sta_ipv6;
 };
+
 struct mac_length_t {
     char mac[13];
+};
+
+
+/**
+                    
+ * @enum   VAINA message types
+ */
+enum {
+    VAINA_MSG_ACK = 0,     /**< Message acknowledged */
+    VAINA_MSG_RCS_ADD = 2, /**< Add entry to Router Client Set */
+    VAINA_MSG_RCS_DEL = 3, /**< Delete entry from Router Client Set */
+    VAINA_MSG_NIB_ADD = 4, /**< Add entry to NIB */
+    VAINA_MSG_NIB_DEL = 5, /**< Delete entry from NIB */
 };
 
 
@@ -60,8 +74,10 @@ public:
     esp_err_t staConnected(wifi_event_ap_staconnected_t* info);
     esp_err_t staDisconected(wifi_event_ap_stadisconnected_t* info);
     void setArrayIpv4(esp_ip4_addr_t ipv4);
-    void ipv4ToIpv6(uint32_t* ipv4);
-    void decToHexa(int n);
+    esp_ip6_addr_t ipv4ToIpv6(uint32_t* ipv4);
+    char* decToHexa(int n);
+    esp_err_t sendUartConnected(sta_data_t client);
+    esp_err_t sendUartdisconnected(sta_data_t client);
 };
 
 

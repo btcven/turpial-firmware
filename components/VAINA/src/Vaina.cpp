@@ -39,7 +39,7 @@ esp_err_t Vaina::staConnected(wifi_event_ap_staconnected_t* info)
         }
     }
 
-    ESP_LOGI(TAG, "hello:!!!!!!!!!!!!! %s", hex_mac_address.mac);
+    ESP_LOGI(TAG, "Mac address %s", hex_mac_address.mac);
     if (!is_equal) {
         m_mac_array.push_back(hex_mac_address);
     }
@@ -52,6 +52,17 @@ esp_err_t Vaina::staConnected(wifi_event_ap_staconnected_t* info)
 
 esp_err_t Vaina::staDisconected(wifi_event_ap_stadisconnected_t* info)
 {
+    mac_length_t hex_mac_address;
+    util::bytesToHex(info->mac, hex_mac_address.mac, 6);
+
+    for (size_t i = 0; i < m_sta_connected.size(); i++) {
+        if (strcmp(m_sta_connected[i].sta_mac, hex_mac_address.mac) == 0) {
+            sendUartdisconnected(m_sta_connected[i]);
+            m_sta_connected.erase(m_sta_connected.begin() + i);
+        }
+    }
+
+
     return ESP_OK;
 }
 
@@ -74,34 +85,59 @@ void Vaina::setArrayIpv4(esp_ip4_addr_t ipv4)
     is_equal = false;
 
     for (size_t i = 0; i < m_ipv4_array.size(); i++) {
-        std::cout << "address: ipv4 sin formato" << ipv4.addr << std::endl;
-        ESP_LOGI(TAG, "Mac address %s", m_mac_array[i].mac);
-        ipv4ToIpv6(&ipv4.addr);
+        sta_data_t sta_client;
+
+        memcpy(sta_client.sta_mac, m_mac_array[i].mac, 13);
+        sta_client.sta_ipv4 = ipv4;
+        sta_client.sta_ipv6 = ipv4ToIpv6(&ipv4.addr);
+
+        m_sta_connected.push_back(sta_client);
+    }
+
+    m_mac_array.clear();
+    m_ipv4_array.clear();
+
+    if (!m_sta_connected.empty()) {
+        sendUartConnected(m_sta_connected.back());
     }
 }
 
 
-void Vaina::ipv4ToIpv6(uint32_t* ipv4)
+esp_ip6_addr_t Vaina::ipv4ToIpv6(uint32_t* ipv4)
 {
     int first = ipv4[1];
     int second = ipv4[12];
     int third = ipv4[13];
     int fourth = ipv4[14];
+    char* result = (char*)malloc(9);
 
-    std::cout << first << std::endl;
-    std::cout << second << std::endl;
-    std::cout << third << std::endl;
-    std::cout << fourth << std::endl;
 
-    decToHexa(first);
+    memset(result, 0, 9);
+
+    strcpy(result, decToHexa(first));
+    strcat(result, decToHexa(second));
+    strcat(result, decToHexa(third));
+    strcat(result, decToHexa(fourth));
+
+
+    esp_ip6_addr_t ipv6;
+
+    ipv6.addr[0] = 0x20000000;
+    ipv6.addr[1] = 0;
+    ipv6.addr[3] = *(uint32_t*)&result;
+    ipv6.addr[4] = 0;
+    ipv6.zone = 64;
+
+    free(result);
+    return ipv6;
 }
 
 
-void Vaina::decToHexa(int n)
+char* Vaina::decToHexa(int n)
 {
     // char array to store hexadecimal number
     char hexaDeciNum[100];
-    char result[2];
+    char* result = (char*)malloc(3);
 
     // counter for hexadecimal number array
     int i = 0;
@@ -123,10 +159,38 @@ void Vaina::decToHexa(int n)
 
         n = n / 16;
     }
+    result[0] = hexaDeciNum[1];
+    result[1] = hexaDeciNum[0];
+    result[2] = '\0';
 
-    // printing hexadecimal number array in reverse order
-    for (int j = i - 1; j >= 0; j--) {
-        result[j] = hexaDeciNum[j];
-    }
-    result[3] = '\0';
+    return result;
+    free(result);
+}
+
+
+esp_err_t Vaina::sendUartConnected(sta_data_t client)
+{
+    std::uint8_t buf[3];
+    buf[0] = VAINA_MSG_RCS_ADD;
+    buf[1] = VAINA_MSG_RCS_ADD;
+
+    memcpy(&buf[3], &client.sta_ipv6, sizeof(esp_ip6_addr_t));
+
+    //  code to send here
+
+    return ESP_OK;
+}
+
+
+esp_err_t Vaina::sendUartdisconnected(sta_data_t client)
+{
+    std::uint8_t buf[3];
+    buf[0] = VAINA_MSG_RCS_DEL;
+    buf[1] = VAINA_MSG_RCS_DEL;
+
+    memcpy(&buf[3], &client.sta_ipv6, sizeof(esp_ip6_addr_t));
+
+    //  code to send here
+
+    return ESP_OK;
 }
