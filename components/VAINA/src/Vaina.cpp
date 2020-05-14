@@ -116,66 +116,14 @@ void Vaina::setArrayIpv4(esp_ip4_addr_t ipv4)
 
 esp_ip6_addr_t Vaina::ipv4ToIpv6(uint32_t* ipv4)
 {
-    int first = ipv4[1];
-    int second = ipv4[12];
-    int third = ipv4[13];
-    int fourth = ipv4[14];
-    char* result = (char*)malloc(9);
-
-
-    memset(result, 0, 9);
-
-    strcpy(result, decToHexa(first));
-    strcat(result, decToHexa(second));
-    strcat(result, decToHexa(third));
-    strcat(result, decToHexa(fourth));
-
-
     esp_ip6_addr_t ipv6;
 
     ipv6.addr[0] = 0x20000000;
     ipv6.addr[1] = 0;
-    ipv6.addr[3] = *(uint32_t*)&result;
+    ipv6.addr[3] = *(uint32_t*)&ipv4;
     ipv6.addr[4] = 0;
     ipv6.zone = 64;
-
-    free(result);
     return ipv6;
-}
-
-
-char* Vaina::decToHexa(int n)
-{
-    // char array to store hexadecimal number
-    char hexaDeciNum[100];
-    char* result = (char*)malloc(3);
-
-    // counter for hexadecimal number array
-    int i = 0;
-    while (n != 0) {
-        // temporary variable to store remainder
-        int temp = 0;
-
-        // storing remainder in temp variable.
-        temp = n % 16;
-
-        // check if temp < 10
-        if (temp < 10) {
-            hexaDeciNum[i] = temp + 48;
-            i++;
-        } else {
-            hexaDeciNum[i] = temp + 55;
-            i++;
-        }
-
-        n = n / 16;
-    }
-    result[0] = hexaDeciNum[1];
-    result[1] = hexaDeciNum[0];
-    result[2] = '\0';
-
-    return result;
-    free(result);
 }
 
 

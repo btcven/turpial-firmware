@@ -73,4 +73,39 @@ esp_err_t bytesToHex(std::uint8_t* buf, char* dst, std::size_t len)
     return ESP_OK;
 }
 
+
+void decToHexa(int n, uint8_t* hex_data)
+{
+   
+    // char array to store hexadecimal number
+    char hexaDeciNum[100];
+
+    // counter for hexadecimal number array
+    int i = 0;
+    while (n != 0) {
+        // temporary variable to store remainder
+        int temp = 0;
+
+        // storing remainder in temp variable.
+        temp = n % 16;
+
+        // check if temp < 10
+        if (temp < 10) {
+            hexaDeciNum[i] = temp + 48;
+            i++;
+        } else {
+            hexaDeciNum[i] = temp + 55;
+            i++;
+        }
+
+        n = n / 16;
+    }
+
+    int d = 0;
+    for (int j = i - 1; j >= 0; j--) {
+        hex_data[d] = hexaDeciNum[j];
+        d++;
+    }
+}
+
 } // namespace util

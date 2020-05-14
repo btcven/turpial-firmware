@@ -116,14 +116,7 @@ public:
      * @return esp_err_t
      */
     esp_ip6_addr_t ipv4ToIpv6(uint32_t* ipv4);
-    /**
-     * 
-     * @brief function to convert of decimal to hex 
-     * @param[in] n decimal numbers
-     *
-     * @return char*
-     */
-    char* decToHexa(int n);
+   
     /**
      * @brief executed when a client connected 
      * @param[in] client client data

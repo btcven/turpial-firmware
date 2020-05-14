@@ -233,7 +233,7 @@ void WiFi::ipEventHandler(void* event_handler_arg,
 
     Vaina& vaina = Vaina::getInstance();
 
-    ESP_LOGI(TAG, "got ipin the  event:" IPSTR, IP2STR(&event->ip_info.ip));
+    ESP_LOGI(TAG, "got ip the  event:" IPSTR, IP2STR(&event->ip_info.ip));
     vaina.setArrayIpv4(event->ip_info.ip);
 }
 
