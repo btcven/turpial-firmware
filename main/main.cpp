@@ -139,8 +139,6 @@ extern "C" void app_main()
     }
 
 
-    Vaina::getInstance();
-
 #if CONFIG_ESC_ENABLED
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
 

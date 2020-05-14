@@ -12,12 +12,13 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
- * @file Vaina.h
+ */
+
+/** 
+ * @file Vaina.cpp
  * @author Locha Mesh Developers (contact@locha.io)
  * @brief VAINA - Versatile Address Interface | Network Administration
  */
-
 
 #ifndef VAINA_H
 #define VAINA_H
@@ -62,6 +63,7 @@ private:
     std::vector<sta_data_t> m_sta_connected;  // all data client array
     std::vector<esp_ip4_addr_t> m_ipv4_array; // ipv4 array
     std::vector<mac_length_t> m_mac_array;    // mac array
+    int m_seqno = 0;
     /* data */
 public:
     friend network::WiFi
@@ -116,21 +118,23 @@ public:
      * @return esp_err_t
      */
     esp_ip6_addr_t ipv4ToIpv6(uint32_t* ipv4);
-   
+
     /**
      * @brief executed when a client connected 
      * @param[in] client client data
      * 
      * @return esp_err_t
      */
-    esp_err_t sendUartConnected(sta_data_t client);
+    esp_err_t onConnected(sta_data_t client);
     /**
      * @brief executed when a client disconnect
      * @param[in] client client data
      * 
      * @return esp_err_t
      */
-    esp_err_t sendUartdisconnected(sta_data_t client);
+    esp_err_t onDisconnected(sta_data_t client);
+
+    int createSeqNo();
 };
 
 

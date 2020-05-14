@@ -14,7 +14,9 @@
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
  * See the License for the specific language governing permissions and
  * limitations under the License.
- * 
+ */
+
+/** 
  * @file Vaina.cpp
  * @author Locha Mesh Developers (contact@locha.io)
  * @brief VAINA - Versatile Address Interface | Network Administration
@@ -68,7 +70,7 @@ esp_err_t Vaina::staDisconected(wifi_event_ap_stadisconnected_t* info)
 
     for (size_t i = 0; i < m_sta_connected.size(); i++) {
         if (strcmp(m_sta_connected[i].sta_mac, hex_mac_address.mac) == 0) {
-            sendUartdisconnected(m_sta_connected[i]);
+            onDisconnected(m_sta_connected[i]);
             m_sta_connected.erase(m_sta_connected.begin() + i);
         }
     }
@@ -109,7 +111,7 @@ void Vaina::setArrayIpv4(esp_ip4_addr_t ipv4)
     m_ipv4_array.clear();
 
     if (!m_sta_connected.empty()) {
-        sendUartConnected(m_sta_connected.back());
+        onConnected(m_sta_connected.back());
     }
 }
 
@@ -127,11 +129,11 @@ esp_ip6_addr_t Vaina::ipv4ToIpv6(uint32_t* ipv4)
 }
 
 
-esp_err_t Vaina::sendUartConnected(sta_data_t client)
+esp_err_t Vaina::onConnected(sta_data_t client)
 {
     std::uint8_t buf[3];
     buf[0] = VAINA_MSG_RCS_ADD;
-    buf[1] = VAINA_MSG_RCS_ADD;
+    buf[1] = createSeqNo();
 
     memcpy(&buf[3], &client.sta_ipv6, sizeof(esp_ip6_addr_t));
 
@@ -141,15 +143,22 @@ esp_err_t Vaina::sendUartConnected(sta_data_t client)
 }
 
 
-esp_err_t Vaina::sendUartdisconnected(sta_data_t client)
+esp_err_t Vaina::onDisconnected(sta_data_t client)
 {
     std::uint8_t buf[3];
     buf[0] = VAINA_MSG_RCS_DEL;
-    buf[1] = VAINA_MSG_RCS_DEL;
+    buf[1] = createSeqNo();
 
     memcpy(&buf[3], &client.sta_ipv6, sizeof(esp_ip6_addr_t));
 
     //  code to send here
 
     return ESP_OK;
+}
+
+
+int Vaina::createSeqNo()
+{
+    m_seqno += 1;
+    return m_seqno;
 }
