@@ -116,13 +116,13 @@ void Vaina::setArrayIpv4(esp_ip4_addr_t ipv4)
 }
 
 
-esp_ip6_addr_t Vaina::ipv4ToIpv6(uint32_t* ipv4)
+esp_ip6_addr_t Vaina::ipv4ToIpv6(std::uint32_t* ipv4)
 {
     esp_ip6_addr_t ipv6;
 
     ipv6.addr[0] = 0x20000000;
     ipv6.addr[1] = 0;
-    ipv6.addr[3] = *(uint32_t*)&ipv4;
+    ipv6.addr[3] = (std::uint32_t)ipv4;
     ipv6.addr[4] = 0;
     ipv6.zone = 64;
     return ipv6;
