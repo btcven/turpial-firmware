@@ -134,6 +134,10 @@ public:
      */
     esp_err_t onDisconnected(sta_data_t client);
 
+    /**
+     * @brief create seqno 
+     * @return int
+     */
     int createSeqNo();
 };
 
