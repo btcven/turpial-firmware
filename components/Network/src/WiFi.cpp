@@ -14,12 +14,15 @@
 #include <cstdint>
 #include <cstring>
 
+#include "Vaina.h"
 #include <esp_log.h>
 #include <esp_wifi.h>
+#include <iostream>
 
 namespace network {
 
 static const char* TAG = "WiFi";
+
 
 WiFiDefaultEventHandler::WiFiDefaultEventHandler()
 {
@@ -50,12 +53,12 @@ esp_err_t WiFiDefaultEventHandler::staStop()
 WiFi::WiFi()
     : m_event_handler()
 {
+    m_ap_netif = nullptr;
 }
 esp_err_t WiFi::init()
 {
-
     ESP_LOGD(TAG, "Init TCP/IP adapter");
-    
+
     esp_err_t err;
     err = esp_netif_init();
     if (err != ESP_OK) {
@@ -68,7 +71,7 @@ esp_err_t WiFi::init()
         ESP_LOGE(TAG, "Couldn't create event loop, err = %s", esp_err_to_name(err));
         return err;
     }
-    esp_netif_create_default_wifi_ap();
+    m_ap_netif = esp_netif_create_default_wifi_ap();
 
     ESP_LOGD(TAG, "Initializing Wi-Fi");
 
@@ -85,6 +88,14 @@ esp_err_t WiFi::init()
         ESP_LOGE(TAG, "Couldn't register Wi-Fi event handler, err = %s", esp_err_to_name(err));
         return err;
     }
+
+    err = esp_event_handler_register(IP_EVENT, IP_EVENT_AP_STAIPASSIGNED,
+        &WiFi::ipEventHandler, NULL);
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't register Wi-Fi event handler, err = %s", esp_err_to_name(err));
+        return err;
+    }
+
 
     return ESP_OK;
 }
@@ -198,7 +209,8 @@ void WiFi::eventHandler(void* event_handler_arg,
     std::int32_t event_id,
     void* event_data)
 {
-    ESP_LOGD(TAG, "Wi-Fi Event Handler Called");
+    ESP_LOGI(TAG, "Wi-Fi Event Handler Called");
+
     WiFi* wifi = reinterpret_cast<WiFi*>(event_handler_arg);
 
     esp_err_t err = wifi->m_event_handler.eventDispatcher(event_id, event_data);
@@ -206,5 +218,24 @@ void WiFi::eventHandler(void* event_handler_arg,
         ESP_LOGE(TAG, "Event handler error, err = %s", esp_err_to_name(err));
     }
 }
+
+esp_err_t WiFi::getConnectedList(wifi_sta_list_t& sta)
+{
+    return esp_wifi_ap_get_sta_list(&sta);
+}
+
+void WiFi::ipEventHandler(void* event_handler_arg,
+    esp_event_base_t event_base,
+    std::int32_t event_id,
+    void* event_data)
+{
+    ip_event_got_ip_t* event = (ip_event_got_ip_t*)event_data;
+
+    Vaina& vaina = Vaina::getInstance();
+
+    ESP_LOGI(TAG, "got ip the  event:" IPSTR, IP2STR(&event->ip_info.ip));
+    vaina.setArrayIpv4(event->ip_info.ip);
+}
+
 
 } // namespace network

@@ -8,4 +8,5 @@ idf_component_register(SRCS "main.cpp"
                            Task
                            Util
                            HTTP
-                           HMI)
+                           HMI
+                           VAINA)

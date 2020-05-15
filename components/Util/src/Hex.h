@@ -60,6 +60,15 @@ esp_err_t hexToBytes(const char* src, std::uint8_t* target);
  */
 esp_err_t bytesToHex(std::uint8_t* buf, char* dst, std::size_t len);
 
+/**
+ * 
+ * @brief function to convert of decimal to hex 
+ * @param[in] n decimal numbers
+ *
+ * @return char*
+ */
+void decToHexa(int n, uint8_t* hex_data);
+
 } // namespace util
 
 
