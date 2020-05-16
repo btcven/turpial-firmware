@@ -34,9 +34,9 @@
 #include <Battery.h>
 #include <FuelGauge.h>
 #include <Storage.h>
-#include <WiFi.h>
-#include <Slip.h>
 #include <Websocket.h>
+#include <Slip.h>
+#include <Network/WiFi.h>
 
 #include "UserButton.h"
 #include "UserButtonHandler.h"

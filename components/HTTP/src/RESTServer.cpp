@@ -31,12 +31,13 @@
 #include "FuelGauge.h"
 #include "HttpServer.h"
 #include "Websocket.h"
-#include "WiFi.h"
 #include "defaults.h"
 #include <Storage.h>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 #include <iostream>
+
+#include <Network/WiFi.h>
 
 #define REST_CHECK(expr, msg)   \
     do {                        \

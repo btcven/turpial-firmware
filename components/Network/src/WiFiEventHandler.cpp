@@ -20,16 +20,17 @@
  *  
  */
 
-#include "WiFiEventHandler.h"
+#include <Network/WiFiEventHandler.h>
 
-#include "Vaina.h"
 #include <esp_err.h>
 #include <esp_log.h>
 #include <esp_wifi.h>
 
-static const char* TAG = "WiFiEventHandler";
+#include "Vaina.h"
 
 namespace network {
+
+static const char* TAG = "WiFiEventHandler";
 
 WiFiEventHandler::WiFiEventHandler()
     : m_next_handler(nullptr)

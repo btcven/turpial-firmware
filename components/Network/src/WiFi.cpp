@@ -20,20 +20,20 @@
  *  
  */
 
-#include "WiFi.h"
+#include <Network/WiFi.h>
 
 #include <cstdint>
 #include <cstring>
 
-#include "Vaina.h"
 #include <esp_log.h>
 #include <esp_wifi.h>
 #include <iostream>
 
+#include "Vaina.h"
+
 namespace network {
 
 static const char* TAG = "WiFi";
-
 
 WiFiDefaultEventHandler::WiFiDefaultEventHandler()
 {

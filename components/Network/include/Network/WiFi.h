@@ -15,20 +15,25 @@
  */
 
 /** 
- * @file WiFi.h
- * @author Locha Mesh Developers (contact@locha.io)
- *  
+ * @ingroup     network
+ * @{
+ *
+ * @file
+ * @author      Locha Mesh Developers (contact@locha.io)
+ * @brief       Wi-Fi network interface
  */
+
 #ifndef NETWORK_WIFI_H
 #define NETWORK_WIFI_H
 
 #include <cstdint>
+#include <vector>
 
-#include "WiFiEventHandler.h"
 #include <esp_err.h>
 #include <esp_event.h>
 #include <esp_wifi.h>
-#include <vector>
+
+#include "WiFiEventHandler.h"
 
 namespace network {
 

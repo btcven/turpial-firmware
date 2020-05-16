@@ -15,11 +15,13 @@
  */
 
 /** 
- * @file WiFiEventHandler.h
- * @author Locha Mesh Developers (contact@locha.io)
- *  
+ * @ingroup     network
+ * @{
+ *
+ * @file
+ * @author      Locha Mesh Developers (contact@locha.io)
+ * @brief       Wi-Fi Event Handler
  */
-
 
 #ifndef NETWORK_WIFI_EVENT_HANDLER_H
 #define NETWORK_WIFI_EVENT_HANDLER_H
