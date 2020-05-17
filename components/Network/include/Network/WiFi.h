@@ -76,22 +76,7 @@ public:
 class WiFi
 {
 public:
-    /**
-     * @brief Get the unique instance of the object
-     *
-     * @return WiFi&
-     */
-    static WiFi& getInstance()
-    {
-        static WiFi instance;
-        return instance;
-    }
-
-    WiFi(WiFi const&) = delete; // Copy construct
-    WiFi(WiFi&&) = delete;      // Move construct
-
-    WiFi& operator=(WiFi const&) = delete; // Copy assign
-    WiFi& operator=(WiFi&&) = delete;      // Move assign
+    WiFi();
 
     /**
      * @brief Initialize Wi-Fi
@@ -230,12 +215,6 @@ public:
 
 
 private:
-    /**
-     * @brief Constructor Wi-Fi
-     *
-     */
-    WiFi();
-
     /**
      * @brief Wi-Fi event handler
      *

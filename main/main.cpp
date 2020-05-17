@@ -36,7 +36,7 @@
 #include <Storage.h>
 #include <Websocket.h>
 #include <Slip.h>
-#include <Network/WiFi.h>
+#include <Network/Network.h>
 
 #include "UserButton.h"
 #include "UserButtonHandler.h"
@@ -105,9 +105,7 @@ extern "C" void app_main()
 
     credentials::setInitialCredentials();
 
-    network::WiFi& wifi = network::WiFi::getInstance();
-
-    err = wifi.init();
+    err = network::g_wifi_netif.init();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface (%s)", esp_err_to_name(err));
         return;
@@ -115,7 +113,7 @@ extern "C" void app_main()
 
     is_configured = false;
     if (!is_configured) {
-        wifi.setMode(WIFI_MODE);
+        network::netif_wifi.setMode(WIFI_MODE);
 
         // Default configuration for AP
         wifi_config_t ap_config;
@@ -125,16 +123,16 @@ extern "C" void app_main()
         ap_config.ap.authmode = WAP_AUTHMODE;
         ap_config.ap.max_connection = WAP_MAXCONN;
         ap_config.ap.channel = WAP_CHANNEL;
-        wifi.setApConfig(ap_config);
+        network::netif_wifi.setApConfig(ap_config);
 
         // Default configuration for STA
         wifi_config_t sta_config;
         std::memcpy(sta_config.sta.ssid, WST_SSID, sizeof(WST_SSID));
         std::memcpy(sta_config.sta.password, WST_PASS, sizeof(WST_PASS));
-        wifi.setStaConfig(sta_config);
+        network::netif_wifi.setStaConfig(sta_config);
     }
 
-    err = wifi.start();
+    err = network::g_wifi_netif.start();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't start Wi-Fi, err = %s", esp_err_to_name(err));
         return;

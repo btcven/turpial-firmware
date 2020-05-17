@@ -37,7 +37,7 @@
 #include <freertos/task.h>
 #include <iostream>
 
-#include <Network/WiFi.h>
+#include <Network/Network.h>
 
 #define REST_CHECK(expr, msg)   \
     do {                        \
@@ -188,10 +188,8 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
         sendErrorResponse(req, "fail credential verification");
         return ESP_FAIL;
     }
-    
-    esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
-    network::WiFi& wifi = network::WiFi::getInstance();
 
+    esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();
     // Obtain response values
     std::uint16_t voltage = 0;
     REST_CHECK(fuel_gauge.voltage(&voltage) == ESP_OK, "Can't get voltage\n");
@@ -211,7 +209,7 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
 
     // Read AP configuration
     char ap_ssid[32] = {};
-    if (wifi.getApConfig(ap_config) == ESP_OK) {
+    if (network::netif_wifi.getApConfig(ap_config) == ESP_OK) {
         // Get AP SSID
         std::size_t ssid_len = 0;
         if (ap_config.ap.ssid_len != 0) {
@@ -226,16 +224,16 @@ esp_err_t systemInfoHandler(httpd_req_t* req)
 
     // Read STA configuration
     char sta_ssid[32] = {};
-    if (wifi.getStaConfig(sta_config) == ESP_OK) {
+    if (network::netif_wifi.getStaConfig(sta_config) == ESP_OK) {
         // Get STA SSID
         std::size_t ssid_len = std::strlen(reinterpret_cast<char*>(sta_config.sta.ssid));
-        
+
         std::memcpy(sta_ssid, sta_config.ap.ssid, ssid_len);
         sta_ssid[ssid_len] = '\0';
     }
 
     bool sta_enabled = false;
-    sta_enabled = wifi.isSta();
+    sta_enabled = network::netif_wifi.isSta();
 
     // Construct JSON object
     cJSON* root = cJSON_CreateObject();
@@ -341,12 +339,9 @@ esp_err_t wifiApHandler(httpd_req_t* req)
         return ESP_FAIL;
     }
 
-    // Read current AP configuration
-    network::WiFi& wifi = network::WiFi::getInstance();
-
     bool change_config = false;
     wifi_config_t config;
-    wifi.getApConfig(config);
+    network::netif_wifi.getApConfig(config);
 
     if (!cJSON_IsObject(req_root)) {
         sendErrorResponse(req, "Malformed JSON");
@@ -394,7 +389,7 @@ esp_err_t wifiApHandler(httpd_req_t* req)
     if (change_config) {
         ESP_LOGI(TAG, "Updating AP config");
         vTaskDelay(50 / portTICK_PERIOD_MS);
-        REST_CHECK(wifi.setApConfig(config) == ESP_OK, "Couldn't update AP config.");
+        REST_CHECK(network::netif_wifi.setApConfig(config) == ESP_OK, "Couldn't update AP config.");
     }
 
     return ESP_OK;
@@ -421,8 +416,7 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
     // Read current STA configuration
 
     wifi_config_t config;
-    network::WiFi& wifi = network::WiFi::getInstance();
-    wifi.getStaConfig(config);
+    network::netif_wifi.getStaConfig(config);
 
     if (!cJSON_IsObject(req_root)) {
         sendErrorResponse(req, "Malformed JSON");
@@ -472,15 +466,15 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
     cJSON_Delete(req_root);
 
     // Check if we need to enable STA
-    bool is_sta = wifi.isSta();
+    bool is_sta = network::netif_wifi.isSta();
 
     if (!is_sta && enable) {
-        if (wifi.setMode(WIFI_MODE_APSTA) != ESP_OK) {
+        if (network::netif_wifi.setMode(WIFI_MODE_APSTA) != ESP_OK) {
             sendErrorResponse(req, "Couldn't set mode to AP/STA.");
             return ESP_FAIL;
         }
     } else if (is_sta && !enable) {
-        if (wifi.setMode(WIFI_MODE_AP) != ESP_OK) {
+        if (network::netif_wifi.setMode(WIFI_MODE_AP) != ESP_OK) {
             sendErrorResponse(req, "Couldn't set mode to AP.");
             return ESP_FAIL;
         }
@@ -490,7 +484,7 @@ esp_err_t wifiStaHandler(httpd_req_t* req)
     if (change_config) {
         ESP_LOGI(TAG, "Updating STA config");
 
-        if (wifi.setStaConfig(config) != ESP_OK) {
+        if (network::netif_wifi.setStaConfig(config) != ESP_OK) {
             sendErrorResponse(req, "Couldn't update STA config.");
             return ESP_FAIL;
         }

@@ -20,7 +20,8 @@
  *  
  */
 
-#include <Network/WiFi.h>
+#include "Network/WiFi.h"
+#include "Network/Network.h"
 
 #include <cstdint>
 #include <cstring>
@@ -43,9 +44,7 @@ esp_err_t WiFiDefaultEventHandler::staStart()
 {
     ESP_LOGI(TAG, "STA Start");
 
-    WiFi& wifi = WiFi::getInstance();
-
-    esp_err_t err = wifi.connect();
+    esp_err_t err = netif_wifi.connect();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't connect to AP (%s)", esp_err_to_name(err));
         return err;
@@ -66,6 +65,7 @@ WiFi::WiFi()
 {
     m_ap_netif = nullptr;
 }
+
 esp_err_t WiFi::init()
 {
     ESP_LOGD(TAG, "Init TCP/IP adapter");
