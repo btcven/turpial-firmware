@@ -105,10 +105,10 @@ extern "C" void app_main()
 
     credentials::setInitialCredentials();
 
-    err = network::g_wifi_netif.init();
+    err = network::init();
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface (%s)", esp_err_to_name(err));
-        return;
+        ESP_LOGE(TAG, "Couldn't initialize network interfaces: %s",
+            esp_err_to_name(err));
     }
 
     is_configured = false;

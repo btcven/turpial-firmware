@@ -33,6 +33,17 @@ namespace network {
 
 extern WiFi g_wifi_netif; /**< Wi-Fi network interface */
 
+/**
+ * @brief   Initialize network interfaces
+ *
+ * @note Must be called only once!
+ *
+ * @return
+ *      - ESP_OK: success.
+ *      - (others): failure.
+ */
+esp_err_t init();
+
 } // namespace network
 
 #endif // NETWORK_NETWORK_H

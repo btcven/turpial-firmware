@@ -26,8 +26,26 @@
 
 #include <Network/WiFi.h>
 
+#include <esp_log.h>
+
 namespace network {
 
+static const char* TAG = "Network";
+
 WiFi g_wifi_netif;
+
+esp_err_t init()
+{
+    esp_err_t err;
+
+    err = network::g_wifi_netif.init();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface: %s",
+            esp_err_to_name(err));
+        return err;
+    }
+
+    return ESP_OK;
+}
 
 } // namespace network
