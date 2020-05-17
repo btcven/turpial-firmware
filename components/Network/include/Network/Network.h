@@ -27,11 +27,13 @@
 #ifndef NETWORK_NETWORK_H
 #define NETWORK_NETWORK_H
 
-#include <Network/WiFi.h>
+#include "Network/Slip.h"
+#include "Network/WiFi.h"
 
 namespace network {
 
-extern WiFi g_wifi_netif; /**< Wi-Fi network interface */
+extern Slip netif_radio; /**< SLIP network interface to the radio */
+extern WiFi netif_wifi;  /**< Wi-Fi network interface */
 
 /**
  * @brief   Initialize network interfaces

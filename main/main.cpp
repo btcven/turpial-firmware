@@ -35,7 +35,6 @@
 #include <FuelGauge.h>
 #include <Storage.h>
 #include <Websocket.h>
-#include <Slip.h>
 #include <Network/Network.h>
 
 #include "UserButton.h"
@@ -132,24 +131,7 @@ extern "C" void app_main()
         network::netif_wifi.setStaConfig(sta_config);
     }
 
-    err = network::g_wifi_netif.start();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't start Wi-Fi, err = %s", esp_err_to_name(err));
-        return;
-    }
-
     rest_server::start_server();
-
-#if CONFIG_RADIO_SLIP
-    network::Slip radio_slip;
-    err = radio_slip.start(CONFIG_RADIO_SLIP_UART, CONFIG_RADIO_SLIP_TX,
-                           CONFIG_RADIO_SLIP_RX, CONFIG_RADIO_SLIP_BAUDRATE);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't initialize radio SLIP netif = %s",
-                 esp_err_to_name(err));
-    }
-#endif
-
 
 #if CONFIG_ESC_ENABLED
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();

@@ -14,12 +14,17 @@
  * limitations under the License.
  */
 
-/** 
- * @file Slip.cpp
- * @author Locha Mesh Developers (contact@locha.io)
- *  
+/**
+ * @ingroup     network
+ * @{
+ *
+ * @file
+ * @author      Locha Mesh Developers (contact@locha.io)
+ * @brief       SLIP network interface
+ * @}
  */
-#include "Slip.h"
+
+#include "Network/Slip.h"
 
 namespace network {
 
@@ -57,4 +62,4 @@ esp_err_t Slip::start(uart_port_t uart, int tx, int rx, uint32_t baudrate)
     return esp_netif_attach(m_netif, slip_driver);
 }
 
-}
+} // namespace network
