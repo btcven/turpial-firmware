@@ -99,6 +99,18 @@ In order to compile the firmware (and to flash it) you need to install the
 brings the compiler and necessary tools in order to correctly build the
 project.
 
+Please note that we use a fork of the ESP-IDF, that enables us to use SLIP as
+a network interface (SLIP ESP-NETIF) until we get upstream support, it can
+be used as follows:
+
+```
+git clone https://github.com/btcven/esp-idf/ -b feature/slip
+```
+
+The procedure to install and export the variables is the same as using the
+official version of ESP-IDF. The fork gets the same updates as the main
+repository.
+
 ### Compiling
 
 We use the idf.py command line tool provided by ESP-IDF to build the project.
