@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-/** 
- * @file WiFiEventHandler.cpp
- * @author Locha Mesh Developers (contact@locha.io)
- *  
+/**
+ * @ingroup     network
+ * @{
+ *
+ * @file
+ * @author      Locha Mesh Developers (contact@locha.io)
+ * @brief       Wi-Fi Event Handler
+ * @}
  */
 
 #include <Network/WiFiEventHandler.h>

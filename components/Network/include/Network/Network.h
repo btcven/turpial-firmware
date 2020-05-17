@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/** 
+/**
  * @defgroup    network
  * @ingroup     network
  * @{
@@ -47,3 +47,4 @@ esp_err_t init();
 } // namespace network
 
 #endif // NETWORK_NETWORK_H
+/** @} */

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/** 
+/**
  * @ingroup     network
  * @{
  *
@@ -200,3 +200,4 @@ private:
 } // namespace network
 
 #endif // NETWORK_WIFI_EVENT_HANDLER_H
+/** @} */

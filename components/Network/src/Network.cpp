@@ -14,14 +14,14 @@
  * limitations under the License.
  */
 
-/** 
- * @defgroup    network
+/**
  * @ingroup     network
  * @{
  *
  * @file
  * @author      Locha Mesh Developers (contact@locha.io)
  * @brief       Network interfaces
+ * @}
  */
 
 #include <Network/WiFi.h>

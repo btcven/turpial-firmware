@@ -14,10 +14,14 @@
  * limitations under the License.
  */
 
-/** 
- * @file WiFi.cpp
- * @author Locha Mesh Developers (contact@locha.io)
- *  
+/**
+ * @ingroup     network
+ * @{
+ *
+ * @file
+ * @author      Locha Mesh Developers (contact@locha.io)
+ * @brief       Wi-Fi network interface
+ * @}
  */
 
 #include "Network/WiFi.h"
