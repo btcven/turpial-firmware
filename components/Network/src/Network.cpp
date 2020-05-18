@@ -39,16 +39,23 @@ esp_err_t init()
 {
     esp_err_t err;
 
-    // Initialize Wi-Fi network interface, this is where users will connect to
-    // the Turpial device, this acts as an AP.
-    err = g_wifi_netif.init();
+    // Initialize ESP-NETIF.
+    err = esp_netif_init();
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface: %s",
-            esp_err_to_name(err));
+        ESP_LOGE(TAG, "esp_netif_init failed, err = %s", esp_err_to_name(err));
         return err;
     }
 
-    err = g_wifi_netif.start();
+    // Create default event loop.
+    err = esp_event_loop_create_default();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "Couldn't create event loop, err = %s", esp_err_to_name(err));
+        return err;
+    }
+
+    // Initialize Wi-Fi network interface, this is where users will connect to
+    // the Turpial device, this acts as an AP.
+    err = netif_wifi.init();
     if (err != ESP_OK) {
         ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface: %s",
             esp_err_to_name(err));

@@ -72,20 +72,8 @@ WiFi::WiFi()
 
 esp_err_t WiFi::init()
 {
-    ESP_LOGD(TAG, "Init TCP/IP adapter");
-
     esp_err_t err;
-    err = esp_netif_init();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "esp_netif_init failed, err = %s", esp_err_to_name(err));
-        return err;
-    }
 
-    err = esp_event_loop_create_default();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't create event loop, err = %s", esp_err_to_name(err));
-        return err;
-    }
     m_ap_netif = esp_netif_create_default_wifi_ap();
 
     ESP_LOGD(TAG, "Initializing Wi-Fi");
@@ -111,6 +99,11 @@ esp_err_t WiFi::init()
         return err;
     }
 
+    err = esp_wifi_start();
+    if (err != ESP_OK) {
+        ESP_LOGE(TAG, "esp_wifi_start failed: %s", esp_err_to_name(err));
+        return err;
+    }
 
     return ESP_OK;
 }
@@ -167,19 +160,6 @@ bool WiFi::isSta()
     }
 
     return (mode == WIFI_MODE_APSTA || mode == WIFI_MODE_STA);
-}
-
-esp_err_t WiFi::start()
-{
-    ESP_LOGD(TAG, "Starting Wi-Fi");
-
-    esp_err_t err = esp_wifi_start();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "esp_wifi_start failed");
-        return err;
-    }
-
-    return ESP_OK;
 }
 
 esp_err_t WiFi::connect()

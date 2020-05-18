@@ -170,17 +170,6 @@ public:
     bool isSta();
 
     /**
-     * @brief Start Wi-Fi operation mode
-     *
-     * @attention 1. WiFi::init must have been called
-     *
-     * @return
-     *      - ESP_OK: succeed
-     *      - (others): failed
-     */
-    esp_err_t start();
-
-    /**
      * @brief Stop WiFi
      *
      * @return esp_err_t
