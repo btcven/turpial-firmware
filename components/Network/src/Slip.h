@@ -14,6 +14,13 @@
  * limitations under the License.
  */
 
+/** 
+ * @file Slip.h
+ * @author Locha Mesh Developers (contact@locha.io)
+ *  
+ */
+
+
 #ifndef NETWORK_SLIP_H
 #define NETWORK_SLIP_H
 
