@@ -11,8 +11,10 @@
 
 #include "Hex.h"
 
+#include <cstring>
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
+#include <iostream>
 #include <unity.h>
 
 void testDigit(const char actual, int expected)
@@ -68,4 +70,17 @@ TEST_CASE(" byte buffer to Hexadecimal string", "[util]")
     util::bytesToHex(buf, result, 6);
 
     TEST_ASSERT_EQUAL_MEMORY(EXPECTED, result, 6);
+}
+
+TEST_CASE("converted  of int  to hex", "[util]")
+{
+    int number = 192;
+    uint8_t compare[2] = {'C', '0'};
+    uint8_t value[2];
+    util::decToHexa(number, value);
+
+    bool isEqual = (memcmp(compare, value, 2) == 0);
+
+
+    TEST_ASSERT_TRUE(isEqual);
 }
