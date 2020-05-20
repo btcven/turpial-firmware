@@ -14,6 +14,15 @@
  * limitations under the License.
  */
 
+/**
+ * @ingroup     network
+ * @{
+ *
+ * @file
+ * @author      Locha Mesh Developers (contact@locha.io)
+ * @brief       SLIP network interface
+ */
+
 #ifndef NETWORK_SLIP_H
 #define NETWORK_SLIP_H
 
@@ -31,13 +40,12 @@ class Slip {
 public:
     /**
      * @brief   SLIP constructor
-     *
      */
     Slip();
 
     /**
      * @brief   Initializes the SLIP ESP-NETIF interface.
-     * 
+     *
      * @param[in] uart     The UART device to use.
      * @param[in] tx       SLIP TX pin.
      * @param[in] rx       SLIP RX pin.
@@ -64,6 +72,7 @@ private:
     esp_netif_t *m_netif; /**< SLIP ESP-NETIF */
 };
 
-}
+} // namespace network
 
 #endif // NETWOR_SLIP_H
+/** @} */

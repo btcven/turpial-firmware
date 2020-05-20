@@ -1,12 +1,23 @@
 /**
+ * Copyright 2020 btcven and Locha Mesh developers
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
+/** 
  * @file main.cpp
  * @author Locha Mesh Developers (contact@locha.io)
- * @brief
- * @version 0.1
- * @date 2019-09-11
- *
- * @copyright Copyright (c) 2020 Locha Mesh Developers
- *
+ *  
  */
 
 #include <cstdio>
@@ -23,9 +34,8 @@
 #include <Battery.h>
 #include <FuelGauge.h>
 #include <Storage.h>
-#include <WiFi.h>
-#include <Slip.h>
 #include <Websocket.h>
+#include <Network/Network.h>
 
 #include "UserButton.h"
 #include "UserButtonHandler.h"
@@ -94,17 +104,15 @@ extern "C" void app_main()
 
     credentials::setInitialCredentials();
 
-    network::WiFi& wifi = network::WiFi::getInstance();
-
-    err = wifi.init();
+    err = network::init();
     if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't initialize Wi-Fi interface (%s)", esp_err_to_name(err));
-        return;
+        ESP_LOGE(TAG, "Couldn't initialize network interfaces: %s",
+            esp_err_to_name(err));
     }
 
     is_configured = false;
     if (!is_configured) {
-        wifi.setMode(WIFI_MODE);
+        network::netif_wifi.setMode(WIFI_MODE);
 
         // Default configuration for AP
         wifi_config_t ap_config;
@@ -114,33 +122,16 @@ extern "C" void app_main()
         ap_config.ap.authmode = WAP_AUTHMODE;
         ap_config.ap.max_connection = WAP_MAXCONN;
         ap_config.ap.channel = WAP_CHANNEL;
-        wifi.setApConfig(ap_config);
+        network::netif_wifi.setApConfig(ap_config);
 
         // Default configuration for STA
         wifi_config_t sta_config;
         std::memcpy(sta_config.sta.ssid, WST_SSID, sizeof(WST_SSID));
         std::memcpy(sta_config.sta.password, WST_PASS, sizeof(WST_PASS));
-        wifi.setStaConfig(sta_config);
-    }
-
-    err = wifi.start();
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't start Wi-Fi, err = %s", esp_err_to_name(err));
-        return;
+        network::netif_wifi.setStaConfig(sta_config);
     }
 
     rest_server::start_server();
-
-#if CONFIG_RADIO_SLIP
-    network::Slip radio_slip;
-    err = radio_slip.start(CONFIG_RADIO_SLIP_UART, CONFIG_RADIO_SLIP_TX,
-                           CONFIG_RADIO_SLIP_RX, CONFIG_RADIO_SLIP_BAUDRATE);
-    if (err != ESP_OK) {
-        ESP_LOGE(TAG, "Couldn't initialize radio SLIP netif = %s",
-                 esp_err_to_name(err));
-    }
-#endif
-
 
 #if CONFIG_ESC_ENABLED
     esc::FuelGauge& fuel_gauge = esc::FuelGauge::getInstance();

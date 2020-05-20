@@ -63,42 +63,4 @@ config ESC_SOC_DELTA
 
 endif
 
-menuconfig RADIO_SLIP
-    bool "Enable radio SLIP network interface"
-    default y
-    help
-        "Enable the SLIP network interface that connects to the CC1312 radio"
-
-if RADIO_SLIP
-
-config RADIO_SLIP_UART
-    int "UART device to use for the radio"
-    default 1
-    range 0 2
-    help
-        "UART device to use for the radio"
-
-config RADIO_SLIP_TX
-    int "GPIO to use for the TX pin"
-    default 8
-    range 0 31
-    help
-        "This is the GPIO that is going to be used for the SLIP TX pin."
-
-config RADIO_SLIP_RX
-    int "GPIO to use for the RX pin"
-    default 7
-    range 0 31
-    help
-        "This is the GPIO that is going to be used for the SLIP RX pin."
-
-config RADIO_SLIP_BAUDRATE
-    int "SLIP baudrate"
-    default 115200
-    range 9600 5000000
-    help
-        "This is the baudrate used for the SLIP interface"
-
-endif
-
 endmenu

@@ -1,15 +1,30 @@
 /**
- * @file Slip.cpp
- * @author Locha Mesh project developers (locha.io)
- * @brief
- * @version 0.1.1
- * @date 2020-05-13
+ * Copyright 2020 btcven and Locha Mesh developers
  *
- * @copyright Copyright (c) 2020 Locha Mesh project developers
- * @license Apache 2.0, see LICENSE file for details
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
  */
 
-#include "Slip.h"
+/**
+ * @ingroup     network
+ * @{
+ *
+ * @file
+ * @author      Locha Mesh Developers (contact@locha.io)
+ * @brief       SLIP network interface
+ * @}
+ */
+
+#include "Network/Slip.h"
 
 namespace network {
 
@@ -47,4 +62,4 @@ esp_err_t Slip::start(uart_port_t uart, int tx, int rx, uint32_t baudrate)
     return esp_netif_attach(m_netif, slip_driver);
 }
 
-}
+} // namespace network
