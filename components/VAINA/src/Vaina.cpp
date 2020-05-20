@@ -1,5 +1,4 @@
 
-
 /**
  * Copyright 2020 btcven and Locha Mesh developers
  *
