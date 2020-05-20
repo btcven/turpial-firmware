@@ -24,8 +24,8 @@
  * @}
  */
 
-#include <Vaina/Vaina.h>
-#include <Vaina/Message.h>
+#include "Vaina/Vaina.h"
+#include "Vaina/Message.h"
 
 #include <cstring>
 
