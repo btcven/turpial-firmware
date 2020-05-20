@@ -17,7 +17,7 @@ config RADIO_SLIP_UART
 
 config RADIO_SLIP_TX
     int "GPIO to use for the TX pin"
-    default 21 
+    default 21
     range 0 31
     help
         This is the GPIO that is going to be used for the SLIP TX pin.
