@@ -14,7 +14,6 @@
 #define HTTP_WEBSOCKET_H
 
 #include "Hex.h"
-#include "Serialization.h"
 #include <cJSON.h>
 #include <esp_https_server.h>
 
