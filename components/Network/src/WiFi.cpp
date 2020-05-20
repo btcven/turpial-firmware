@@ -34,7 +34,7 @@
 #include <esp_wifi.h>
 #include <iostream>
 
-#include <Vaina/Vaina.h>
+#include "Vaina/Vaina.h"
 
 namespace network {
 
