@@ -24,7 +24,7 @@
  * @}
  */
 
-#include "Network/WiFiEventHandler.h"
+#include "WiFiEventHandler.h"
 
 #include <esp_err.h>
 #include <esp_log.h>

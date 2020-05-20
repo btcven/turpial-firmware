@@ -27,8 +27,8 @@
 #ifndef NETWORK_NETWORK_H
 #define NETWORK_NETWORK_H
 
-#include "Network/Slip.h"
-#include "Network/WiFi.h"
+#include "Slip.h"
+#include "WiFi.h"
 
 namespace network {
 

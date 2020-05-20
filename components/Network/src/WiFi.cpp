@@ -24,8 +24,8 @@
  * @}
  */
 
-#include "Network/WiFi.h"
-#include "Network/Network.h"
+#include "WiFi.h"
+#include "Network.h"
 
 #include <cstdint>
 #include <cstring>

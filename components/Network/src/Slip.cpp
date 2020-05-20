@@ -24,7 +24,7 @@
  * @}
  */
 
-#include "Network/Slip.h"
+#include "Slip.h"
 
 namespace network {
 

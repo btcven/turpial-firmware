@@ -24,7 +24,7 @@
  * @}
  */
 
-#include "Network/Network.h"
+#include "Network.h"
 
 #include <esp_log.h>
 

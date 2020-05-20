@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-/** 
+/**
  * @file main.cpp
  * @author Locha Mesh Developers (contact@locha.io)
  *  
@@ -31,11 +31,11 @@
 #include <freertos/FreeRTOS.h>
 #include <freertos/task.h>
 
-#include <Battery.h>
-#include <FuelGauge.h>
-#include <Storage.h>
-#include <Websocket.h>
-#include <Network/Network.h>
+#include "Battery.h"
+#include "FuelGauge.h"
+#include "Storage.h"
+#include "Websocket.h"
+#include "Network.h"
 
 #include "UserButton.h"
 #include "UserButtonHandler.h"
