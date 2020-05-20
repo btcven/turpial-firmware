@@ -14,21 +14,26 @@
  * limitations under the License.
  */
 
-/** 
- * @file WiFi.h
- * @author Locha Mesh Developers (contact@locha.io)
- *  
+/**
+ * @ingroup     network
+ * @{
+ *
+ * @file
+ * @author      Locha Mesh Developers (contact@locha.io)
+ * @brief       Wi-Fi network interface
  */
+
 #ifndef NETWORK_WIFI_H
 #define NETWORK_WIFI_H
 
 #include <cstdint>
+#include <vector>
 
-#include "WiFiEventHandler.h"
 #include <esp_err.h>
 #include <esp_event.h>
 #include <esp_wifi.h>
-#include <vector>
+
+#include "WiFiEventHandler.h"
 
 namespace network {
 
@@ -71,22 +76,7 @@ public:
 class WiFi
 {
 public:
-    /**
-     * @brief Get the unique instance of the object
-     *
-     * @return WiFi&
-     */
-    static WiFi& getInstance()
-    {
-        static WiFi instance;
-        return instance;
-    }
-
-    WiFi(WiFi const&) = delete; // Copy construct
-    WiFi(WiFi&&) = delete;      // Move construct
-
-    WiFi& operator=(WiFi const&) = delete; // Copy assign
-    WiFi& operator=(WiFi&&) = delete;      // Move assign
+    WiFi();
 
     /**
      * @brief Initialize Wi-Fi
@@ -180,17 +170,6 @@ public:
     bool isSta();
 
     /**
-     * @brief Start Wi-Fi operation mode
-     *
-     * @attention 1. WiFi::init must have been called
-     *
-     * @return
-     *      - ESP_OK: succeed
-     *      - (others): failed
-     */
-    esp_err_t start();
-
-    /**
      * @brief Stop WiFi
      *
      * @return esp_err_t
@@ -226,12 +205,6 @@ public:
 
 private:
     /**
-     * @brief Constructor Wi-Fi
-     *
-     */
-    WiFi();
-
-    /**
      * @brief Wi-Fi event handler
      *
      * @param[in] event_handler_arg callback handler argument (in this case
@@ -260,3 +233,5 @@ private:
 } // namespace network
 
 #endif // NETWORK_WIFI_H
+
+/** @} */

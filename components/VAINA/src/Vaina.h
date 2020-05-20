@@ -23,9 +23,10 @@
 #ifndef VAINA_H
 #define VAINA_H
 
-#include "WiFi.h"
 #include <esp_err.h>
 #include <iostream>
+
+#include <Network/WiFi.h>
 
 /**
  * 

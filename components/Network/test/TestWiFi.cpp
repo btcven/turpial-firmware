@@ -23,8 +23,7 @@ TEST_CASE("Wi-Fi initialize", "[network]")
 
     esp_netif_init();
 
-    network::WiFi& wifi = network::WiFi::getInstance();
-    err = wifi.init();
+    err = network::g_wifi_netif.init();
     if (err != ESP_OK) TEST_FAIL();
 
     wifi.setMode(WIFI_MODE);
@@ -37,10 +36,10 @@ TEST_CASE("Wi-Fi initialize", "[network]")
         .channel = WAP_CHANNEL,
     };
 
-    err = wifi.setApConfig(ap_config);
+    err = network::g_wifi_netif.setApConfig(ap_config);
     if (err != ESP_OK) TEST_FAIL();
 
-    err = wifi.start();
+    err = network::g_wifi_netif.start();
     if (err != ESP_OK) TEST_FAIL();
 
     vTaskDelay(DELAY);
