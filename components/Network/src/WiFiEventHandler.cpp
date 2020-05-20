@@ -30,7 +30,7 @@
 #include <esp_log.h>
 #include <esp_wifi.h>
 
-#include "Vaina.h"
+#include <Vaina/Vaina.h>
 
 namespace network {
 
@@ -99,7 +99,7 @@ esp_err_t WiFiEventHandler::apStaConnected(wifi_event_ap_staconnected_t* info)
     ESP_LOGI(TAG, "default apStaConnected");
 
 
-    Vaina& vaina = Vaina::getInstance();
+    vaina::Vaina& vaina = vaina::Vaina::getInstance();
 
     vaina.staConnected(info);
     return ESP_OK;
@@ -109,7 +109,7 @@ esp_err_t WiFiEventHandler::apStaDisconnected(wifi_event_ap_stadisconnected_t* i
 {
     ESP_LOGI(TAG, "default apStaDisconnected");
 
-    Vaina& vaina = Vaina::getInstance();
+    vaina::Vaina& vaina = vaina::Vaina::getInstance();
 
     vaina.staDisconected(info);
     return ESP_OK;

@@ -1,4 +1,3 @@
-
 /**
  * Copyright 2020 btcven and Locha Mesh developers
  *
@@ -15,27 +14,36 @@
  * limitations under the License.
  */
 
-/** 
- * @file Vaina.cpp
- * @author Locha Mesh Developers (contact@locha.io)
- * @brief VAINA - Versatile Address Interface | Network Administration
+/**
+ * @ingroup     vaina
+ * @{
+ *
+ * @file
+ * @author      Locha Mesh Developers (contact@locha.io)
+ * @brief       VAINA - Versatile Address Interface | Network Administration
+ * @}
  */
 
+#include <Vaina/Vaina.h>
+#include <Vaina/Message.h>
 
-#include "Vaina.h"
-
-#include "Hex.h"
 #include <cstring>
+
 #include <esp_log.h>
 
+#include "Hex.h"
+
+namespace vaina {
 
 static const char* TAG = "VAINA";
 
 Vaina::Vaina()
+    : m_sta_connected()
+    , m_ipv4_array()
+    , m_mac_array()
+    , m_seqno()
 {
-    ESP_LOGI(TAG, "execute constructor");
 }
-
 
 esp_err_t Vaina::staConnected(wifi_event_ap_staconnected_t* info)
 {
@@ -130,13 +138,13 @@ esp_ip6_addr_t Vaina::ipv4ToIpv6(std::uint32_t* ipv4)
 
 esp_err_t Vaina::onConnected(sta_data_t client)
 {
-    std::uint8_t buf[3];
-    buf[0] = VAINA_MSG_RCS_ADD;
-    buf[1] = createSeqNo();
+    MsgBuf buf;
 
-    memcpy(&buf[3], &client.sta_ipv6, sizeof(esp_ip6_addr_t));
-
-    //  code to send here
+    RcsAdd rcs_add {
+        .ip = client.sta_ipv6,
+    };
+    Message msg(m_seqno.generate(), rcs_add);
+    int count = msg.serialize(buf);
 
     return ESP_OK;
 }
@@ -144,20 +152,15 @@ esp_err_t Vaina::onConnected(sta_data_t client)
 
 esp_err_t Vaina::onDisconnected(sta_data_t client)
 {
-    std::uint8_t buf[3];
-    buf[0] = VAINA_MSG_RCS_DEL;
-    buf[1] = createSeqNo();
+    MsgBuf buf;
 
-    memcpy(&buf[3], &client.sta_ipv6, sizeof(esp_ip6_addr_t));
-
-    //  code to send here
+    RcsDel rcs_del {
+        .ip = client.sta_ipv6,
+    };
+    Message msg(m_seqno.generate(), rcs_del);
+    int count = msg.serialize(buf);
 
     return ESP_OK;
 }
 
-
-int Vaina::createSeqNo()
-{
-    m_seqno += 1;
-    return m_seqno;
-}
+} // namespace vaina

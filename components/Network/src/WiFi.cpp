@@ -34,7 +34,7 @@
 #include <esp_wifi.h>
 #include <iostream>
 
-#include "Vaina.h"
+#include <Vaina/Vaina.h>
 
 namespace network {
 
@@ -226,7 +226,7 @@ void WiFi::ipEventHandler(void* event_handler_arg,
 {
     ip_event_got_ip_t* event = (ip_event_got_ip_t*)event_data;
 
-    Vaina& vaina = Vaina::getInstance();
+    vaina::Vaina& vaina = vaina::Vaina::getInstance();
 
     ESP_LOGI(TAG, "got ip the  event:" IPSTR, IP2STR(&event->ip_info.ip));
     vaina.setArrayIpv4(event->ip_info.ip);

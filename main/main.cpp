@@ -42,7 +42,6 @@
 
 #include "Credentials.h"
 #include "RESTServer.h"
-#include "Vaina.h"
 
 static const char* TAG = "app_main";
 
