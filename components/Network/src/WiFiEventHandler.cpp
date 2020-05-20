@@ -30,7 +30,7 @@
 #include <esp_log.h>
 #include <esp_wifi.h>
 
-#include <Vaina/Vaina.h>
+#include "Vaina/Vaina.h"
 
 namespace network {
 
