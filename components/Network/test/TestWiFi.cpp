@@ -98,6 +98,6 @@ TEST_CASE("checking if it is STA mode", "[network]")
 
 TEST_CASE("stop WiFi", "[network]")
 {
-    esp_err_t err = = network::netif_wifi.stop();
+    esp_err_t err = network::netif_wifi.stop();
     if (err != ESP_OK) TEST_FAIL();
 }
