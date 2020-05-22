@@ -27,44 +27,33 @@ addons:
       - libncurses-dev
       - doxygen
 
-before_install:
-# Save path to the git repository
-- PROJECT_PATH=$(pwd)
-
 install:
 - pip3 install -U codespell
-- pip3 install -U travis-sphinx
-- pip3 install -U sphinx-rtd-theme
-- pip3 install -U breathe
-- pip3 install -U exhale
-# Install ESP32 toochain following steps as described
-# in https://docs.espressif.com/projects/esp-idf/en/latest/get-started/#get-started-get-prerequisites
-- mkdir -p ~/esp
-- cd ~/esp
-- git clone --recursive https://github.com/btcven/esp-idf.git -b feature/slip
-- cd ~/esp/esp-idf
-- ./install.sh
-- export IDF_PATH=~/esp/esp-idf
-- export PATH=$PATH:$HOME/esp/esp-idf/tools
-- . $HOME/esp/esp-idf/export.sh
-- cd $PROJECT_PATH
 
 jobs:
   include:
     # Code spell
-    - name: "Code-spell" 
-      script: ./dist/tools/codespell/check.sh
+    #- name: "Code-spell"
+    #  script: ./dist/tools/codespell/check.sh
     # Build test
     - name: "Build-Test"
-      script: idf.py build
-    # Run unit-tests
-    - name: "Unit-Test"
-      script: idf.py --help
+      before_script:
+       - mkdir -p $HOME/esp
+       - git -C $HOME/esp clone https://github.com/gschorcht/xtensa-esp32-elf.git
+       - export PATH=$PATH:$HOME/esp/xtensa-esp32-elf/bin
+       - git -C $HOME/esp clone https://github.com/espressif/esp-idf.git
+       - git -C $HOME/esp/esp-idf checkout f198339ec09e90666150672884535802304d23ec
+       - git -C $HOME/esp/esp-idf submodule init
+       - git -C $HOME/esp/esp-idf submodule update
+       - export ESP32_SDK_DIR=$HOME/esp/esp-idf
+
+      script:
+       - make
     # Build and deploy documentation
-    - name: "Deploy documentation"
-      script: 
-          - "travis-sphinx build --nowarn --source doc/"
-          - "travis-sphinx deploy --branches dev"
+    #- name: "Deploy documentation"
+    #  script:
+    #      - "travis-sphinx build --nowarn --source doc/"
+    #      - "travis-sphinx deploy --branches dev"
 
 env:
   global:
