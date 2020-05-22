@@ -31,6 +31,9 @@ USEMODULE += gnrc_udp
 USEMODULE += gnrc_pktdump
 USEMODULE += gnrc_icmpv6_echo
 
+USEMODULE += netstats_l2
+USEMODULE += netstats_ipv6
+
 USEMODULE += shell
 USEMODULE += shell_commands
 
