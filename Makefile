@@ -1,0 +1,38 @@
+# name of your application
+APPLICATION = radio-firmware
+
+# If no BOARD is found in the environment, use this default:
+BOARD ?= esp32-wrover-kit
+EXTERNAL_BOARD_DIRS ?= $(CURDIR)/boards
+
+# This has to be the absolute path to the RIOT base directory:
+RIOTBASE ?= $(CURDIR)/RIOT
+
+# Application absolute path
+APPBASE ?= $(CURDIR)
+
+# Comment this out to disable code in RIOT that does safety checking
+# which is not needed in a production environment but helps in the
+# development process:
+DEVELHELP ?= 1
+
+# Change this to 0 show compiler invocation lines by default:
+QUIET ?= 1
+
+EXTERNAL_MODULE_DIRS += sys
+
+# Initialize GNRC netif
+USEMODULE += gnrc_netdev_default
+USEMODULE += auto_init_gnrc_netif
+
+USEMODULE += gnrc_ipv6_default
+USEMODULE += gnrc_ipv6_router_default
+USEMODULE += gnrc_udp
+USEMODULE += gnrc_pktdump
+USEMODULE += gnrc_icmpv6_echo
+
+USEMODULE += shell
+USEMODULE += shell_commands
+
+include $(RIOTBASE)/Makefile.include
+
