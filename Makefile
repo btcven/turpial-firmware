@@ -34,5 +34,7 @@ USEMODULE += gnrc_icmpv6_echo
 USEMODULE += shell
 USEMODULE += shell_commands
 
+USEMODULE += esp_wifi_ap
+
 include $(RIOTBASE)/Makefile.include
 

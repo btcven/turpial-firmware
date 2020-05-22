@@ -42,9 +42,9 @@ jobs:
        - git -C $HOME/esp clone https://github.com/gschorcht/xtensa-esp32-elf.git
        - export PATH=$PATH:$HOME/esp/xtensa-esp32-elf/bin
        - git -C $HOME/esp clone https://github.com/espressif/esp-idf.git
-       - git -C $HOME/esp checkout f198339ec09e90666150672884535802304d23ec
-       - git -C $HOME/esp submodule init
-       - git -C $HOME/esp submodule update
+       - git -C $HOME/esp/esp-idf checkout f198339ec09e90666150672884535802304d23ec
+       - git -C $HOME/esp/esp-idf submodule init
+       - git -C $HOME/esp/esp-idf submodule update
 
       script:
        - make
