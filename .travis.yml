@@ -52,7 +52,7 @@ install:
 jobs:
   include:
     # Code spell
-    - name: "Code-spell" 
+    - name: "Code-spell"
       script: ./dist/tools/codespell/check.sh
     # Build test
     - name: "Build-Test"
@@ -62,7 +62,7 @@ jobs:
       script: idf.py --help
     # Build and deploy documentation
     - name: "Deploy documentation"
-      script: 
+      script:
           - "travis-sphinx build --nowarn --source doc/"
           - "travis-sphinx deploy --branches dev"
 
