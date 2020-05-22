@@ -16,11 +16,15 @@ static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 
 int main(void)
 {
+    puts("Welcome to Turpial ESP32 MCU!");
+
+    if (!IS_ACTIVE(MODULE_ESP_WIFI_AP)) {
+        printf("Error: dear user, you need a network interface to access the mesh :=)\n");
+    }
+
     /* we need a message queue for the thread running the shell in order to
      * receive potentially fast incoming networking packets */
     msg_init_queue(_main_msg_queue, MAIN_QUEUE_SIZE);
-
-    puts("Welcome to Turpial ESP32 MCU!");
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     /* Start shell */
