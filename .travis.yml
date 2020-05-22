@@ -45,6 +45,7 @@ jobs:
        - git -C $HOME/esp/esp-idf checkout f198339ec09e90666150672884535802304d23ec
        - git -C $HOME/esp/esp-idf submodule init
        - git -C $HOME/esp/esp-idf submodule update
+       - export ESP32_SDK_DIR=$HOME/esp/esp-idf
 
       script:
        - make
