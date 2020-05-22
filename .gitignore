@@ -10,3 +10,4 @@ sdkconfig.old
 sdkconfig
 test/sdkconfig
 .DS_Store
+bin
