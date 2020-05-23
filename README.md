@@ -92,33 +92,55 @@ pointed to that branch. Please, make sure you follow the
 require that at least two developers review them first before merging to `dev`
 branch.
 
-### Installing ESP-IDF
+### Installing RIOT-OS
 
-In order to compile the firmware (and to flash it) you need to install the
-[ESP-IDF](https://github.com/espressif/esp-idf/) development framework, which
-brings the compiler and necessary tools in order to correctly build the
-project.
+RIOT is a real-time multi-threading operating system that supports a range of devices that are typically found in the Internet of Things (IoT): 8-bit, 16-bit and 32-bit microcontrollers.
 
-Please note that we use a fork of the ESP-IDF, that enables us to use SLIP as
-a network interface (SLIP ESP-NETIF) until we get upstream support, it can
-be used as follows:
+### Pre-requisites
+
+1. Install Git.
+2. Install the build-essential packet (make, gcc etc.). This varies based on the operating system in use. para `mac` le recomendamos usar `xcode-select install`.
+3. Install OpenOCD
+
+### Installation of ESP-IDF (Espressif IoT Development Framework) 
+
+ESP-IDF, the official SDK from Espressif, can be downloaded and installed as GIT repository.
+
+1) cd $HOME/esp
+2) git clone https://github.com/espressif/esp-idf.git
+3) cd esp-idf
+4) git checkout f198339ec09e90666150672884535802304d23ec
+5) git submodule init
+6) git submodule update
+
+### Install Manual toolchain
+
+The quickest way to start development with ESP32 is by installing a prebuilt toolchain. Below you will be given the installation steps for the toolchain by operating system:
+
+1) [MacOS](https://docs.espressif.com/projects/esp-idf/en/release-v3.0/get-started/macos-setup.html)
+
+2) [Linux](https://docs.espressif.com/projects/esp-idf/en/release-v3.0/get-started/linux-setup.html)
+
+It is recommended that you save the toolchain in the esp folder created earlier.
+
+### Toolchain Usage
+
+Once you have installed all required components, you should have the following directories.
+```
+/path/to/esp/esp-idf
+/path/to/esp/xtensa-esp32-elf
+```
+To use the toolchain and optionally the SDK, please check that your environment variables are set correctly to
 
 ```
-git clone https://github.com/btcven/esp-idf/ -b feature/slip
+export ESP32_SDK_DIR=/path/to/esp/esp-idf
+export PATH=$PATH:/path/to/esp/xtensa-esp32-elf/bin
 ```
 
-The procedure to install and export the variables is the same as using the
-official version of ESP-IDF. The fork gets the same updates as the main
-repository.
 
 ### Compiling
 
-We use the idf.py command line tool provided by ESP-IDF to build the project.
-It's pretty simple to build the project:
-
-```bash
-idf.py build
-```
+To compile an application for an ESP32 board, change to RIOT's root directory and execute the `make` for linux  and  `gmake` for MacOS command.
 
 ### Flashing the Firmware
 
@@ -126,26 +148,12 @@ To upload the binary to the ESP32 you have connected to your computer, you
 need to use the following command:
 
 ```bash
-idf.py -p PORT flash
+  make -p PORT flash 
 ```
 
 Where `PORT` specifies on what port you have connected your ESP32 development
 board.
 
-### Running Tests
-
-To ensure the safety of code we run some tests in the ESP32 to ensure the code
-works as expected. The testing code lives in the `test/` directory. To compile
-a test you can run the following command:
-
-```bash
-cd test/
-idf.py build -D "TEST_COMPONENTS=yourcomponent"
-```
-
-You can change `yourcomponent` to the test component you want to run tests for.
-Don't forget to flash the test binary to run the code. See
-[*Flashing the binary.*](#flashing-the-binary).
 
 ### Compiling Documentation
 
