@@ -70,10 +70,13 @@ information on the radio module we use.
 
 * [Getting Started](#getting-started)
    - [Development Workflow.](#development-workflow)
-   - [Installing ESP-IDF.](#installing-esp-idf)
+   - [Installing RIOS-OS.](#installing-riot-os)
+   - [Pre-requisites](#pre-requisites)
+   - [Installing ESP-IDF](#Installing-ESP-IDF)
+   - [Install Manual toolchain](#install-manual-toolchain)
+   - [Clone this repository](#clone-this-repository)
    - [Compiling.](#compiling)
    - [Flashing the Firmware](#flashing-the-firmware)
-   - [Running Tests](#running-tests)
    - [Compiling Documentation.](#compiling-documentation)
 
 [License](#license)
@@ -99,19 +102,29 @@ RIOT is a real-time multi-threading operating system that supports a range of de
 ### Pre-requisites
 
 1. Install Git.
-2. Install the build-essential packet (make, gcc etc.). This varies based on the operating system in use. para `mac` le recomendamos usar `xcode-select install`.
+2. Install the build-essential packet. This varies based on the operating system in use.for `mac` we recommend using` xcode-select install`.
 3. Install OpenOCD
-
-### Installation of ESP-IDF (Espressif IoT Development Framework) 
+4. Install  python-serial python3 python3-flake8
+5. install coccinelle
+6. install curl
+7. install make
+8. install doxygen
+9. install unzip 
+10. install wget
+ 
+ if you use MacOS we recommend you use `brew`.
+ 
+### Installing ESP-IDF
 
 ESP-IDF, the official SDK from Espressif, can be downloaded and installed as GIT repository.
-
+1) create folder in $HOME called `esp`
 1) cd $HOME/esp
 2) git clone https://github.com/espressif/esp-idf.git
 3) cd esp-idf
 4) git checkout f198339ec09e90666150672884535802304d23ec
 5) git submodule init
 6) git submodule update
+
 
 ### Install Manual toolchain
 
@@ -127,28 +140,46 @@ It is recommended that you save the toolchain in the esp folder created earlier.
 
 Once you have installed all required components, you should have the following directories.
 ```
-/path/to/esp/esp-idf
-/path/to/esp/xtensa-esp32-elf
+$HOME/esp/esp-idf
+$HOME/esp/xtensa-esp32-elf
 ```
 To use the toolchain and optionally the SDK, please check that your environment variables are set correctly to
 
 ```
-export ESP32_SDK_DIR=/path/to/esp/esp-idf
-export PATH=$PATH:/path/to/esp/xtensa-esp32-elf/bin
+export ESP32_SDK_DIR=$HOME/esp/esp-idf
+export PATH=$PATH:$HOME/esp/xtensa-esp32-elf/bin
 ```
+### Clone this repository
 
-
+```
+`git clone git@github.com:btcven/turpial-firmware.git`
+```
 ### Compiling
 
-To compile an application for an ESP32 board, change to RIOT's root directory and execute the `make` for linux  and  `gmake` for MacOS command.
+ 1. `cd turpial-firmware`
+ 2. to compile you need to run:
+ 
+ Linux
+ ```bash
+  make
+ ```
+ MacOS
+ ```bash
+  gmake
+ ```
 
 ### Flashing the Firmware
 
 To upload the binary to the ESP32 you have connected to your computer, you
 need to use the following command:
 
+Linux
 ```bash
   make -p PORT flash 
+```
+MacOS
+```bash
+  gmake -p PORT flash 
 ```
 
 Where `PORT` specifies on what port you have connected your ESP32 development
