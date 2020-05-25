@@ -1,0 +1,4 @@
+ifneq (,$(filter vaina,$(USEMODULE)))
+  USEMODULE += sock_udp
+  USEMODULE += turpial_firmware_net
+endif

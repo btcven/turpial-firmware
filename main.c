@@ -18,8 +18,10 @@
 #include "shell.h"
 #include "msg.h"
 
+#include "net/vaina.h"
 
 static int wifi_init(void);
+static int vaina_init(void);
 static void shell_init(void);
 static int board_config_cmd(int argc, char **argv);
 
@@ -57,6 +59,10 @@ int main(void)
 
     if (wifi_init() < 0) {
         printf("Error: Couldn't initialize WiFi\n");
+    }
+
+    if (vaina_init() < 0) {
+        printf("Error: Couldn't initialize VAINA\n");
     }
 
     shell_init();
@@ -107,6 +113,18 @@ static int wifi_init(void)
     }
 
     return 0;
+}
+
+static int vaina_init(void)
+{
+    /* Initialize VAINA client */
+    gnrc_netif_t *slipdev_iface = gnrc_netif_get_by_pid(ESP_SLIPDEV_IF);
+    if (slipdev_iface == NULL) {
+        printf("Error: ESP32 SLIP network interface doesn't exists.\n");
+        return -1;
+    }
+
+    return vaina_client_init(slipdev_iface);
 }
 
 static void shell_init(void)

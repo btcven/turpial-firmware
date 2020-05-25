@@ -1,0 +1,22 @@
+menuconfig KCONFIG_MODULE_VAINA
+    bool "VAINA configuration"
+    default n
+    help
+        Configure VAINA client.
+
+if KCONFIG_MODULE_VAINA
+
+config VAINA_PORT
+    int "VAINA UDP port"
+    default 1337
+    range 0 65535
+    help
+        VAINA UPD port
+
+config VAINA_MCAST_ADDR
+    string "VAINA multicast address"
+    default "ff15::42"
+    help
+        VAINA default multicast address
+
+endif
