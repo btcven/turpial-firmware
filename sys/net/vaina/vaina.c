@@ -13,7 +13,7 @@
 
 #include "net/sock/udp.h"
 
-#define ENABLE_DEBUG (0)
+#define ENABLE_DEBUG (1)
 #include "debug.h"
 
 #if ENABLE_DEBUG == 1
@@ -22,10 +22,12 @@ static char _stack[THREAD_STACKSIZE_DEFAULT + THREAD_EXTRA_STACKSIZE_PRINTF];
 static char _stack[THREAD_STACKSIZE_DEFAULT];
 #endif /* ENABLE_DEBUG */
 
-static kernel_pid_t _pid;    /**< thread PID */
-static gnrc_netif_t *_netif; /**< netif where we send/receive packets */
-static sock_udp_t _sock;     /**< UDP socket */
-static int _pending_acks;    /**< number of pending ACKs */
+static kernel_pid_t _pid;     /**< thread PID */
+static gnrc_netif_t *_netif;  /**< netif where we send/receive packets */
+static sock_udp_t _sock;      /**< UDP socket */
+static sock_udp_ep_t _remote; /**< remote end point */
+static int _pending_acks;     /**< number of pending ACKs */
+static uint8_t _seqno;        /**< Current sequence number */
 
 static int _parse_msg(vaina_msg_t *vaina, uint8_t *buf, size_t len)
 {
@@ -107,9 +109,90 @@ void *_event_loop(void *arg)
     return NULL;
 }
 
+static int _serialize_msg(vaina_msg_t *msg, uint8_t *buf)
+{
+    int i = 0;
+
+    buf[i] = msg->msg;
+    buf[i + 1] = msg->seqno;
+    i += 2;
+    switch (msg->msg) {
+        case VAINA_MSG_RCS_ADD:
+            memcpy(&buf[i], &msg->payload.rcs_add.ip, sizeof(ipv6_addr_t));
+            i += sizeof(ipv6_addr_t);
+            return i;
+
+        case VAINA_MSG_RCS_DEL:
+            memcpy(&buf[i], &msg->payload.rcs_del.ip, sizeof(ipv6_addr_t));
+            i += sizeof(ipv6_addr_t);
+            return i;
+
+        case VAINA_MSG_NIB_ADD:
+            buf[i] = msg->payload.nib_del.prefix;
+            i += 1;
+            memcpy(&buf[i], &msg->payload.nib_del.ip, sizeof(ipv6_addr_t));
+            i += sizeof(ipv6_addr_t);
+            return i;
+
+        case VAINA_MSG_NIB_DEL:
+            buf[i] = msg->payload.nib_del.prefix;
+            i += 1;
+            memcpy(&buf[i], &msg->payload.nib_del.ip, sizeof(ipv6_addr_t));
+            i += sizeof(ipv6_addr_t);
+            return i;
+
+        default:
+            DEBUG("vaina: invalid message type!\n");
+            return -1;
+    }
+
+    /* not reached */
+    return -1;
+}
+
+uint8_t vaina_seqno(void)
+{
+    if (_seqno + 1 == 255) {
+        _seqno = 0;
+    }
+    else {
+        _seqno += 1;
+    }
+
+    return _seqno;
+}
+
+int vaina_client_send(vaina_msg_t *msg)
+{
+    uint8_t buf[UINT8_MAX];
+
+    _pending_acks += 1;
+
+    int len = _serialize_msg(msg, buf);
+    if (len < 0) {
+        DEBUG("vaina: couldn't serialize message!\n");
+        return -1;
+    }
+
+    return sock_udp_send(&_sock, buf, len, &_remote);
+}
+
 kernel_pid_t vaina_client_init(gnrc_netif_t *netif)
 {
     _netif = netif;
+    _seqno = 0;
+
+    ipv6_addr_t group;
+    if (ipv6_addr_from_str(&group, CONFIG_VAINA_MCAST_ADDR) == NULL) {
+        DEBUG_PUTS("vaina: invalid IPv6 group address");
+        return -EINVAL;
+    }
+
+    /* Initialize remote end-point */
+    _remote.family = AF_INET6,
+    _remote.netif = _netif->pid,
+    _remote.port = CONFIG_VAINA_PORT,
+    memcpy(&_remote.addr, &group, sizeof(ipv6_addr_t));
 
     sock_udp_ep_t local = {
         .family = AF_INET6,

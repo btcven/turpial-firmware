@@ -89,6 +89,20 @@ typedef struct {
 } vaina_msg_t;
 
 /**
+ * @brief   Get a new sequence number
+ */
+uint8_t vaina_seqno(void);
+
+/**
+ * @brief   Send a VAINA message.
+ *
+ * @param[in] msg The VAINA message.
+ *
+ * @return 0< on error.
+ */
+int vaina_client_send(vaina_msg_t *msg);
+
+/**
  * @brief   Initialize VAINA client.
  *
  * @return 0< on error.
