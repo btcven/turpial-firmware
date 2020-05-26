@@ -39,5 +39,19 @@ USEMODULE += shell_commands
 
 USEMODULE += esp_wifi_ap
 
+USEMODULE += slipdev
+
+UART1_TXD ?= "GPIO21"
+UART1_RXD ?= "GPIO22"
+
+# UART_DEV(1) pin definitions, can't be changed through Kconfig
+# TODO: open issue in RIOT to see if this is possible.
+CFLAGS += "-DUART1_TXD=$(UART1_TXD)"
+CFLAGS += "-DUART1_RXD=$(UART1_RXD)"
+
+# Use UART_DEV(1) for slipdev as a default, baudrate by default is 115200
+SLIP_UART ?= 1
+CFLAGS += "-DSLIPDEV_PARAM_UART=UART_DEV($(SLIP_UART))"
+
 include $(RIOTBASE)/Makefile.include
 

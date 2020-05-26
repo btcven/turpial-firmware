@@ -23,6 +23,17 @@
 #define MAIN_QUEUE_SIZE     (8)
 static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 
+static int board_config_cmd(int argc, char **argv)
+{
+    print_board_config();
+    return 0;
+}
+
+static const shell_command_t shell_commands[] = {
+    { "board_config", "print board configuration", board_config_cmd },
+    { NULL, NULL, NULL }
+};
+
 int main(void)
 {
     puts("Welcome to Turpial ESP32 MCU!");
@@ -62,7 +73,7 @@ int main(void)
 
     char line_buf[SHELL_DEFAULT_BUFSIZE];
     /* Start shell */
-    shell_run(NULL, line_buf, SHELL_DEFAULT_BUFSIZE);
+    shell_run(shell_commands, line_buf, SHELL_DEFAULT_BUFSIZE);
 
     /* Should be never reached */
     return 0;
