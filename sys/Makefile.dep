@@ -1,0 +1,6 @@
+ifneq (,$(filter vaina,$(USEMODULE)))
+  USEMODULE += sock_udp
+  USEMODULE += turpial_firmware_net
+  USEMODULE += turpial_firmware_storage
+  USEMODULE += esp_idf_nvs_flash
+endif
