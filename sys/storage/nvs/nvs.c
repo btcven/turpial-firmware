@@ -28,13 +28,12 @@
  */
 
 
+#include "nvs_flash/include/nvs_flash.h"
+#define ENABLE_DEBUG (1)
 #include "debug.h"
 #include "storage/nvs.h"
-#include "nvs_flash/include/nvs_flash.h"
 
-#define ENABLE_DEBUG (1)
-
-uint32_t m_handle;
+uint32_t _handle  /** NVS handle */;
 bool is_open = false;
 
 
@@ -47,7 +46,7 @@ int nvs_init(void)
         nvs_flash_erase();
         err = nvs_flash_init();
     }
-    err = nvs_open("storage", NVS_READWRITE, &m_handle);
+    err = nvs_open("storage", NVS_READWRITE, &_handle);
     if (err != ESP_OK) {
         printf("Error (%d) opening NVS handle!\n", err);
     } 
@@ -63,7 +62,7 @@ int nvs_set_string(char* key, char* string_value)
         return ESP_FAIL;
     }
 
-    return nvs_set_str(m_handle, key, string_value);
+    return nvs_set_str(_handle, key, string_value);
 }
 
 
@@ -74,7 +73,7 @@ int nvs_get_string(char* key,  char* buffer, size_t* length)
         return ESP_FAIL;
     } 
 
-    return nvs_get_str(m_handle, key, buffer, length);
+    return nvs_get_str(_handle, key, buffer, length);
 }
 
 
@@ -84,7 +83,7 @@ int set_bool(char* key, bool value)
          printf("Error: NVS is close");
         return ESP_FAIL;
     } 
-    return nvs_set_u8(m_handle, key, value ? 1 : 0);
+    return nvs_set_u8(_handle, key, value ? 1 : 0);
 }
 
 
@@ -97,7 +96,7 @@ int get_bool(char* key, bool* value )
     }
     
     uint8_t v = 0;
-    esp_err_t err = nvs_get_u8(m_handle, key, &v);
+    esp_err_t err = nvs_get_u8(_handle, key, &v);
     if (err != ESP_OK) {
         return err;
     }
@@ -119,7 +118,7 @@ int _nvs_commit(void)
        printf("Error: NVS is close");
        return ESP_FAIL; 
     }
-    return nvs_commit(m_handle);   
+    return nvs_commit(_handle);   
 }
 
 
@@ -128,7 +127,7 @@ int _nvs_close(void)
     printf("Closing nvs");
 
     if (!is_open) {
-     nvs_close(m_handle);
+     nvs_close(_handle);
     }
     is_open = false;
 
