@@ -60,8 +60,7 @@ int main(void)
 {
     puts("Welcome to Turpial ESP32 MCU!");
 
-    if(nvs_init() < 0)
-    {
+    if(nvs_init() < 0){
        printf("Error: Couldn't initialize NVS\n"); 
     }
 

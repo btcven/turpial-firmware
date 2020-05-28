@@ -4,3 +4,8 @@ ifneq (,$(filter vaina,$(USEMODULE)))
   USEMODULE += turpial_firmware_storage
   USEMODULE += esp_idf_nvs_flash
 endif
+
+ifneq (,$(filter nvs,$(USEMODULE)))
+  USEMODULE += turpial_firmware_storage
+  USEMODULE += esp_idf_nvs_flash
+endif

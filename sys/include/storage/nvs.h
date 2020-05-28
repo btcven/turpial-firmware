@@ -16,7 +16,8 @@
  */
 
 /**
- * @ingroup     storage_nvs
+ * @defgroup     storage_nvs
+ * @ingroup      storage_nvs
  * @{
  *
  * @file        nvs.h
@@ -32,69 +33,73 @@
 #define STORAGE_NVS_H
 
 /**
- * @brief Initialize and open NVS
+ * @brief   Initialize and open NVS
  * 
- * @return ESP_OK: succeed
- * @return ESP_FAIL: fail    
+ * @return   ESP_OK: succeed
+ * @return   ESP_FAIL: fail    
  */
 
 int nvs_init(void);
+
 /**
- * @brief Set the String object
+ * @brief   Set the String object
  * 
- * @param key[in]  key value
- * @param string_value[in]  string data
+ * @param key[in]            key value
+ * @param string_value[in]   string data
  * 
- * @return ESP_OK: succeed
- * @return ESP_FAIL: fail 
+ * @return    0: succeed
+ * @return   -1: fail 
  */
 int nvs_set_string(char* key, char* string_value);
+
 /**
- * @brief Get the String object
+ * @brief   Get the String object
  * 
- * @param key[in] key value 
- * @param buffer[out] return value
+ * @param key[in]      key value 
+ * @param buffer[out]  return value
  * @param length[in]
  * 
- * @return ESP_OK: succeed
- * @return ESP_FAIL: fail 
+ * @return   0: succeed
+ * @return  -1: fail 
  */
 int nvs_get_string(char* key,  char* buffer, size_t* length);
+
 /**
- * @brief Set a boolean
+ * @brief   Set a boolean
  * 
- * @param key[in]: key in the namespace 
- * @param value[in]: boolean value
+ * @param key[in]:    key in the namespace 
+ * @param value[in]:  boolean value
  * 
- * @return ESP_OK: succeed
- * @return ESP_FAIL: fail 
+ * @return   0: succeed
+ * @return  -1: fail 
  *      
  */
 int set_bool(char* key, bool value);
 
 /**
- * @brief Get a boolean
+ * @brief   Get a boolean
  * 
- * @param[in]  key: key in the namespace
- * @param[out] value: boolean return value
+ * @param[in]    key: key in the namespace
+ * @param[out]   value: boolean return value
  * 
- * @return ESP_OK: succeed
- * @return ESP_FAIL: fail 
+ * @return   0: succeed
+ * @return  -1: fail 
  */
 int get_bool(char* key, bool* value);
+
 /**
- * @brief Commit changes to flash
+ * @brief   Commit changes to flash
  * 
- * @return ESP_OK: succeed
- * @return ESP_FAIL: fail 
+ * @return   0: succeed
+ * @return  -1: fail 
  */
 int _nvs_commit(void);
 
 /**
- * @brief Close the namespace
+ * @brief   Close the namespace
  * 
- * @return ESP_OK: succeed
- * @return ESP_FAIL: fail 
+ * @return   0: succeed
+ * @return  -1: fail 
  */ 
 int _nvs_close(void);
 

@@ -28,18 +28,15 @@
  */
 
 
-#define ENABLE_DEBUG (1)
 #include "debug.h"
 #include "storage/nvs.h"
 #include "nvs_flash/include/nvs_flash.h"
 
+#define ENABLE_DEBUG (1)
 
 uint32_t m_handle;
 bool is_open = false;
 
-void test(void){
-    DEBUG("NVS: Dios miooo.\n");
-}
 
 int nvs_init(void)
 {
