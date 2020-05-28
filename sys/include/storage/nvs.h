@@ -103,5 +103,8 @@ int _nvs_commit(void);
  */ 
 int _nvs_close(void);
 
+int  set_blob(char* key, uint8_t* buffer, size_t length); 
+
+int  get_blob(char* key, uint8_t* buffer, size_t length); 
 
 #endif /* NET_VAINA_H */

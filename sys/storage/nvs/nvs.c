@@ -133,3 +133,25 @@ int _nvs_close(void)
 
     return ESP_OK;
 }
+
+int set_blob(char* key, uint8_t* buffer, size_t length)
+{
+   if(!is_open){
+       printf("Error: NVS is close");
+       return ESP_FAIL; 
+    }
+
+    esp_err_t err = nvs_set_blob(_handle, key, (void*)buffer, length);
+    
+    return err;
+} 
+
+int get_blob(char* key, uint8_t* buffer, size_t length)
+{
+    if(!is_open){
+       printf("Error: NVS is close");
+       return ESP_FAIL; 
+    }
+
+   return nvs_get_blob(_handle, key, (void*)buffer, (size_t*)length);
+} 
