@@ -41,6 +41,7 @@ USEMODULE += esp_wifi_ap
 
 USEMODULE += vaina
 USEMODULE += nvs
+USEMODULE += wifi_settings
 USEMODULE += slipdev
 
 UART1_TXD ?= "GPIO21"

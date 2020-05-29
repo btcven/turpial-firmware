@@ -7,3 +7,9 @@ ifneq (,$(filter nvs,$(USEMODULE)))
   USEMODULE += turpial_firmware_storage
   USEMODULE += esp_idf_nvs_flash
 endif
+
+ifneq (,$(filter wifi_settings,$(USEMODULE)))
+  USEMODULE += turpial_firmware_storage
+  USEMODULE += nvs
+  USEMODULE += sock_udp
+endif

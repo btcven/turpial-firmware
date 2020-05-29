@@ -4,4 +4,9 @@ ifneq (,$(filter vaina,$(USEMODULE)))
   DIRS += nvs
 endif
 
+
+ifneq (,$(filter wifi_settings,$(USEMODULE)))
+  DIRS += wifisettings
+endif
+
 include $(RIOTBASE)/Makefile.base
