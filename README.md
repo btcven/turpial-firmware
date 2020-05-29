@@ -109,8 +109,7 @@ currently only it is only compatible with linux (Debian / Ubuntu) for Mac OS you
  1.  cd turpial-firmware
  2.  git submodule init
  3.  git submodule update
- 4.  git submodule update
- 5.  make
+ 4.  make
 
 ### Flashing the Firmware
 
