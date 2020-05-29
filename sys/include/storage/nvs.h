@@ -103,8 +103,20 @@ int _nvs_commit(void);
  */ 
 int _nvs_close(void);
 
+/**
+ * @brief   function to save the blob in the memory
+ * 
+ * @return   0: succeed
+ * @return  -1: fail 
+ */ 
 int  set_blob(char* key, uint8_t* buffer, size_t length); 
 
+/**
+ * @brief   function to save the blob in the memory
+ * 
+ * @return   0: succeed
+ * @return  -1: fail 
+ */ 
 int  get_blob(char* key, uint8_t* buffer, size_t length); 
 
 #endif /* NET_VAINA_H */

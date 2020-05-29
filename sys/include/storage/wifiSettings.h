@@ -36,18 +36,54 @@
 
 #define MAX_LENGTH 20
 
+/** ap credentials */
 typedef  struct {
-    char ssid[MAX_LENGTH];
-    char password[MAX_LENGTH];
+    char ssid[MAX_LENGTH]; /**< ap ssid */
+    char password[MAX_LENGTH] /**< ap password */
 } wifi_settings;
 
-
+/**
+ * 
+ * @brief    save in the storage the password and ssid of the AP wifi
+ * 
+ * @param ap_value[in]  ssid nad password  
+ * 
+ * @return    0:succeed
+ * @return   -1:fail
+ */ 
 int set_ap_credentials(wifi_settings ap_value);
 
+/**
+ * 
+ * @brief   get ssid and password saved in the storage 
+ * 
+ * @param ap_value[out]  ssid nad password  
+ * 
+ * @return    0:succeed
+ * @return   -1:fail
+ */ 
 int get_ap_credentials(wifi_settings* ap_value);
 
+/**
+ * 
+ * @brief   set global ipv6 in the storage 
+ * 
+ * @param ip6[in]  ssid nad password  
+ * 
+ * @return    0:succeed
+ * @return   -1:fail
+ */ 
 int set_global_ipv6(ipv6_addr_t ip6);
 
+/**
+ * 
+ * @brief   set global ipv6 in the storage 
+ * 
+ * @param ip6[in]  ssid nad password  
+ * 
+ * @return    0:succeed
+ * @return   -1:fail
+ */ 
 int get_global_ipv6(ipv6_addr_t* ip6);
 
 
