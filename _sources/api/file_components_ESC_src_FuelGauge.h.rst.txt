@@ -1,0 +1,95 @@
+
+.. _file_components_ESC_src_FuelGauge.h:
+
+File FuelGauge.h
+================
+
+|exhale_lsh| :ref:`Parent directory <dir_components_ESC_src>` (``components/ESC/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/ESC/src/FuelGauge.h``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_ESC_src_FuelGauge.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh Developers (contact@locha.io) 
+0.1 
+2019-11-22
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+- ``driver/gpio.h``
+
+- ``driver/i2c.h``
+
+- ``esp_err.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_main_main.cpp`
+
+- :ref:`file_components_ESC_src_Battery.cpp`
+
+- :ref:`file_components_ESC_src_FuelGauge.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_esc`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classesc_1_1FuelGauge`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_FuelGauge_8h_1a5923b98a95807a4f8a18698c36558a0f`
+
+- :ref:`exhale_enum_FuelGauge_8h_1aee0b7f0c0ab08a93c9b7bd17f11d6340`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_FuelGauge_8h_1aa992fe1af37166a752321a27ad6851ab`
+
+- :ref:`exhale_variable_FuelGauge_8h_1ade874af2f4057e0f057d4da7d256b982`
+

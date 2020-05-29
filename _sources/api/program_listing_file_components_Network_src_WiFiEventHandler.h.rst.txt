@@ -1,0 +1,65 @@
+
+.. _program_listing_file_components_Network_src_WiFiEventHandler.h:
+
+Program Listing for File WiFiEventHandler.h
+===========================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_Network_src_WiFiEventHandler.h>` (``components/Network/src/WiFiEventHandler.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef NETWORK_WIFI_EVENT_HANDLER_H
+   #define NETWORK_WIFI_EVENT_HANDLER_H
+   
+   #include <memory>
+   
+   #include <esp_event.h>
+   #include <esp_wifi.h>
+   #include <esp_netif.h>
+   
+   namespace network {
+   
+   class WiFiEventHandler
+   {
+   public:
+       WiFiEventHandler();
+   
+       virtual esp_err_t staScanDone(wifi_event_sta_scan_done_t* info);
+   
+       virtual esp_err_t staStart();
+   
+       virtual esp_err_t staStop();
+   
+       virtual esp_err_t staConnected(wifi_event_sta_connected_t* info);
+   
+       virtual esp_err_t staDisconnected(wifi_event_sta_disconnected_t* info);
+   
+       virtual esp_err_t staAuthChange(wifi_event_sta_authmode_change_t* info);
+   
+       virtual esp_err_t staGotIp(ip_event_got_ip_t* info);
+   
+       virtual esp_err_t apStart();
+   
+       virtual esp_err_t apStop();
+   
+       virtual esp_err_t apStaConnected(wifi_event_ap_staconnected_t* info);
+   
+       virtual esp_err_t apStaDisconnected(wifi_event_ap_stadisconnected_t* info);
+   
+       void setNextHandler(std::unique_ptr<WiFiEventHandler>&& next_handler)
+       {
+           m_next_handler = std::move(next_handler);
+       }
+   
+       esp_err_t eventDispatcher(std::int32_t event_id, void* event_data);
+   
+   private:
+       std::unique_ptr<WiFiEventHandler> m_next_handler;
+   };
+   
+   } // namespace network
+   
+   #endif // NETWORK_WIFI_EVENT_HANDLER_H

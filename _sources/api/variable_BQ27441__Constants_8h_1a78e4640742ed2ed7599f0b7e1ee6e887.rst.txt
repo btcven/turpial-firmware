@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a78e4640742ed2ed7599f0b7e1ee6e887:
+
+Variable esc::STATUS_RES_UP
+===========================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::STATUS_RES_UP

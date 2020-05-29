@@ -1,0 +1,91 @@
+
+.. _file_components_ESC_src_FuelGauge.cpp:
+
+File FuelGauge.cpp
+==================
+
+|exhale_lsh| :ref:`Parent directory <dir_components_ESC_src>` (``components/ESC/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/ESC/src/FuelGauge.cpp``)
+-------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_ESC_src_FuelGauge.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh project developers (locha.io) 
+0.1 
+2019-12-17
+Copyright (c) 2019 Locha Mesh project 
+
+
+
+
+Includes
+--------
+
+
+- ``BQ27441_Constants.h`` (:ref:`file_components_ESC_src_BQ27441_Constants.h`)
+
+- ``ErrUtil.h`` (:ref:`file_components_Util_src_ErrUtil.h`)
+
+- ``FuelGauge.h`` (:ref:`file_components_ESC_src_FuelGauge.h`)
+
+- ``esp_err.h``
+
+- ``esp_log.h``
+
+- ``esp_system.h``
+
+- ``freertos/FreeRTOS.h``
+
+- ``freertos/task.h``
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_esc`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_FuelGauge_8cpp_1a383a2e3fbf8ac19c9836514da711591f`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_FuelGauge_8cpp_1a1508d8d0dfb137ca974c5dfd8f9867bc`
+
+- :ref:`exhale_variable_FuelGauge_8cpp_1ad247644916a2a998c2d0c60a47047974`
+
+- :ref:`exhale_variable_FuelGauge_8cpp_1a01bf1de7a0fc58037a9ba983f8c0ad47`
+
+- :ref:`exhale_variable_FuelGauge_8cpp_1a435aace1a03a1b87a24c8c89f785457f`
+
+- :ref:`exhale_variable_FuelGauge_8cpp_1a739f7430f1c0a53253412a80d0c5e5da`
+
+- :ref:`exhale_variable_FuelGauge_8cpp_1a2ae0a7742c8bdc8a40d0c65007d42b83`
+

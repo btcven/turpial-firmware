@@ -1,0 +1,45 @@
+
+.. _program_listing_file_main_defaults.h:
+
+Program Listing for File defaults.h
+===================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_main_defaults.h>` (``main/defaults.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef DEFAULTS_H
+   #define DEFAULTS_H
+   
+   #define NVS_APP_NAMESPACE "turpial"           
+   #define NVS_IS_CONFIGURED_KEY "is_configured" 
+   #define RAD_ENABLED true 
+   #define RAD_TX_PIN 5      
+   #define RAD_RX_PIN 4      
+   #define RAD_PORT UART_NUM_2
+   #define BUF_SIZE (1024)
+   #define RAD_BUF_SIZE (BUF_SIZE)
+   
+   #define WIFI_MODE WIFI_MODE_AP              
+   #define WST_SSID ""                         
+   #define WST_PASS ""                         
+   #define WAP_SSID "io.locha.ap"              
+   #define WAP_PASS "default_password"         
+   #define WAP_CHANNEL 6                       
+   #define WAP_MAXCONN 4                       
+   #define WAP_AUTHMODE WIFI_AUTH_WPA_WPA2_PSK 
+   #define DEFAULT_REST_PORT 2656
+   #define USER_NAME_KEY "username"      
+   #define USER_PASSWORD_KEY "password"  
+   #define DEFAUL_USERNAME "admin"       
+   #define DEFAULT_USER_PASSWORD "admin" 
+   #define MAX_USER_NAME_LENGTH 20       
+   #define MAX_USER_PASSWORD_LENGTH 20   
+   #define DEFAULT_USER_BUTTON GPIO_NUM_21 
+   #define DEFAULT_RGB_LED_R 0 
+   #define DEFAULT_RGB_LED_G 2 
+   #define DEFAULT_RGB_LED_B 4 
+   #endif // DEFAULTS_H

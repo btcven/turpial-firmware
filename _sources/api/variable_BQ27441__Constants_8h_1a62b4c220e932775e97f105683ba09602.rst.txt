@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a62b4c220e932775e97f105683ba09602:
+
+Variable esc::ID_SAFETY
+=======================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::ID_SAFETY

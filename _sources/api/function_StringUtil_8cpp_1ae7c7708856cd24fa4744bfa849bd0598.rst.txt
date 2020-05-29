@@ -1,0 +1,13 @@
+.. _exhale_function_StringUtil_8cpp_1ae7c7708856cd24fa4744bfa849bd0598:
+
+Function util::trim
+===================
+
+- Defined in :ref:`file_components_Util_src_StringUtil.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: util::trim(const std::string&)

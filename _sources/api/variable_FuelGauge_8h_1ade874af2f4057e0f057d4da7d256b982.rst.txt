@@ -1,0 +1,13 @@
+.. _exhale_variable_FuelGauge_8h_1ade874af2f4057e0f057d4da7d256b982:
+
+Variable esc::SOC_INT
+=====================
+
+- Defined in :ref:`file_components_ESC_src_FuelGauge.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::SOC_INT

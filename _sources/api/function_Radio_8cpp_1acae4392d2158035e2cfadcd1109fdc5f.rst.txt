@@ -1,0 +1,13 @@
+.. _exhale_function_Radio_8cpp_1acae4392d2158035e2cfadcd1109fdc5f:
+
+Function radio::eventLoop
+=========================
+
+- Defined in :ref:`file_components_Radio_src_Radio.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: radio::eventLoop(void *)

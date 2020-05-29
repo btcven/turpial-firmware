@@ -1,0 +1,13 @@
+.. _exhale_define_Radio_8h_1aaac1ff4eb8c014b222d7477862251c42:
+
+Define CONFIG_RADIO_RX_BUF_SIZE
+===============================
+
+- Defined in :ref:`file_components_Radio_src_Radio.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: CONFIG_RADIO_RX_BUF_SIZE

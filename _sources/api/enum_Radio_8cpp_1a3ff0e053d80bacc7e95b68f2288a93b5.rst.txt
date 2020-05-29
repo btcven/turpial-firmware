@@ -1,0 +1,13 @@
+.. _exhale_enum_Radio_8cpp_1a3ff0e053d80bacc7e95b68f2288a93b5:
+
+Enum State
+==========
+
+- Defined in :ref:`file_components_Radio_src_Radio.cpp`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: radio::State

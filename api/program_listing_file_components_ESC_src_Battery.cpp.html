@@ -1,0 +1,341 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File Battery.cpp &mdash; turpial-firmware  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> turpial-firmware
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">turpial-firmware</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File Battery.cpp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_components_ESC_src_Battery.cpp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-battery-cpp">
+<span id="program-listing-file-components-esc-src-battery-cpp"></span><h1>Program Listing for File Battery.cpp<a class="headerlink" href="#program-listing-for-file-battery-cpp" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_components_ESC_src_Battery.cpp.html#file-components-esc-src-battery-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">components/ESC/src/Battery.cpp</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;Battery.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;ErrUtil.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;FuelGauge.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">esc</span> <span class="p">{</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TAG</span> <span class="o">=</span> <span class="s">&quot;ESC&quot;</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="n">xQueueHandle</span> <span class="n">g_bat_evt_queue</span> <span class="o">=</span> <span class="k">nullptr</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="n">IRAM_ATTR</span> <span class="nf">interruptIsrHandler</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">arg</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">xQueueSendFromISR</span><span class="p">(</span><span class="n">g_bat_evt_queue</span><span class="p">,</span> <span class="n">arg</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">Battery</span><span class="o">::</span><span class="n">Battery</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">Battery</span><span class="o">::</span><span class="n">init</span><span class="p">(</span><span class="n">gpio_num_t</span> <span class="n">gpout_io_num</span><span class="p">,</span>
+                        <span class="n">gpio_num_t</span> <span class="n">sysoff_io_num</span><span class="p">,</span>
+                        <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">soc_interval</span><span class="p">,</span>
+                        <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">max_capacity</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">static</span> <span class="n">Interrupt</span> <span class="n">g_int_task</span><span class="p">;</span>
+    <span class="k">static</span> <span class="n">gpio_num_t</span> <span class="n">g_gpout_num</span> <span class="o">=</span> <span class="n">gpout_io_num</span><span class="p">;</span>
+
+    <span class="c1">// Configure SYSOFF pin as pull down</span>
+    <span class="n">gpio_config_t</span> <span class="n">sysoff_conf</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="n">sysoff_conf</span><span class="p">.</span><span class="n">intr_type</span> <span class="o">=</span> <span class="n">GPIO_INTR_DISABLE</span><span class="p">;</span>
+    <span class="n">sysoff_conf</span><span class="p">.</span><span class="n">pin_bit_mask</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">sysoff_io_num</span><span class="p">));</span>
+    <span class="n">sysoff_conf</span><span class="p">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">GPIO_MODE_OUTPUT</span><span class="p">;</span>
+    <span class="n">sysoff_conf</span><span class="p">.</span><span class="n">pull_up_en</span> <span class="o">=</span> <span class="n">GPIO_PULLUP_DISABLE</span><span class="p">;</span>
+    <span class="n">sysoff_conf</span><span class="p">.</span><span class="n">pull_down_en</span> <span class="o">=</span> <span class="n">GPIO_PULLDOWN_ENABLE</span><span class="p">;</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">gpio_config</span><span class="p">(</span><span class="o">&amp;</span><span class="n">sysoff_conf</span><span class="p">));</span>
+
+    <span class="c1">// Set SYSOFF to 0</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">gpio_set_level</span><span class="p">(</span><span class="n">sysoff_io_num</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+
+    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;SYSOFF level = %d&quot;</span><span class="p">,</span> <span class="n">gpio_get_level</span><span class="p">(</span><span class="n">sysoff_io_num</span><span class="p">));</span>
+
+    <span class="c1">// Configure FuelGauge</span>
+    <span class="n">FuelGauge</span><span class="o">&amp;</span> <span class="n">fuel_gauge</span> <span class="o">=</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">getInstance</span><span class="p">();</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">fuel_gauge</span><span class="p">.</span><span class="n">enterConfig</span><span class="p">(</span><span class="nb">true</span><span class="p">));</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">fuel_gauge</span><span class="p">.</span><span class="n">setCapacity</span><span class="p">(</span><span class="n">max_capacity</span><span class="p">));</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">fuel_gauge</span><span class="p">.</span><span class="n">setGPOUTPolarity</span><span class="p">(</span><span class="nb">false</span><span class="p">));</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">fuel_gauge</span><span class="p">.</span><span class="n">setGPOUTFunction</span><span class="p">(</span><span class="n">SOC_INT</span><span class="p">));</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">fuel_gauge</span><span class="p">.</span><span class="n">setSOCIDelta</span><span class="p">(</span><span class="n">soc_interval</span><span class="p">));</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">fuel_gauge</span><span class="p">.</span><span class="n">exitConfig</span><span class="p">(</span><span class="nb">true</span><span class="p">));</span>
+
+    <span class="n">gpio_config_t</span> <span class="n">io_conf</span> <span class="o">=</span> <span class="p">{};</span>
+    <span class="n">io_conf</span><span class="p">.</span><span class="n">intr_type</span> <span class="o">=</span> <span class="n">GPIO_INTR_LOW_LEVEL</span><span class="p">;</span>
+    <span class="n">io_conf</span><span class="p">.</span><span class="n">pin_bit_mask</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint32_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">gpout_io_num</span><span class="p">));</span>
+    <span class="n">io_conf</span><span class="p">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">GPIO_MODE_INPUT</span><span class="p">;</span>
+    <span class="n">io_conf</span><span class="p">.</span><span class="n">pull_up_en</span> <span class="o">=</span> <span class="n">GPIO_PULLUP_ENABLE</span><span class="p">;</span>
+    <span class="n">io_conf</span><span class="p">.</span><span class="n">pull_down_en</span> <span class="o">=</span> <span class="n">GPIO_PULLDOWN_DISABLE</span><span class="p">;</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">gpio_config</span><span class="p">(</span><span class="o">&amp;</span><span class="n">io_conf</span><span class="p">));</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">gpio_set_intr_type</span><span class="p">(</span><span class="n">gpout_io_num</span><span class="p">,</span> <span class="n">GPIO_INTR_LOW_LEVEL</span><span class="p">));</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">gpio_install_isr_service</span><span class="p">(</span><span class="mi">0</span><span class="p">));</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">gpio_isr_handler_add</span><span class="p">(</span><span class="n">gpout_io_num</span><span class="p">,</span> <span class="n">interruptIsrHandler</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">g_gpout_num</span><span class="p">));</span>
+
+    <span class="n">g_bat_evt_queue</span> <span class="o">=</span> <span class="n">xQueueCreate</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">gpio_num_t</span><span class="p">));</span>
+
+    <span class="n">g_int_task</span><span class="p">.</span><span class="n">start</span><span class="p">();</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">Interrupt</span><span class="o">::</span><span class="n">Interrupt</span><span class="p">()</span>
+    <span class="o">:</span> <span class="n">Task</span><span class="p">(</span><span class="s">&quot;Interrupt&quot;</span><span class="p">,</span> <span class="mi">2000</span><span class="p">,</span> <span class="mi">5</span><span class="p">)</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">Interrupt</span><span class="o">::</span><span class="n">run</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">task_data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">esp_err_t</span> <span class="n">err</span> <span class="o">=</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">gpio_num_t</span> <span class="n">io_pin</span> <span class="o">=</span> <span class="n">GPIO_NUM_MAX</span><span class="p">;</span>
+    <span class="n">FuelGauge</span><span class="o">&amp;</span> <span class="n">fuel_gauge</span> <span class="o">=</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">getInstance</span><span class="p">();</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">voltage</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span> <span class="n">avg_current</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span> <span class="n">avg_power</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">soc</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">temp</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="nb">true</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">xQueueReceive</span><span class="p">(</span><span class="n">g_bat_evt_queue</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">io_pin</span><span class="p">,</span> <span class="n">portMAX_DELAY</span><span class="p">))</span> <span class="p">{</span>
+            <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;GPOUT intr, val: %d&quot;</span><span class="p">,</span> <span class="n">gpio_get_level</span><span class="p">(</span><span class="n">io_pin</span><span class="p">));</span>
+
+            <span class="n">err</span> <span class="o">=</span> <span class="n">fuel_gauge</span><span class="p">.</span><span class="n">voltage</span><span class="p">(</span><span class="o">&amp;</span><span class="n">voltage</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Can&#39;t get voltage, err = %s&quot;</span><span class="p">,</span>
+                         <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">err</span> <span class="o">=</span> <span class="n">fuel_gauge</span><span class="p">.</span><span class="n">avgCurrent</span><span class="p">(</span><span class="o">&amp;</span><span class="n">avg_current</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Can&#39;t get avg. current, err = %s&quot;</span><span class="p">,</span>
+                         <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">err</span> <span class="o">=</span> <span class="n">fuel_gauge</span><span class="p">.</span><span class="n">avgPower</span><span class="p">(</span><span class="o">&amp;</span><span class="n">avg_power</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Can&#39;t get avg. power, err = %s&quot;</span><span class="p">,</span>
+                         <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">err</span> <span class="o">=</span> <span class="n">fuel_gauge</span><span class="p">.</span><span class="n">soc</span><span class="p">(</span><span class="n">SocMeasure</span><span class="o">::</span><span class="n">Unfiltered</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">soc</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Can&#39;t get SoC, err = %s&quot;</span><span class="p">,</span>
+                         <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">err</span> <span class="o">=</span> <span class="n">fuel_gauge</span><span class="p">.</span><span class="n">temperature</span><span class="p">(</span><span class="n">TempMeasure</span><span class="o">::</span><span class="n">Internal</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">temp</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+                <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Can&#39;t get internal temperature, err = %s&quot;</span><span class="p">,</span>
+                         <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+                <span class="k">continue</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;%d mV | %d mA | %d mA | %d %% | %d&quot;</span><span class="p">,</span>
+                     <span class="n">voltage</span><span class="p">,</span>
+                     <span class="n">avg_current</span><span class="p">,</span>
+                     <span class="n">avg_power</span><span class="p">,</span>
+                     <span class="n">soc</span><span class="p">,</span>
+                     <span class="n">temp</span><span class="p">);</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="p">}</span> <span class="c1">// namespace esc</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Locha Mesh developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

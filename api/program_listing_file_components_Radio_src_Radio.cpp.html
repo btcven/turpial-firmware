@@ -1,0 +1,361 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File Radio.cpp &mdash; turpial-firmware  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> turpial-firmware
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">turpial-firmware</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File Radio.cpp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_components_Radio_src_Radio.cpp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-radio-cpp">
+<span id="program-listing-file-components-radio-src-radio-cpp"></span><h1>Program Listing for File Radio.cpp<a class="headerlink" href="#program-listing-for-file-radio-cpp" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_components_Radio_src_Radio.cpp.html#file-components-radio-src-radio-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">components/Radio/src/Radio.cpp</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;Radio.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;cstring&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;driver/uart.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;esp_log.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&quot;freertos/queue.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;Websocket.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">radio</span> <span class="p">{</span>
+
+<span class="k">enum</span> <span class="k">class</span> <span class="nc">State</span> <span class="p">{</span>
+    <span class="n">Length</span><span class="p">,</span>
+    <span class="n">Payload</span><span class="p">,</span>
+    <span class="n">Finished</span><span class="p">,</span>
+<span class="p">};</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TAG</span> <span class="o">=</span> <span class="s">&quot;Radio&quot;</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="n">QueueHandle_t</span> <span class="n">g_uart0_queue</span><span class="p">;</span>
+<span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">g_rx_buf</span><span class="p">[</span><span class="n">CONFIG_RADIO_RX_BUF_SIZE</span><span class="p">];</span>
+<span class="k">static</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">g_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="kt">void</span> <span class="nf">eventLoop</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">bytes_read</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">total_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="kt">int</span> <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">State</span> <span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Length</span><span class="p">;</span>
+
+    <span class="k">while</span> <span class="p">(</span><span class="mi">1</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">switch</span> <span class="p">(</span><span class="n">state</span><span class="p">)</span> <span class="p">{</span>
+            <span class="k">case</span> <span class="n">State</span><span class="o">::</span><span class="nl">Length</span><span class="p">:</span>
+                <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;reading length&quot;</span><span class="p">);</span>
+                <span class="p">{</span>
+                    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;oh no&quot;</span><span class="p">);</span>
+                    <span class="n">cnt</span> <span class="o">=</span> <span class="n">uart_read_bytes</span><span class="p">(</span><span class="n">CONFIG_RADIO_UART</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">g_len</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">g_len</span><span class="p">),</span>
+                                          <span class="n">portMAX_DELAY</span><span class="p">);</span>
+                    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;read&quot;</span><span class="p">);</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">!=</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">g_len</span><span class="p">)</span> <span class="o">||</span> <span class="n">g_len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;true&quot;</span><span class="p">);</span>
+                        <span class="c1">// We didn&#39;t read a valid length, so do it again.</span>
+                        <span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Length</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;false&quot;</span><span class="p">);</span>
+                        <span class="c1">// Go to the read payload state</span>
+                        <span class="n">total_len</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">size_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">g_len</span><span class="p">);</span>
+                        <span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Payload</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="k">break</span><span class="p">;</span>
+
+            <span class="k">case</span> <span class="n">State</span><span class="o">::</span><span class="nl">Payload</span><span class="p">:</span>
+                <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;reading payload&quot;</span><span class="p">);</span>
+                <span class="p">{</span>
+                    <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">remaining</span> <span class="o">=</span> <span class="n">total_len</span> <span class="o">-</span> <span class="n">bytes_read</span><span class="p">;</span>
+                    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;total len = %d, bytes_read = %d, remaining = %d&quot;</span><span class="p">,</span>
+                          <span class="p">(</span><span class="kt">size_t</span><span class="p">)</span><span class="n">total_len</span><span class="p">,</span> <span class="n">bytes_read</span><span class="p">,</span> <span class="n">remaining</span><span class="p">);</span>
+                    <span class="n">cnt</span> <span class="o">=</span> <span class="n">uart_read_bytes</span><span class="p">(</span><span class="n">CONFIG_RADIO_UART</span><span class="p">,</span>
+                                          <span class="n">g_rx_buf</span> <span class="o">+</span> <span class="n">bytes_read</span><span class="p">,</span> <span class="n">remaining</span><span class="p">,</span>
+                                          <span class="n">portMAX_DELAY</span><span class="p">);</span>
+                    <span class="n">bytes_read</span> <span class="o">+=</span> <span class="n">cnt</span><span class="p">;</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">bytes_read</span> <span class="o">&lt;</span> <span class="n">total_len</span><span class="p">)</span> <span class="p">{</span>
+                        <span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Payload</span><span class="p">;</span>
+                    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+                        <span class="c1">// We&#39;re done</span>
+                        <span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Finished</span><span class="p">;</span>
+                    <span class="p">}</span>
+                <span class="p">}</span>
+                <span class="k">break</span><span class="p">;</span>
+
+            <span class="k">case</span> <span class="n">State</span><span class="o">::</span><span class="nl">Finished</span><span class="p">:</span>
+                <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;finished websocket is in charge!&quot;</span><span class="p">);</span>
+                <span class="p">{</span>
+                    <span class="n">Websocket</span><span class="o">&amp;</span> <span class="n">ws</span> <span class="o">=</span> <span class="n">Websocket</span><span class="o">::</span><span class="n">getInstance</span><span class="p">();</span>
+                    <span class="n">ws</span><span class="p">.</span><span class="n">websocketRadioRx</span><span class="p">(</span><span class="n">g_rx_buf</span><span class="p">,</span> <span class="n">total_len</span><span class="p">);</span>
+                    <span class="n">state</span> <span class="o">=</span> <span class="n">State</span><span class="o">::</span><span class="n">Length</span><span class="p">;</span>
+                    <span class="c1">// Reset buffer</span>
+                    <span class="n">std</span><span class="o">::</span><span class="n">memset</span><span class="p">(</span><span class="n">g_rx_buf</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="k">sizeof</span><span class="p">(</span><span class="n">g_rx_buf</span><span class="p">));</span>
+                    <span class="n">bytes_read</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                    <span class="n">cnt</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                    <span class="n">total_len</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                <span class="p">}</span>
+                <span class="k">break</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span>
+
+    <span class="n">vTaskDelete</span><span class="p">(</span><span class="nb">NULL</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">int</span> <span class="nf">write</span><span class="p">(</span><span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="o">*</span><span class="n">buffer</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">length</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">assert</span><span class="p">(</span><span class="n">length</span> <span class="o">&lt;=</span> <span class="n">UINT8_MAX</span><span class="p">);</span>
+
+    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;length = %d&quot;</span><span class="p">,</span> <span class="n">length</span><span class="p">);</span>
+
+    <span class="cm">/* Write the length byte */</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">len_byte</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">length</span><span class="p">);</span>
+    <span class="kt">int</span> <span class="n">cnt</span><span class="p">;</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="n">uart_write_bytes</span><span class="p">(</span><span class="n">CONFIG_RADIO_UART</span><span class="p">,</span>
+                           <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">char</span><span class="o">*&gt;</span><span class="p">(</span><span class="o">&amp;</span><span class="n">len_byte</span><span class="p">),</span>
+                           <span class="k">sizeof</span><span class="p">(</span><span class="n">len_byte</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="cm">/* Write the rest of the packet */</span>
+    <span class="n">cnt</span> <span class="o">=</span> <span class="n">uart_write_bytes</span><span class="p">(</span><span class="n">CONFIG_RADIO_UART</span><span class="p">,</span>
+                           <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="k">const</span> <span class="kt">char</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">buffer</span><span class="p">),</span> <span class="n">length</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">cnt</span> <span class="o">&lt;</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="o">-</span><span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">cnt</span> <span class="o">+</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="nf">init</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">esp_err_t</span> <span class="n">err</span><span class="p">;</span>
+
+    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Initializing radio&quot;</span><span class="p">);</span>
+
+    <span class="n">uart_config_t</span> <span class="n">uart_config</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="p">.</span><span class="n">baud_rate</span> <span class="o">=</span> <span class="mi">115200</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">data_bits</span> <span class="o">=</span> <span class="n">UART_DATA_8_BITS</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">parity</span> <span class="o">=</span> <span class="n">UART_PARITY_DISABLE</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">stop_bits</span> <span class="o">=</span> <span class="n">UART_STOP_BITS_1</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">flow_ctrl</span> <span class="o">=</span> <span class="n">UART_HW_FLOWCTRL_DISABLE</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">rx_flow_ctrl_thresh</span> <span class="o">=</span> <span class="mi">127</span><span class="p">,</span>
+        <span class="p">.</span><span class="n">use_ref_tick</span> <span class="o">=</span> <span class="nb">false</span><span class="p">,</span>
+    <span class="p">};</span>
+
+    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Configuring UART parameters&quot;</span><span class="p">);</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="n">uart_param_config</span><span class="p">(</span><span class="n">CONFIG_RADIO_UART</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">uart_config</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Configuring UART pins&quot;</span><span class="p">);</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="n">uart_set_pin</span><span class="p">(</span><span class="n">CONFIG_RADIO_UART</span><span class="p">,</span> <span class="n">CONFIG_RADIO_TX</span><span class="p">,</span> <span class="n">CONFIG_RADIO_RX</span><span class="p">,</span>
+                       <span class="n">UART_PIN_NO_CHANGE</span><span class="p">,</span> <span class="n">UART_PIN_NO_CHANGE</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Installing UART driver&quot;</span><span class="p">);</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="n">uart_driver_install</span><span class="p">(</span><span class="n">CONFIG_RADIO_UART</span><span class="p">,</span> <span class="n">CONFIG_RADIO_RX_BUF_SIZE</span><span class="p">,</span>
+                              <span class="mi">0</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">g_uart0_queue</span><span class="p">,</span> <span class="mi">0</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">BaseType_t</span> <span class="n">ret</span> <span class="o">=</span> <span class="n">xTaskCreatePinnedToCore</span><span class="p">(</span><span class="n">eventLoop</span><span class="p">,</span> <span class="s">&quot;radio&quot;</span><span class="p">,</span> <span class="mi">8192</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span>
+                                             <span class="mi">5</span><span class="p">,</span> <span class="nb">NULL</span><span class="p">,</span> <span class="n">tskNO_AFFINITY</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">ret</span> <span class="o">!=</span> <span class="n">pdPASS</span><span class="p">)</span> <span class="p">{</span>
+        <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+
+<span class="p">}</span> <span class="c1">// namespace radio</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Locha Mesh developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

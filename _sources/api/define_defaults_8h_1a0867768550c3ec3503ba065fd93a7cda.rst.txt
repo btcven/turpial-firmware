@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a0867768550c3ec3503ba065fd93a7cda:
+
+Define RAD_PORT
+===============
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: RAD_PORT

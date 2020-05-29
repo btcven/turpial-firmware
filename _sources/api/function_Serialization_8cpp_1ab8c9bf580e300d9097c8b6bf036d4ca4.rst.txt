@@ -1,0 +1,13 @@
+.. _exhale_function_Serialization_8cpp_1ab8c9bf580e300d9097c8b6bf036d4ca4:
+
+Function util::decode
+=====================
+
+- Defined in :ref:`file_components_Util_src_Serialization.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: util::decode(uint8_t *, char *)

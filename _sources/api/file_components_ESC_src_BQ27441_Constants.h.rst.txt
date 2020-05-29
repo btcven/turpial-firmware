@@ -1,0 +1,185 @@
+
+.. _file_components_ESC_src_BQ27441_Constants.h:
+
+File BQ27441_Constants.h
+========================
+
+|exhale_lsh| :ref:`Parent directory <dir_components_ESC_src>` (``components/ESC/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/ESC/src/BQ27441_Constants.h``)
+-------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_ESC_src_BQ27441_Constants.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh project developers (locha.io) 
+0.1 
+2019-12-17
+Copyright (c) 2019 Locha Mesh Project 
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_components_ESC_src_FuelGauge.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_esc`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_BQ27441__Constants_8h_1adc8f69b89bcf622693fb5959cac5e74c`
+
+- :ref:`exhale_enum_BQ27441__Constants_8h_1ada98a1fe2ba7c3dec65a17baf277bb9d`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1af64a83742c5dbac8ce9c79e65a69bc53`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1af08e1fcd4bfb24eeaa0519cbd45d178c`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1aa81632ab1e0c4bd83bdf14d4d7bf07c4`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a1b4027114a544424c5527e05b3543bd2`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a932f7cc65034fa7562b0102e18847a65`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1ad1ee926197f5a9f10f2e82abc1e5c347`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a24366f0d41be22c97064c674f3eadacf`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1af681013ec570c9aa577da53f149792cd`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a2bfe64a56d615a4a9ff60d5e3ad2e1a3`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a75779c1ff4ebb3ff0b9ee683aa40bbe6`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a4fa00b541fc70df6af60f1cfc0d05100`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1ac3d42edc2326b6badd266a96f7c4ed08`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a2f1523fd2a3e9461fae2b56953c9b34b`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a0aa77e565cfb2f9e7ad95e6c7abef081`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1aeae7b9a07e0188872c56db98c54fc063`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1ad93a96b146d389e63ccf7875103a732d`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1aeee17970e2dd589c34d98358b88ba9f2`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a84cfb3b31ebae7bc9a58145faebfa3f9`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a3456c6b2b85a9a1a90eab08889715e94`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a76c5deae7ae16647e1d011c0cbf30a21`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1add66960f6c3359d321fe4a64e8fda921`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1aadbc605456cb6e03174487737b7a63a4`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a03885ffb6cf973764ab3158f2a0c534e`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a6c83a509902ca4045fa9442d73d80675`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1af1001037879f0c50ac60b56e5cca0b6b`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1aa6475d43abdf25674a589b70c8673b8f`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a20df78a805931e7090e18af916f499b6`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a9a2b7d060d392cbb7fd70f97e08c39ad`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a3d230a5762ceffd259f0ae735f77814b`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1ae76d4089e19d61bd3ddd66a88835171f`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a80f4c076a1dffd5160a4789a0bf53666`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1ab98278dda83ea4eb09c3273708345d45`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a62b4c220e932775e97f105683ba09602`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a1f8666db38be706de214aa9dfbbf7945`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1ad9c2358596c3850498390ef441a80416`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1ad9f7d94e01d680399c4e4a420a612f44`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a5d008f1e560166fb7d5e82677e116df5`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a6acb074477c31a8bdc1ab8a02931d9c7`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a221f8b2ae8cd926b7fe1b03e50523a76`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a701a5fe514b0d4fcc225390e4608784d`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1ac142e80bbd8378b7bde5128425aecf5f`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1ad9d25feb23fb7d1aebedaccfb8a355c7`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a80620a388d69a8b552f19fd84baf357e`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a2ec4d86955b2a7fca3f9b6dfa5fa8089`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a7d67b678aafa9702c72afc150743cbc2`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1af3470da292e706ff9ac03fd74c8a07b2`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a5afe01305e8d5d5c4ff47f4572d23de8`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a4244f27d9382538a11e41574f8c36a82`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a78e4640742ed2ed7599f0b7e1ee6e887`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a09938af9cc9e485ccebe34d2d490335b`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a4e532e8f669d07444f7dc121bf97d1c1`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1aa7403ab9011d99a534e69c430760f551`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a21e0535fec2567d6be7306fa5a382286`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a609265500cbd126232777158a265592c`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a7745715a1881b590db812deb35f34f66`
+
+- :ref:`exhale_variable_BQ27441__Constants_8h_1a756835d41d2b19ecce36a9cee9f0e13f`
+

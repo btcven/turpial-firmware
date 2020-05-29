@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1ac7030536a5c5dd8f4632840201cdac39:
+
+Define MAX_USER_NAME_LENGTH
+===========================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: MAX_USER_NAME_LENGTH

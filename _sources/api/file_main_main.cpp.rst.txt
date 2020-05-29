@@ -1,0 +1,96 @@
+
+.. _file_main_main.cpp:
+
+File main.cpp
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_main>` (``main``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``main/main.cpp``)
+------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_main_main.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh Developers (contact@locha.io) 
+0.1 
+2019-09-11
+Copyright (c) 2020 Locha Mesh Developers 
+
+
+
+
+Includes
+--------
+
+
+- ``Battery.h`` (:ref:`file_components_ESC_src_Battery.h`)
+
+- ``Credentials.h`` (:ref:`file_components_NVS_src_Credentials.h`)
+
+- ``FuelGauge.h`` (:ref:`file_components_ESC_src_FuelGauge.h`)
+
+- ``RESTServer.h``
+
+- ``Radio.h`` (:ref:`file_components_Radio_src_Radio.h`)
+
+- ``Storage.h`` (:ref:`file_components_NVS_src_Storage.h`)
+
+- ``UserButton.h``
+
+- ``UserButtonHandler.h``
+
+- ``Websocket.h``
+
+- ``WiFi.h`` (:ref:`file_components_Network_src_WiFi.h`)
+
+- ``cstdio``
+
+- ``cstring``
+
+- ``defaults.h`` (:ref:`file_main_defaults.h`)
+
+- ``esp_log.h``
+
+- ``freertos/FreeRTOS.h``
+
+- ``freertos/task.h``
+
+- ``memory``
+
+- ``sstream``
+
+
+
+
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_main_8cpp_1abce06be17fc37d675118a678a8100a36`
+
+- :ref:`exhale_function_main_8cpp_1a64204756e9c1346b23cc914a42ac1a07`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_main_8cpp_1a5a85b9c772bbeb480b209a3e6ea92b4c`
+

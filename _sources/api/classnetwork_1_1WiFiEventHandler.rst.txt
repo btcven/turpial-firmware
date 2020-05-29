@@ -1,0 +1,25 @@
+.. _exhale_class_classnetwork_1_1WiFiEventHandler:
+
+Class WiFiEventHandler
+======================
+
+- Defined in :ref:`file_components_Network_src_WiFiEventHandler.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Derived Type
+************
+
+- ``public network::WiFiDefaultEventHandler`` (:ref:`exhale_class_classnetwork_1_1WiFiDefaultEventHandler`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: network::WiFiEventHandler
+   :members:
+   :protected-members:
+   :undoc-members:

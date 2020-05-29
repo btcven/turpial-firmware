@@ -1,0 +1,13 @@
+.. _exhale_function_main_8cpp_1abce06be17fc37d675118a678a8100a36:
+
+Function app_main
+=================
+
+- Defined in :ref:`file_main_main.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: app_main()

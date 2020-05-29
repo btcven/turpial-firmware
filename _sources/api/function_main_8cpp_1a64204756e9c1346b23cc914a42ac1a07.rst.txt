@@ -1,0 +1,13 @@
+.. _exhale_function_main_8cpp_1a64204756e9c1346b23cc914a42ac1a07:
+
+Function getIsConfigured
+========================
+
+- Defined in :ref:`file_main_main.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: getIsConfigured(bool&)

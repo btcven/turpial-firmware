@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1ad344ea19233575189cd592ba93965c29:
+
+Define DEFAUL_USERNAME
+======================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: DEFAUL_USERNAME

@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1af0ac4e2d813cd5e07d8c862011de24a3:
+
+Define RAD_TX_PIN
+=================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: RAD_TX_PIN

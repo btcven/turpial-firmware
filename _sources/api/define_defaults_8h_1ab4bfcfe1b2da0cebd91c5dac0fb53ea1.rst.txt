@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1ab4bfcfe1b2da0cebd91c5dac0fb53ea1:
+
+Define WST_PASS
+===============
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: WST_PASS

@@ -1,0 +1,58 @@
+
+.. _namespace_util:
+
+Namespace util
+==============
+
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classutil_1_1Semaphore`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_Base64_8cpp_1ab94e8aab948aa2fbee53d397f3595b89`
+
+- :ref:`exhale_function_Base64_8cpp_1a9167fac57db6bcb399faf5e256aaf080`
+
+- :ref:`exhale_function_Base64_8h_1ab9b1e84a1b4ec813cc5dc54b6dad8756`
+
+- :ref:`exhale_function_Base64_8h_1ae7092c5743aa9d29bd340ce87d19e422`
+
+- :ref:`exhale_function_Hex_8cpp_1a53e4bc4606f8b82563f706b3c16af2b9`
+
+- :ref:`exhale_function_Serialization_8cpp_1ab8c9bf580e300d9097c8b6bf036d4ca4`
+
+- :ref:`exhale_function_Serialization_8cpp_1a754bb02aa605ec12ad92ddf19281d5c9`
+
+- :ref:`exhale_function_Hex_8cpp_1a3cbb0d2c7022dda7204219a3fa18e24f`
+
+- :ref:`exhale_function_Hex_8cpp_1a2ae9e7a3e9289ea17e2a0db04bf03d78`
+
+- :ref:`exhale_function_StringUtil_8cpp_1aecf71f6162ce9ba5222aee68f5935d4c`
+
+- :ref:`exhale_function_StringUtil_8cpp_1a16424e3a48e3a4eb809f395893d2e991`
+
+- :ref:`exhale_function_StringUtil_8cpp_1ae7c7708856cd24fa4744bfa849bd0598`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_Base64_8cpp_1a45e477973bfbf3a69d000c637919bda0`
+
+- :ref:`exhale_variable_Sema_8cpp_1ab8eb9dbffeb563840255ca4ddbb34643`

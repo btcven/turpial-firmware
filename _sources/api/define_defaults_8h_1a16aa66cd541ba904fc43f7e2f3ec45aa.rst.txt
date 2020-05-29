@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a16aa66cd541ba904fc43f7e2f3ec45aa:
+
+Define DEFAULT_REST_PORT
+========================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: DEFAULT_REST_PORT

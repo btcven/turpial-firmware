@@ -1,0 +1,36 @@
+
+.. _program_listing_file_components_Util_src_Base64.h:
+
+Program Listing for File Base64.h
+=================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_Util_src_Base64.h>` (``components/Util/src/Base64.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef UTIL_BASE64_H
+   #define UTIL_BASE64_H
+   
+   #include <cstdint>
+   #include <string>
+   
+   namespace util {
+   
+   static std::size_t base64EncodedLength(std::size_t length)
+   {
+       return (length + 2 - ((length + 2) % 3)) / 3 * 4;
+   }
+   
+   static std::size_t base64EncodedLength(const std::string& in)
+   {
+       return base64EncodedLength(in.length());
+   }
+   
+   bool base64Encode(const std::string& in, std::string* out);
+   
+   } // namespace util
+   
+   #endif // UTIL_BASE64_H

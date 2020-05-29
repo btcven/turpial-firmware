@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a99ef8069fcde89e4a6bbb77231ff1500:
+
+Define WAP_MAXCONN
+==================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: WAP_MAXCONN

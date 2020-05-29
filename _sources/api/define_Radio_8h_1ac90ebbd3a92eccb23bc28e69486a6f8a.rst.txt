@@ -1,0 +1,13 @@
+.. _exhale_define_Radio_8h_1ac90ebbd3a92eccb23bc28e69486a6f8a:
+
+Define CONFIG_RADIO_UART
+========================
+
+- Defined in :ref:`file_components_Radio_src_Radio.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: CONFIG_RADIO_UART

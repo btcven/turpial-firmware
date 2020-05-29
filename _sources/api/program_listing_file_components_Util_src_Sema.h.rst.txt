@@ -1,0 +1,54 @@
+
+.. _program_listing_file_components_Util_src_Sema.h:
+
+Program Listing for File Sema.h
+===============================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_Util_src_Sema.h>` (``components/Util/src/Sema.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef UTIL_SEMA_H
+   #define UTIL_SEMA_H
+   
+   #include <freertos/FreeRTOS.h>
+   #include <freertos/semphr.h>
+   
+   #include <cstdint>
+   
+   namespace util {
+   
+   class Semaphore
+   {
+   public:
+       Semaphore(const char* dbg_name);
+   
+       Semaphore(Semaphore&& other);
+   
+       ~Semaphore();
+   
+       Semaphore(Semaphore const&) = delete;
+       Semaphore& operator=(Semaphore const&) = delete;
+       Semaphore& operator=(Semaphore&&) = delete;
+   
+       void take();
+   
+       bool take(std::uint32_t timeout_ms);
+   
+       void give();
+   
+       void wait();
+   
+   private:
+       Semaphore() {}
+   
+       SemaphoreHandle_t m_handle; 
+       const char* m_dbg_name;     
+   };
+   
+   } // namespace util
+   
+   #endif // UTIL_SEMA_H

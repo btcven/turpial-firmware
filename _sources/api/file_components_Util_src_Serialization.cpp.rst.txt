@@ -1,0 +1,70 @@
+
+.. _file_components_Util_src_Serialization.cpp:
+
+File Serialization.cpp
+======================
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Util_src>` (``components/Util/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Util/src/Serialization.cpp``)
+------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Util_src_Serialization.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh Developers (contact@locha.io) 
+0.1 
+2020-04-14
+Copyright (c) 2020 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``Serialization.h`` (:ref:`file_components_Util_src_Serialization.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_util`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_Serialization_8cpp_1ab8c9bf580e300d9097c8b6bf036d4ca4`
+
+- :ref:`exhale_function_Serialization_8cpp_1a754bb02aa605ec12ad92ddf19281d5c9`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_Serialization_8cpp_1a5a85b9c772bbeb480b209a3e6ea92b4c`
+

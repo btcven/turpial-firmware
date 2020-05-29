@@ -1,0 +1,63 @@
+
+.. _file_components_Util_src_ErrUtil.h:
+
+File ErrUtil.h
+==============
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Util_src>` (``components/Util/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Util/src/ErrUtil.h``)
+----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Util_src_ErrUtil.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh project developers (locha.io) 
+0.1 
+2019-12-17
+Copyright (c) 2019 Locha Mesh project 
+
+
+
+
+Includes
+--------
+
+
+- ``esp_err.h``
+
+- ``esp_log.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_components_ESC_src_Battery.cpp`
+
+- :ref:`file_components_ESC_src_FuelGauge.cpp`
+
+
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_ErrUtil_8h_1a39bb0857aa2024d2f1cad280509a3f12`
+

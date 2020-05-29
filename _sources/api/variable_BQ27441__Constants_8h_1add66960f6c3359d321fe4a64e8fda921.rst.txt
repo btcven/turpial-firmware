@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1add66960f6c3359d321fe4a64e8fda921:
+
+Variable esc::ID_CALIB_DATA
+===========================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::ID_CALIB_DATA

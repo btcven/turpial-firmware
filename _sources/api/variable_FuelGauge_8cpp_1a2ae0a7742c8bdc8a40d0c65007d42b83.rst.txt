@@ -1,0 +1,13 @@
+.. _exhale_variable_FuelGauge_8cpp_1a2ae0a7742c8bdc8a40d0c65007d42b83:
+
+Variable esc::TAG
+=================
+
+- Defined in :ref:`file_components_ESC_src_FuelGauge.cpp`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::TAG

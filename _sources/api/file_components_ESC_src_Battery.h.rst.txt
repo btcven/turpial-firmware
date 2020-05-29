@@ -1,0 +1,77 @@
+
+.. _file_components_ESC_src_Battery.h:
+
+File Battery.h
+==============
+
+|exhale_lsh| :ref:`Parent directory <dir_components_ESC_src>` (``components/ESC/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/ESC/src/Battery.h``)
+---------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_ESC_src_Battery.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh Developers (contact@locha.io) 
+0.1 
+2019-11-22
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``Task.h`` (:ref:`file_components_Task_src_Task.h`)
+
+- ``cstdint``
+
+- ``driver/gpio.h``
+
+- ``esp_err.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_main_main.cpp`
+
+- :ref:`file_components_ESC_src_Battery.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_esc`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classesc_1_1Battery`
+
+- :ref:`exhale_class_classesc_1_1Interrupt`
+

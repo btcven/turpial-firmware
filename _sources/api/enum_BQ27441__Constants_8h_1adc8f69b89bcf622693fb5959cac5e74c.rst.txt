@@ -1,0 +1,13 @@
+.. _exhale_enum_BQ27441__Constants_8h_1adc8f69b89bcf622693fb5959cac5e74c:
+
+Enum Command
+============
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: esc::Command

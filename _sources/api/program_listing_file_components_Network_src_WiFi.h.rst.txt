@@ -1,0 +1,91 @@
+
+.. _program_listing_file_components_Network_src_WiFi.h:
+
+Program Listing for File WiFi.h
+===============================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_Network_src_WiFi.h>` (``components/Network/src/WiFi.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef NETWORK_WIFI_H
+   #define NETWORK_WIFI_H
+   
+   #include <cstdint>
+   
+   #include <esp_err.h>
+   #include <esp_event.h>
+   #include <esp_wifi.h>
+   
+   #include "WiFiEventHandler.h"
+   
+   namespace network {
+   
+   class WiFiDefaultEventHandler : public WiFiEventHandler
+   {
+   public:
+       WiFiDefaultEventHandler();
+   
+       virtual esp_err_t staStart();
+   
+       virtual esp_err_t staStop();
+   };
+   
+   class WiFi
+   {
+   public:
+       static WiFi& getInstance()
+       {
+           static WiFi instance;
+           return instance;
+       }
+   
+       WiFi(WiFi const&) = delete; // Copy construct
+       WiFi(WiFi&&) = delete;      // Move construct
+   
+       WiFi& operator=(WiFi const&) = delete; // Copy assign
+       WiFi& operator=(WiFi&&) = delete;      // Move assign
+   
+       esp_err_t init();
+   
+       esp_err_t setMode(wifi_mode_t mode);
+   
+       esp_err_t getMode(wifi_mode_t& mode);
+   
+       esp_err_t setApConfig(wifi_config_t& ap_config);
+   
+       esp_err_t getApConfig(wifi_config_t& ap_config);
+   
+       esp_err_t setStaConfig(wifi_config_t& sta_config);
+   
+       esp_err_t getStaConfig(wifi_config_t& sta_config);
+   
+       bool isAp();
+   
+       bool isSta();
+   
+       esp_err_t start();
+   
+       esp_err_t stop();
+   
+       esp_err_t connect();
+   
+       void setEventHandler(std::unique_ptr<WiFiEventHandler>&& event_handler);
+   
+   private:
+       WiFi();
+   
+       static void eventHandler(void *event_handler_arg,
+                                esp_event_base_t event_base,
+                                std::int32_t event_id,
+                                void* event_data);
+   
+       WiFiDefaultEventHandler m_event_handler; 
+   };
+   
+   } // namespace network
+   
+   #endif // NETWORK_WIFI_H

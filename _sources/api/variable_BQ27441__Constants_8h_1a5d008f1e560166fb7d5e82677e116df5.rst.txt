@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a5d008f1e560166fb7d5e82677e116df5:
+
+Variable esc::OPCONFIG_BIE
+==========================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::OPCONFIG_BIE

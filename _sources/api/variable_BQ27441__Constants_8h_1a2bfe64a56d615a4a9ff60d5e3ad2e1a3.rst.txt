@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a2bfe64a56d615a4a9ff60d5e3ad2e1a3:
+
+Variable esc::FLAG_BAT_DET
+==========================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::FLAG_BAT_DET

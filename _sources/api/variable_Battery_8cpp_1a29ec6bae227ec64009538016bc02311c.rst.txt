@@ -1,0 +1,13 @@
+.. _exhale_variable_Battery_8cpp_1a29ec6bae227ec64009538016bc02311c:
+
+Variable esc::g_bat_evt_queue
+=============================
+
+- Defined in :ref:`file_components_ESC_src_Battery.cpp`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::g_bat_evt_queue

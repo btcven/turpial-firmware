@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1aa6475d43abdf25674a589b70c8673b8f:
+
+Variable esc::ID_CURRENT
+========================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::ID_CURRENT

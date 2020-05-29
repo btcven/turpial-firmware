@@ -1,0 +1,71 @@
+
+.. _file_components_Util_src_Sema.h:
+
+File Sema.h
+===========
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Util_src>` (``components/Util/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Util/src/Sema.h``)
+-------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Util_src_Sema.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh Developers (contact@locha.io) 
+0.1 
+2019-11-22
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+- ``freertos/FreeRTOS.h``
+
+- ``freertos/semphr.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_components_Util_src_Sema.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_util`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classutil_1_1Semaphore`
+

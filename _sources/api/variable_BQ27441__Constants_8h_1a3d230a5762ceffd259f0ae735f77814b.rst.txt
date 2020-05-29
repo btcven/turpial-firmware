@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a3d230a5762ceffd259f0ae735f77814b:
+
+Variable esc::ID_IT_CFG
+=======================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::ID_IT_CFG

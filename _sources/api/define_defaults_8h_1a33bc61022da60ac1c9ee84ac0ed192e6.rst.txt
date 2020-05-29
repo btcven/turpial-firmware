@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a33bc61022da60ac1c9ee84ac0ed192e6:
+
+Define WAP_AUTHMODE
+===================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: WAP_AUTHMODE

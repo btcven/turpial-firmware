@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1af64a83742c5dbac8ce9c79e65a69bc53:
+
+Variable esc::DEVICE_TYPE_ID
+============================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::DEVICE_TYPE_ID

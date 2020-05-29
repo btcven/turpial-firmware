@@ -1,0 +1,233 @@
+:orphan:
+
+
+Full API
+========
+
+Directories
+***********
+
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_ESC.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_ESC_src.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_Network.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_Network_src.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_NVS.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_NVS_src.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_Radio.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_Radio_src.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_Task.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_Task_src.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_Util.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_components_Util_src.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   dir_main.rst
+
+Files
+*****
+
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_Base64.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_Base64.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_ESC_src_Battery.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_ESC_src_Battery.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_ESC_src_BQ27441_Constants.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_NVS_src_Credentials.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_NVS_src_Credentials.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_main_defaults.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_ErrUtil.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_ESC_src_FuelGauge.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_ESC_src_FuelGauge.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_Hex.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_Hex.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_main_main.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Radio_src_Radio.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Radio_src_Radio.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_Sema.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_Sema.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_Serialization.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_Serialization.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_NVS_src_Storage.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_NVS_src_Storage.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_StringUtil.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Util_src_StringUtil.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Task_src_Task.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Task_src_Task.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Network_src_WiFi.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Network_src_WiFi.h.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Network_src_WiFiEventHandler.cpp.rst
+
+.. toctree::
+   :maxdepth: 5
+
+   file_components_Network_src_WiFiEventHandler.h.rst

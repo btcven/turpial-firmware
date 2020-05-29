@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a6821bafc3c88dfb2e433a095df9940c6:
+
+Define BUF_SIZE
+===============
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: BUF_SIZE

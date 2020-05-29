@@ -1,0 +1,16 @@
+.. _exhale_class_classnetwork_1_1WiFi:
+
+Class WiFi
+==========
+
+- Defined in :ref:`file_components_Network_src_WiFi.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: network::WiFi
+   :members:
+   :protected-members:
+   :undoc-members:

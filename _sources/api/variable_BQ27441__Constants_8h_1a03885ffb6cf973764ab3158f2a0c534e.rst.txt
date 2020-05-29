@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a03885ffb6cf973764ab3158f2a0c534e:
+
+Variable esc::ID_CHG_TERMINATION
+================================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::ID_CHG_TERMINATION

@@ -1,0 +1,13 @@
+.. _exhale_function_Base64_8cpp_1a9167fac57db6bcb399faf5e256aaf080:
+
+Function util::base64Encode
+===========================
+
+- Defined in :ref:`file_components_Util_src_Base64.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: util::base64Encode(const std::string&, std::string *)

@@ -1,0 +1,25 @@
+.. _exhale_class_classesc_1_1Interrupt:
+
+Class Interrupt
+===============
+
+- Defined in :ref:`file_components_ESC_src_Battery.h`
+
+
+Inheritance Relationships
+-------------------------
+
+Base Type
+*********
+
+- ``public Task`` (:ref:`exhale_class_classTask`)
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: esc::Interrupt
+   :members:
+   :protected-members:
+   :undoc-members:

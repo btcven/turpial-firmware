@@ -1,0 +1,16 @@
+.. _exhale_class_classutil_1_1Semaphore:
+
+Class Semaphore
+===============
+
+- Defined in :ref:`file_components_Util_src_Sema.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: util::Semaphore
+   :members:
+   :protected-members:
+   :undoc-members:

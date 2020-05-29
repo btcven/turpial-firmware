@@ -1,0 +1,13 @@
+.. _exhale_function_Radio_8cpp_1aae31a20a2024aae3e5e80ec0cc7479ed:
+
+Function radio::init
+====================
+
+- Defined in :ref:`file_components_Radio_src_Radio.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: radio::init()

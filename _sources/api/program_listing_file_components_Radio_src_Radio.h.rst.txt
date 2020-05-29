@@ -1,0 +1,49 @@
+
+.. _program_listing_file_components_Radio_src_Radio.h:
+
+Program Listing for File Radio.h
+================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_Radio_src_Radio.h>` (``components/Radio/src/Radio.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef RADIO_H
+   #define RADIO_H
+   
+   #include <cstdint>
+   
+   #include <esp_err.h>
+   
+   namespace radio {
+   
+   #ifndef CONFIG_RADIO_UART
+   
+   #define CONFIG_RADIO_UART UART_NUM_2
+   #endif
+   
+   #ifndef CONFIG_RADIO_TX
+   
+   #define CONFIG_RADIO_TX 5
+   #endif
+   
+   #ifndef CONFIG_RADIO_RX
+   
+   #define CONFIG_RADIO_RX 4
+   #endif
+   
+   #ifndef CONFIG_RADIO_RX_BUF_SIZE
+   
+   #define CONFIG_RADIO_RX_BUF_SIZE (512)
+   #endif
+   
+   int write(const std::uint8_t *buffer, std::size_t length);
+   
+   esp_err_t init();
+   
+   } // namespace radio
+   
+   #endif // RADIO_H

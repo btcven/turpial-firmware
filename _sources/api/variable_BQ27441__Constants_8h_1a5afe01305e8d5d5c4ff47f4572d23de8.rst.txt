@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a5afe01305e8d5d5c4ff47f4572d23de8:
+
+Variable esc::STATUS_LDMD
+=========================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::STATUS_LDMD

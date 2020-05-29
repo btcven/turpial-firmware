@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a3ae7fbfc9dd87ebe369ac9a491756b1b:
+
+Define NVS_IS_CONFIGURED_KEY
+============================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: NVS_IS_CONFIGURED_KEY

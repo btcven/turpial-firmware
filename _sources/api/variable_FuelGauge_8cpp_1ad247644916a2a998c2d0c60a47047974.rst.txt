@@ -1,0 +1,13 @@
+.. _exhale_variable_FuelGauge_8cpp_1ad247644916a2a998c2d0c60a47047974:
+
+Variable esc::I2C_PORT
+======================
+
+- Defined in :ref:`file_components_ESC_src_FuelGauge.cpp`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::I2C_PORT

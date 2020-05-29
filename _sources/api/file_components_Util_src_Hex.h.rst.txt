@@ -1,0 +1,69 @@
+
+.. _file_components_Util_src_Hex.h:
+
+File Hex.h
+==========
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Util_src>` (``components/Util/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Util/src/Hex.h``)
+------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Util_src_Hex.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh Developers (contact@locha.io) 
+0.1 
+2019-11-26
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``cstdint``
+
+- ``esp_err.h``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_components_Util_src_Hex.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_util`
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_Hex_8h_1ada3a37dafa3fd7e6adf661046e5d3b32`
+

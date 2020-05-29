@@ -1,0 +1,28 @@
+
+.. _program_listing_file_components_Util_src_ErrUtil.h:
+
+Program Listing for File ErrUtil.h
+==================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_Util_src_ErrUtil.h>` (``components/Util/src/ErrUtil.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef UTIL_ERRUTIL_H
+   #define UTIL_ERRUTIL_H
+   
+   #include <esp_err.h>
+   #include <esp_log.h>
+   
+   #define ESP_ERR_TRY(expr)     \
+       do {                      \
+           esp_err_t err = expr; \
+           if (err != ESP_OK) {  \
+               return err;       \
+           }                     \
+       } while (false)
+   
+   #endif // UTIL_ERRUTIL_H

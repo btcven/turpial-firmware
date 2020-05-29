@@ -1,0 +1,70 @@
+
+.. _file_components_Util_src_Base64.cpp:
+
+File Base64.cpp
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Util_src>` (``components/Util/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Util/src/Base64.cpp``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Util_src_Base64.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh Developers (contact@locha.io) 
+0.1 
+2019-11-22
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``Base64.h`` (:ref:`file_components_Util_src_Base64.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_util`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_Base64_8cpp_1ab94e8aab948aa2fbee53d397f3595b89`
+
+- :ref:`exhale_function_Base64_8cpp_1a9167fac57db6bcb399faf5e256aaf080`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_Base64_8cpp_1a45e477973bfbf3a69d000c637919bda0`
+

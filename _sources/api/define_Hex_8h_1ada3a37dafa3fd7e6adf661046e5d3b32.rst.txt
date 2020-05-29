@@ -1,0 +1,13 @@
+.. _exhale_define_Hex_8h_1ada3a37dafa3fd7e6adf661046e5d3b32:
+
+Define UTIL_HEX_L
+=================
+
+- Defined in :ref:`file_components_Util_src_Hex.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: UTIL_HEX_L

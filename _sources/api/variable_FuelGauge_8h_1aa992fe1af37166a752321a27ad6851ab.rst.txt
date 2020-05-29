@@ -1,0 +1,13 @@
+.. _exhale_variable_FuelGauge_8h_1aa992fe1af37166a752321a27ad6851ab:
+
+Variable esc::BAT_LOW
+=====================
+
+- Defined in :ref:`file_components_ESC_src_FuelGauge.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::BAT_LOW

@@ -1,0 +1,13 @@
+.. _exhale_variable_Radio_8cpp_1a3b5e03b89971fc00726671d09f1b2b76:
+
+Variable radio::g_len
+=====================
+
+- Defined in :ref:`file_components_Radio_src_Radio.cpp`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: radio::g_len

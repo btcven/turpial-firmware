@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a6acb074477c31a8bdc1ab8a02931d9c7:
+
+Variable esc::OPCONFIG_GPIOPOL
+==============================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::OPCONFIG_GPIOPOL

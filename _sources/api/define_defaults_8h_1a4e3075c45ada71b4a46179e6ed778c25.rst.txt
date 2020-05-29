@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a4e3075c45ada71b4a46179e6ed778c25:
+
+Define WIFI_MODE
+================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: WIFI_MODE

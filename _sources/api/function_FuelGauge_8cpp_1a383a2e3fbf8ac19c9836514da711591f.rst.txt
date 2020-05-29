@@ -1,0 +1,13 @@
+.. _exhale_function_FuelGauge_8cpp_1a383a2e3fbf8ac19c9836514da711591f:
+
+Template Function esc::constrain
+================================
+
+- Defined in :ref:`file_components_ESC_src_FuelGauge.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: esc::constrain(T, T, T)

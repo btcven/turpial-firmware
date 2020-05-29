@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1aa81632ab1e0c4bd83bdf14d4d7bf07c4:
+
+Variable esc::EXTENDED_CAPACITY
+===============================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::EXTENDED_CAPACITY

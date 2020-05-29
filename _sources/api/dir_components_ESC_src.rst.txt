@@ -1,0 +1,24 @@
+.. _dir_components_ESC_src:
+
+
+Directory src
+=============
+
+
+|exhale_lsh| :ref:`Parent directory <dir_components_ESC>` (``components/ESC``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``components/ESC/src``
+
+
+Files
+-----
+
+- :ref:`file_components_ESC_src_Battery.cpp`
+- :ref:`file_components_ESC_src_Battery.h`
+- :ref:`file_components_ESC_src_BQ27441_Constants.h`
+- :ref:`file_components_ESC_src_FuelGauge.cpp`
+- :ref:`file_components_ESC_src_FuelGauge.h`
+
+

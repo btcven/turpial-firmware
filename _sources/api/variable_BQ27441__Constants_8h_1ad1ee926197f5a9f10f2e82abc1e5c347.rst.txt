@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1ad1ee926197f5a9f10f2e82abc1e5c347:
+
+Variable esc::EXTENDED_DATABLOCK
+================================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::EXTENDED_DATABLOCK

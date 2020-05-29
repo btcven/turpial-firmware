@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a7a2eac2289388cff5cf5adfb24e72218:
+
+Define RAD_ENABLED
+==================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: RAD_ENABLED

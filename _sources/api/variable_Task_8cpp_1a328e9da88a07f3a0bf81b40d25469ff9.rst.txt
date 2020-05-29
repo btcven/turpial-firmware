@@ -1,0 +1,13 @@
+.. _exhale_variable_Task_8cpp_1a328e9da88a07f3a0bf81b40d25469ff9:
+
+Variable LOG_TAG
+================
+
+- Defined in :ref:`file_components_Task_src_Task.cpp`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: LOG_TAG

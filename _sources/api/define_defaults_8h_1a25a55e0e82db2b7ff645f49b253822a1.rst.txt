@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a25a55e0e82db2b7ff645f49b253822a1:
+
+Define WST_SSID
+===============
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: WST_SSID

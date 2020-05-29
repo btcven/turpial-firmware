@@ -1,0 +1,13 @@
+.. _exhale_variable_Radio_8cpp_1aaa9615797e1fff80e8a6ffbd5569ee3b:
+
+Variable radio::g_uart0_queue
+=============================
+
+- Defined in :ref:`file_components_Radio_src_Radio.cpp`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: radio::g_uart0_queue

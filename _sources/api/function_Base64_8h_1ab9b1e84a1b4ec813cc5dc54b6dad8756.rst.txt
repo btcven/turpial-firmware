@@ -1,0 +1,13 @@
+.. _exhale_function_Base64_8h_1ab9b1e84a1b4ec813cc5dc54b6dad8756:
+
+Function util::base64EncodedLength(std::size_t)
+===============================================
+
+- Defined in :ref:`file_components_Util_src_Base64.h`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: util::base64EncodedLength(std::size_t)

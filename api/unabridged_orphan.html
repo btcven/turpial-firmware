@@ -1,0 +1,777 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Full API &mdash; turpial-firmware  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> turpial-firmware
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">turpial-firmware</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Full API</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/unabridged_orphan.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="full-api">
+<h1>Full API<a class="headerlink" href="#full-api" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="directories">
+<h2>Directories<a class="headerlink" href="#directories" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components.html">Directory components</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components.html#subdirectories">Subdirectories</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_ESC.html">Directory ESC</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_ESC.html#subdirectories">Subdirectories</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_ESC_src.html">Directory src</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_ESC_src.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_Network.html">Directory Network</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_Network.html#subdirectories">Subdirectories</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_Network_src.html">Directory src</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_Network_src.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_NVS.html">Directory NVS</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_NVS.html#subdirectories">Subdirectories</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_NVS_src.html">Directory src</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_NVS_src.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_Radio.html">Directory Radio</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_Radio.html#subdirectories">Subdirectories</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_Radio_src.html">Directory src</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_Radio_src.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_Task.html">Directory Task</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_Task.html#subdirectories">Subdirectories</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_Task_src.html">Directory src</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_Task_src.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_Util.html">Directory Util</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_Util.html#subdirectories">Subdirectories</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_components_Util_src.html">Directory src</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_components_Util_src.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="dir_main.html">Directory main</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="dir_main.html#files">Files</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+<div class="section" id="files">
+<h2>Files<a class="headerlink" href="#files" title="Permalink to this headline">¶</a></h2>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_Base64.cpp.html">File Base64.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.cpp.html#definition-components-util-src-base64-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/Base64.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_Base64.cpp.html">Program Listing for File Base64.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.cpp.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_Base64.h.html">File Base64.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.h.html#definition-components-util-src-base64-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/Base64.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_Base64.h.html">Program Listing for File Base64.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Base64.h.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_ESC_src_Battery.cpp.html">File Battery.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.cpp.html#definition-components-esc-src-battery-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/ESC/src/Battery.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_ESC_src_Battery.cpp.html">Program Listing for File Battery.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.cpp.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_ESC_src_Battery.h.html">File Battery.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.h.html#definition-components-esc-src-battery-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/ESC/src/Battery.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_ESC_src_Battery.h.html">Program Listing for File Battery.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_Battery.h.html#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_ESC_src_BQ27441_Constants.h.html">File BQ27441_Constants.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_BQ27441_Constants.h.html#definition-components-esc-src-bq27441-constants-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/ESC/src/BQ27441_Constants.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_ESC_src_BQ27441_Constants.h.html">Program Listing for File BQ27441_Constants.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_BQ27441_Constants.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_BQ27441_Constants.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_BQ27441_Constants.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_BQ27441_Constants.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_BQ27441_Constants.h.html#enums">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_BQ27441_Constants.h.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_NVS_src_Credentials.cpp.html">File Credentials.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.cpp.html#definition-components-nvs-src-credentials-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/NVS/src/Credentials.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_NVS_src_Credentials.cpp.html">Program Listing for File Credentials.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.cpp.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_NVS_src_Credentials.h.html">File Credentials.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.h.html#definition-components-nvs-src-credentials-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/NVS/src/Credentials.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_NVS_src_Credentials.h.html">Program Listing for File Credentials.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Credentials.h.html#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_main_defaults.h.html">File defaults.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_main_defaults.h.html#definition-main-defaults-h">Definition (<code class="docutils literal notranslate"><span class="pre">main/defaults.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_main_defaults.h.html">Program Listing for File defaults.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_main_defaults.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_main_defaults.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_main_defaults.h.html#defines">Defines</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_ErrUtil.h.html">File ErrUtil.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_ErrUtil.h.html#definition-components-util-src-errutil-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/ErrUtil.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_ErrUtil.h.html">Program Listing for File ErrUtil.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_ErrUtil.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_ErrUtil.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_ErrUtil.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_ErrUtil.h.html#defines">Defines</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_ESC_src_FuelGauge.cpp.html">File FuelGauge.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.cpp.html#definition-components-esc-src-fuelgauge-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/ESC/src/FuelGauge.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_ESC_src_FuelGauge.cpp.html">Program Listing for File FuelGauge.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.cpp.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_ESC_src_FuelGauge.h.html">File FuelGauge.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.h.html#definition-components-esc-src-fuelgauge-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/ESC/src/FuelGauge.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_ESC_src_FuelGauge.h.html">Program Listing for File FuelGauge.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.h.html#classes">Classes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.h.html#enums">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_ESC_src_FuelGauge.h.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_Hex.cpp.html">File Hex.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.cpp.html#definition-components-util-src-hex-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/Hex.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_Hex.cpp.html">Program Listing for File Hex.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.cpp.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_Hex.h.html">File Hex.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.h.html#definition-components-util-src-hex-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/Hex.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_Hex.h.html">Program Listing for File Hex.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Hex.h.html#defines">Defines</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_main_main.cpp.html">File main.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_main_main.cpp.html#definition-main-main-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">main/main.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_main_main.cpp.html">Program Listing for File main.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_main_main.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_main_main.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_main_main.cpp.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_main_main.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Radio_src_Radio.cpp.html">File Radio.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.cpp.html#definition-components-radio-src-radio-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/Radio/src/Radio.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Radio_src_Radio.cpp.html">Program Listing for File Radio.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.cpp.html#enums">Enums</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.cpp.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Radio_src_Radio.h.html">File Radio.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.h.html#definition-components-radio-src-radio-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Radio/src/Radio.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Radio_src_Radio.h.html">Program Listing for File Radio.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Radio_src_Radio.h.html#defines">Defines</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_Sema.cpp.html">File Sema.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.cpp.html#definition-components-util-src-sema-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/Sema.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_Sema.cpp.html">Program Listing for File Sema.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_Sema.h.html">File Sema.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.h.html#definition-components-util-src-sema-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/Sema.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_Sema.h.html">Program Listing for File Sema.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Sema.h.html#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_Serialization.cpp.html">File Serialization.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.cpp.html#definition-components-util-src-serialization-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/Serialization.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_Serialization.cpp.html">Program Listing for File Serialization.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.cpp.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_Serialization.h.html">File Serialization.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.h.html#definition-components-util-src-serialization-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/Serialization.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_Serialization.h.html">Program Listing for File Serialization.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_Serialization.h.html#namespaces">Namespaces</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_NVS_src_Storage.cpp.html">File Storage.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.cpp.html#definition-components-nvs-src-storage-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/NVS/src/Storage.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_NVS_src_Storage.cpp.html">Program Listing for File Storage.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.cpp.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_NVS_src_Storage.h.html">File Storage.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.h.html#definition-components-nvs-src-storage-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/NVS/src/Storage.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_NVS_src_Storage.h.html">Program Listing for File Storage.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_NVS_src_Storage.h.html#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_StringUtil.cpp.html">File StringUtil.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.cpp.html#definition-components-util-src-stringutil-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/StringUtil.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_StringUtil.cpp.html">Program Listing for File StringUtil.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.cpp.html#functions">Functions</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Util_src_StringUtil.h.html">File StringUtil.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.h.html#definition-components-util-src-stringutil-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Util/src/StringUtil.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Util_src_StringUtil.h.html">Program Listing for File StringUtil.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Util_src_StringUtil.h.html#namespaces">Namespaces</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Task_src_Task.cpp.html">File Task.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Task_src_Task.cpp.html#definition-components-task-src-task-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/Task/src/Task.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Task_src_Task.cpp.html">Program Listing for File Task.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Task_src_Task.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Task_src_Task.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Task_src_Task.h.html">File Task.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Task_src_Task.h.html#definition-components-task-src-task-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Task/src/Task.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Task_src_Task.h.html">Program Listing for File Task.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Task_src_Task.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Task_src_Task.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Task_src_Task.h.html#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Network_src_WiFi.cpp.html">File WiFi.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.cpp.html#definition-components-network-src-wifi-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/Network/src/WiFi.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Network_src_WiFi.cpp.html">Program Listing for File WiFi.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.cpp.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Network_src_WiFi.h.html">File WiFi.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.h.html#definition-components-network-src-wifi-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Network/src/WiFi.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Network_src_WiFi.h.html">Program Listing for File WiFi.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFi.h.html#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.cpp.html">File WiFiEventHandler.cpp</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.cpp.html#definition-components-network-src-wifieventhandler-cpp">Definition (<code class="docutils literal notranslate"><span class="pre">components/Network/src/WiFiEventHandler.cpp</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Network_src_WiFiEventHandler.cpp.html">Program Listing for File WiFiEventHandler.cpp</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.cpp.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.cpp.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.cpp.html#variables">Variables</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.h.html">File WiFiEventHandler.h</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.h.html#definition-components-network-src-wifieventhandler-h">Definition (<code class="docutils literal notranslate"><span class="pre">components/Network/src/WiFiEventHandler.h</span></code>)</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="program_listing_file_components_Network_src_WiFiEventHandler.h.html">Program Listing for File WiFiEventHandler.h</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.h.html#detailed-description">Detailed Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.h.html#includes">Includes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.h.html#included-by">Included By</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.h.html#namespaces">Namespaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="file_components_Network_src_WiFiEventHandler.h.html#classes">Classes</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Locha Mesh developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

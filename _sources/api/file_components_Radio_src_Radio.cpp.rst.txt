@@ -1,0 +1,95 @@
+
+.. _file_components_Radio_src_Radio.cpp:
+
+File Radio.cpp
+==============
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Radio_src>` (``components/Radio/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Radio/src/Radio.cpp``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Radio_src_Radio.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh project developers (locha.io) 
+0.1 
+2019-12-08
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``Radio.h`` (:ref:`file_components_Radio_src_Radio.h`)
+
+- ``Websocket.h``
+
+- ``cstring``
+
+- ``driver/uart.h``
+
+- ``esp_log.h``
+
+- ``freertos/queue.h``
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_radio`
+
+
+Enums
+-----
+
+
+- :ref:`exhale_enum_Radio_8cpp_1a3ff0e053d80bacc7e95b68f2288a93b5`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_Radio_8cpp_1acae4392d2158035e2cfadcd1109fdc5f`
+
+- :ref:`exhale_function_Radio_8cpp_1aae31a20a2024aae3e5e80ec0cc7479ed`
+
+- :ref:`exhale_function_Radio_8cpp_1ad6dd6ed9526acb57c09883d035bbf310`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_Radio_8cpp_1a3b5e03b89971fc00726671d09f1b2b76`
+
+- :ref:`exhale_variable_Radio_8cpp_1a9e6c93e2d5a830135eb19e7485e6254f`
+
+- :ref:`exhale_variable_Radio_8cpp_1aaa9615797e1fff80e8a6ffbd5569ee3b`
+
+- :ref:`exhale_variable_Radio_8cpp_1a88a3c55bdd37e02241c129756542b0d2`
+

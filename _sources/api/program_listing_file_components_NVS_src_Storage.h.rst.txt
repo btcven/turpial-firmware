@@ -1,0 +1,56 @@
+
+.. _program_listing_file_components_NVS_src_Storage.h:
+
+Program Listing for File Storage.h
+==================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_NVS_src_Storage.h>` (``components/NVS/src/Storage.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef NVS_H
+   #define NVS_H
+   
+   #include <esp_err.h>
+   #include <nvs_flash.h>
+   #include <string>
+   
+   namespace storage
+   {
+       esp_err_t init();
+   
+       class NVS
+       {
+       public:
+           NVS();
+   
+           ~NVS();
+   
+           esp_err_t open(const char* name, nvs_open_mode open_mode);
+   
+           void close();
+   
+           esp_err_t set_bool(const char* key, bool value);
+   
+           esp_err_t get_bool(const char* key, bool& value);
+   
+           esp_err_t getIsConfigured(bool& is_configured);
+   
+           esp_err_t setString(std::string key, std::string data);
+   
+           esp_err_t getString(std::string key, char* buffer, size_t* length);
+   
+           esp_err_t commit();
+   
+   
+       private:
+           bool m_is_opened;
+           nvs_handle m_handle;
+       };
+   
+   } // namespace storage
+   
+   #endif //

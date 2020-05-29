@@ -1,0 +1,13 @@
+.. _exhale_function_Storage_8cpp_1a48fae148c067d4f0be7c162fd5235b38:
+
+Function storage::init
+======================
+
+- Defined in :ref:`file_components_NVS_src_Storage.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: storage::init()

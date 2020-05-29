@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a4233de6a593ef07f37ae15c87d610742:
+
+Define RAD_BUF_SIZE
+===================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: RAD_BUF_SIZE

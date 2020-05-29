@@ -1,0 +1,110 @@
+
+.. _file_main_defaults.h:
+
+File defaults.h
+===============
+
+|exhale_lsh| :ref:`Parent directory <dir_main>` (``main``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``main/defaults.h``)
+--------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_main_defaults.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh project developers (locha.io) 
+0.1 
+2019-11-07
+Copyright (c) 2020 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_main_main.cpp`
+
+- :ref:`file_components_NVS_src_Credentials.h`
+
+- :ref:`file_components_NVS_src_Storage.cpp`
+
+
+
+
+Defines
+-------
+
+
+- :ref:`exhale_define_defaults_8h_1a6821bafc3c88dfb2e433a095df9940c6`
+
+- :ref:`exhale_define_defaults_8h_1ad344ea19233575189cd592ba93965c29`
+
+- :ref:`exhale_define_defaults_8h_1a16aa66cd541ba904fc43f7e2f3ec45aa`
+
+- :ref:`exhale_define_defaults_8h_1ab9d827b9bb1f9d069253a5ec4e6acfc4`
+
+- :ref:`exhale_define_defaults_8h_1a97941d1e184090760a9018005dc78b6b`
+
+- :ref:`exhale_define_defaults_8h_1a22f3f63066e2b85aa529b6f5f212150c`
+
+- :ref:`exhale_define_defaults_8h_1a27efa2b7cf8e42ecce3ffc25e20de1b8`
+
+- :ref:`exhale_define_defaults_8h_1a33c0e57118e015c006f6525d8a7e4dc7`
+
+- :ref:`exhale_define_defaults_8h_1ac7030536a5c5dd8f4632840201cdac39`
+
+- :ref:`exhale_define_defaults_8h_1ac97b06fcce537114e012dda6926efcd5`
+
+- :ref:`exhale_define_defaults_8h_1aa4f10a69a7a0880930f90fe353033192`
+
+- :ref:`exhale_define_defaults_8h_1a3ae7fbfc9dd87ebe369ac9a491756b1b`
+
+- :ref:`exhale_define_defaults_8h_1a4233de6a593ef07f37ae15c87d610742`
+
+- :ref:`exhale_define_defaults_8h_1a7a2eac2289388cff5cf5adfb24e72218`
+
+- :ref:`exhale_define_defaults_8h_1a0867768550c3ec3503ba065fd93a7cda`
+
+- :ref:`exhale_define_defaults_8h_1afec8d69eace1462de6c35e38bc9161fe`
+
+- :ref:`exhale_define_defaults_8h_1af0ac4e2d813cd5e07d8c862011de24a3`
+
+- :ref:`exhale_define_defaults_8h_1aa2fa56e203105ba8322d6880a7509dbe`
+
+- :ref:`exhale_define_defaults_8h_1af49f82a713c87b55b7fa8b1efeadf350`
+
+- :ref:`exhale_define_defaults_8h_1a33bc61022da60ac1c9ee84ac0ed192e6`
+
+- :ref:`exhale_define_defaults_8h_1a934554770def286417012ddef17cfb3f`
+
+- :ref:`exhale_define_defaults_8h_1a99ef8069fcde89e4a6bbb77231ff1500`
+
+- :ref:`exhale_define_defaults_8h_1ab5abf1549c9a73d0f9e7e24fc8c5651d`
+
+- :ref:`exhale_define_defaults_8h_1a35ea56303d1c0698086ce472ab1f5c14`
+
+- :ref:`exhale_define_defaults_8h_1a4e3075c45ada71b4a46179e6ed778c25`
+
+- :ref:`exhale_define_defaults_8h_1ab4bfcfe1b2da0cebd91c5dac0fb53ea1`
+
+- :ref:`exhale_define_defaults_8h_1a25a55e0e82db2b7ff645f49b253822a1`
+

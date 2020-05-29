@@ -1,0 +1,69 @@
+
+.. _file_components_Network_src_WiFi.cpp:
+
+File WiFi.cpp
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Network_src>` (``components/Network/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Network/src/WiFi.cpp``)
+------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Network_src_WiFi.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh project developers (locha.io) 
+0.1.1 
+2019-08-15
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``WiFi.h`` (:ref:`file_components_Network_src_WiFi.h`)
+
+- ``cstdint``
+
+- ``cstring``
+
+- ``esp_log.h``
+
+- ``esp_wifi.h``
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_network`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_WiFi_8cpp_1ae5fe33bbecffeafee5c5c2b345bc2e2d`
+

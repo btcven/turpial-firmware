@@ -1,0 +1,13 @@
+.. _exhale_variable_Radio_8cpp_1a9e6c93e2d5a830135eb19e7485e6254f:
+
+Variable radio::g_rx_buf
+========================
+
+- Defined in :ref:`file_components_Radio_src_Radio.cpp`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: radio::g_rx_buf

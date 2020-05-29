@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1aa4f10a69a7a0880930f90fe353033192:
+
+Define NVS_APP_NAMESPACE
+========================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: NVS_APP_NAMESPACE

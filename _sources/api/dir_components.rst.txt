@@ -1,0 +1,21 @@
+.. _dir_components:
+
+
+Directory components
+====================
+
+
+*Directory path:* ``components``
+
+Subdirectories
+--------------
+
+- :ref:`dir_components_ESC`
+- :ref:`dir_components_Network`
+- :ref:`dir_components_NVS`
+- :ref:`dir_components_Radio`
+- :ref:`dir_components_Task`
+- :ref:`dir_components_Util`
+
+
+

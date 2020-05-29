@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a22f3f63066e2b85aa529b6f5f212150c:
+
+Define DEFAULT_RGB_LED_R
+========================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: DEFAULT_RGB_LED_R

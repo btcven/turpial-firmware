@@ -1,0 +1,66 @@
+
+.. _file_components_NVS_src_Storage.cpp:
+
+File Storage.cpp
+================
+
+|exhale_lsh| :ref:`Parent directory <dir_components_NVS_src>` (``components/NVS/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/NVS/src/Storage.cpp``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_NVS_src_Storage.cpp.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``Storage.h`` (:ref:`file_components_NVS_src_Storage.h`)
+
+- ``cstdint``
+
+- ``defaults.h`` (:ref:`file_main_defaults.h`)
+
+- ``esp_log.h``
+
+- ``nvs_flash.h``
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_storage`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_Storage_8cpp_1a48fae148c067d4f0be7c162fd5235b38`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_Storage_8cpp_1a2a1da5894ce43ffb7c4dc2cac3663180`
+

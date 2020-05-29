@@ -1,0 +1,13 @@
+.. _exhale_define_ErrUtil_8h_1a39bb0857aa2024d2f1cad280509a3f12:
+
+Define ESP_ERR_TRY
+==================
+
+- Defined in :ref:`file_components_Util_src_ErrUtil.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: ESP_ERR_TRY

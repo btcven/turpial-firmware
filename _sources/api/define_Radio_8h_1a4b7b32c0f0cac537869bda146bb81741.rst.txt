@@ -1,0 +1,13 @@
+.. _exhale_define_Radio_8h_1a4b7b32c0f0cac537869bda146bb81741:
+
+Define CONFIG_RADIO_TX
+======================
+
+- Defined in :ref:`file_components_Radio_src_Radio.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: CONFIG_RADIO_TX

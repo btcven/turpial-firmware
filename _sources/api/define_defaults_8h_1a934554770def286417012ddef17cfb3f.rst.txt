@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a934554770def286417012ddef17cfb3f:
+
+Define WAP_CHANNEL
+==================
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: WAP_CHANNEL

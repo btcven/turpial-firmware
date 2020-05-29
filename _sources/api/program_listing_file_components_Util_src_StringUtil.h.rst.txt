@@ -1,0 +1,30 @@
+
+.. _program_listing_file_components_Util_src_StringUtil.h:
+
+Program Listing for File StringUtil.h
+=====================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_Util_src_StringUtil.h>` (``components/Util/src/StringUtil.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef UTIL_STRINGUTIL_H
+   #define UTIL_STRINGUTIL_H
+   
+   #include <vector>
+   #include <string>
+   
+   namespace util {
+   
+   std::vector<std::string> split(std::string source, char delimiter);
+   
+   std::string toLower(std::string& value);
+   
+   std::string trim(const std::string& str);
+   
+   } // namespace util
+   
+   #endif // UTIL_STRINGUTIL_H

@@ -1,0 +1,13 @@
+.. _exhale_function_StringUtil_8cpp_1a16424e3a48e3a4eb809f395893d2e991:
+
+Function util::toLower
+======================
+
+- Defined in :ref:`file_components_Util_src_StringUtil.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: util::toLower(std::string&)

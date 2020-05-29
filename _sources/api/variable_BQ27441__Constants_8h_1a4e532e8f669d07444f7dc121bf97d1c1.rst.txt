@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a4e532e8f669d07444f7dc121bf97d1c1:
+
+Variable esc::STATUS_SHUTDOWNEN
+===============================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::STATUS_SHUTDOWNEN

@@ -1,0 +1,54 @@
+
+.. _file_components_Task_src_Task.cpp:
+
+File Task.cpp
+=============
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Task_src>` (``components/Task/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Task/src/Task.cpp``)
+---------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Task_src_Task.cpp.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``Task.h`` (:ref:`file_components_Task_src_Task.h`)
+
+- ``esp_log.h``
+
+- ``freertos/FreeRTOS.h``
+
+- ``freertos/task.h``
+
+- ``sdkconfig.h``
+
+- ``string``
+
+
+
+
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_Task_8cpp_1a328e9da88a07f3a0bf81b40d25469ff9`
+

@@ -1,0 +1,16 @@
+.. _exhale_class_classesc_1_1Battery:
+
+Class Battery
+=============
+
+- Defined in :ref:`file_components_ESC_src_Battery.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: esc::Battery
+   :members:
+   :protected-members:
+   :undoc-members:

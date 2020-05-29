@@ -1,0 +1,73 @@
+
+.. _file_components_Util_src_StringUtil.cpp:
+
+File StringUtil.cpp
+===================
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Util_src>` (``components/Util/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Util/src/StringUtil.cpp``)
+---------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Util_src_StringUtil.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh Developers (contact@locha.io) 
+0.1 
+2019-11-22
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``StringUtil.h`` (:ref:`file_components_Util_src_StringUtil.h`)
+
+- ``algorithm``
+
+- ``cctype``
+
+- ``cstdint``
+
+- ``sstream``
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_util`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_StringUtil_8cpp_1aecf71f6162ce9ba5222aee68f5935d4c`
+
+- :ref:`exhale_function_StringUtil_8cpp_1a16424e3a48e3a4eb809f395893d2e991`
+
+- :ref:`exhale_function_StringUtil_8cpp_1ae7c7708856cd24fa4744bfa849bd0598`
+

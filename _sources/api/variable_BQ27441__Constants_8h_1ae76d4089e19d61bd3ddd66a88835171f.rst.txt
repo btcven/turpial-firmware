@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1ae76d4089e19d61bd3ddd66a88835171f:
+
+Variable esc::ID_POWER
+======================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::ID_POWER

@@ -1,0 +1,75 @@
+
+.. _file_components_Network_src_WiFiEventHandler.h:
+
+File WiFiEventHandler.h
+=======================
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Network_src>` (``components/Network/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Network/src/WiFiEventHandler.h``)
+----------------------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Network_src_WiFiEventHandler.h.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh project developers (locha.io) 
+0.1 
+2019-12-02
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``esp_event.h``
+
+- ``esp_netif.h``
+
+- ``esp_wifi.h``
+
+- ``memory``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_components_Network_src_WiFi.h`
+
+- :ref:`file_components_Network_src_WiFiEventHandler.cpp`
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_network`
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classnetwork_1_1WiFiEventHandler`
+

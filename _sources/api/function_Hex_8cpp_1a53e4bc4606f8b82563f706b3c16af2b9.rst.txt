@@ -1,0 +1,13 @@
+.. _exhale_function_Hex_8cpp_1a53e4bc4606f8b82563f706b3c16af2b9:
+
+Function util::bytesToHex
+=========================
+
+- Defined in :ref:`file_components_Util_src_Hex.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: util::bytesToHex(std::uint8_t *, char *, std::size_t)

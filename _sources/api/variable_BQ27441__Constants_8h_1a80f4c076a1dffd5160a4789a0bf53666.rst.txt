@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a80f4c076a1dffd5160a4789a0bf53666:
+
+Variable esc::ID_R_A_RAM
+========================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::ID_R_A_RAM

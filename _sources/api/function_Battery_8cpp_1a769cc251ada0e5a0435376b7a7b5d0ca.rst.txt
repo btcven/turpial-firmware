@@ -1,0 +1,13 @@
+.. _exhale_function_Battery_8cpp_1a769cc251ada0e5a0435376b7a7b5d0ca:
+
+Function esc::interruptIsrHandler
+=================================
+
+- Defined in :ref:`file_components_ESC_src_Battery.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: esc::interruptIsrHandler(void *)

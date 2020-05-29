@@ -1,0 +1,60 @@
+
+.. _program_listing_file_components_ESC_src_Battery.h:
+
+Program Listing for File Battery.h
+==================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_ESC_src_Battery.h>` (``components/ESC/src/Battery.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef ESC_INTERRUPT_H
+   #define ESC_INTERRUPT_H
+   
+   #include <cstdint>
+   
+   #include <esp_err.h>
+   #include <driver/gpio.h>
+   
+   #include <Task.h>
+   
+   namespace esc {
+   
+   class Battery {
+   public:
+       Battery(Battery const&) = delete;
+       Battery(Battery&&) = delete;
+   
+       Battery& operator=(Battery const&) = delete;
+       Battery& operator=(Battery&&) = delete;
+   
+       static Battery& getInstance()
+       {
+           // Instatiated only once, won't be created again.
+           static Battery g_instance;
+           return g_instance;
+       }
+   
+       esp_err_t init(gpio_num_t gpout_io_num,
+                      gpio_num_t sysoff_num_t,
+                      std::uint8_t soc_interval,
+                      std::uint16_t max_capacity);
+   
+   private:
+       Battery();
+   };
+   
+   
+   class Interrupt : public Task {
+   public:
+       Interrupt();
+   
+       virtual void run(void* task_data);
+   };
+   
+   } // namespace esc
+   
+   #endif // ESC_INTERRUPT_H

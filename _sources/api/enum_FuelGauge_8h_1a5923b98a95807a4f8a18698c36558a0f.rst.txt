@@ -1,0 +1,13 @@
+.. _exhale_enum_FuelGauge_8h_1a5923b98a95807a4f8a18698c36558a0f:
+
+Enum SocMeasure
+===============
+
+- Defined in :ref:`file_components_ESC_src_FuelGauge.h`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: esc::SocMeasure

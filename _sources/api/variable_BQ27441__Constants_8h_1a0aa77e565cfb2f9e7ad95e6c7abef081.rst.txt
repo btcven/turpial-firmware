@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a0aa77e565cfb2f9e7ad95e6c7abef081:
+
+Variable esc::FLAG_ITPOR
+========================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::FLAG_ITPOR

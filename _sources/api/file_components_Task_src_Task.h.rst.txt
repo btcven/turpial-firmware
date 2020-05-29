@@ -1,0 +1,56 @@
+
+.. _file_components_Task_src_Task.h:
+
+File Task.h
+===========
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Task_src>` (``components/Task/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/Task/src/Task.h``)
+-------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_Task_src_Task.h.rst
+
+
+
+
+
+Includes
+--------
+
+
+- ``freertos/FreeRTOS.h``
+
+- ``freertos/task.h``
+
+- ``string``
+
+
+
+Included By
+-----------
+
+
+- :ref:`file_components_ESC_src_Battery.h`
+
+- :ref:`file_components_Task_src_Task.cpp`
+
+
+
+
+Classes
+-------
+
+
+- :ref:`exhale_class_classTask`
+

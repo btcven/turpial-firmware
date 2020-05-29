@@ -1,0 +1,13 @@
+.. _exhale_enum_FuelGauge_8h_1aee0b7f0c0ab08a93c9b7bd17f11d6340:
+
+Enum TempMeasure
+================
+
+- Defined in :ref:`file_components_ESC_src_FuelGauge.h`
+
+
+Enum Documentation
+------------------
+
+
+.. doxygenenum:: esc::TempMeasure

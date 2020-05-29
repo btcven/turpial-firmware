@@ -1,0 +1,13 @@
+.. _exhale_function_Hex_8cpp_1a2ae9e7a3e9289ea17e2a0db04bf03d78:
+
+Function util::hexToInt
+=======================
+
+- Defined in :ref:`file_components_Util_src_Hex.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: util::hexToInt(const char, int&)

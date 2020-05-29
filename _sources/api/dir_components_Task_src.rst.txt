@@ -1,0 +1,21 @@
+.. _dir_components_Task_src:
+
+
+Directory src
+=============
+
+
+|exhale_lsh| :ref:`Parent directory <dir_components_Task>` (``components/Task``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+*Directory path:* ``components/Task/src``
+
+
+Files
+-----
+
+- :ref:`file_components_Task_src_Task.cpp`
+- :ref:`file_components_Task_src_Task.h`
+
+

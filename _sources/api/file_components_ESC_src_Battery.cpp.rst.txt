@@ -1,0 +1,74 @@
+
+.. _file_components_ESC_src_Battery.cpp:
+
+File Battery.cpp
+================
+
+|exhale_lsh| :ref:`Parent directory <dir_components_ESC_src>` (``components/ESC/src``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. contents:: Contents
+   :local:
+   :backlinks: none
+
+Definition (``components/ESC/src/Battery.cpp``)
+-----------------------------------------------
+
+
+.. toctree::
+   :maxdepth: 1
+
+   program_listing_file_components_ESC_src_Battery.cpp.rst
+
+
+
+Detailed Description
+--------------------
+
+Locha Mesh Developers (contact@locha.io) 
+0.1 
+2019-11-22
+Copyright (c) 2019 Locha Mesh project developers 
+Apache 2.0, see LICENSE file for details 
+
+
+
+
+Includes
+--------
+
+
+- ``Battery.h`` (:ref:`file_components_ESC_src_Battery.h`)
+
+- ``ErrUtil.h`` (:ref:`file_components_Util_src_ErrUtil.h`)
+
+- ``FuelGauge.h`` (:ref:`file_components_ESC_src_FuelGauge.h`)
+
+
+
+
+
+
+Namespaces
+----------
+
+
+- :ref:`namespace_esc`
+
+
+Functions
+---------
+
+
+- :ref:`exhale_function_Battery_8cpp_1a769cc251ada0e5a0435376b7a7b5d0ca`
+
+
+Variables
+---------
+
+
+- :ref:`exhale_variable_Battery_8cpp_1a29ec6bae227ec64009538016bc02311c`
+
+- :ref:`exhale_variable_Battery_8cpp_1a2ae0a7742c8bdc8a40d0c65007d42b83`
+

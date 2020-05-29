@@ -1,0 +1,810 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File FuelGauge.cpp &mdash; turpial-firmware  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> turpial-firmware
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">turpial-firmware</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File FuelGauge.cpp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_components_ESC_src_FuelGauge.cpp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-fuelgauge-cpp">
+<span id="program-listing-file-components-esc-src-fuelgauge-cpp"></span><h1>Program Listing for File FuelGauge.cpp<a class="headerlink" href="#program-listing-for-file-fuelgauge-cpp" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_components_ESC_src_FuelGauge.cpp.html#file-components-esc-src-fuelgauge-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">components/ESC/src/FuelGauge.cpp</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;FuelGauge.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;freertos/FreeRTOS.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;freertos/task.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;esp_err.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;esp_log.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;esp_system.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;ErrUtil.h&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&quot;BQ27441_Constants.h&quot;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">esc</span> <span class="p">{</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TAG</span> <span class="o">=</span> <span class="s">&quot;ESC&quot;</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="n">i2c_port_t</span> <span class="n">I2C_PORT</span> <span class="o">=</span> <span class="n">I2C_NUM_0</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="kt">int</span>        <span class="n">I2C_FREQUENCY</span> <span class="o">=</span> <span class="mi">100000</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="n">gpio_num_t</span> <span class="n">I2C_SDA_PIN</span> <span class="o">=</span> <span class="n">GPIO_NUM_23</span><span class="p">;</span>
+<span class="k">static</span> <span class="k">const</span> <span class="n">gpio_num_t</span> <span class="n">I2C_SCL_PIN</span> <span class="o">=</span> <span class="n">GPIO_NUM_22</span><span class="p">;</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="n">TickType_t</span> <span class="n">I2C_TIMEOUT</span> <span class="o">=</span> <span class="mi">2000</span><span class="p">;</span>
+
+<span class="k">template</span> <span class="o">&lt;</span><span class="k">typename</span> <span class="n">T</span><span class="o">&gt;</span>
+<span class="k">static</span> <span class="n">T</span> <span class="n">constrain</span><span class="p">(</span><span class="n">T</span> <span class="n">value</span><span class="p">,</span> <span class="n">T</span> <span class="n">min</span><span class="p">,</span> <span class="n">T</span> <span class="n">max</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&lt;</span> <span class="n">min</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">min</span><span class="p">;</span> <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">&gt;</span> <span class="n">max</span><span class="p">)</span> <span class="p">{</span> <span class="k">return</span> <span class="n">max</span><span class="p">;</span> <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">value</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">FuelGauge</span><span class="o">::</span><span class="n">FuelGauge</span><span class="p">()</span>
+    <span class="o">:</span> <span class="n">m_conf</span><span class="p">{},</span>
+      <span class="n">m_seal_again</span><span class="p">(</span><span class="nb">false</span><span class="p">),</span>
+      <span class="n">m_manual_config</span><span class="p">(</span><span class="nb">false</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">m_conf</span><span class="p">.</span><span class="n">mode</span> <span class="o">=</span> <span class="n">I2C_MODE_MASTER</span><span class="p">;</span>
+    <span class="n">m_conf</span><span class="p">.</span><span class="n">sda_io_num</span> <span class="o">=</span> <span class="n">I2C_SDA_PIN</span><span class="p">;</span>
+    <span class="n">m_conf</span><span class="p">.</span><span class="n">sda_pullup_en</span> <span class="o">=</span> <span class="n">GPIO_PULLUP_DISABLE</span><span class="p">;</span>
+    <span class="n">m_conf</span><span class="p">.</span><span class="n">scl_io_num</span> <span class="o">=</span> <span class="n">I2C_SCL_PIN</span><span class="p">;</span>
+    <span class="n">m_conf</span><span class="p">.</span><span class="n">scl_pullup_en</span> <span class="o">=</span> <span class="n">GPIO_PULLUP_DISABLE</span><span class="p">;</span>
+    <span class="n">m_conf</span><span class="p">.</span><span class="n">master</span><span class="p">.</span><span class="n">clk_speed</span> <span class="o">=</span> <span class="n">I2C_FREQUENCY</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">temperature</span><span class="p">(</span><span class="n">TempMeasure</span> <span class="n">type</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">temp</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">type</span><span class="p">)</span>
+    <span class="p">{</span>
+    <span class="k">case</span> <span class="n">TempMeasure</span><span class="o">::</span><span class="nl">Battery</span><span class="p">:</span>
+        <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">readWord</span><span class="p">(</span><span class="n">TEMP</span><span class="p">,</span> <span class="n">temp</span><span class="p">));</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="n">TempMeasure</span><span class="o">::</span><span class="nl">Internal</span><span class="p">:</span>
+        <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">readWord</span><span class="p">(</span><span class="n">INT_TEMP</span><span class="p">,</span> <span class="n">temp</span><span class="p">));</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">voltage</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">voltage</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">readWord</span><span class="p">(</span><span class="n">VOLTAGE</span><span class="p">,</span> <span class="n">voltage</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">avgCurrent</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">*</span> <span class="n">avg_current</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">readWord</span><span class="p">(</span><span class="n">AVG_CURRENT</span><span class="p">,</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">avg_current</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">avgPower</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span><span class="o">*</span> <span class="n">avg_power</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">readWord</span><span class="p">(</span><span class="n">AVG_POWER</span><span class="p">,</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">avg_power</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">soc</span><span class="p">(</span><span class="n">SocMeasure</span> <span class="n">type</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">soc</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">switch</span> <span class="p">(</span><span class="n">type</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">case</span> <span class="n">SocMeasure</span><span class="o">::</span><span class="nl">Filtered</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">readWord</span><span class="p">(</span><span class="n">SOC</span><span class="p">,</span> <span class="n">soc</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">case</span> <span class="n">SocMeasure</span><span class="o">::</span><span class="nl">Unfiltered</span><span class="p">:</span>
+        <span class="k">return</span> <span class="n">readWord</span><span class="p">(</span><span class="n">SOC_UNFL</span><span class="p">,</span> <span class="n">soc</span><span class="p">);</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="k">default</span><span class="o">:</span>
+        <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+        <span class="k">break</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">setCapacity</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">capacity</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// Write to STATE subclass (82) of FuelGauge extended memory.</span>
+    <span class="c1">// Offset 0x0A (10)</span>
+    <span class="c1">// Design capacity is a 2-byte piece of data - MSB first</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">cap_msb</span> <span class="o">=</span> <span class="n">capacity</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">cap_lsb</span> <span class="o">=</span> <span class="n">capacity</span> <span class="o">&amp;</span> <span class="mh">0x00FF</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">capacity_data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">cap_msb</span><span class="p">,</span> <span class="n">cap_lsb</span><span class="p">};</span>
+    <span class="k">return</span> <span class="nf">writeExtendedData</span><span class="p">(</span><span class="n">ID_STATE</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">capacity_data</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">status</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">result</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">readControlWord</span><span class="p">(</span><span class="n">STATUS</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">flags</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">result</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">readWord</span><span class="p">(</span><span class="n">FLAGS</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">GPOUTPolarity</span><span class="p">(</span><span class="kt">bool</span><span class="o">*</span> <span class="n">value</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">opconfig</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">opConfig</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opconfig</span><span class="p">));</span>
+
+    <span class="o">*</span><span class="n">value</span> <span class="o">=</span> <span class="p">(</span><span class="n">opconfig</span> <span class="o">&amp;</span> <span class="n">OPCONFIG_GPIOPOL</span><span class="p">)</span> <span class="o">==</span> <span class="n">OPCONFIG_GPIOPOL</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">setGPOUTPolarity</span><span class="p">(</span><span class="kt">bool</span> <span class="n">active_high</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">old_opconfig</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">opConfig</span><span class="p">(</span><span class="o">&amp;</span><span class="n">old_opconfig</span><span class="p">));</span>
+
+    <span class="kt">bool</span> <span class="n">already_high</span> <span class="o">=</span> <span class="p">(</span><span class="n">active_high</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">old_opconfig</span> <span class="o">&amp;</span> <span class="n">OPCONFIG_GPIOPOL</span><span class="p">));</span>
+    <span class="kt">bool</span> <span class="n">already_low</span> <span class="o">=</span> <span class="p">(</span><span class="o">!</span><span class="n">active_high</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="n">old_opconfig</span> <span class="o">&amp;</span> <span class="n">OPCONFIG_GPIOPOL</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">already_high</span> <span class="o">||</span> <span class="n">already_low</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+
+    <span class="kt">uint16_t</span> <span class="n">new_opconfig</span> <span class="o">=</span> <span class="n">old_opconfig</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">active_high</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">new_opconfig</span> <span class="o">|=</span> <span class="n">OPCONFIG_GPIOPOL</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">new_opconfig</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">OPCONFIG_GPIOPOL</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">writeOpConfig</span><span class="p">(</span><span class="n">new_opconfig</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">GPOUTFunction</span><span class="p">(</span><span class="kt">bool</span><span class="o">*</span> <span class="n">function</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">function</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">opconfig</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">opConfig</span><span class="p">(</span><span class="o">&amp;</span><span class="n">opconfig</span><span class="p">));</span>
+
+    <span class="o">*</span><span class="n">function</span> <span class="o">=</span> <span class="p">((</span><span class="n">opconfig</span> <span class="o">&amp;</span> <span class="n">OPCONFIG_BATLOWEN</span><span class="p">)</span> <span class="o">==</span> <span class="n">OPCONFIG_BATLOWEN</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">setGPOUTFunction</span><span class="p">(</span><span class="kt">bool</span> <span class="n">function</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">old_opconfig</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">opConfig</span><span class="p">(</span><span class="o">&amp;</span><span class="n">old_opconfig</span><span class="p">));</span>
+
+    <span class="kt">bool</span> <span class="n">is_bat_low</span> <span class="o">=</span> <span class="p">(</span><span class="n">function</span> <span class="o">&amp;&amp;</span> <span class="p">(</span><span class="n">old_opconfig</span> <span class="o">&amp;</span> <span class="n">OPCONFIG_BATLOWEN</span><span class="p">));</span>
+    <span class="kt">bool</span> <span class="n">is_soc_int</span> <span class="o">=</span> <span class="p">(</span><span class="o">!</span><span class="n">function</span> <span class="o">&amp;&amp;</span> <span class="o">!</span><span class="p">(</span><span class="n">old_opconfig</span> <span class="o">&amp;</span> <span class="n">OPCONFIG_BATLOWEN</span><span class="p">));</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">is_bat_low</span> <span class="o">||</span> <span class="n">is_soc_int</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">new_opconfig</span> <span class="o">=</span> <span class="n">old_opconfig</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">function</span> <span class="o">==</span> <span class="n">BAT_LOW</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">new_opconfig</span> <span class="o">|=</span> <span class="n">OPCONFIG_BATLOWEN</span><span class="p">;</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">new_opconfig</span> <span class="o">&amp;=</span> <span class="o">~</span><span class="p">(</span><span class="n">OPCONFIG_BATLOWEN</span><span class="p">);</span>
+    <span class="p">}</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">writeOpConfig</span><span class="p">(</span><span class="n">new_opconfig</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">sociDelta</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">value</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">value</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">soci</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">readExtendedData</span><span class="p">(</span><span class="n">ID_STATE</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">soci</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">setSOCIDelta</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">delta</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">soci</span> <span class="o">=</span> <span class="n">constrain</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">delta</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nf">writeExtendedData</span><span class="p">(</span><span class="n">ID_STATE</span><span class="p">,</span> <span class="mi">26</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">soci</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">pulseGPOUT</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">executeControlWord</span><span class="p">(</span><span class="n">PULSE_SOC_INT</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">sealed</span><span class="p">(</span><span class="kt">bool</span><span class="o">*</span> <span class="n">is_sealed</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">stat</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">status</span><span class="p">(</span><span class="o">&amp;</span><span class="n">stat</span><span class="p">));</span>
+    <span class="o">*</span><span class="n">is_sealed</span> <span class="o">=</span> <span class="p">(</span><span class="n">stat</span> <span class="o">&amp;</span> <span class="n">STATUS_SS</span><span class="p">)</span> <span class="o">==</span> <span class="n">STATUS_SS</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">seal</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">result</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">readControlWord</span><span class="p">(</span><span class="n">SEALED</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">unseal</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">result</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// To unseal the FuelGauge, write the key to the control</span>
+    <span class="c1">// command. Then immediately write the same key to control again.</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">readControlWord</span><span class="p">(</span><span class="n">UNSEAL_KEY</span><span class="p">,</span> <span class="n">result</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="nf">readControlWord</span><span class="p">(</span><span class="n">UNSEAL_KEY</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">enterConfig</span><span class="p">(</span><span class="kt">bool</span> <span class="n">manual_config</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="kt">bool</span> <span class="n">is_sealed</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">sealed</span><span class="p">(</span><span class="o">&amp;</span><span class="n">is_sealed</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">is_sealed</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Must be unsealed before making changes</span>
+        <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">unseal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">res</span><span class="p">));</span>
+
+        <span class="n">m_seal_again</span> <span class="o">=</span> <span class="nb">true</span><span class="p">;</span>
+
+        <span class="c1">// Wait 2 s to get values updated.</span>
+        <span class="n">vTaskDelay</span><span class="p">(</span><span class="n">pdMS_TO_TICKS</span><span class="p">(</span><span class="mi">2000</span><span class="p">));</span>
+    <span class="p">}</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">executeControlWord</span><span class="p">(</span><span class="n">SET_CFG_UPDATE</span><span class="p">));</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span> <span class="n">timeout</span> <span class="o">=</span> <span class="n">I2C_TIMEOUT</span><span class="p">;</span>
+    <span class="k">while</span> <span class="p">(</span><span class="n">timeout</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">vTaskDelay</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+        <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">flags_res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+        <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">flags</span><span class="p">(</span><span class="o">&amp;</span><span class="n">flags_res</span><span class="p">));</span>
+
+        <span class="k">if</span> <span class="p">(</span><span class="n">flags_res</span> <span class="o">&amp;</span> <span class="n">FLAG_CFGUPMODE</span><span class="p">)</span> <span class="p">{</span>
+            <span class="c1">// We are now in CFG update mode.</span>
+            <span class="n">m_manual_config</span> <span class="o">=</span> <span class="n">manual_config</span><span class="p">;</span>
+            <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+        <span class="p">}</span>
+
+        <span class="n">timeout</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="c1">// Timeout reached, no change in mode.</span>
+
+    <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">exitConfig</span><span class="p">(</span><span class="kt">bool</span> <span class="n">resim</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="c1">// There are two methods for exiting config mode:</span>
+    <span class="c1">//    1. Execute the EXIT_CFGUPDATE command</span>
+    <span class="c1">//    2. Execute the SOFT_RESET command</span>
+    <span class="c1">// EXIT_CFGUPDATE exits config mode _without_ an OCV (open-circuit voltage)</span>
+    <span class="c1">// measurement, and without resimulating to update unfiltered-SoC and SoC.</span>
+    <span class="c1">// If a new OCV measurement or resimulation is desired, SOFT_RESET or</span>
+    <span class="c1">// EXIT_RESIM should be used to exit config mode.</span>
+    <span class="n">esp_err_t</span> <span class="n">err</span> <span class="o">=</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">resim</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">softReset</span><span class="p">();</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+
+        <span class="n">std</span><span class="o">::</span><span class="kt">int16_t</span> <span class="n">timeout</span> <span class="o">=</span> <span class="n">I2C_TIMEOUT</span><span class="p">;</span>
+        <span class="k">while</span> <span class="p">(</span><span class="n">timeout</span> <span class="o">!=</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+            <span class="n">vTaskDelay</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span>
+
+            <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">flags_res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+            <span class="n">err</span> <span class="o">=</span> <span class="n">flags</span><span class="p">(</span><span class="o">&amp;</span><span class="n">flags_res</span><span class="p">);</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+
+            <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="p">(</span><span class="n">flags_res</span> <span class="o">&amp;</span> <span class="n">FLAG_CFGUPMODE</span><span class="p">))</span> <span class="p">{</span>
+                <span class="k">if</span> <span class="p">(</span><span class="n">m_seal_again</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="c1">// Seal back up if we IC was sealed coming in</span>
+                    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">seal_res</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+                    <span class="n">err</span> <span class="o">=</span> <span class="n">seal</span><span class="p">(</span><span class="o">&amp;</span><span class="n">seal_res</span><span class="p">);</span>
+                    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+
+                    <span class="c1">// Wait 2 s to get values updated.</span>
+                    <span class="n">vTaskDelay</span><span class="p">(</span><span class="n">pdMS_TO_TICKS</span><span class="p">(</span><span class="mi">2000</span><span class="p">));</span>
+                <span class="p">}</span>
+
+                <span class="n">m_manual_config</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+                <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+            <span class="p">}</span>
+
+            <span class="n">timeout</span> <span class="o">-=</span> <span class="mi">1</span><span class="p">;</span>
+        <span class="p">}</span>
+    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+        <span class="n">m_manual_config</span> <span class="o">=</span> <span class="nb">false</span><span class="p">;</span>
+        <span class="n">err</span> <span class="o">=</span> <span class="n">executeControlWord</span><span class="p">(</span><span class="n">EXIT_CFGUPDATE</span><span class="p">);</span>
+        <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+        <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">opConfig</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">result</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">readWord</span><span class="p">(</span><span class="n">EXTENDED_OPCONFIG</span><span class="p">,</span> <span class="n">result</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">writeOpConfig</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">value</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">op_config_msb</span> <span class="o">=</span> <span class="n">value</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">op_config_lsb</span> <span class="o">=</span> <span class="n">value</span> <span class="o">&amp;</span> <span class="mh">0x00FF</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">op_config_data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">op_config_msb</span><span class="p">,</span> <span class="n">op_config_lsb</span><span class="p">};</span>
+
+    <span class="c1">// OpConfig register location: ID_REGISTERS id, offset 0</span>
+    <span class="k">return</span> <span class="nf">writeExtendedData</span><span class="p">(</span><span class="n">ID_REGISTERS</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="n">op_config_data</span><span class="p">,</span> <span class="mi">2</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">blockDataControl</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">enable_byte</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nf">i2cWriteBytes</span><span class="p">(</span><span class="n">EXTENDED_CONTROL</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">enable_byte</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">blockDataClass</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">id</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">i2cWriteBytes</span><span class="p">(</span><span class="n">EXTENDED_DATACLASS</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">id</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">blockDataOffset</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">offset</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">i2cWriteBytes</span><span class="p">(</span><span class="n">EXTENDED_DATABLOCK</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">offset</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">blockDataChecksum</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">csum</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">csum</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">new_csum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cReadBytes</span><span class="p">(</span><span class="n">EXTENDED_CHECKSUM</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">new_csum</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+    <span class="o">*</span><span class="n">csum</span> <span class="o">=</span> <span class="n">new_csum</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">readBlockData</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">offset</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">result</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">address</span> <span class="o">=</span> <span class="n">EXTENDED_BLOCKDATA</span> <span class="o">+</span> <span class="n">offset</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cReadBytes</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ret</span><span class="p">,</span> <span class="mi">1</span><span class="p">));</span>
+    <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="n">ret</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">writeBlockData</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">offset</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">address</span> <span class="o">=</span> <span class="n">EXTENDED_BLOCKDATA</span> <span class="o">+</span> <span class="n">offset</span><span class="p">;</span>
+    <span class="k">return</span> <span class="nf">i2cWriteBytes</span><span class="p">(</span><span class="n">address</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">data</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">computeBlockChecksum</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">checksum</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">checksum</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[</span><span class="mi">32</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cReadBytes</span><span class="p">(</span><span class="n">EXTENDED_BLOCKDATA</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">32</span><span class="p">));</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ret</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="mi">32</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ret</span> <span class="o">+=</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">];</span>
+    <span class="p">}</span>
+    <span class="o">*</span><span class="n">checksum</span> <span class="o">=</span> <span class="mi">255</span> <span class="o">-</span> <span class="n">ret</span><span class="p">;</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">writeBlockChecksum</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">csum</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">i2cWriteBytes</span><span class="p">(</span><span class="n">EXTENDED_CHECKSUM</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">csum</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">readExtendedData</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">class_id</span><span class="p">,</span>
+                                      <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">offset</span><span class="p">,</span>
+                                      <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">result</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_manual_config</span><span class="p">)</span> <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">enterConfig</span><span class="p">(</span><span class="nb">false</span><span class="p">));</span>
+
+    <span class="c1">// Enable block data memory control</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">blockDataControl</span><span class="p">());</span>
+    <span class="c1">// Write class ID using DataBlockClass()</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">blockDataClass</span><span class="p">(</span><span class="n">class_id</span><span class="p">));</span>
+
+    <span class="c1">// Write 32-bit block offset (usually 0)</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">blockDataOffset</span><span class="p">(</span><span class="n">offset</span> <span class="o">/</span> <span class="mi">32</span><span class="p">));</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">new_csum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="c1">// Compute checksum going in</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">computeBlockChecksum</span><span class="p">(</span><span class="o">&amp;</span><span class="n">new_csum</span><span class="p">));</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">old_csum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">blockDataChecksum</span><span class="p">(</span><span class="o">&amp;</span><span class="n">old_csum</span><span class="p">));</span>
+
+    <span class="c1">// Read from offset (limit to 0-31)</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">readBlockData</span><span class="p">(</span><span class="n">offset</span> <span class="o">%</span> <span class="mi">32</span><span class="p">,</span> <span class="n">result</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_manual_config</span><span class="p">)</span> <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">exitConfig</span><span class="p">(</span><span class="nb">false</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">writeExtendedData</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">class_id</span><span class="p">,</span>
+                                       <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">offset</span><span class="p">,</span>
+                                       <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">data</span><span class="p">,</span>
+                                       <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">len</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">len</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">len</span> <span class="o">&gt;</span> <span class="mi">32</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;max write length is 32&quot;</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">data</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_manual_config</span><span class="p">)</span> <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">enterConfig</span><span class="p">(</span><span class="nb">false</span><span class="p">));</span>
+
+    <span class="c1">// Enable block data memory control</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">blockDataControl</span><span class="p">());</span>
+
+    <span class="c1">// Write class ID using DataBlockClass()</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">blockDataClass</span><span class="p">(</span><span class="n">class_id</span><span class="p">));</span>
+
+    <span class="c1">// Write 32-bit block offset (usually 0)</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">blockDataOffset</span><span class="p">(</span><span class="n">offset</span> <span class="o">/</span> <span class="mi">32</span><span class="p">));</span>
+
+    <span class="n">vTaskDelay</span><span class="p">(</span><span class="n">pdMS_TO_TICKS</span><span class="p">(</span><span class="mi">2000</span><span class="p">));</span>
+
+    <span class="c1">// Compute checksum going in</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">computed_csum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">computeBlockChecksum</span><span class="p">(</span><span class="o">&amp;</span><span class="n">computed_csum</span><span class="p">));</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">old_csum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">blockDataChecksum</span><span class="p">(</span><span class="o">&amp;</span><span class="n">old_csum</span><span class="p">));</span>
+
+    <span class="c1">// Write data bytes:</span>
+    <span class="k">for</span> <span class="p">(</span><span class="kt">int</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span> <span class="n">i</span> <span class="o">&lt;</span> <span class="n">len</span><span class="p">;</span> <span class="n">i</span><span class="o">++</span><span class="p">)</span> <span class="p">{</span>
+        <span class="c1">// Write to offset, mod 32 if offset is greater than 32</span>
+        <span class="c1">// The blockDataOffset above sets the 32-bit block</span>
+        <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">writeBlockData</span><span class="p">((</span><span class="n">offset</span> <span class="o">%</span> <span class="mi">32</span><span class="p">)</span> <span class="o">+</span> <span class="n">i</span><span class="p">,</span> <span class="n">data</span><span class="p">[</span><span class="n">i</span><span class="p">]));</span>
+    <span class="p">}</span>
+
+    <span class="n">vTaskDelay</span><span class="p">(</span><span class="n">pdMS_TO_TICKS</span><span class="p">(</span><span class="mi">2000</span><span class="p">));</span>
+
+    <span class="c1">// Write new checksum using BlockDataChecksum (0x60)</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">new_csum</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">computeBlockChecksum</span><span class="p">(</span><span class="o">&amp;</span><span class="n">new_csum</span><span class="p">));</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">writeBlockChecksum</span><span class="p">(</span><span class="n">new_csum</span><span class="p">));</span>
+
+    <span class="n">vTaskDelay</span><span class="p">(</span><span class="n">pdMS_TO_TICKS</span><span class="p">(</span><span class="mi">2000</span><span class="p">));</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">m_manual_config</span><span class="p">)</span> <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">exitConfig</span><span class="p">(</span><span class="nb">false</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">softReset</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">executeControlWord</span><span class="p">(</span><span class="n">SOFT_RESET</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">readControlWord</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">function</span><span class="p">,</span>
+                                     <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">result</span><span class="p">)</span>
+<span class="p">{</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">result</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">sub_command_lsb</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">function</span> <span class="o">&amp;</span> <span class="mh">0x00FF</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">sub_command_msb</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">function</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">command</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">sub_command_lsb</span><span class="p">,</span> <span class="n">sub_command_msb</span><span class="p">};</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cWriteBytes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cReadBytes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">d0</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">d1</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="p">(</span><span class="n">d1</span> <span class="o">|</span> <span class="n">d0</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">executeControlWord</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">function</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">sub_command_msb</span> <span class="o">=</span> <span class="p">(</span><span class="n">function</span> <span class="o">&gt;&gt;</span> <span class="mi">8</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">sub_command_lsb</span> <span class="o">=</span> <span class="p">(</span><span class="n">function</span> <span class="o">&amp;</span> <span class="mh">0x00FF</span><span class="p">);</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">command</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="n">sub_command_lsb</span><span class="p">,</span> <span class="n">sub_command_msb</span><span class="p">};</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cWriteBytes</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">command</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">readWord</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">command</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">*</span> <span class="n">word</span><span class="p">)</span>
+<span class="p">{</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="n">word</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">data</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span><span class="mi">0</span><span class="p">};</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cReadBytes</span><span class="p">(</span><span class="n">command</span><span class="p">,</span> <span class="n">data</span><span class="p">,</span> <span class="mi">2</span><span class="p">));</span>
+
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">d0</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">;</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">d1</span> <span class="o">=</span> <span class="k">static_cast</span><span class="o">&lt;</span><span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span><span class="o">&gt;</span><span class="p">(</span><span class="n">data</span><span class="p">[</span><span class="mi">0</span><span class="p">]);</span>
+    <span class="o">*</span><span class="n">word</span> <span class="o">=</span> <span class="p">(</span><span class="n">d1</span> <span class="o">|</span> <span class="n">d0</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">i2cWriteBytes</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">sub_address</span><span class="p">,</span>
+                                   <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">bytes</span><span class="p">,</span>
+                                   <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">count</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bytes</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cInit</span><span class="p">());</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2c_set_timeout</span><span class="p">(</span><span class="n">I2C_PORT</span><span class="p">,</span> <span class="mi">14000</span><span class="p">));</span>
+
+    <span class="n">i2c_cmd_handle_t</span> <span class="n">cmd</span> <span class="o">=</span> <span class="n">i2c_cmd_link_create</span><span class="p">();</span>
+
+    <span class="n">i2c_master_start</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+
+    <span class="n">i2c_master_write_byte</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span>
+                          <span class="p">(</span><span class="n">FUELGAUGE_ADDRESS</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">I2C_MASTER_WRITE</span><span class="p">,</span>
+                          <span class="n">I2C_MASTER_ACK</span><span class="p">);</span>
+    <span class="n">i2c_master_write_byte</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">sub_address</span><span class="p">,</span> <span class="n">I2C_MASTER_ACK</span><span class="p">);</span>
+
+    <span class="n">i2c_master_write</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">bytes</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">I2C_MASTER_ACK</span><span class="p">);</span>
+
+    <span class="n">i2c_master_stop</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2c_master_cmd_begin</span><span class="p">(</span><span class="n">I2C_PORT</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">I2C_TIMEOUT</span><span class="p">));</span>
+
+    <span class="n">i2c_cmd_link_delete</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cDelete</span><span class="p">());</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">i2cReadBytes</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">sub_address</span><span class="p">,</span>
+                                  <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span><span class="o">*</span> <span class="n">bytes</span><span class="p">,</span>
+                                  <span class="n">std</span><span class="o">::</span><span class="kt">size_t</span> <span class="n">count</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">bytes</span> <span class="o">==</span> <span class="k">nullptr</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">count</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cInit</span><span class="p">());</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2c_set_timeout</span><span class="p">(</span><span class="n">I2C_PORT</span><span class="p">,</span> <span class="mi">14000</span><span class="p">));</span>
+
+    <span class="n">i2c_cmd_handle_t</span> <span class="n">cmd</span> <span class="o">=</span> <span class="n">i2c_cmd_link_create</span><span class="p">();</span>
+
+    <span class="n">i2c_master_start</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+    <span class="n">i2c_master_write_byte</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span>
+                          <span class="p">(</span><span class="n">FUELGAUGE_ADDRESS</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">I2C_MASTER_WRITE</span><span class="p">,</span>
+                          <span class="n">I2C_MASTER_ACK</span><span class="p">);</span>
+    <span class="n">i2c_master_write_byte</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">sub_address</span><span class="p">,</span> <span class="n">I2C_MASTER_ACK</span><span class="p">);</span>
+
+    <span class="n">i2c_master_start</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+    <span class="n">i2c_master_write_byte</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span>
+                          <span class="p">(</span><span class="n">FUELGAUGE_ADDRESS</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">)</span> <span class="o">|</span> <span class="n">I2C_MASTER_READ</span><span class="p">,</span>
+                          <span class="n">I2C_MASTER_ACK</span><span class="p">);</span>
+    <span class="n">i2c_master_read</span><span class="p">(</span><span class="n">cmd</span><span class="p">,</span> <span class="n">bytes</span><span class="p">,</span> <span class="n">count</span><span class="p">,</span> <span class="n">I2C_MASTER_LAST_NACK</span><span class="p">);</span>
+    <span class="n">i2c_master_stop</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2c_master_cmd_begin</span><span class="p">(</span><span class="n">I2C_PORT</span><span class="p">,</span> <span class="n">cmd</span><span class="p">,</span> <span class="n">I2C_TIMEOUT</span><span class="p">));</span>
+
+    <span class="n">i2c_cmd_link_delete</span><span class="p">(</span><span class="n">cmd</span><span class="p">);</span>
+
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2cDelete</span><span class="p">());</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">i2cInit</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2c_param_config</span><span class="p">(</span><span class="n">I2C_PORT</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">m_conf</span><span class="p">));</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2c_driver_install</span><span class="p">(</span><span class="n">I2C_PORT</span><span class="p">,</span> <span class="n">m_conf</span><span class="p">.</span><span class="n">mode</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">,</span> <span class="mi">0</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">FuelGauge</span><span class="o">::</span><span class="n">i2cDelete</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">ESP_ERR_TRY</span><span class="p">(</span><span class="n">i2c_driver_delete</span><span class="p">(</span><span class="n">I2C_PORT</span><span class="p">));</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="p">}</span> <span class="c1">// namespace esc</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Locha Mesh developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

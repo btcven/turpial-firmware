@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1aa7403ab9011d99a534e69c430760f551:
+
+Variable esc::STATUS_SLEEP
+==========================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::STATUS_SLEEP

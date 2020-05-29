@@ -1,0 +1,152 @@
+
+.. _program_listing_file_components_ESC_src_FuelGauge.h:
+
+Program Listing for File FuelGauge.h
+====================================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_ESC_src_FuelGauge.h>` (``components/ESC/src/FuelGauge.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef FUEL_GAUGE_H
+   #define FUEL_GAUGE_H
+   
+   #include <cstdint>
+   
+   #include <driver/i2c.h>
+   #include <driver/gpio.h>
+   
+   #include <esp_err.h>
+   
+   namespace esc {
+   
+   static const bool BAT_LOW = true;  
+   static const bool SOC_INT = false; 
+   enum class SocMeasure {
+       Filtered,   
+       Unfiltered, 
+   };
+   
+   enum class TempMeasure {
+       Battery,  
+       Internal, 
+   };
+   
+   class FuelGauge
+   {
+   public:
+       FuelGauge(FuelGauge const&) = delete;
+       FuelGauge(FuelGauge&&) = delete;
+   
+       FuelGauge& operator=(FuelGauge const&) = delete;
+       FuelGauge& operator=(FuelGauge&&) = delete;
+   
+       static FuelGauge& getInstance()
+       {
+           // Instatiated only once, won't be created again
+           static FuelGauge g_instance;
+           return g_instance;
+       }
+   
+       esp_err_t temperature(TempMeasure type, std::uint16_t* temp);
+   
+       esp_err_t voltage(std::uint16_t* voltage);
+   
+       esp_err_t avgCurrent(std::int16_t* avg_current);
+   
+       esp_err_t avgPower(std::int16_t* avg_power);
+   
+       esp_err_t soc(SocMeasure type, std::uint16_t* soc);
+   
+       esp_err_t setCapacity(std::uint16_t capacity);
+   
+       esp_err_t GPOUTPolarity(bool* value);
+   
+       esp_err_t setGPOUTPolarity(bool active_high);
+   
+       esp_err_t GPOUTFunction(bool* function);
+   
+       esp_err_t setGPOUTFunction(bool function);
+   
+       esp_err_t sociDelta(std::uint8_t* value);
+   
+       esp_err_t setSOCIDelta(std::uint8_t delta);
+   
+       esp_err_t pulseGPOUT();
+   
+       esp_err_t enterConfig(bool manual_config);
+   
+       esp_err_t exitConfig(bool resim);
+   
+       esp_err_t opConfig(std::uint16_t* result);
+   
+       esp_err_t writeOpConfig(std::uint16_t value);
+   
+       esp_err_t softReset();
+   
+   private:
+       FuelGauge();
+   
+       esp_err_t status(std::uint16_t* result);
+   
+       esp_err_t flags(std::uint16_t* result);
+   
+       esp_err_t sealed(bool* is_sealed);
+   
+       esp_err_t unseal(std::uint16_t* result);
+   
+       esp_err_t seal(std::uint16_t* result);
+   
+       esp_err_t blockDataControl();
+   
+       esp_err_t blockDataClass(std::uint8_t id);
+   
+       esp_err_t blockDataOffset(std::uint8_t offset);
+   
+       esp_err_t blockDataChecksum(std::uint8_t* csum);
+   
+       esp_err_t readBlockData(std::uint8_t offset, std::uint8_t* result);
+   
+       esp_err_t writeBlockData(std::uint8_t offset, std::uint8_t data);
+   
+       esp_err_t computeBlockChecksum(std::uint8_t* checksum);
+   
+       esp_err_t writeBlockChecksum(std::uint8_t csum);
+   
+       esp_err_t readExtendedData(std::uint8_t class_id,
+                                  std::uint8_t offset,
+                                  std::uint8_t* result);
+   
+       esp_err_t writeExtendedData(std::uint8_t class_id,
+                                   std::uint8_t offset,
+                                   std::uint8_t* data,
+                                   std::uint8_t len);
+       esp_err_t readControlWord(std::uint16_t function, std::uint16_t* result);
+   
+       esp_err_t executeControlWord(std::uint16_t function);
+   
+       esp_err_t readWord(std::uint8_t command, std::uint16_t* word);
+   
+       esp_err_t i2cWriteBytes(std::uint8_t sub_address,
+                               std::uint8_t* bytes,
+                               std::size_t count);
+   
+       esp_err_t i2cReadBytes(std::uint8_t sub_address,
+                              std::uint8_t* bytes,
+                              std::size_t count);
+   
+       esp_err_t i2cInit();
+   
+       esp_err_t i2cDelete();
+   
+       i2c_config_t m_conf;
+       bool m_seal_again;
+       bool m_manual_config;
+   };
+   
+   } // namespace esc
+   
+   #endif //FUEL_GAUGE_H

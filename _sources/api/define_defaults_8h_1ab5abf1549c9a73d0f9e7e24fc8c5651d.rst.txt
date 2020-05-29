@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1ab5abf1549c9a73d0f9e7e24fc8c5651d:
+
+Define WAP_PASS
+===============
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: WAP_PASS

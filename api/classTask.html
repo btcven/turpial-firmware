@@ -1,0 +1,369 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Class Task &mdash; turpial-firmware  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Class Semaphore" href="classutil_1_1Semaphore.html" />
+    <link rel="prev" title="Class NVS" href="classstorage_1_1NVS.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> turpial-firmware
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">turpial-firmware</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="library_root.html">Library API</a> &raquo;</li>
+        
+      <li>Class Task</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/classTask.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="class-task">
+<span id="exhale-class-classtask"></span><h1>Class Task<a class="headerlink" href="#class-task" title="Permalink to this headline">¶</a></h1>
+<ul class="simple">
+<li><p>Defined in <a class="reference internal" href="file_components_Task_src_Task.h.html#file-components-task-src-task-h"><span class="std std-ref">File Task.h</span></a></p></li>
+</ul>
+<div class="section" id="inheritance-relationships">
+<h2>Inheritance Relationships<a class="headerlink" href="#inheritance-relationships" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="derived-type">
+<h3>Derived Type<a class="headerlink" href="#derived-type" title="Permalink to this headline">¶</a></h3>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">public</span> <span class="pre">esc::Interrupt</span></code> (<a class="reference internal" href="classesc_1_1Interrupt.html#exhale-class-classesc-1-1interrupt"><span class="std std-ref">Class Interrupt</span></a>)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="class-documentation">
+<h2>Class Documentation<a class="headerlink" href="#class-documentation" title="Permalink to this headline">¶</a></h2>
+<dl class="cpp class">
+<dt id="_CPPv44Task">
+<span id="_CPPv34Task"></span><span id="_CPPv24Task"></span><span id="Task"></span><span class="target" id="classTask"></span><em class="property">class </em><code class="sig-name descname">Task</code><a class="headerlink" href="#_CPPv44Task" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Encapsulate a runnable task. </p>
+<p>This class is designed to be subclassed with the method:</p>
+<p><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="kt">void</span> <span class="nf">run</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span> <span class="p">...</span> <span class="p">}</span>
+</pre></div>
+</div>
+</p>
+<p>For example:</p>
+<p><div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">CurlTestTask</span> <span class="o">:</span> <span class="k">public</span> <span class="n">Task</span> <span class="p">{</span>
+   <span class="kt">void</span> <span class="n">run</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">data</span><span class="p">)</span> <span class="p">{</span>
+      <span class="c1">// Do something</span>
+   <span class="p">}</span>
+<span class="p">};</span>
+</pre></div>
+</div>
+</p>
+<p>implemented. </p>
+<p>Subclassed by <a class="reference internal" href="classesc_1_1Interrupt.html#classesc_1_1Interrupt"><span class="std std-ref">esc::Interrupt</span></a></p>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N4Task4TaskENSt6stringE8uint16_t7uint8_t">
+<span id="_CPPv3N4Task4TaskENSt6stringE8uint16_t7uint8_t"></span><span id="_CPPv2N4Task4TaskENSt6stringE8uint16_t7uint8_t"></span><span id="Task::Task__ss.uint16_t.uint8_t"></span><span class="target" id="classTask_1a5371487b31bebe5028e1ca64915780cb"></span><code class="sig-name descname">Task</code><span class="sig-paren">(</span>std::string <em>task_name</em> = &quot;Task&quot;, uint16_t <em>stack_size</em> = 10000, uint8_t <em>priority</em> = 5<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Task4TaskENSt6stringE8uint16_t7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Construct a new <a class="reference internal" href="#classTask"><span class="std std-ref">Task</span></a>. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">task_name</span></code>: The task name </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">stack_size</span></code>: The task stack size in bytes </p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">priority</span></code>: The task priority </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N4TaskD0Ev">
+<span id="_CPPv3N4TaskD0Ev"></span><span id="_CPPv2N4TaskD0Ev"></span><span id="Task::~Task"></span><span class="target" id="classTask_1a3ecf499ea35fb4a96853969a1e1cbbce"></span><code class="sig-name descname">~Task</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4TaskD0Ev" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Destroy the <a class="reference internal" href="#classTask"><span class="std std-ref">Task</span></a> object. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N4Task12setStackSizeE8uint16_t">
+<span id="_CPPv3N4Task12setStackSizeE8uint16_t"></span><span id="_CPPv2N4Task12setStackSizeE8uint16_t"></span><span id="Task::setStackSize__uint16_t"></span><span class="target" id="classTask_1ac5ffbc469edb4367a71ad3a307d20776"></span>void <code class="sig-name descname">setStackSize</code><span class="sig-paren">(</span>uint16_t <em>stack_size</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Task12setStackSizeE8uint16_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set the task stack size. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">stack_size</span></code>: stack size in bytes </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N4Task11setPriorityE7uint8_t">
+<span id="_CPPv3N4Task11setPriorityE7uint8_t"></span><span id="_CPPv2N4Task11setPriorityE7uint8_t"></span><span id="Task::setPriority__uint8_t"></span><span class="target" id="classTask_1aaa220be4e5007ede0bd3e5349d36eae9"></span>void <code class="sig-name descname">setPriority</code><span class="sig-paren">(</span>uint8_t <em>priority</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Task11setPriorityE7uint8_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set the task priority. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">priority</span></code>: </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N4Task7setNameENSt6stringE">
+<span id="_CPPv3N4Task7setNameENSt6stringE"></span><span id="_CPPv2N4Task7setNameENSt6stringE"></span><span id="Task::setName__ss"></span><span class="target" id="classTask_1a23abd79183a5c2bb1e6d3ff37b1cbf23"></span>void <code class="sig-name descname">setName</code><span class="sig-paren">(</span>std::string <em>name</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Task7setNameENSt6stringE" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set the task Name. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">name</span></code>: the task name </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N4Task7setCoreE10BaseType_t">
+<span id="_CPPv3N4Task7setCoreE10BaseType_t"></span><span id="_CPPv2N4Task7setCoreE10BaseType_t"></span><span id="Task::setCore__BaseType_t"></span><span class="target" id="classTask_1a77f4d5c4c7ec1e95a9c8892f90e50774"></span>void <code class="sig-name descname">setCore</code><span class="sig-paren">(</span>BaseType_t <em>core_id</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Task7setCoreE10BaseType_t" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Set the CoreID. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">core_id</span></code>: Core ID </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N4Task5startEPv">
+<span id="_CPPv3N4Task5startEPv"></span><span id="_CPPv2N4Task5startEPv"></span><span id="Task::start__voidP"></span><span class="target" id="classTask_1a07934a238942473b2cff96217c67c0d3"></span>void <code class="sig-name descname">start</code><span class="sig-paren">(</span>void *<em>task_data</em> = nullptr<span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Task5startEPv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Start task. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">task_data</span></code>: data that’s going to be passed to task handler </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N4Task4stopEv">
+<span id="_CPPv3N4Task4stopEv"></span><span id="_CPPv2N4Task4stopEv"></span><span id="Task::stop"></span><span class="target" id="classTask_1aba5eb3d6c2a034aa0e319383fbec68c4"></span>void <code class="sig-name descname">stop</code><span class="sig-paren">(</span><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Task4stopEv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Stop this task. </p>
+</dd></dl>
+
+<dl class="cpp function">
+<dt id="_CPPv4N4Task3runEPv">
+<span id="_CPPv3N4Task3runEPv"></span><span id="_CPPv2N4Task3runEPv"></span><span id="Task::run__voidP"></span><span class="target" id="classTask_1a399f60ad8cd91d34dba2de57b4ac6d65"></span>void <code class="sig-name descname">run</code><span class="sig-paren">(</span>void *<em>data</em><span class="sig-paren">)</span> = 0<a class="headerlink" href="#_CPPv4N4Task3runEPv" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Body of the task to execute. </p>
+<p>This function must be implemented in the subclass that represents the actual task to run. When a task is started by calling <a class="reference internal" href="#classTask_1a07934a238942473b2cff96217c67c0d3"><span class="std std-ref">start()</span></a>, this is the code that is executed in the newly created task.</p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">data</span></code>: The data passed in to the newly started task. </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+<div class="breathe-sectiondef docutils container">
+<p class="breathe-sectiondef-title rubric">Public Static Functions</p>
+<dl class="cpp function">
+<dt id="_CPPv4N4Task5delayEi">
+<span id="_CPPv3N4Task5delayEi"></span><span id="_CPPv2N4Task5delayEi"></span><span id="Task::delay__i"></span><span class="target" id="classTask_1aa4b603c866f4b8e0f0c6b524bb0e287e"></span>void <code class="sig-name descname">delay</code><span class="sig-paren">(</span>int <em>ms</em><span class="sig-paren">)</span><a class="headerlink" href="#_CPPv4N4Task5delayEi" title="Permalink to this definition">¶</a><br /></dt>
+<dd><p>Suspend the stask for milliseconds. </p>
+<p><dl class="simple">
+<dt><strong>Parameters</strong></dt><dd><ul class="breatheparameterlist simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">[in]</span> <span class="pre">ms</span></code>: millisecionds </p></li>
+</ul>
+</dd>
+</dl>
+</p>
+</dd></dl>
+
+</div>
+</dd></dl>
+
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="classutil_1_1Semaphore.html" class="btn btn-neutral float-right" title="Class Semaphore" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="classstorage_1_1NVS.html" class="btn btn-neutral float-left" title="Class NVS" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Locha Mesh developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

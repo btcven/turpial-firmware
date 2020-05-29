@@ -1,0 +1,13 @@
+.. _exhale_variable_Base64_8cpp_1a45e477973bfbf3a69d000c637919bda0:
+
+Variable util::BASE64_ALPHABET
+==============================
+
+- Defined in :ref:`file_components_Util_src_Base64.cpp`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: util::BASE64_ALPHABET

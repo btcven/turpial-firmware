@@ -1,0 +1,16 @@
+.. _exhale_class_classstorage_1_1NVS:
+
+Class NVS
+=========
+
+- Defined in :ref:`file_components_NVS_src_Storage.h`
+
+
+Class Documentation
+-------------------
+
+
+.. doxygenclass:: storage::NVS
+   :members:
+   :protected-members:
+   :undoc-members:

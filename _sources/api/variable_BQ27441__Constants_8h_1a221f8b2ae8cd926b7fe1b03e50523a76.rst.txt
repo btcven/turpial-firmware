@@ -1,0 +1,13 @@
+.. _exhale_variable_BQ27441__Constants_8h_1a221f8b2ae8cd926b7fe1b03e50523a76:
+
+Variable esc::OPCONFIG_RMFCC
+============================
+
+- Defined in :ref:`file_components_ESC_src_BQ27441_Constants.h`
+
+
+Variable Documentation
+----------------------
+
+
+.. doxygenvariable:: esc::OPCONFIG_RMFCC

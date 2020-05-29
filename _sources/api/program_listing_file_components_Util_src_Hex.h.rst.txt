@@ -1,0 +1,32 @@
+
+.. _program_listing_file_components_Util_src_Hex.h:
+
+Program Listing for File Hex.h
+==============================
+
+|exhale_lsh| :ref:`Return to documentation for file <file_components_Util_src_Hex.h>` (``components/Util/src/Hex.h``)
+
+.. |exhale_lsh| unicode:: U+021B0 .. UPWARDS ARROW WITH TIP LEFTWARDS
+
+.. code-block:: cpp
+
+   
+   #ifndef UTIL_HEX_H
+   #define UTIL_HEX_L
+   
+   #include <cstdint>
+   
+   #include "esp_err.h"
+   
+   namespace util {
+   
+   esp_err_t hexToInt(const char c, int& r);
+   
+   esp_err_t hexToBytes(const char* src, std::uint8_t* target);
+   
+   esp_err_t bytesToHex(std::uint8_t* buf, char* dst, std::size_t len);
+   
+   } // namespace util
+   
+   
+   #endif // UTIL_HEX_L

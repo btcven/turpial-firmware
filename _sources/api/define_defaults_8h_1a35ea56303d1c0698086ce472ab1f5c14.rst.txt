@@ -1,0 +1,13 @@
+.. _exhale_define_defaults_8h_1a35ea56303d1c0698086ce472ab1f5c14:
+
+Define WAP_SSID
+===============
+
+- Defined in :ref:`file_main_defaults.h`
+
+
+Define Documentation
+--------------------
+
+
+.. doxygendefine:: WAP_SSID

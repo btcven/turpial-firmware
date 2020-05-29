@@ -1,0 +1,396 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File WiFi.cpp &mdash; turpial-firmware  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> turpial-firmware
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">turpial-firmware</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File WiFi.cpp</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_components_Network_src_WiFi.cpp.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-wifi-cpp">
+<span id="program-listing-file-components-network-src-wifi-cpp"></span><h1>Program Listing for File WiFi.cpp<a class="headerlink" href="#program-listing-for-file-wifi-cpp" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_components_Network_src_WiFi.cpp.html#file-components-network-src-wifi-cpp"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">components/Network/src/WiFi.cpp</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#include</span> <span class="cpf">&quot;WiFi.h&quot;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;cstdint&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;cstring&gt;</span><span class="cp"></span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;esp_log.h&gt;</span><span class="cp"></span>
+<span class="cp">#include</span> <span class="cpf">&lt;esp_wifi.h&gt;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">network</span> <span class="p">{</span>
+
+<span class="k">static</span> <span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">TAG</span> <span class="o">=</span> <span class="s">&quot;WiFi&quot;</span><span class="p">;</span>
+
+<span class="n">WiFiDefaultEventHandler</span><span class="o">::</span><span class="n">WiFiDefaultEventHandler</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFiDefaultEventHandler</span><span class="o">::</span><span class="n">staStart</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;STA Start&quot;</span><span class="p">);</span>
+
+    <span class="n">WiFi</span><span class="o">&amp;</span> <span class="n">wifi</span> <span class="o">=</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">getInstance</span><span class="p">();</span>
+
+    <span class="n">esp_err_t</span> <span class="n">err</span> <span class="o">=</span> <span class="n">wifi</span><span class="p">.</span><span class="n">connect</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Couldn&#39;t connect to AP (%s)&quot;</span><span class="p">,</span> <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFiDefaultEventHandler</span><span class="o">::</span><span class="n">staStop</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">ESP_LOGI</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;STA Stop&quot;</span><span class="p">);</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">WiFi</span><span class="o">::</span><span class="n">WiFi</span><span class="p">()</span>
+    <span class="o">:</span> <span class="n">m_event_handler</span><span class="p">()</span>
+<span class="p">{</span>
+<span class="p">}</span>
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">init</span><span class="p">()</span>
+<span class="p">{</span>
+
+    <span class="n">ESP_LOGD</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Init TCP/IP adapter&quot;</span><span class="p">);</span>
+
+    <span class="n">esp_err_t</span> <span class="n">err</span><span class="p">;</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="n">esp_netif_init</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;esp_netif_init failed, err = %s&quot;</span><span class="p">,</span> <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">err</span> <span class="o">=</span> <span class="n">esp_event_loop_create_default</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Couldn&#39;t create event loop, err = %s&quot;</span><span class="p">,</span> <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+    <span class="n">esp_netif_create_default_wifi_ap</span><span class="p">();</span>
+
+    <span class="n">ESP_LOGD</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Initializing Wi-Fi&quot;</span><span class="p">);</span>
+
+    <span class="n">wifi_init_config_t</span> <span class="n">init_config</span> <span class="o">=</span> <span class="n">WIFI_INIT_CONFIG_DEFAULT</span><span class="p">();</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="n">esp_wifi_init</span><span class="p">(</span><span class="o">&amp;</span><span class="n">init_config</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;esp_wifi_init failed, err = %s&quot;</span><span class="p">,</span> <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="n">err</span> <span class="o">=</span> <span class="n">esp_event_handler_register</span><span class="p">(</span><span class="n">WIFI_EVENT</span><span class="p">,</span> <span class="n">ESP_EVENT_ANY_ID</span><span class="p">,</span>
+        <span class="o">&amp;</span><span class="n">WiFi</span><span class="o">::</span><span class="n">eventHandler</span><span class="p">,</span> <span class="k">this</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Couldn&#39;t register Wi-Fi event handler, err = %s&quot;</span><span class="p">,</span> <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">setMode</span><span class="p">(</span><span class="n">wifi_mode_t</span> <span class="n">mode</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">esp_wifi_set_mode</span><span class="p">(</span><span class="n">mode</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">getMode</span><span class="p">(</span><span class="n">wifi_mode_t</span><span class="o">&amp;</span> <span class="n">mode</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">esp_wifi_get_mode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mode</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">setApConfig</span><span class="p">(</span><span class="n">wifi_config_t</span><span class="o">&amp;</span> <span class="n">ap_config</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">esp_wifi_set_config</span><span class="p">(</span><span class="n">WIFI_IF_AP</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ap_config</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">getApConfig</span><span class="p">(</span><span class="n">wifi_config_t</span><span class="o">&amp;</span> <span class="n">ap_config</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">esp_wifi_get_config</span><span class="p">(</span><span class="n">WIFI_IF_AP</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">ap_config</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">setStaConfig</span><span class="p">(</span><span class="n">wifi_config_t</span><span class="o">&amp;</span> <span class="n">sta_config</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">esp_wifi_set_config</span><span class="p">(</span><span class="n">WIFI_IF_STA</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sta_config</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">getStaConfig</span><span class="p">(</span><span class="n">wifi_config_t</span><span class="o">&amp;</span> <span class="n">sta_config</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="k">return</span> <span class="n">esp_wifi_get_config</span><span class="p">(</span><span class="n">WIFI_IF_STA</span><span class="p">,</span> <span class="o">&amp;</span><span class="n">sta_config</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">isAp</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">wifi_mode_t</span> <span class="n">mode</span><span class="p">;</span>
+    <span class="n">esp_err_t</span> <span class="n">err</span> <span class="o">=</span> <span class="n">esp_wifi_get_mode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mode</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;esp_wifi_get_mode failed (%s)&quot;</span><span class="p">,</span> <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="n">WIFI_MODE_APSTA</span> <span class="o">||</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">WIFI_MODE_AP</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kt">bool</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">isSta</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">wifi_mode_t</span> <span class="n">mode</span><span class="p">;</span>
+    <span class="n">esp_err_t</span> <span class="n">err</span> <span class="o">=</span> <span class="n">esp_wifi_get_mode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">mode</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;esp_wifi_get_mode failed (%s)&quot;</span><span class="p">,</span> <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+        <span class="k">return</span> <span class="nb">false</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="p">(</span><span class="n">mode</span> <span class="o">==</span> <span class="n">WIFI_MODE_APSTA</span> <span class="o">||</span> <span class="n">mode</span> <span class="o">==</span> <span class="n">WIFI_MODE_STA</span><span class="p">);</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">start</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">ESP_LOGD</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Starting Wi-Fi&quot;</span><span class="p">);</span>
+
+    <span class="n">esp_err_t</span> <span class="n">err</span> <span class="o">=</span> <span class="n">esp_wifi_start</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;esp_wifi_start failed&quot;</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">connect</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">esp_err_t</span> <span class="n">err</span><span class="p">;</span>
+
+    <span class="n">wifi_mode_t</span> <span class="n">wifimode</span><span class="p">;</span>
+    <span class="n">err</span> <span class="o">=</span> <span class="n">esp_wifi_get_mode</span><span class="p">(</span><span class="o">&amp;</span><span class="n">wifimode</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;esp_wifi_get_mode failed&quot;</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isSta</span><span class="p">())</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Wi-Fi mode is not STA&quot;</span><span class="p">);</span>
+        <span class="k">return</span> <span class="n">ESP_FAIL</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">esp_wifi_connect</span><span class="p">();</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">setEventHandler</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">unique_ptr</span><span class="o">&lt;</span><span class="n">WiFiEventHandler</span><span class="o">&gt;&amp;&amp;</span> <span class="n">event_handler</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ESP_LOGD</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Setting Wi-Fi event handler&quot;</span><span class="p">);</span>
+
+    <span class="n">m_event_handler</span><span class="p">.</span><span class="n">setNextHandler</span><span class="p">(</span><span class="n">std</span><span class="o">::</span><span class="n">move</span><span class="p">(</span><span class="n">event_handler</span><span class="p">));</span>
+<span class="p">}</span>
+
+<span class="n">esp_err_t</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">stop</span><span class="p">()</span>
+<span class="p">{</span>
+    <span class="n">esp_err_t</span> <span class="n">err</span> <span class="o">=</span> <span class="n">esp_wifi_stop</span><span class="p">();</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;esp_wifi_stop failed, err = %s&quot;</span><span class="p">,</span> <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+        <span class="k">return</span> <span class="n">err</span><span class="p">;</span>
+    <span class="p">}</span>
+
+    <span class="k">return</span> <span class="n">ESP_OK</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kt">void</span> <span class="n">WiFi</span><span class="o">::</span><span class="n">eventHandler</span><span class="p">(</span><span class="kt">void</span><span class="o">*</span> <span class="n">event_handler_arg</span><span class="p">,</span>
+    <span class="n">esp_event_base_t</span> <span class="n">event_base</span><span class="p">,</span>
+    <span class="n">std</span><span class="o">::</span><span class="kt">int32_t</span> <span class="n">event_id</span><span class="p">,</span>
+    <span class="kt">void</span><span class="o">*</span> <span class="n">event_data</span><span class="p">)</span>
+<span class="p">{</span>
+    <span class="n">ESP_LOGD</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Wi-Fi Event Handler Called&quot;</span><span class="p">);</span>
+    <span class="n">WiFi</span><span class="o">*</span> <span class="n">wifi</span> <span class="o">=</span> <span class="k">reinterpret_cast</span><span class="o">&lt;</span><span class="n">WiFi</span><span class="o">*&gt;</span><span class="p">(</span><span class="n">event_handler_arg</span><span class="p">);</span>
+
+    <span class="n">esp_err_t</span> <span class="n">err</span> <span class="o">=</span> <span class="n">wifi</span><span class="o">-&gt;</span><span class="n">m_event_handler</span><span class="p">.</span><span class="n">eventDispatcher</span><span class="p">(</span><span class="n">event_id</span><span class="p">,</span> <span class="n">event_data</span><span class="p">);</span>
+    <span class="k">if</span> <span class="p">(</span><span class="n">err</span> <span class="o">!=</span> <span class="n">ESP_OK</span><span class="p">)</span> <span class="p">{</span>
+        <span class="n">ESP_LOGE</span><span class="p">(</span><span class="n">TAG</span><span class="p">,</span> <span class="s">&quot;Event handler error, err = %s&quot;</span><span class="p">,</span> <span class="n">esp_err_to_name</span><span class="p">(</span><span class="n">err</span><span class="p">));</span>
+    <span class="p">}</span>
+<span class="p">}</span>
+
+<span class="p">}</span> <span class="c1">// namespace network</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Locha Mesh developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

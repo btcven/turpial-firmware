@@ -1,0 +1,13 @@
+.. _exhale_function_StringUtil_8cpp_1aecf71f6162ce9ba5222aee68f5935d4c:
+
+Function util::split
+====================
+
+- Defined in :ref:`file_components_Util_src_StringUtil.cpp`
+
+
+Function Documentation
+----------------------
+
+
+.. doxygenfunction:: util::split(std::string, char)

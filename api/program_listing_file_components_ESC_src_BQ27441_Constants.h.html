@@ -1,0 +1,316 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Program Listing for File BQ27441_Constants.h &mdash; turpial-firmware  documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+        <script src="../_static/collapsible-lists/js/CollapsibleLists.compressed.js"></script>
+        <script src="../_static/collapsible-lists/js/apply-collapsible-lists.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/collapsible-lists/css/tree_view.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> turpial-firmware
+          
+
+          
+          </a>
+
+          
+            
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <ul>
+<li class="toctree-l1"><a class="reference internal" href="library_root.html">Library API</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">turpial-firmware</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+      <li>Program Listing for File BQ27441_Constants.h</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/api/program_listing_file_components_ESC_src_BQ27441_Constants.h.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="program-listing-for-file-bq27441-constants-h">
+<span id="program-listing-file-components-esc-src-bq27441-constants-h"></span><h1>Program Listing for File BQ27441_Constants.h<a class="headerlink" href="#program-listing-for-file-bq27441-constants-h" title="Permalink to this headline">¶</a></h1>
+<p>↰ <a class="reference internal" href="file_components_ESC_src_BQ27441_Constants.h.html#file-components-esc-src-bq27441-constants-h"><span class="std std-ref">Return to documentation for file</span></a> (<code class="docutils literal notranslate"><span class="pre">components/ESC/src/BQ27441_Constants.h</span></code>)</p>
+<div class="highlight-cpp notranslate"><div class="highlight"><pre><span></span><span class="cp">#ifndef BQ27441_CONSTANTS_H</span>
+<span class="cp">#define BQ27441_CONSTANTS_H</span>
+
+<span class="cp">#include</span> <span class="cpf">&lt;cstdint&gt;</span><span class="cp"></span>
+
+<span class="k">namespace</span> <span class="n">esc</span> <span class="p">{</span>
+
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">FUELGAUGE_ADDRESS</span> <span class="o">=</span> <span class="mh">0x55</span><span class="p">;</span>
+
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">UNSEAL_KEY</span> <span class="o">=</span> <span class="mh">0x8000</span><span class="p">;</span>
+
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">DEVICE_TYPE_ID</span> <span class="o">=</span> <span class="mh">0x0421</span><span class="p">;</span>
+
+<span class="k">enum</span> <span class="n">Command</span> <span class="p">{</span>
+    <span class="n">CONTROL</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+    <span class="n">TEMP</span> <span class="o">=</span> <span class="mh">0x02</span><span class="p">,</span>
+    <span class="n">VOLTAGE</span> <span class="o">=</span> <span class="mh">0x04</span><span class="p">,</span>
+    <span class="n">FLAGS</span> <span class="o">=</span> <span class="mh">0x06</span><span class="p">,</span>
+    <span class="n">NOM_CAPACITY</span> <span class="o">=</span> <span class="mh">0x08</span><span class="p">,</span>
+    <span class="n">AVAIL_CAPACITY</span> <span class="o">=</span> <span class="mh">0x0A</span><span class="p">,</span>
+    <span class="n">REM_CAPACITY</span> <span class="o">=</span> <span class="mh">0x0C</span><span class="p">,</span>
+    <span class="n">FULL_CAPACITY</span> <span class="o">=</span> <span class="mh">0x0E</span><span class="p">,</span>
+    <span class="n">AVG_CURRENT</span> <span class="o">=</span> <span class="mh">0x10</span><span class="p">,</span>
+    <span class="n">STDBY_CURRENT</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">,</span>
+    <span class="n">MAX_CURRENT</span> <span class="o">=</span> <span class="mh">0x14</span><span class="p">,</span>
+    <span class="n">AVG_POWER</span> <span class="o">=</span> <span class="mh">0x18</span><span class="p">,</span>
+    <span class="n">SOC</span> <span class="o">=</span> <span class="mh">0x1C</span><span class="p">,</span>
+    <span class="n">INT_TEMP</span> <span class="o">=</span> <span class="mh">0x1E</span><span class="p">,</span>
+    <span class="n">SOH</span> <span class="o">=</span> <span class="mh">0x20</span><span class="p">,</span>
+    <span class="n">REM_CAP_UNFL</span> <span class="o">=</span> <span class="mh">0x28</span><span class="p">,</span>
+    <span class="n">REM_CAP_FIL</span> <span class="o">=</span> <span class="mh">0x2A</span><span class="p">,</span>
+    <span class="n">FULL_CAP_UNFL</span> <span class="o">=</span> <span class="mh">0x2C</span><span class="p">,</span>
+    <span class="n">FULL_CAP_FIL</span> <span class="o">=</span> <span class="mh">0x2E</span><span class="p">,</span>
+    <span class="n">SOC_UNFL</span> <span class="o">=</span> <span class="mh">0x30</span>
+<span class="p">};</span>
+
+<span class="k">enum</span> <span class="n">Control</span> <span class="p">{</span>
+    <span class="n">STATUS</span> <span class="o">=</span> <span class="mh">0x00</span><span class="p">,</span>
+    <span class="n">DEVICE_TYPE</span> <span class="o">=</span> <span class="mh">0x01</span><span class="p">,</span>
+    <span class="n">FW_VERSION</span> <span class="o">=</span> <span class="mh">0x02</span><span class="p">,</span>
+    <span class="n">DM_CODE</span> <span class="o">=</span> <span class="mh">0x04</span><span class="p">,</span>
+    <span class="n">PREV_MACWRITE</span> <span class="o">=</span> <span class="mh">0x07</span><span class="p">,</span>
+    <span class="n">CHEM_ID</span> <span class="o">=</span> <span class="mh">0x08</span><span class="p">,</span>
+    <span class="n">BAT_INSERT</span> <span class="o">=</span> <span class="mh">0x0C</span><span class="p">,</span>
+    <span class="n">BAT_REMOVE</span> <span class="o">=</span> <span class="mh">0x0D</span><span class="p">,</span>
+    <span class="n">SET_HIBERNATE</span> <span class="o">=</span> <span class="mh">0x11</span><span class="p">,</span>
+    <span class="n">CLEAR_HIBERNATE</span> <span class="o">=</span> <span class="mh">0x12</span><span class="p">,</span>
+    <span class="n">SET_CFG_UPDATE</span> <span class="o">=</span> <span class="mh">0x13</span><span class="p">,</span>
+    <span class="n">SHUTDOWN_ENABLE</span> <span class="o">=</span> <span class="mh">0x1B</span><span class="p">,</span>
+    <span class="n">SHUTDOWN</span> <span class="o">=</span> <span class="mh">0x1C</span><span class="p">,</span>
+    <span class="n">SEALED</span> <span class="o">=</span> <span class="mh">0x20</span><span class="p">,</span>
+    <span class="n">PULSE_SOC_INT</span> <span class="o">=</span> <span class="mh">0x23</span><span class="p">,</span>
+    <span class="n">RESET</span> <span class="o">=</span> <span class="mh">0x41</span><span class="p">,</span>
+    <span class="n">SOFT_RESET</span> <span class="o">=</span> <span class="mh">0x42</span><span class="p">,</span>
+    <span class="n">EXIT_CFGUPDATE</span> <span class="o">=</span> <span class="mh">0x43</span><span class="p">,</span>
+    <span class="n">EXIT_RESIM</span> <span class="o">=</span> <span class="mh">0x44</span>
+<span class="p">};</span>
+
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_SHUTDOWNEN</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">15</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_WDRESET</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">14</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_SS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">13</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_CALMODE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_CCA</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">11</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_BCA</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">10</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_QMAX_UP</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">9</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_RES_UP</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_INITCOMP</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_HIBERNATE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">6</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_SLEEP</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_LDMD</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_RUP_DIS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">STATUS_VOK</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">);</span>
+
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_OT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">15</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_UT</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">14</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_FC</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">9</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_CHG</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">8</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_OCVTAKEN</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">7</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_ITPOR</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_CFGUPMODE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_BAT_DET</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">3</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_SOC1</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_SOCF</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">1</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">FLAG_DSG</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">EXTENDED_OPCONFIG</span> <span class="o">=</span> <span class="mh">0x3A</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">EXTENDED_CAPACITY</span> <span class="o">=</span> <span class="mh">0x3C</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">EXTENDED_DATACLASS</span> <span class="o">=</span> <span class="mh">0x3E</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">EXTENDED_DATABLOCK</span> <span class="o">=</span> <span class="mh">0x3F</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">EXTENDED_BLOCKDATA</span> <span class="o">=</span> <span class="mh">0x40</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">EXTENDED_CHECKSUM</span> <span class="o">=</span> <span class="mh">0x60</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">EXTENDED_CONTROL</span> <span class="o">=</span> <span class="mh">0x61</span><span class="p">;</span>
+
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_SAFETY</span> <span class="o">=</span> <span class="mi">2</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_CHG_TERMINATION</span> <span class="o">=</span> <span class="mi">36</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_CONFIG_DATA</span> <span class="o">=</span> <span class="mi">48</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_DISCHARGE</span> <span class="o">=</span> <span class="mi">49</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_REGISTERS</span> <span class="o">=</span> <span class="mi">64</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_POWER</span> <span class="o">=</span> <span class="mi">68</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_IT_CFG</span> <span class="o">=</span> <span class="mi">80</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_CURRENT_THRESH</span> <span class="o">=</span> <span class="mi">81</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_STATE</span> <span class="o">=</span> <span class="mi">82</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_R_A_RAM</span> <span class="o">=</span> <span class="mi">89</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_CALIB_DATA</span> <span class="o">=</span> <span class="mi">104</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_CC_CAL</span> <span class="o">=</span> <span class="mi">105</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_CURRENT</span> <span class="o">=</span> <span class="mi">107</span><span class="p">;</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint8_t</span> <span class="n">ID_CODES</span> <span class="o">=</span> <span class="mi">112</span><span class="p">;</span>
+
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">OPCONFIG_BIE</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">13</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">OPCONFIG_BI_PU_EN</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">12</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">OPCONFIG_GPIOPOL</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">11</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">OPCONFIG_SLEEP</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">5</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">OPCONFIG_RMFCC</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">4</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">OPCONFIG_BATLOWEN</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">2</span><span class="p">);</span>
+<span class="k">const</span> <span class="n">std</span><span class="o">::</span><span class="kt">uint16_t</span> <span class="n">OPCONFIG_TEMPS</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span> <span class="o">&lt;&lt;</span> <span class="mi">0</span><span class="p">);</span>
+
+<span class="p">}</span> <span class="c1">// namespace esc</span>
+
+<span class="cp">#endif </span><span class="c1">// BQ27441_CONSTANTS_H</span>
+</pre></div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2019, Locha Mesh developers
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
