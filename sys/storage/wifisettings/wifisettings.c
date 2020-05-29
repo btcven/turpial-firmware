@@ -27,19 +27,19 @@
  */
 #define ENABLE_DEBUG (1)
 #include "debug.h"
-#include "storage/wifiSettings.h"
+#include "storage/wifisettings.h"
 #include "storage/nvs.h"
 
 int set_ap_credentials(wifi_settings ap_value){
 
-   int err = nvs_set_string("ap_ssid", ap_value.ssid);
-   if(err != 0){
+   if(nvs_set_string("ap_ssid", ap_value.ssid) < 0){
        printf("Error: could not save the ssid");
+       return -1;
    }
 
-   err = nvs_set_string("ap_password", ap_value.password);
-   if(err != 0){
+   if(nvs_set_string("ap_password", ap_value.password) < 0){
        printf("Error: could not save the password");
+       return -1;
    }
 
    return 0;
@@ -48,42 +48,38 @@ int set_ap_credentials(wifi_settings ap_value){
 
 int get_ap_credentials(wifi_settings *ap_value){
     
-    size_t length = MAX_LENGTH;
-    int err = nvs_get_string("ap_ssid", ap_value->ssid, &length);
-    if(err != 0){
+    size_t ssid_length = SSID_LENGTH;
+    if(nvs_get_string("ap_ssid", ap_value->ssid, &ssid_length) < 0){
        printf("Error: could not get the ssid");
+       return -1;
     }
 
-    err = nvs_get_string("ap_password", ap_value->password, &length);
-    if(err != 0){
+    size_t password_length = PASSWORD_LENGTH;
+    if(nvs_get_string("ap_password", ap_value->password, &password_length) < 0){
        printf("Error: could not get the ap_password");
+       return -1;
     }
 
-    return err;
+    return 0;
 }
 
 
 int set_global_ipv6(ipv6_addr_t ip6){
 
-    int err = set_blob("global_ipv6", ip6.u8, sizeof(ipv6_addr_t));
-    if(err != 0){
+    if(set_blob("global_ipv6", ip6.u8, sizeof(ipv6_addr_t)) < 0){
         printf("Error: could not set blob");
+        return -1;
     }
-    return err;
+    return 0;
 }
 
 int get_global_ipv6(ipv6_addr_t* ip6){
 
-    uint8_t value[16];
-    memset(value, 0, sizeof(value));
-    
-    int err = get_blob("global_ipv6", value, sizeof(ipv6_addr_t));
-    if(err != 0){
+    if(get_blob("global_ipv6", ip6->u8, sizeof(ipv6_addr_t)) < 0){
         printf("Error: could not get blob");
+        return -1;
     }
 
-    memcpy(ip6->u8, value, sizeof(ipv6_addr_t));
-
-    return err;
+    return 0;
 }
 

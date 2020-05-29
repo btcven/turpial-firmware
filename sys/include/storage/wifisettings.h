@@ -34,12 +34,13 @@
 #include "net/gnrc.h"
 
 
-#define MAX_LENGTH 20
+#define PASSWORD_LENGTH 64 /**  password length  **/
+#define SSID_LENGTH 32 /**  ssid length  **/
 
 /** ap credentials */
-typedef  struct {
-    char ssid[MAX_LENGTH]; /**< ap ssid */
-    char password[MAX_LENGTH] /**< ap password */
+typedef struct {
+    char ssid[SSID_LENGTH]; /**< ap ssid */
+    char password[PASSWORD_LENGTH]; /**< ap password */
 } wifi_settings;
 
 /**
@@ -85,7 +86,6 @@ int set_global_ipv6(ipv6_addr_t ip6);
  * @return   -1:fail
  */ 
 int get_global_ipv6(ipv6_addr_t* ip6);
-
 
 #endif /* STORAGE_NVS_WIFISETTINGS_H */
 

@@ -6,7 +6,7 @@ endif
 
 
 ifneq (,$(filter wifi_settings,$(USEMODULE)))
-  DIRS += wifiSettings
+  DIRS += wifisettings
 endif
 
 include $(RIOTBASE)/Makefile.base
