@@ -70,10 +70,10 @@ information on the radio module we use.
 
 * [Getting Started](#getting-started)
    - [Development Workflow.](#development-workflow)
-   - [Installing ESP-IDF.](#installing-esp-idf)
+   - [Installing RIOS-OS.](#installing-riot-os)
+   - [Clone this repository](#clone-this-repository)
    - [Compiling.](#compiling)
    - [Flashing the Firmware](#flashing-the-firmware)
-   - [Running Tests](#running-tests)
    - [Compiling Documentation.](#compiling-documentation)
 
 [License](#license)
@@ -92,33 +92,24 @@ pointed to that branch. Please, make sure you follow the
 require that at least two developers review them first before merging to `dev`
 branch.
 
-### Installing ESP-IDF
+### Installing RIOT-OS
 
-In order to compile the firmware (and to flash it) you need to install the
-[ESP-IDF](https://github.com/espressif/esp-idf/) development framework, which
-brings the compiler and necessary tools in order to correctly build the
-project.
+RIOT is a real-time multi-threading operating system that supports a range of devices that are typically found in the Internet of Things (IoT): 8-bit, 16-bit and 32-bit microcontrollers.
 
-Please note that we use a fork of the ESP-IDF, that enables us to use SLIP as
-a network interface (SLIP ESP-NETIF) until we get upstream support, it can
-be used as follows:
+currently only it is only compatible with linux (Debian / Ubuntu) for Mac OS you can search for alternatives like docker [here](https://doc.riot-os.org/group__cpu__esp32.html#esp32_toolchain) we leave you a detailed guide check by riot team.
+
+
+### Clone this repository
 
 ```
-git clone https://github.com/btcven/esp-idf/ -b feature/slip
+`git clone git@github.com:btcven/turpial-firmware.git`
 ```
-
-The procedure to install and export the variables is the same as using the
-official version of ESP-IDF. The fork gets the same updates as the main
-repository.
-
 ### Compiling
 
-We use the idf.py command line tool provided by ESP-IDF to build the project.
-It's pretty simple to build the project:
-
-```bash
-idf.py build
-```
+ 1.  cd turpial-firmware
+ 2.  git submodule init
+ 3.  git submodule update
+ 4.  make
 
 ### Flashing the Firmware
 
@@ -126,26 +117,12 @@ To upload the binary to the ESP32 you have connected to your computer, you
 need to use the following command:
 
 ```bash
-idf.py -p PORT flash
+  make -p PORT flash 
 ```
 
 Where `PORT` specifies on what port you have connected your ESP32 development
 board.
 
-### Running Tests
-
-To ensure the safety of code we run some tests in the ESP32 to ensure the code
-works as expected. The testing code lives in the `test/` directory. To compile
-a test you can run the following command:
-
-```bash
-cd test/
-idf.py build -D "TEST_COMPONENTS=yourcomponent"
-```
-
-You can change `yourcomponent` to the test component you want to run tests for.
-Don't forget to flash the test binary to run the code. See
-[*Flashing the binary.*](#flashing-the-binary).
 
 ### Compiling Documentation
 
