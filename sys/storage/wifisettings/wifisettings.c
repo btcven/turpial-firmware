@@ -33,12 +33,12 @@
 int set_ap_credentials(wifi_settings ap_value){
 
    if(nvs_set_string("ap_ssid", ap_value.ssid) < 0){
-       printf("Error: could not save the ssid");
+       printf("Error: could not save the ssid \n");
        return -1;
    }
 
    if(nvs_set_string("ap_password", ap_value.password) < 0){
-       printf("Error: could not save the password");
+       printf("Error: could not save the password \n");
        return -1;
    }
 
@@ -50,13 +50,13 @@ int get_ap_credentials(wifi_settings *ap_value){
     
     size_t ssid_length = SSID_LENGTH;
     if(nvs_get_string("ap_ssid", ap_value->ssid, &ssid_length) < 0){
-       printf("Error: could not get the ssid");
+       printf("Error: could not get the ssid \n");
        return -1;
     }
 
     size_t password_length = PASSWORD_LENGTH;
     if(nvs_get_string("ap_password", ap_value->password, &password_length) < 0){
-       printf("Error: could not get the ap_password");
+       printf("Error: could not get the ap_password \n");
        return -1;
     }
 
@@ -67,7 +67,7 @@ int get_ap_credentials(wifi_settings *ap_value){
 int set_global_ipv6(ipv6_addr_t ip6){
 
     if(set_blob("global_ipv6", ip6.u8, sizeof(ipv6_addr_t)) < 0){
-        printf("Error: could not set blob");
+        printf("Error: could not set blob \n");
         return -1;
     }
     return 0;
@@ -76,7 +76,7 @@ int set_global_ipv6(ipv6_addr_t ip6){
 int get_global_ipv6(ipv6_addr_t* ip6){
 
     if(get_blob("global_ipv6", ip6->u8, sizeof(ipv6_addr_t)) < 0){
-        printf("Error: could not get blob");
+        printf("Error: could not get blob \n");
         return -1;
     }
 

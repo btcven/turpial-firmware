@@ -58,7 +58,7 @@ int nvs_init(void)
 int nvs_set_string(char* key, char* string_value)
 {
     if(!is_open){
-        printf("Error: NVS is close");
+        printf("Error: NVS is close \n");
         return ESP_FAIL;
     }
 
@@ -69,7 +69,7 @@ int nvs_set_string(char* key, char* string_value)
 int nvs_get_string(char* key,  char* buffer, size_t* length)
 {
     if(!is_open){
-        printf("Error: NVS is close");
+        printf("Error: NVS is close \n");
         return ESP_FAIL;
     } 
 
@@ -80,7 +80,7 @@ int nvs_get_string(char* key,  char* buffer, size_t* length)
 int set_bool(char* key, bool value)
 {   
      if(!is_open){
-         printf("Error: NVS is close");
+         printf("Error: NVS is close \n");
         return ESP_FAIL;
     } 
     return nvs_set_u8(_handle, key, value ? 1 : 0);
@@ -91,7 +91,7 @@ int get_bool(char* key, bool* value )
 {    
 
     if(!is_open){
-       printf("Error: NVS is close");
+       printf("Error: NVS is close \n");
        return ESP_FAIL; 
     }
     
@@ -115,7 +115,7 @@ int _nvs_commit(void)
 {
     
     if(!is_open){
-       printf("Error: NVS is close");
+       printf("Error: NVS is close \n");
        return ESP_FAIL; 
     }
     return nvs_commit(_handle);   
@@ -124,7 +124,7 @@ int _nvs_commit(void)
 
 int _nvs_close(void)
 {
-    printf("Closing nvs");
+    printf("Closing nvs \n");
 
     if (!is_open) {
      nvs_close(_handle);
@@ -137,7 +137,7 @@ int _nvs_close(void)
 int set_blob(char* key, uint8_t* buffer, size_t length)
 {
    if(!is_open){
-       printf("Error: NVS is close");
+       printf("Error: NVS is close \n");
        return ESP_FAIL; 
     }
 
@@ -149,7 +149,7 @@ int set_blob(char* key, uint8_t* buffer, size_t length)
 int get_blob(char* key, uint8_t* buffer, size_t length)
 {
     if(!is_open){
-       printf("Error: NVS is close");
+       printf("Error: NVS is close \n");
        return ESP_FAIL; 
     }
 
