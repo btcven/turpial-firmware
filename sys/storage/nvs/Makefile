@@ -1,3 +1,3 @@
-MODULE = vaina
+MODULE = nvs
 
 include $(RIOTBASE)/Makefile.base

@@ -40,7 +40,7 @@ USEMODULE += shell_commands
 USEMODULE += esp_wifi_ap
 
 USEMODULE += vaina
-
+USEMODULE += nvs
 USEMODULE += slipdev
 
 UART1_TXD ?= "GPIO21"

@@ -17,7 +17,7 @@
 
 #include "shell.h"
 #include "msg.h"
-
+#include "storage/nvs.h"
 #include "net/vaina.h"
 
 static int wifi_init(void);
@@ -59,6 +59,10 @@ static const shell_command_t shell_commands[] = {
 int main(void)
 {
     puts("Welcome to Turpial ESP32 MCU!");
+
+    if(nvs_init() < 0){
+       printf("Error: Couldn't initialize NVS\n"); 
+    }
 
     if (vaina_init() < 0) {
         printf("Error: Couldn't initialize VAINA\n");
