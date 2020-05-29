@@ -78,8 +78,6 @@ int main(void)
     return 0;
 }
 
-
-
 static int vaina_init(void)
 {
     /* Initialize VAINA client */
