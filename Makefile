@@ -38,7 +38,7 @@ USEMODULE += shell
 USEMODULE += shell_commands
 
 USEMODULE += esp_wifi_ap
-
+USEMODULE += turpial_firmware_coap
 USEMODULE += vaina
 USEMODULE += nvs
 USEMODULE += wifi_settings

@@ -13,3 +13,9 @@ ifneq (,$(filter wifi_settings,$(USEMODULE)))
   USEMODULE += nvs
   USEMODULE += sock_udp
 endif
+
+
+ifneq (,$(filter turpial_firmware_coap,$(USEMODULE)))
+  USEMODULE += gcoap
+  USEMODULE += turpial_firmware_net
+endif

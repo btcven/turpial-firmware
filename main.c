@@ -19,6 +19,7 @@
 #include "msg.h"
 #include "storage/nvs.h"
 #include "net/vaina.h"
+#include "net/tfcoap.h"
 
 static int wifi_init(void);
 static int vaina_init(void);
@@ -43,7 +44,7 @@ static int rcs_add_cmd(int argc, char **argv);
  *
  * @{
  */
-#define ESP_WIFI_AP_IF (8)
+#define ESP_WIFI_AP_IF (10)
 #define ESP_SLIPDEV_IF (9)
 /** @} */
 
@@ -60,6 +61,8 @@ int main(void)
 {
     puts("Welcome to Turpial ESP32 MCU!");
 
+    tf_coat_init();
+
     if(nvs_init() < 0){
        printf("Error: Couldn't initialize NVS\n"); 
     }
@@ -72,6 +75,7 @@ int main(void)
         printf("Error: Couldn't initialize WiFi\n");
     }
 
+    
     shell_init();
 
     /* Should be never reached */
