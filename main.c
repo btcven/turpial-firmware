@@ -19,11 +19,8 @@
 #include "msg.h"
 #include "storage/nvs.h"
 #include "net/vaina.h"
-<<<<<<< HEAD
 #include "net/tfcoap.h"
-=======
 #include "cJSON.h"
->>>>>>> 2020_06_03_add_cjson
 
 static int wifi_init(void);
 static int vaina_init(void);
@@ -63,12 +60,6 @@ static const shell_command_t shell_commands[] = {
 
 int main(void)
 {
-    cJSON* root = cJSON_CreateObject();
-    cJSON_AddStringToObject(root, "test", "test");
-
-    char* payload = cJSON_Print(root);
-
-    printf("cJSON %s \n", payload);
     puts("Welcome to Turpial ESP32 MCU!");
 
     tf_coat_init();

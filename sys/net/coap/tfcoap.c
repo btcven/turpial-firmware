@@ -30,6 +30,7 @@
 #define ENABLE_DEBUG (1)
 #include "debug.h"
 #include "net/tfcoap.h"
+#include "cJSON.h"
 #include "xtimer.h"
 
 #define COAP_INBUF_SIZE (256U)
@@ -74,17 +75,47 @@ ssize_t encode_link(const coap_resource_t *resource, char *buf,
 
 ssize_t stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
 {
-    DEBUG("HEREEEE!!!!!!!!!!!!!!!!!!!!!!!!\n");
-    (void)ctx;
-    gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
-    coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
-    size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
+    uint16_t voltage = 0;
+    int16_t avg_current = 0;
+    int16_t avg_power = 0;
+     size_t free_memory = 0;
+    const  char *ap_ssid = "RIOT_AP";
 
+
+    cJSON* root = cJSON_CreateObject();
+
+    cJSON_AddStringToObject(root, "device_name", RIOT_BOARD);
+    cJSON_AddStringToObject(root, "device_version", RIOT_VERSION);
+
+    cJSON_AddNumberToObject(root, "voltage", voltage * 1.0);
+    cJSON_AddNumberToObject(root, "avg_current", avg_current * 1.0);
+    cJSON_AddNumberToObject(root, "avg_power", avg_power * 1.0);
+    cJSON_AddNumberToObject(root, "avg_temp", avg_power * 1.0);
+    cJSON_AddNumberToObject(root, "free_memory", free_memory * 1.0);
+
+    cJSON* ap_root = cJSON_AddObjectToObject(root, "ap");
+    cJSON_AddStringToObject(ap_root, "ssid", ap_ssid);
+
+    // ****  STA is not avaliable in this version  **** //
+
+    // cJSON* sta_root = cJSON_AddObjectToObject(root, "sta");
+    // cJSON_AddStringToObject(sta_root, "ssid", sta_ssid);
+    // cJSON_AddBoolToObject(sta_root, "enabled", sta_enabled);
+
+    char* payload = cJSON_Print(root);
+
+    (void)ctx;
+    gcoap_resp_init(pdu, buf, 223, COAP_CODE_CONTENT);
+    // coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
+    // size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
+   
     
+    DEBUG("length is: %d \n", pdu->payload_len);
+    DEBUG("length of the payload is: %d \n", strlen(payload));
     /* write the RIOT board name in the response buffer */
-    if (pdu->payload_len >= strlen(RIOT_BOARD)) {
-        memcpy(pdu->payload, "dios mio", strlen("dios mio"));
-        return resp_len + strlen(RIOT_BOARD);
+     if (pdu->payload_len >= strlen(payload)) {
+        memcpy(pdu->payload, payload, strlen(payload)+1);
+        return gcoap_finish(pdu, strlen(payload) , COAP_FORMAT_TEXT);
     }
     else {
         puts("gcoap_cli: msg buffer too small");
