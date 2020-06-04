@@ -44,8 +44,8 @@ static int rcs_add_cmd(int argc, char **argv);
  *
  * @{
  */
-#define ESP_WIFI_AP_IF (10)
-#define ESP_SLIPDEV_IF (9)
+#define ESP_WIFI_AP_IF (9)
+#define ESP_SLIPDEV_IF (10)
 /** @} */
 
 #define MAIN_QUEUE_SIZE     (8)

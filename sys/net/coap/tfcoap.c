@@ -27,20 +27,23 @@
 
 
 
-
 #define ENABLE_DEBUG (1)
 #include "debug.h"
 #include "net/tfcoap.h"
+#include "xtimer.h"
 
+#define COAP_INBUF_SIZE (256U)
 
-static const coap_resource_t resources[] = {
-    { "/1", COAP_GET | COAP_PUT, stats_handler, NULL },
+extern int _gnrc_netif_config(int argc, char **argv);
+
+/* must be sorted by path (ASCII order) */
+static const coap_resource_t _resources[] = {
+    { "/system/info", COAP_GET, stats_handler, NULL },
 };
 
-
 static gcoap_listener_t listener = {
-    &resources[0],
-    ARRAY_SIZE(resources),
+    &_resources[0],
+    ARRAY_SIZE(_resources),
     encode_link,
     NULL
 };
@@ -71,13 +74,27 @@ ssize_t encode_link(const coap_resource_t *resource, char *buf,
 
 ssize_t stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
 {
-    puts("execute\n");
+    DEBUG("HEREEEE!!!!!!!!!!!!!!!!!!!!!!!!\n");
+    (void)ctx;
+    gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
+    coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
+    size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
+
+    
+    /* write the RIOT board name in the response buffer */
+    if (pdu->payload_len >= strlen(RIOT_BOARD)) {
+        memcpy(pdu->payload, "dios mio", strlen("dios mio"));
+        return resp_len + strlen(RIOT_BOARD);
+    }
+    else {
+        puts("gcoap_cli: msg buffer too small");
+        return gcoap_response(pdu, buf, len, COAP_CODE_INTERNAL_SERVER_ERROR);
+    }
+
     return 0;
 }
 
 void tf_coat_init(void){
-    printf("EXECUTE HEREEEE!!!!!!!!!!!!!!!!!!!!!!!!!!1 \n");
+
     gcoap_register_listener(&listener);
 }
-
-
