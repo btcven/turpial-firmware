@@ -40,6 +40,7 @@ USEMODULE += shell_commands
 USEMODULE += esp_wifi_ap
 USEMODULE += turpial_firmware_coap
 USEMODULE += vaina
+USEMODULE += cjson
 USEMODULE += nvs
 USEMODULE += wifi_settings
 USEMODULE += slipdev
