@@ -19,7 +19,7 @@
 #include "msg.h"
 #include "storage/nvs.h"
 #include "net/vaina.h"
-#include "cjson/cjson.h"
+#include "cjson.h"
 
 static int wifi_init(void);
 static int vaina_init(void);
