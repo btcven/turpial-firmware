@@ -25,11 +25,35 @@
  * @}
  */
 
+
+#ifndef NET_TFCOAP_H
+#define NET_TFCOAP_H
+
+
 #include "net/gcoap.h"
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+/**
+ * @brief init coap server
+ */ 
 void tf_coat_init(void);
 
+/**
+ * @brief  Adds link format params to resource list 
+ */
 ssize_t encode_link(const coap_resource_t *resource, char *buf,
                             size_t maxlen, coap_link_encoder_ctx_t *context);
 
+/**
+ * @brief  Response callback.
+ */
 ssize_t stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx);
+
+
+#ifdef __cplusplus
+} /* extern "C" */
+#endif
+
+#endif /* NET_VAINA_H */

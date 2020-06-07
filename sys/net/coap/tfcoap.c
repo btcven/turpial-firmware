@@ -75,6 +75,9 @@ ssize_t encode_link(const coap_resource_t *resource, char *buf,
 
 ssize_t stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
 {
+
+    // ****  this functionality is in progress for now the data is mock **** //
+
     uint16_t voltage = 0;
     int16_t avg_current = 0;
     int16_t avg_power = 0;
@@ -103,19 +106,20 @@ ssize_t stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
     // cJSON_AddBoolToObject(sta_root, "enabled", sta_enabled);
 
     char* payload = cJSON_Print(root);
+    cJSON_Delete(root);
 
     (void)ctx;
-    gcoap_resp_init(pdu, buf, 223, COAP_CODE_CONTENT);
-    // coap_opt_add_format(pdu, COAP_FORMAT_TEXT);
-    // size_t resp_len = coap_opt_finish(pdu, COAP_OPT_FINISH_PAYLOAD);
-   
+    gcoap_resp_init(pdu, buf, len, COAP_CODE_CONTENT);
     
-    DEBUG("length is: %d \n", pdu->payload_len);
-    DEBUG("length of the payload is: %d \n", strlen(payload));
+
+    size_t payload_len = strlen(payload);
+
+    
     /* write the RIOT board name in the response buffer */
      if (pdu->payload_len >= strlen(payload)) {
-        memcpy(pdu->payload, payload, strlen(payload)+1);
-        return gcoap_finish(pdu, strlen(payload) , COAP_FORMAT_TEXT);
+        memcpy(pdu->payload, payload, payload_len);
+        free(payload);
+        return gcoap_finish(pdu, payload_len , COAP_FORMAT_TEXT);
     }
     else {
         puts("gcoap_cli: msg buffer too small");
@@ -129,3 +133,4 @@ void tf_coat_init(void){
 
     gcoap_register_listener(&listener);
 }
+
