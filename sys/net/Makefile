@@ -4,7 +4,6 @@ ifneq (,$(filter vaina,$(USEMODULE)))
   DIRS += vaina
 endif
 
-
 ifneq (,$(filter turpial_firmware_coap,$(USEMODULE)))
   DIRS += coap
 endif
