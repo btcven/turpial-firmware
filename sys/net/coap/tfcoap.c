@@ -99,7 +99,7 @@ ssize_t stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
     cJSON* ap_root = cJSON_AddObjectToObject(root, "ap");
     cJSON_AddStringToObject(ap_root, "ssid", ap_ssid);
 
-    // ****  STA is not avaliable in this version  **** //
+    // ****  STA is not available in this version  **** //
 
     // cJSON* sta_root = cJSON_AddObjectToObject(root, "sta");
     // cJSON_AddStringToObject(sta_root, "ssid", sta_ssid);
@@ -130,7 +130,6 @@ ssize_t stats_handler(coap_pkt_t* pdu, uint8_t *buf, size_t len, void *ctx)
 }
 
 void tf_coat_init(void){
-
     gcoap_register_listener(&listener);
 }
 
