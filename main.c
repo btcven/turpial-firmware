@@ -19,6 +19,7 @@
 #include "msg.h"
 #include "storage/nvs.h"
 #include "net/vaina.h"
+#include "net/tfcoap.h"
 #include "cJSON.h"
 
 static int wifi_init(void);
@@ -44,8 +45,8 @@ static int rcs_add_cmd(int argc, char **argv);
  *
  * @{
  */
-#define ESP_WIFI_AP_IF (8)
-#define ESP_SLIPDEV_IF (9)
+#define ESP_WIFI_AP_IF (9)
+#define ESP_SLIPDEV_IF (10)
 /** @} */
 
 #define MAIN_QUEUE_SIZE     (8)
@@ -59,13 +60,9 @@ static const shell_command_t shell_commands[] = {
 
 int main(void)
 {
-    cJSON* root = cJSON_CreateObject();
-    cJSON_AddStringToObject(root, "test", "test");
-
-    char* payload = cJSON_Print(root);
-
-    printf("cJSON %s \n", payload);
     puts("Welcome to Turpial ESP32 MCU!");
+
+    tf_coat_init();
 
     if(nvs_init() < 0){
        printf("Error: Couldn't initialize NVS\n"); 
@@ -79,6 +76,7 @@ int main(void)
         printf("Error: Couldn't initialize WiFi\n");
     }
 
+    
     shell_init();
 
     /* Should be never reached */
