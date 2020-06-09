@@ -1,5 +1,7 @@
 menu "Turpial Firmware configuration"
 
+rsource "sys/Kconfig"
+
 menuconfig TURPIAL_STATIC_ADDRESS
     bool "Use static address"
     default n

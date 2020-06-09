@@ -1,0 +1,5 @@
+menu "Network"
+
+rsource "vaina/Kconfig"
+
+endmenu
