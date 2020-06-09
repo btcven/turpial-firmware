@@ -17,10 +17,12 @@
 
 #include "shell.h"
 #include "msg.h"
-#include "storage/nvs.h"
 #include "net/vaina.h"
 #include "net/tfcoap.h"
 #include "net/gnrc/ipv6/nib.h"
+
+#include "storage/tfnvs.h"
+#include "storage/tfsettings.h"
 
 #include "ipv6_autogen.h"
 
@@ -66,7 +68,7 @@ int main(void)
 
     tf_coat_init();
 
-    if(nvs_init() < 0){
+    if (tfnvs_init() < 0){
        printf("Error: Couldn't initialize NVS\n");
     }
 
@@ -114,22 +116,34 @@ static int wifi_init(void)
         return -1;
     }
 
-    ipv6_addr_t addr;
+    /* TODO: set SSID/PASSWORD */
+    tfsettings_ap_t ap;
 #if IS_ACTIVE(CONFIG_TURPIAL_STATIC_ADDRESS)
     /* Parse static global address */
-    if (ipv6_addr_from_str(&addr, CONFIG_TURPIAL_STATIC_GLOBAL_ADDR) == NULL) {
+    if (ipv6_addr_from_str(&ap.glb, CONFIG_TURPIAL_STATIC_GLOBAL_ADDR) == NULL) {
         printf("Error: Invalid IPv6 static global address\n");
         return -1;
     }
+    ap.glb_pfx_len = CONFIG_TURPIAL_GLOBAL_PREFIX;
 #else /* IS_ACTIVE(TURPIAL_STATIC_ADDRESS) */
-    turpial_autogen_ipv6(&addr);
+    if (tfsettings_get_ap(&ap) < 0) {
+        printf("Error: configuration not saved, saving defaults\n");
+
+        turpial_autogen_ipv6(&ap.glb);
+        ap.glb_pfx_len = CONFIG_TURPIAL_GLOBAL_PREFIX;
+
+        if (tfsettings_set_ap(&ap) < 0) {
+            printf("Error: could not save default confiugration\n");
+        }
+    }
 #endif /* IS_ACTIVE(TURPIAL_STATIC_ADDRESS) */
     char ipstr[IPV6_ADDR_MAX_STR_LEN];
-    printf("Using address %s\n", ipv6_addr_to_str(ipstr, &addr, sizeof(ipstr)));
+    printf("Using address %s/%d\n",
+           ipv6_addr_to_str(ipstr, &ap.glb, sizeof(ipstr)), ap.glb_pfx_len);
 
 
     /* Add node IPv6 global address */
-    if (gnrc_netif_ipv6_addr_add(wifi_iface, &addr, CONFIG_TURPIAL_GLOBAL_PREFIX,
+    if (gnrc_netif_ipv6_addr_add(wifi_iface, &ap.glb, ap.glb_pfx_len,
                                  GNRC_NETIF_IPV6_ADDRS_FLAGS_STATE_VALID) < 0) {
         printf("Error: Couldn't add IPv6 global address\n");
         return -1;
