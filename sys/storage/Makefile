@@ -1,12 +1,11 @@
-MODULE = turpial_firmware_storage
+MODULE = tfstorage
 
-ifneq (,$(filter vaina,$(USEMODULE)))
+ifneq (,$(filter tfnvs,$(USEMODULE)))
   DIRS += nvs
 endif
 
-
-ifneq (,$(filter wifi_settings,$(USEMODULE)))
-  DIRS += wifisettings
+ifneq (,$(filter tfsettings,$(USEMODULE)))
+  DIRS += settings
 endif
 
 include $(RIOTBASE)/Makefile.base

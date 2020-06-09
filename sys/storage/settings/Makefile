@@ -1,3 +1,3 @@
-MODULE = wifi_settings
+MODULE = tfsettings
 
 include $(RIOTBASE)/Makefile.base

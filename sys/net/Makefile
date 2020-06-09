@@ -1,10 +1,10 @@
-MODULE = turpial_firmware_net
+MODULE = tfnet
 
 ifneq (,$(filter vaina,$(USEMODULE)))
   DIRS += vaina
 endif
 
-ifneq (,$(filter turpial_firmware_coap,$(USEMODULE)))
+ifneq (,$(filter tfcoap,$(USEMODULE)))
   DIRS += coap
 endif
 

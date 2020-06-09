@@ -3,27 +3,20 @@ ifneq (,$(filter vaina,$(USEMODULE)))
   USEMODULE += turpial_firmware_net
 endif
 
-ifneq (,$(filter nvs,$(USEMODULE)))
-  USEMODULE += turpial_firmware_storage
-  USEMODULE += esp_idf_nvs_flash
-endif
-
-ifneq (,$(filter wifi_settings,$(USEMODULE)))
-  USEMODULE += turpial_firmware_storage
+ifneq (,$(filter tfsettings,$(USEMODULE)))
+  USEMODULE += tfstorage
+  USEMODULE += tfnvs
   USEMODULE += nvs
   USEMODULE += sock_udp
 endif
 
-ifneq (,$(filter turpial_firmware_coap,$(USEMODULE)))
-  USEMODULE += turpial_firmware_net
-  USEMODULE += gnrc_netdev_default
-  USEMODULE += auto_init_gnrc_netif
-  USEMODULE += gnrc_ipv6_default
-  USEMODULE += gnrc_udp
-  USEMODULE += gnrc_sock_udp
-  USEMODULE += shell_commands
-  USEMODULE += gnrc_icmpv6_echo
-  USEMODULE += fmt
-  USEMODULE += gnrc_icmpv6_echo
+ifneq (,$(filter tfnvs,$(USEMODULE)))
+  USEMODULE += tfstorage
+  USEMODULE += esp_idf_nvs_flash
+endif
+
+ifneq (,$(filter tfcoap,$(USEMODULE)))
+  USEMODULE += tfnet
   USEMODULE += gcoap
+  USEMODULE += cjson
 endif
