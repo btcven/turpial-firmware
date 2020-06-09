@@ -20,6 +20,7 @@
 #include "net/vaina.h"
 #include "net/tfcoap.h"
 #include "net/gnrc/ipv6/nib.h"
+#include "net/gnrc/ipv6/nib/ft.h"
 
 #include "storage/tfnvs.h"
 #include "storage/tfsettings.h"
@@ -79,6 +80,16 @@ int main(void)
 
     if (wifi_init() < 0) {
         printf("Error: Couldn't initialize WiFi\n");
+    }
+
+    ipv6_addr_t dst = {
+        .u8 = { 0xfc, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    };
+    ipv6_addr_t next_hop = {
+        .u8 = { 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }
+    };
+    if (gnrc_ipv6_nib_ft_add(&dst, 16, &next_hop, ESP_SLIPDEV_IF, 0) < 0) {
+        printf("Error: Couldn't add fc00::/16 route");
     }
 
     shell_init();
