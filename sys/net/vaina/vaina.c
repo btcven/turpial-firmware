@@ -133,24 +133,28 @@ static int _serialize_msg(vaina_msg_t *msg, uint8_t *buf)
     i += 2;
     switch (msg->msg) {
         case VAINA_MSG_RCS_ADD:
+            buf[i] = msg->payload.rcs_add.pfx_len;
+            i += 1;
             memcpy(&buf[i], &msg->payload.rcs_add.ip, sizeof(ipv6_addr_t));
             i += sizeof(ipv6_addr_t);
             return i;
 
         case VAINA_MSG_RCS_DEL:
+            buf[i] = msg->payload.rcs_del.pfx_len;
+            i += 1;
             memcpy(&buf[i], &msg->payload.rcs_del.ip, sizeof(ipv6_addr_t));
             i += sizeof(ipv6_addr_t);
             return i;
 
         case VAINA_MSG_NIB_ADD:
-            buf[i] = msg->payload.nib_del.prefix;
+            buf[i] = msg->payload.nib_add.pfx_len;
             i += 1;
             memcpy(&buf[i], &msg->payload.nib_del.ip, sizeof(ipv6_addr_t));
             i += sizeof(ipv6_addr_t);
             return i;
 
         case VAINA_MSG_NIB_DEL:
-            buf[i] = msg->payload.nib_del.prefix;
+            buf[i] = msg->payload.nib_del.pfx_len;
             i += 1;
             memcpy(&buf[i], &msg->payload.nib_del.ip, sizeof(ipv6_addr_t));
             i += sizeof(ipv6_addr_t);

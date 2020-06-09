@@ -64,6 +64,7 @@ enum {
  * @brief   Router Client Set add message
  */
 typedef struct {
+    uint8_t pfx_len; /**< IP address pfx_len */
     ipv6_addr_t ip; /**< IP address to add */
 } vaina_msg_rcs_add_t;
 
@@ -71,6 +72,7 @@ typedef struct {
  * @brief   Router Client Set delete message
  */
 typedef struct {
+    uint8_t pfx_len; /**< IP address pfx_len */
     ipv6_addr_t ip; /**< IP address to delete */
 } vaina_msg_rcs_del_t;
 
@@ -78,7 +80,7 @@ typedef struct {
  * @brief   NIB add message
  */
 typedef struct {
-    uint8_t prefix; /**< IP address prefix */
+    uint8_t pfx_len; /**< IP address prefix */
     ipv6_addr_t ip; /**< IP address to add */
 } vaina_msg_nib_add_t;
 
@@ -86,7 +88,7 @@ typedef struct {
  * @brief   NIB del message
  */
 typedef struct {
-    uint8_t prefix; /**< IP address prefix */
+    uint8_t pfx_len; /**< IP address prefix */
     ipv6_addr_t ip; /**< IP address to delete */
 } vaina_msg_nib_del_t;
 

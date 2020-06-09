@@ -31,7 +31,9 @@ static int vaina_init(void);
 static void shell_init(void);
 
 static int board_config_cmd(int argc, char **argv);
-static int rcs_add_cmd(int argc, char **argv);
+
+static int rcs_add(ipv6_addr_t *addr, uint8_t pfx_len);
+static int nib_add(ipv6_addr_t *addr, uint8_t pfx_len);
 
 /**
  * @brief   Network interfaces PID.
@@ -58,7 +60,6 @@ static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 
 static const shell_command_t shell_commands[] = {
     { "board_config", "print board configuration", board_config_cmd },
-    { "rcs_add", "Add client to RCS", rcs_add_cmd },
     { NULL, NULL, NULL }
 };
 
@@ -141,6 +142,15 @@ static int wifi_init(void)
     printf("Using address %s/%d\n",
            ipv6_addr_to_str(ipstr, &ap.glb, sizeof(ipstr)), ap.glb_pfx_len);
 
+    printf("Adding address to RCS\n");
+    if (rcs_add(&ap.glb, ap.glb_pfx_len) < 0) {
+        printf("Error: Couldn't add ULA to RCS");
+    }
+
+    printf("Adding address to NIB\n");
+    if (nib_add(&ap.glb, ap.glb_pfx_len) < 0) {
+        printf("Error: Couldn't add ULA to NIB");
+    }
 
     /* Add node IPv6 global address */
     if (gnrc_netif_ipv6_addr_add(wifi_iface, &ap.glb, ap.glb_pfx_len,
@@ -172,32 +182,36 @@ static int board_config_cmd(int argc, char **argv)
     return 0;
 }
 
-static int rcs_add_cmd(int argc, char **argv)
+static int rcs_add(ipv6_addr_t *addr, uint8_t pfx_len)
 {
-    ipv6_addr_t addr;
-
-    if (argc < 2) {
-        printf("Usage: rcs_add <address>\n");
-        return -1;
-    }
-
-    if (ipv6_addr_from_str(&addr, argv[1]) == NULL) {
-        printf("Invalid IPv6 address!\n");
-        return -1;
-    }
-
     vaina_msg_t msg = {
         .msg = VAINA_MSG_RCS_ADD,
         .seqno = vaina_seqno(),
     };
-    msg.payload.rcs_add.ip = addr;
+    msg.payload.rcs_add.pfx_len = pfx_len;
+    msg.payload.rcs_add.ip = *addr;
 
     if (vaina_client_send(&msg) < 0) {
         printf("Error: couldn't send VAINA message!\n");
         return -1;
     }
 
-    printf("Success: sent rcs_add with addr %s\n", argv[1]);
+    return 0;
+}
+
+static int nib_add(ipv6_addr_t *addr, uint8_t pfx_len)
+{
+    vaina_msg_t msg = {
+        .msg = VAINA_MSG_NIB_ADD,
+        .seqno = vaina_seqno(),
+    };
+    msg.payload.nib_add.pfx_len = pfx_len;
+    msg.payload.nib_add.ip = *addr;
+
+    if (vaina_client_send(&msg) < 0) {
+        printf("Error: couldn't send VAINA message!\n");
+        return -1;
+    }
 
     return 0;
 }

@@ -21,6 +21,7 @@ endif
 config TURPIAL_GLOBAL_PREFIX
     int "Prefix in bits for Turpial global address"
     default 64
+    range 0 128
     help
         Global prefix in bits for Turpial global address
 
