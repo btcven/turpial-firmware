@@ -20,7 +20,9 @@
 #include "storage/nvs.h"
 #include "net/vaina.h"
 #include "net/tfcoap.h"
-#include "cJSON.h"
+#include "net/gnrc/ipv6/nib.h"
+
+#include "ipv6_autogen.h"
 
 static int wifi_init(void);
 static int vaina_init(void);
@@ -65,7 +67,7 @@ int main(void)
     tf_coat_init();
 
     if(nvs_init() < 0){
-       printf("Error: Couldn't initialize NVS\n"); 
+       printf("Error: Couldn't initialize NVS\n");
     }
 
     if (vaina_init() < 0) {
@@ -76,7 +78,6 @@ int main(void)
         printf("Error: Couldn't initialize WiFi\n");
     }
 
-    
     shell_init();
 
     /* Should be never reached */
@@ -113,33 +114,29 @@ static int wifi_init(void)
         return -1;
     }
 
-    /* Parse IPv6 global address */
     ipv6_addr_t addr;
-    if (ipv6_addr_from_str(&addr, CONFIG_TURPIAL_GLOBAL_ADDR) == NULL) {
-        printf("Error: Invalid IPv6 global address\n");
+#if IS_ACTIVE(CONFIG_TURPIAL_STATIC_ADDRESS)
+    /* Parse static global address */
+    if (ipv6_addr_from_str(&addr, CONFIG_TURPIAL_STATIC_GLOBAL_ADDR) == NULL) {
+        printf("Error: Invalid IPv6 static global address\n");
         return -1;
     }
+#else /* IS_ACTIVE(TURPIAL_STATIC_ADDRESS) */
+    turpial_autogen_ipv6(&addr);
+#endif /* IS_ACTIVE(TURPIAL_STATIC_ADDRESS) */
+    char ipstr[IPV6_ADDR_MAX_STR_LEN];
+    printf("Using address %s\n", ipv6_addr_to_str(ipstr, &addr, sizeof(ipstr)));
+
 
     /* Add node IPv6 global address */
-    if (gnrc_netif_ipv6_addr_add(wifi_iface, &addr,
-                                 CONFIG_TURPIAL_GLOBAL_PREFIX,
+    if (gnrc_netif_ipv6_addr_add(wifi_iface, &addr, CONFIG_TURPIAL_GLOBAL_PREFIX,
                                  GNRC_NETIF_IPV6_ADDRS_FLAGS_STATE_VALID) < 0) {
         printf("Error: Couldn't add IPv6 global address\n");
         return -1;
     }
 
     /* Set the RTR_ADV flag */
-    netopt_enable_t set = NETOPT_ENABLE;
-    gnrc_netapi_opt_t opt = {
-        .opt = NETOPT_IPV6_SND_RTR_ADV,
-        .context = 0,
-        .data = &set,
-        .data_len = sizeof(set)
-    };
-    if (gnrc_netif_set_from_netdev(wifi_iface, &opt) < 0) {
-        printf("Error: Couldn't set RTR_ADV flag");
-        return -1;
-    }
+    gnrc_ipv6_nib_change_rtr_adv_iface(wifi_iface, true);
 
     return 0;
 }
