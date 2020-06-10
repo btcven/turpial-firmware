@@ -28,7 +28,7 @@
 
 #include "net/sock/udp.h"
 
-#define ENABLE_DEBUG (0)
+#define ENABLE_DEBUG (1)
 #include "debug.h"
 
 #if ENABLE_DEBUG == 1
@@ -80,9 +80,9 @@ static int _process_msg(vaina_msg_t *msg)
                 _pending_acks -= 1;
             }
             else {
-                DEBUG("vaina: received [N]ACK, although, we didn't sent anything!\n");
+                DEBUG_PUTS("vaina: received [N]ACK, although, we didn't sent anything!\n");
             }
-            DEBUG("vaina: received %s", msg->msg == VAINA_MSG_ACK ? "ACK" : "NACK");
+            DEBUG("vaina: received %s\n", msg->msg == VAINA_MSG_ACK ? "ACK" : "NACK");
             break;
 
         default:
@@ -208,9 +208,9 @@ kernel_pid_t vaina_client_init(gnrc_netif_t *netif)
     }
 
     /* Initialize remote end-point */
-    _remote.family = AF_INET6,
-    _remote.netif = _netif->pid,
-    _remote.port = CONFIG_VAINA_PORT,
+    _remote.family = AF_INET6;
+    _remote.netif = _netif->pid;
+    _remote.port = CONFIG_VAINA_PORT;
     memcpy(&_remote.addr, &group, sizeof(ipv6_addr_t));
 
     sock_udp_ep_t local = {
