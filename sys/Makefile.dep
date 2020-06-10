@@ -1,12 +1,11 @@
 ifneq (,$(filter vaina,$(USEMODULE)))
   USEMODULE += sock_udp
-  USEMODULE += turpial_firmware_net
+  USEMODULE += tfnet
 endif
 
 ifneq (,$(filter tfsettings,$(USEMODULE)))
   USEMODULE += tfstorage
   USEMODULE += tfnvs
-  USEMODULE += nvs
   USEMODULE += sock_udp
 endif
 
