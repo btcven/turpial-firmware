@@ -52,16 +52,8 @@ exhale_args = {
     # "treeViewIsBootstrap": True,
     "exhaleExecutesDoxygen": True,
     "exhaleDoxygenStdin":    textwrap.dedent(''''
-        INPUT = ../main
-        INPUT += ../components/BLE/src/
-        INPUT += ../components/BLEPreferences/src/
-        INPUT += ../components/ESC/src/
-        INPUT += ../components/Network/src/
-        INPUT += ../components/NVS/src/
-        INPUT += ../components/Radio/src/
-        INPUT += ../components/Task/src/
-        INPUT += ../components/Util/src/
-        INPUT += ../components/WS/src/
+        INPUT = ../
+        INPUT = ../sys
         ALIASES += "license=\\note"
     ''')
 }
