@@ -107,6 +107,16 @@ static int vaina_init(void)
         return -1;
     }
 
+    /* Add link local address */
+    ipv6_addr_t ll = {
+        .u8 = { 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }
+    };
+    if (gnrc_netif_ipv6_addr_add(slipdev_iface, &ll, 128,
+                                 GNRC_NETIF_IPV6_ADDRS_FLAGS_STATE_VALID) < 0) {
+        printf("Error: Couldn't add SLIP link local address\n");
+        return -1;
+    }
+
     if (vaina_client_init(slipdev_iface) < 0) {
         printf("Error: failed VAINA initialization.\n");
         return -1;
