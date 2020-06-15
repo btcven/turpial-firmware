@@ -49,11 +49,23 @@ extern "C" {
 #endif
 
 /**
- * @enum   VAINA message types
+ * @brief   VAINA return values
  */
 enum {
-    VAINA_MSG_ACK = 0,  /**< Message acknowledged */
-    VAINA_MSG_NACK = 1, /**< Message not acknowledged */
+    VAINA_OK                =  0, /**< Success */
+    VAINA_ERROR_UDP         = -1, /**< UDP error */
+    VAINA_ERROR_ACK_TIMEOUT = -2, /**< Ack timeout */
+    VAINA_ERROR_INVALID_MSG = -3, /**< Invalid message */
+    VAINA_ERROR_NACK        = -4, /**< Not acknowledged */
+    VAINA_ERROR_FORBIDDEN   = -5, /**< Someone tried to do a forbidden operation */
+};
+
+/**
+ * @brief   VAINA message types
+ */
+enum {
+    VAINA_MSG_ACK = 0,      /**< Message acknowledged */
+    VAINA_MSG_NACK = 1,     /**< Message not acknowledged */
     VAINA_MSG_RCS_ADD = 2,  /**< Add entry to Router Client Set */
     VAINA_MSG_RCS_DEL = 3,  /**< Delete entry from Router Client Set */
     VAINA_MSG_NIB_ADD = 4,  /**< Add entry to NIB */
@@ -116,17 +128,17 @@ uint8_t vaina_seqno(void);
  *
  * @param[in] msg The VAINA message.
  *
- * @return 0< on error.
+ * @return VAINA_OK on success
+ * @return VAINA_ERROR_INVALID_MSG on malformed @p msg.
  */
 int vaina_client_send(vaina_msg_t *msg);
 
 /**
  * @brief   Initialize VAINA client.
  *
- * @return 0< on error.
- * @return kernel_pid_t on success.
+ * @return VAINA_OK on success.
  */
-kernel_pid_t vaina_client_init(gnrc_netif_t *netif);
+int vaina_client_init(gnrc_netif_t *netif);
 
 #ifdef __cplusplus
 } /* extern "C" */
