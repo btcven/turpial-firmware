@@ -1,3 +1,3 @@
-MODULE = turpial_firmware_coap
+MODULE = tfcoap
 
 include $(RIOTBASE)/Makefile.base

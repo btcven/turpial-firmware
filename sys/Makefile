@@ -1,10 +1,10 @@
-MODULE = turpial_firmware_sys
+MODULE = tfsys
 
-ifneq (,$(filter turpial_firmware_net,$(USEMODULE)))
+ifneq (,$(filter tfnet,$(USEMODULE)))
   DIRS += net
 endif
 
-ifneq (,$(filter turpial_firmware_storage,$(USEMODULE)))
+ifneq (,$(filter tfstorage,$(USEMODULE)))
   DIRS += storage
 endif
 

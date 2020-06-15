@@ -1,3 +1,3 @@
-MODULE = nvs
+MODULE = tfnvs
 
 include $(RIOTBASE)/Makefile.base

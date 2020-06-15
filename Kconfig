@@ -1,14 +1,27 @@
 menu "Turpial Firmware configuration"
 
-config TURPIAL_GLOBAL_ADDR
-    string "Turpial default IPv6 global address"
-    default "2001:db8::1"
+rsource "sys/Kconfig"
+
+menuconfig TURPIAL_STATIC_ADDRESS
+    bool "Use static address"
+    default n
+    help
+        Configure an static address, useful for development.
+
+if TURPIAL_STATIC_ADDRESS
+
+config TURPIAL_STATIC_GLOBAL_ADDR
+    string "IPv6 global address"
+    default "fc00:db8::1"
     help
         Turpial default IPv6 global address
+
+endif
 
 config TURPIAL_GLOBAL_PREFIX
     int "Prefix in bits for Turpial global address"
     default 64
+    range 0 128
     help
         Global prefix in bits for Turpial global address
 

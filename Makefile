@@ -38,12 +38,11 @@ USEMODULE += shell
 USEMODULE += shell_commands
 
 USEMODULE += esp_wifi_ap
-USEMODULE += turpial_firmware_coap
-USEMODULE += vaina
-USEMODULE += cjson
-USEMODULE += nvs
-USEMODULE += wifi_settings
 USEMODULE += slipdev
+USEMODULE += vaina
+
+USEMODULE += tfcoap
+USEMODULE += tfsettings
 
 UART1_TXD ?= "GPIO21"
 UART1_RXD ?= "GPIO22"

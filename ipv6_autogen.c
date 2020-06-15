@@ -1,4 +1,4 @@
-/* Copyright 2019 btcven and Locha Mesh developers
+/* Copyright 2020 btcven and Locha Mesh developers
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -14,34 +14,29 @@
  */
 
 /**
- * @defgroup    net_coap
- * @ingroup     net_coap
+ * @ingroup     main
  *
  * @{
  * @file
- * @brief       Constrained Application Protocol
+ * @brief       IPv6 address autogeneration
  *
  * @author      Locha Mesh Developers <developers@locha.io>
  * @}
  */
 
-#ifndef NET_TFCOAP_H
-#define NET_TFCOAP_H
+#include "ipv6_autogen.h"
 
-#include "net/gcoap.h"
+#include <stdio.h>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
+#include "random.h"
 
-/**
- * @brief   Initialize CoAP server.
- */ 
-void tf_coat_init(void);
+void turpial_autogen_ipv6(ipv6_addr_t *addr)
+{
+    uint8_t rd[16];
 
-#ifdef __cplusplus
-} /* extern "C" */
-#endif
+    random_bytes(rd, sizeof(rd));
+    rd[0] = 0xfc;
+    rd[1] = 0x00;
 
-#endif /* NET_VAINA_H */
-/** @} */
+    memcpy(addr, rd, sizeof(ipv6_addr_t));
+}

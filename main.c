@@ -17,17 +17,24 @@
 
 #include "shell.h"
 #include "msg.h"
-#include "storage/nvs.h"
 #include "net/vaina.h"
 #include "net/tfcoap.h"
-#include "cJSON.h"
+#include "net/gnrc/ipv6/nib.h"
+#include "net/gnrc/ipv6/nib/ft.h"
+
+#include "storage/tfnvs.h"
+#include "storage/tfsettings.h"
+
+#include "ipv6_autogen.h"
 
 static int wifi_init(void);
 static int vaina_init(void);
 static void shell_init(void);
 
 static int board_config_cmd(int argc, char **argv);
-static int rcs_add_cmd(int argc, char **argv);
+
+static int rcs_add(ipv6_addr_t *addr, uint8_t pfx_len);
+static int nib_add(ipv6_addr_t *addr, uint8_t pfx_len);
 
 /**
  * @brief   Network interfaces PID.
@@ -54,7 +61,6 @@ static msg_t _main_msg_queue[MAIN_QUEUE_SIZE];
 
 static const shell_command_t shell_commands[] = {
     { "board_config", "print board configuration", board_config_cmd },
-    { "rcs_add", "Add client to RCS", rcs_add_cmd },
     { NULL, NULL, NULL }
 };
 
@@ -64,8 +70,8 @@ int main(void)
 
     tf_coat_init();
 
-    if(nvs_init() < 0){
-       printf("Error: Couldn't initialize NVS\n"); 
+    if (tfnvs_init() < 0){
+       printf("Error: Couldn't initialize NVS\n");
     }
 
     if (vaina_init() < 0) {
@@ -76,7 +82,16 @@ int main(void)
         printf("Error: Couldn't initialize WiFi\n");
     }
 
-    
+    ipv6_addr_t dst = {
+        .u8 = { 0xfc, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 }
+    };
+    ipv6_addr_t next_hop = {
+        .u8 = { 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 2 }
+    };
+    if (gnrc_ipv6_nib_ft_add(&dst, 16, &next_hop, ESP_SLIPDEV_IF, 0) < 0) {
+        printf("Error: Couldn't add fc00::/16 route");
+    }
+
     shell_init();
 
     /* Should be never reached */
@@ -92,7 +107,17 @@ static int vaina_init(void)
         return -1;
     }
 
-    if (vaina_client_init(slipdev_iface) < 0) {
+    /* Add link local address */
+    ipv6_addr_t ll = {
+        .u8 = { 0xfe, 0x80, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1 }
+    };
+    if (gnrc_netif_ipv6_addr_add(slipdev_iface, &ll, 128,
+                                 GNRC_NETIF_IPV6_ADDRS_FLAGS_STATE_VALID) < 0) {
+        printf("Error: Couldn't add SLIP link local address\n");
+        return -1;
+    }
+
+    if (vaina_client_init(slipdev_iface) != VAINA_OK) {
         printf("Error: failed VAINA initialization.\n");
         return -1;
     }
@@ -113,33 +138,48 @@ static int wifi_init(void)
         return -1;
     }
 
-    /* Parse IPv6 global address */
-    ipv6_addr_t addr;
-    if (ipv6_addr_from_str(&addr, CONFIG_TURPIAL_GLOBAL_ADDR) == NULL) {
-        printf("Error: Invalid IPv6 global address\n");
+    /* TODO: set SSID/PASSWORD */
+    tfsettings_ap_t ap;
+#if IS_ACTIVE(CONFIG_TURPIAL_STATIC_ADDRESS)
+    /* Parse static global address */
+    if (ipv6_addr_from_str(&ap.glb, CONFIG_TURPIAL_STATIC_GLOBAL_ADDR) == NULL) {
+        printf("Error: Invalid IPv6 static global address\n");
         return -1;
+    }
+    ap.glb_pfx_len = CONFIG_TURPIAL_GLOBAL_PREFIX;
+#else /* IS_ACTIVE(TURPIAL_STATIC_ADDRESS) */
+    if (tfsettings_get_ap(&ap) < 0) {
+        printf("Error: configuration not saved, saving defaults\n");
+
+        turpial_autogen_ipv6(&ap.glb);
+        ap.glb_pfx_len = CONFIG_TURPIAL_GLOBAL_PREFIX;
+
+        if (tfsettings_set_ap(&ap) < 0) {
+            printf("Error: could not save default confiugration\n");
+        }
+    }
+#endif /* IS_ACTIVE(TURPIAL_STATIC_ADDRESS) */
+    char ipstr[IPV6_ADDR_MAX_STR_LEN];
+    printf("Using address %s/%d\n",
+           ipv6_addr_to_str(ipstr, &ap.glb, sizeof(ipstr)), ap.glb_pfx_len);
+
+    if (rcs_add(&ap.glb, ap.glb_pfx_len) < 0) {
+        printf("Error: Couldn't add ULA to RCS\n");
+    }
+
+    if (nib_add(&ap.glb, ap.glb_pfx_len) < 0) {
+        printf("Error: Couldn't add ULA to NIB\n");
     }
 
     /* Add node IPv6 global address */
-    if (gnrc_netif_ipv6_addr_add(wifi_iface, &addr,
-                                 CONFIG_TURPIAL_GLOBAL_PREFIX,
+    if (gnrc_netif_ipv6_addr_add(wifi_iface, &ap.glb, ap.glb_pfx_len,
                                  GNRC_NETIF_IPV6_ADDRS_FLAGS_STATE_VALID) < 0) {
         printf("Error: Couldn't add IPv6 global address\n");
         return -1;
     }
 
     /* Set the RTR_ADV flag */
-    netopt_enable_t set = NETOPT_ENABLE;
-    gnrc_netapi_opt_t opt = {
-        .opt = NETOPT_IPV6_SND_RTR_ADV,
-        .context = 0,
-        .data = &set,
-        .data_len = sizeof(set)
-    };
-    if (gnrc_netif_set_from_netdev(wifi_iface, &opt) < 0) {
-        printf("Error: Couldn't set RTR_ADV flag");
-        return -1;
-    }
+    gnrc_ipv6_nib_change_rtr_adv_iface(wifi_iface, true);
 
     return 0;
 }
@@ -161,32 +201,54 @@ static int board_config_cmd(int argc, char **argv)
     return 0;
 }
 
-static int rcs_add_cmd(int argc, char **argv)
+static int rcs_add(ipv6_addr_t *addr, uint8_t pfx_len)
 {
-    ipv6_addr_t addr;
+    int ret = VAINA_OK;
+    int retries = 5;
+    while (retries--) {
+        printf("Trying to add address to RCS\n");
+        vaina_msg_t msg = {
+            .msg = VAINA_MSG_RCS_ADD,
+            .seqno = vaina_seqno(),
+        };
+        msg.payload.rcs_add.pfx_len = pfx_len;
+        msg.payload.rcs_add.ip = *addr;
 
-    if (argc < 2) {
-        printf("Usage: rcs_add <address>\n");
+        ret = vaina_client_send(&msg);
+        if (ret == VAINA_OK || ret == VAINA_ERROR_NACK) {
+            break;
+        }
+    }
+
+    if (retries == 0 || ret == VAINA_ERROR_NACK) {
         return -1;
     }
 
-    if (ipv6_addr_from_str(&addr, argv[1]) == NULL) {
-        printf("Invalid IPv6 address!\n");
-        return -1;
+    return 0;
+}
+
+static int nib_add(ipv6_addr_t *addr, uint8_t pfx_len)
+{
+    int ret = VAINA_OK;
+    int retries = 5;
+    while (retries--) {
+        printf("Trying to add address to NIB\n");
+        vaina_msg_t msg = {
+            .msg = VAINA_MSG_NIB_ADD,
+            .seqno = vaina_seqno(),
+        };
+        msg.payload.nib_add.pfx_len = pfx_len;
+        msg.payload.nib_add.ip = *addr;
+
+        ret = vaina_client_send(&msg);
+        if (ret == VAINA_OK || ret == VAINA_ERROR_NACK) {
+            break;
+        }
     }
 
-    vaina_msg_t msg = {
-        .msg = VAINA_MSG_RCS_ADD,
-        .seqno = vaina_seqno(),
-    };
-    msg.payload.rcs_add.ip = addr;
-
-    if (vaina_client_send(&msg) < 0) {
-        printf("Error: couldn't send VAINA message!\n");
+    if (retries == 0 || ret == VAINA_ERROR_NACK) {
         return -1;
     }
-
-    printf("Success: sent rcs_add with addr %s\n", argv[1]);
 
     return 0;
 }

@@ -16,142 +16,67 @@
  */
 
 /**
- * @ingroup     storage_nvs
+ * @defgroup     storage_tfnvs
+ * @ingroup      storage_tfnvs
  * @{
  *
- * @file        nvs.c
- * @brief       this component uses the nvs_flash library 
- *              for esp32 memory management
+ * @brief       Non-Volatile Storage
  *
  * @author      Locha Mesh Developers(conctact@locha.io)
  * @}
  */
 
+#include "storage/tfnvs.h"
 
 #include "nvs_flash/include/nvs_flash.h"
-#define ENABLE_DEBUG (1)
+
+#define ENABLE_DEBUG (0)
 #include "debug.h"
-#include "storage/nvs.h"
 
-uint32_t _handle  /** NVS handle */;
-bool is_open = false;
+uint32_t _handle = 0;
 
-
-int nvs_init(void)
+int tfnvs_init(void)
 {
+    if (nvs_flash_init() != ESP_OK) {
+        DEBUG_PUTS("tfnvs: open error, erasing flash and retrying");
 
-    esp_err_t err = nvs_flash_init();
-    
-    if (err != ESP_OK) {
         nvs_flash_erase();
-        err = nvs_flash_init();
-    }
-    err = nvs_open("storage", NVS_READWRITE, &_handle);
-    if (err != ESP_OK) {
-        printf("Error (%d) opening NVS handle!\n", err);
-    } 
 
-   is_open = true;
-  return err;
-}
-
-int nvs_set_string(char* key, char* string_value)
-{
-    if(!is_open){
-        printf("Error: NVS is close \n");
-        return ESP_FAIL;
+        if (nvs_flash_init() != ESP_OK) {
+            DEBUG_PUTS("tfnvs: fatal error, retry failed");
+            return -1;
+        }
     }
 
-    return nvs_set_str(_handle, key, string_value);
-}
-
-
-int nvs_get_string(char* key,  char* buffer, size_t* length)
-{
-    if(!is_open){
-        printf("Error: NVS is close \n");
-        return ESP_FAIL;
-    } 
-
-    return nvs_get_str(_handle, key, buffer, length);
-}
-
-
-int set_bool(char* key, bool value)
-{   
-     if(!is_open){
-         printf("Error: NVS is close \n");
-        return ESP_FAIL;
-    } 
-    return nvs_set_u8(_handle, key, value ? 1 : 0);
-}
-
-
-int get_bool(char* key, bool* value )
-{    
-
-    if(!is_open){
-       printf("Error: NVS is close \n");
-       return ESP_FAIL; 
-    }
-    
-    uint8_t v = 0;
-    esp_err_t err = nvs_get_u8(_handle, key, &v);
-    if (err != ESP_OK) {
-        return err;
-    }
-
-    if (v == 1) {
-        *value = true;
-    } else {
-         *value = false;
+    if (nvs_open("storage", NVS_READWRITE, &_handle) != ESP_OK) {
+        DEBUG_PUTS("tfnvs: couldn't open tfnvs handle");
+        return -1;
     }
 
     return 0;
 }
 
-
-int _nvs_commit(void)
+int tfnvs_commit(void)
 {
-    
-    if(!is_open){
-       printf("Error: NVS is close \n");
-       return ESP_FAIL; 
-    }
-    return nvs_commit(_handle);   
+    return nvs_commit(_handle) != ESP_OK ? -1 : 0;
 }
 
-
-int _nvs_close(void)
+int tfnvs_set_u8(char *key, uint8_t v)
 {
-    printf("Closing nvs \n");
-
-    if (!is_open) {
-     nvs_close(_handle);
-    }
-    is_open = false;
-
-    return ESP_OK;
+    return nvs_set_u8(_handle, key, v) != ESP_OK ? -1 : 0;
 }
 
-int set_blob(char* key, uint8_t* buffer, size_t length)
+int tfnvs_get_u8(char *key,  uint8_t *v)
 {
-   if(!is_open){
-       printf("Error: NVS is close \n");
-       return ESP_FAIL; 
-    }
+    return nvs_get_u8(_handle, key, v) != ESP_OK ? -1 : 0;
+}
 
-    esp_err_t err = nvs_set_blob(_handle, key, (void*)buffer, length);
-    
-    return err;
-} 
-
-int get_blob(char* key, uint8_t* buffer, size_t length)
+int tfnvs_set_blob(char *key, uint8_t *buffer, size_t length)
 {
-    if(!is_open){
-       printf("Error: NVS is close \n");
-       return ESP_FAIL; 
-    }
+    return nvs_set_blob(_handle, key, (void*)buffer, length) != ESP_OK ? -1 : 0;
+}
 
-   return nvs_get_blob(_handle, key, (void*)buffer, (size_t*)length);
-} 
+int tfnvs_get_blob(char *key, uint8_t *buffer, size_t *length)
+{
+   return nvs_get_blob(_handle, key, buffer, length) != ESP_OK ? -1 : 0;
+}
