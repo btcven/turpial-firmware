@@ -1,25 +1,15 @@
-# name of your application
 APPLICATION = wifi-subsys
 
-# If no BOARD is found in the environment, use this default:
-BOARD ?= esp32-wrover-kit
-EXTERNAL_BOARD_DIRS ?= $(CURDIR)/boards
+EXTERNAL_BOARD_DIRS += $(CURDIR)/../boards
+EXTERNAL_MODULE_DIRS += sys
 
-# This has to be the absolute path to the RIOT base directory:
+BOARD ?= turpial-esp32
+
 RIOTBASE ?= $(CURDIR)/../RIOT
-
-# Application absolute path
 APPBASE ?= $(CURDIR)
 
-# Comment this out to disable code in RIOT that does safety checking
-# which is not needed in a production environment but helps in the
-# development process:
 DEVELHELP ?= 1
-
-# Change this to 0 show compiler invocation lines by default:
 QUIET ?= 1
-
-EXTERNAL_MODULE_DIRS += sys
 
 # Initialize GNRC netif
 USEMODULE += gnrc_netdev_default
@@ -44,14 +34,6 @@ USEMODULE += cjson
 USEMODULE += nvs
 USEMODULE += wifi_settings
 USEMODULE += slipdev
-
-UART1_TXD ?= "GPIO21"
-UART1_RXD ?= "GPIO22"
-
-# UART_DEV(1) pin definitions, can't be changed through Kconfig
-# TODO: open issue in RIOT to see if this is possible.
-CFLAGS += "-DUART1_TXD=$(UART1_TXD)"
-CFLAGS += "-DUART1_RXD=$(UART1_RXD)"
 
 CFLAGS += "-DESP_WIFI_CHANNEL=1"
 
