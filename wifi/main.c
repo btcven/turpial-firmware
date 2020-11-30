@@ -76,7 +76,6 @@ int main(void)
         printf("Error: Couldn't initialize WiFi\n");
     }
 
-    
     shell_init();
 
     /* Should be never reached */

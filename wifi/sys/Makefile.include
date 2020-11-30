@@ -1,4 +1,2 @@
 INCLUDES += -I$(APPDIR)/sys/include
-
 INCLUDES += -I$(APPDIR)/sys/cjson
-
