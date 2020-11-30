@@ -48,7 +48,7 @@ jobs:
        - export ESP32_SDK_DIR=$HOME/esp/esp-idf
 
       script:
-       - make
+       - make -C wifi
     # Build and deploy documentation
     #- name: "Deploy documentation"
     #  script:

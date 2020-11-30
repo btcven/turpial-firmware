@@ -1,12 +1,12 @@
 # name of your application
-APPLICATION = radio-firmware
+APPLICATION = wifi-subsys
 
 # If no BOARD is found in the environment, use this default:
 BOARD ?= esp32-wrover-kit
 EXTERNAL_BOARD_DIRS ?= $(CURDIR)/boards
 
 # This has to be the absolute path to the RIOT base directory:
-RIOTBASE ?= $(CURDIR)/RIOT
+RIOTBASE ?= $(CURDIR)/../RIOT
 
 # Application absolute path
 APPBASE ?= $(CURDIR)
@@ -60,4 +60,3 @@ SLIP_UART ?= 1
 CFLAGS += "-DSLIPDEV_PARAM_UART=UART_DEV($(SLIP_UART))"
 
 include $(RIOTBASE)/Makefile.include
-
