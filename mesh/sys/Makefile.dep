@@ -1,0 +1,44 @@
+PSEUDOMODULES += bq27441_int
+
+ifneq (,$(filter aodvv2,$(USEMODULE)))
+  USEMODULE += oonf_rfc5444
+  USEMODULE += manet
+  USEMODULE += timex
+endif
+
+ifneq (,$(filter vaina,$(USEMODULE)))
+  USEMODULE += radio_firmware_net
+  USEMODULE += gnrc_sock
+  USEMODULE += gnrc_sock_udp
+endif
+
+ifneq (,$(filter manet,$(USEMODULE)))
+  USEMODULE += radio_firmware_net
+endif
+
+ifneq (,$(filter oonf_rfc5444,$(USEMODULE)))
+  USEMODULE += oonf_api
+  USEMODULE += oonf_common
+endif
+
+ifneq (,$(filter oonf_common,$(USEMODULE)))
+  USEMODULE += posix_inet
+  USEMODULE += oonf_api
+endif
+
+ifneq (,$(filter shell_extended,$(USEMODULE)))
+  USEMODULE += shell
+  USEMODULE += shell_commands
+endif
+
+ifneq (,$(filter bq27441_int,$(USEMODULE)))
+  USEMODULE += bq27441
+  FEATURES_REQUIRED += periph_gpio_irq
+endif
+
+ifneq (,$(filter bq27441,$(USEMODULE)))
+  USEMODULE += radio_firmware_drivers
+  USEMODULE += xtimer
+  USEMODULE += timex
+  FEATURES_REQUIRED += periph_i2c
+endif

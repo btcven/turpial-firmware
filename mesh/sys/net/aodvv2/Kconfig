@@ -1,0 +1,46 @@
+menuconfig KCONFIG_MODULE_AODVV2
+    bool "AODVv2 Routing Protocol"
+    depends on MODULE_AODVV2
+
+if KCONFIG_MODULE_AODVV2
+
+rsource "Kconfig.timers"
+
+config AODVV2_MCMSG_MAX_ENTRIES
+    int "Maximum number of entries on the Multicast Message Set"
+    default 16
+
+config AODVV2_RCS_ENTRIES
+    int "Configure maximum number of entries on the Router Client Set"
+    default 2
+
+config METRIC_HOP_COUNT_AODVV2_MAX
+    int "Configure maximum value for Hop Count metric"
+    default 255
+
+config AODVV2_RFC5444_STACK_SIZE
+    int "Configure stack size for RFC 5444 thread"
+    default 2048
+
+config AODVV2_RFC5444_PRIO
+    int "Configure priority for RFC 5444 thread"
+    default 6
+    range 0 15
+
+config AODVV2_RFC5444_MSG_QUEUE_SIZE
+    int "Configure message queue size for RFC 5444 thread"
+    default 32
+
+config AODVV2_RFC5444_PACKET_SIZE
+    int "Configure RFC 5444 maximum output packet size"
+    default 128
+
+config AODVV2_RFC5444_ADDR_TLVS_SIZE
+    int "Configure RFC5444 address TLVs buffer size"
+    default 1000
+
+config AODVV2_MAX_ROUTING_ENTRIES
+    int "Configure maximum number of routing entries"
+    default 16
+
+endif

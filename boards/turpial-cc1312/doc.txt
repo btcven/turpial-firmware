@@ -1,0 +1,5 @@
+/**
+ * @defgroup        boards_turpial Locha Mesh Turpial
+ * @ingroup         boards
+ * @brief           Turpial CC1312R Wireless MCU LaunchPad
+ * */

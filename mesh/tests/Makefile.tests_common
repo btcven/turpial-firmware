@@ -1,0 +1,10 @@
+APPLICATION ?= tests_$(notdir $(patsubst %/,%,$(CURDIR)))
+
+BOARD ?= cc1312-launchpad
+
+EXTERNAL_MODULE_DIRS += $(CURDIR)/../../sys
+RADIOBASE = $(CURDIR)/../../
+RIOTBASE ?= $(CURDIR)/../../RIOT
+QUIET ?= 1
+# DEVELHELP enabled by default for all tests, set 0 to disable
+DEVELHELP ?= 1

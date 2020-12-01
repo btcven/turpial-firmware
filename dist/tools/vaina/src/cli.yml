@@ -1,0 +1,71 @@
+name: vaina
+version: "0.1.0"
+author: "Locha Inc <contact@locha.io>"
+about: "VAINA client"
+subcommands:
+    - nib:
+        about: "Neighbor Information Base"
+        subcommands:
+            - add:
+                about: "Add route to NIB"
+                args:
+                    - interface:
+                        help: "Network interface (e.g: sl0)"
+                        required: true
+                        takes_value: true
+                    - prefix:
+                        help: "IPv6 prefix in bits (e.g: 128)"
+                        required: true
+                        takes_value: true
+                    - IP:
+                        help: "IPv6 address (e.g: 2001::db8:c0ff:ee)"
+                        required: true
+                        takes_value: true
+            - sub:
+                about: "Delete route from NIB"
+                args:
+                    - interface:
+                        help: "Network interface (e.g: sl0)"
+                        required: true
+                        takes_value: true
+                    - prefix:
+                        help: "IPv6 prefix in bits (e.g: 128)"
+                        required: true
+                        takes_value: true
+                    - IP:
+                        help: "IPv6 address (e.g: 2001::db8:c0ff:ee)"
+                        required: true
+                        takes_value: true
+    - rcs:
+        about: "Router Client Set"
+        subcommands:
+            - add:
+                about: "Add client to RCS"
+                args:
+                    - interface:
+                        help: "Network interface (e.g: sl0)"
+                        required: true
+                        takes_value: true
+                    - prefix:
+                        help: "IPv6 prefix in bits (e.g: 128)"
+                        required: true
+                        takes_value: true
+                    - IP:
+                        help: "IPv6 address of the client to add"
+                        required: true
+                        takes_value: true
+            - sub:
+                about: "Delete a client from the RCS"
+                args:
+                    - interface:
+                        help: "Network interface (e.g: sl0)"
+                        required: true
+                        takes_value: true
+                    - prefix:
+                        help: "IPv6 prefix in bits (e.g: 128)"
+                        required: true
+                        takes_value: true
+                    - IP:
+                        help: "IPv6 address of the client to delete"
+                        required: true
+                        takes_value: true
