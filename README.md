@@ -1,6 +1,6 @@
 <p align="center">
   <a href="https://locha.io/">
-  <img height="200px" src="doc/LogotipoTurpial-Color.20-09-19.svg">
+  <img height="200px" src="doc/logo.png">
   </a>
   <br>
   <a href="https://travis-ci.com/btcven/turpial-firmware">
