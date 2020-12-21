@@ -1,5 +1,4 @@
 INCLUDES += -I$(RADIOBASE)/sys/include
-INCLUDES += -I$(RADIOBASE)/sys/oonf_api
 
 ifneq (,$(filter bq27441,$(USEMODULE)))
   USEMODULE_INCLUDES += $(RADIOBASE)/sys/drivers/bq27441/include

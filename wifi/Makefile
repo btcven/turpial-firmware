@@ -1,6 +1,7 @@
 APPLICATION = wifi-subsys
 
 EXTERNAL_BOARD_DIRS += $(CURDIR)/../boards
+EXTERNAL_MODULE_DIRS += $(CURDIR)/../core
 EXTERNAL_MODULE_DIRS += sys
 
 BOARD ?= turpial-esp32

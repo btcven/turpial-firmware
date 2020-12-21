@@ -2,6 +2,7 @@ APPLICATION = mesh-subsys
 BOARD ?= turpial-cc1312
 
 EXTERNAL_BOARD_DIRS ?= $(CURDIR)/../boards
+EXTERNAL_MODULE_DIRS += $(CURDIR)/../core
 EXTERNAL_MODULE_DIRS += sys
 
 RIOTBASE ?= $(CURDIR)/../RIOT

@@ -1,0 +1,8 @@
+ifneq (,$(filter oonf_rfc5444,$(USEMODULE)))
+  USEMODULE += oonf_common
+endif
+
+ifneq (,$(filter oonf_common,$(USEMODULE)))
+  USEMODULE += posix_inet
+  USEMODULE += oonf_api
+endif
