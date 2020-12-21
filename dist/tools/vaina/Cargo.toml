@@ -1,0 +1,14 @@
+[package]
+name = "vaina"
+version = "0.1.0"
+authors = ["Locha Inc"]
+edition = "2018"
+
+[dependencies]
+clap = { version = "2", features = ["color", "yaml"] }
+bytes = "0.5"
+snafu = "0.6"
+nix = "0.17"
+
+[patch.crates-io]
+nix = { git = "https://github.com/nix-rust/nix" }

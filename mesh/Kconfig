@@ -1,0 +1,7 @@
+# Copyright (C) 2020 Locha Inc
+
+menu "Turpial - Radio Firmware Configuration"
+
+rsource "sys/Kconfig"
+
+endmenu

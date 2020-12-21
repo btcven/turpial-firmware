@@ -1,0 +1,50 @@
+# Copyright (C) 2020 Locha Inc
+#
+# This file is subject to the terms and conditions of the GNU Lesser
+# General Public License v2.1. See the file LICENSE in the top level
+# directory for more details.
+#
+
+menuconfig KCONFIG_AODVV2_TIMERS
+    bool "Timers"
+    default n
+
+if KCONFIG_AODVV2_TIMERS
+
+config AODVV2_ACTIVE_INTERVAL
+    int "ACTIVE_INTERVAL"
+    default 5
+
+config AODVV2_MAX_IDLETIME
+    int "MAX_IDLETIME"
+    default 200
+
+config AODVV2_MAX_BLACKLIST_TIME
+    int "MAX_BLACKLIST_TIME"
+    default 200
+
+config AODVV2_MAX_SEQNUM_LIFETIME
+    int "MAX_SEQNUM_LIFETIME"
+    default 300
+
+config AODVV2_RERR_TIMEOUT
+    int "RERR_TIMEOUT"
+    default 3
+
+config AODVV2_RTEMSG_ENTRY_TIME
+    int "RTEMSG_ENTRY_TIME"
+    default 12
+
+config AODVV2_RREQ_WAIT_TIME
+    int "RREQ_WAIT_TIME"
+    default 2
+
+config AODVV2_RREP_ACK_SENT_TIMEOUT
+    int "RREP_ACK_SENT_TIMEOUT"
+    default 1
+
+config AODVV2_RREQ_HOLDDOWN_TIME
+    int "RREQ_HOLDDOWN_TIME"
+    default 10
+
+endif
