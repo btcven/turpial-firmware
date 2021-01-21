@@ -1,0 +1,24 @@
+menuconfig KCONFIG_MODULE_VAINA
+    bool "VAINA - Versatile Address Interface | Network Administration"
+    depends on MODULE_VAINA
+    help
+        Configures VAINA - Versatile Address Interface | Network Administration
+        using Kconfig.
+
+if KCONFIG_MODULE_VAINA
+
+config VAINA_PORT
+    int "Port used for the VAINA UDP server"
+    default 1337
+    range 0 65536
+    help
+        Port used for the VAINA UDP server
+
+config VAINA_MCAST_ADDR
+    string "VAINA multicast address"
+    default "ff15::42"
+    help
+        Multicast address used for the VAINA server. This is where VAINA will
+        listen to messages (that are sent to the correct configured port).
+
+endif

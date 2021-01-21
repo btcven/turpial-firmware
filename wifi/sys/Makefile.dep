@@ -14,7 +14,6 @@ ifneq (,$(filter wifi_settings,$(USEMODULE)))
   USEMODULE += sock_udp
 endif
 
-
 ifneq (,$(filter turpial_firmware_coap,$(USEMODULE)))
   USEMODULE += turpial_firmware_net
   USEMODULE += gnrc_netdev_default

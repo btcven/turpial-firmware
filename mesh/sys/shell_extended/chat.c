@@ -1,0 +1,78 @@
+/*
+ * Copyright (C) 2020 Locha Inc
+ *
+ * This file is subject to the terms and conditions of the GNU Lesser
+ * General Public License v2.1. See the file LICENSE in the top level
+ * directory for more details.
+ */
+
+/**
+ * @ingroup     shell_extended
+ * @{
+ *
+ * @file
+ * @brief       Chat send test message
+ *
+ * @author      Jean Pierre Dudey <jeandudey@hotmail.com>
+ *
+ * @}
+ */
+
+#include "kernel_defines.h"
+
+#if IS_USED(MODULE_CHAT)
+
+#include <stdio.h>
+
+#include "chat.h"
+
+static chat_msg_t _test_msg =
+{
+    .from_uid = {{ 0x9a, 0xc3, 0xfd, 0x5a,
+                   0xe0, 0xbc, 0x74, 0x0b,
+                   0xde, 0x51, 0x53, 0x31,
+                   0xea, 0x4a, 0x96, 0xb6,
+                   0x65, 0x7a, 0x67, 0x74,
+                   0x9b, 0x50, 0x84, 0xfb,
+                   0x21, 0x63, 0x95, 0x9b,
+                   0x2a, 0xba, 0x32, 0xe0 }},
+    .to_uid = {{ 0xff, 0xff, 0xff, 0xff,
+                 0xff, 0xff, 0xff, 0xff,
+                 0xff, 0xff, 0xff, 0xff,
+                 0xff, 0xff, 0xff, 0xff,
+                 0xff, 0xff, 0xff, 0xff,
+                 0xff, 0xff, 0xff, 0xff,
+                 0xff, 0xff, 0xff, 0xff,
+                 0xff, 0xff, 0xff, 0xff }},
+    .msg_id = {{ 0x27, 0xe7, 0x65, 0x88,
+                 0x45, 0xa1, 0x43, 0x77,
+                 0x1c, 0xe3, 0x0f, 0xb8,
+                 0xa0, 0x71, 0x08, 0x81,
+                 0x40, 0xd3, 0x15, 0xec,
+                 0x2a, 0xc5, 0xe7, 0xb7,
+                 0x2c, 0xe6, 0xd5, 0xda,
+                 0x0c, 0x79, 0xa2, 0x57 }},
+    .msg = {
+        .buf = {},
+        .len = 0
+    },
+    .timestamp = 1587516252199,
+    .type = 1,
+};
+
+static const char *content = "Hello world";
+
+int chat_cmd(int argc, char **argv)
+{
+    (void)argc;
+    (void)argv;
+
+    _test_msg.msg.len = strlen(content);
+    memcpy(_test_msg.msg.buf, content, strlen(content));
+
+    chat_send_msg(&_test_msg);
+
+    return 0;
+}
+
+#endif
