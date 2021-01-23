@@ -134,7 +134,7 @@ extern "C" {
  * ESP32 provides 3 UART interfaces at maximum:
  *
  * UART_DEV(0) uses fixed standard configuration.<br>
- * UART_DEV(1) is not available.<br>
+ * UART_DEV(1) is connected to @ref board_turpial_cc1312 UART.<br>
  * UART_DEV(2) is not available.<br>
  * @{
  */
