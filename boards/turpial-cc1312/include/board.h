@@ -81,6 +81,16 @@ extern "C" {
 /** @} */
 
 /**
+ * @brief   BQ24298 charger IC configuration
+ */
+#define BQ2429X_PARAM_INT_PIN   GPIO_PIN(0, 6)
+#define BQ2429X_PARAM_VLIM      BQ2429X_VLIM_4360
+#define BQ2429X_PARAM_ILIM      BQ2429X_ILIM_500
+#define BQ2429X_PARAM_ICHG      BQ2429X_ICHG_512
+#define BQ2429X_PARAM_VREG      BQ2429X_VREG_4208
+/** @} */
+
+/**
  * @brief   Initialize board specific hardware
  */
 void board_init(void);
