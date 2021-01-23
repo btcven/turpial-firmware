@@ -43,3 +43,17 @@ SLIP_UART ?= 1
 CFLAGS += "-DSLIPDEV_PARAM_UART=UART_DEV($(SLIP_UART))"
 
 include $(RIOTBASE)/Makefile.include
+
+# esp32 cpu doesn't support a netopt for WiFi SSID (yet) nor Kconfig.
+# TODO: fix this on RIOT.
+ifneq ("Turpial_",$(CONFIG_TURPIAL_AP_SSID))
+  CFLAGS += -DESP_WIFI_AP_SSID=\"$(CONFIG_TURPIAL_AP_SSID)\"
+else
+  CFLAGS += -DESP_WIFI_AP_PREFIX=\"Turpial_\"
+endif
+
+ifneq ("mypassword",$(CONFIG_TURPIAL_AP_PASSWORD))
+  CFLAGS += -DESP_WIFI_PASS=\"$(CONFIG_TURPIAL_AP_PASSWORD)\"
+else
+  CFLAGS += -DESP_WIFI_PASS=\"mypassword\"
+endif
