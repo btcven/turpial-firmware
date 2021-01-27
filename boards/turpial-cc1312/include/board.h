@@ -1,7 +1,5 @@
 /*
- * Copyright (C)    2016 Nicholas Jackson
- *                  2017 Sebastian Meiling
- *                  2018 Anton Gerasimov
+ * Copyright (C) 2021 Locha Mesh Developers
  *
  * This file is subject to the terms and conditions of the GNU Lesser General
  * Public License v2.1. See the file LICENSE in the top level directory for more
@@ -9,15 +7,14 @@
  */
 
 /**
- * @ingroup         boards_cc1352_launchpad
+ * @ingroup         boards_turpial_cc1312
  * @{
  *
  * @file
- * @brief           Board specific definitions for TI CC1352 LaunchPad
+ * @brief           Board specific definitions for Locha Mesh Turpial
+ *                  (CC1312 MCU).
  *
- * @author          Nicholas Jackson <nicholas.jackson@griffithuni.edu.au>
- * @author          Sebastian Meiling <s@mlng.net>
- * @author          Anton Gerasimov <tossel@gmail.com>
+ * @author          Locha Mesh Developers <contact@locha.io>
  */
 
 #ifndef BOARD_H
@@ -81,6 +78,16 @@ extern "C" {
 #define HGM_ON              gpio_set(HGM_PIN)
 #define HGM_OFF             gpio_clear(HGM_PIN)
 #define HGM_TOGGLE          gpio_toggle(HGM_PIN)
+/** @} */
+
+/**
+ * @brief   BQ24298 charger IC configuration
+ */
+#define BQ2429X_PARAM_INT_PIN   GPIO_PIN(0, 6)
+#define BQ2429X_PARAM_VLIM      BQ2429X_VLIM_4360
+#define BQ2429X_PARAM_ILIM      BQ2429X_ILIM_500
+#define BQ2429X_PARAM_ICHG      BQ2429X_ICHG_512
+#define BQ2429X_PARAM_VREG      BQ2429X_VREG_4208
 /** @} */
 
 /**
