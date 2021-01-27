@@ -1,7 +1,5 @@
 /*
- * Copyright (C)    2016 Nicholas Jackson
- *                  2017 HAW Hamburg
- *                  2020 Locha Inc
+ * Copyright (C) 2021 Locha Mesh Developers
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -9,15 +7,14 @@
  */
 
 /**
- * @ingroup         boards_cc1312_launchpad
+ * @ingroup         boards_turpial_cc1312
  * @{
  *
  * @file
- * @brief           Peripheral MCU configuration for TI CC1312 LaunchPad
+ * @brief           Peripheral MCU configuration for Locha Mesh Turpial
+ *                  (CC1312 MCU).
  *
- * @author          Nicholas Jackson <nicholas.jackson@griffithuni.edu.au>
- * @author          Sebastian Meiling <s@mlng.net>
- * @author          Jean Pierre Dudey <jeandudey@hotmail.com>
+ * @author          Locha Mesh Developers <contact@locha.io>
  */
 
 #ifndef PERIPH_CONF_H

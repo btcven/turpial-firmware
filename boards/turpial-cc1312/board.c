@@ -1,6 +1,5 @@
 /*
- * Copyright (C)    2016 Nicholas Jackson
- *                  2017 HAW Hamburg
+ * Copyright (C) 2020 Locha Mesh Developers
  *
  * This file is subject to the terms and conditions of the GNU Lesser General
  * Public License v2.1. See the file LICENSE in the top level directory for more
@@ -8,23 +7,22 @@
  */
 
 /**
- * @ingroup         boards_cc1312_launchpad
+ * @ingroup         boards_turpial_cc1312
  * @{
  *
  * @file
- * @brief           Board specific implementations for TI CC1312 LaunchPad
+ * @brief           Board specific implementations for Locha Mesh Turpial
+ *                  (CC1312 MCU).
  *
- * @author          Nicholas Jackson <nicholas.jackson@griffithuni.edu.au>
- * @author          Sebastian Meiling <s@mlng.net>
+ * @author          Locha Mesh Developers <contact@locha.io>
  */
 
 #include "cpu.h"
 #include "board.h"
 
 /**
- * @brief           Initialise the board.
+ * @brief    Initialize the board.
  */
-
 void board_init(void)
 {
     cpu_init();
