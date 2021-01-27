@@ -54,9 +54,7 @@ both the WROOM and WROVER chips without changes on the code.
 
 The board connects over UART to the
 [SimpleLink CC1312R](https://www.ti.com/product/CC1312R) radio module, the
-pinout is yet to be decided in the final complete board design. See the
-[radio-firmware](https://github.com/btcven/radio-firmware) repository for more
-information on the radio module we use.
+pinout is yet to be decided in the final complete board design.
 
 ## Table of Contents
 
@@ -70,92 +68,120 @@ information on the radio module we use.
 
 * [Getting Started](#getting-started)
    - [Development Workflow.](#development-workflow)
-   - [Installing RIOS-OS.](#installing-riot-os)
+   - [Installing the toolchain.](#installing-the-toolchain)
    - [Clone this repository](#clone-this-repository)
    - [Compiling.](#compiling)
    - [Flashing the Firmware](#flashing-the-firmware)
-   - [Compiling Documentation.](#compiling-documentation)
 
 [License](#license)
 
 ## Getting Started
 
 Since this is an open source project you can contribute with your code and
-knowledge, or by making changes to the documentation. We invite and welcome all contributions. Below is a brief
-description on how to work with the code and to compile
+knowledge, or by making changes to the documentation. We invite and welcome
+all contributions. Below is a brief description on how to work with the code
+and to compile
+
+- :warning: _The code is evolving each day, if something doesn't work when
+compiling please file and issue and we'll solve it_.
 
 ### Development Workflow
 
-Development happens in the `dev` branch. All Pull-Requests should be
-pointed to that branch. Please, make sure you follow the
-[CONTRIBUTING.md](CONTRIBUTING.md) guidelines. All Pull-Requests
-require that at least two developers review them first before merging to `dev`
-branch.
+Development happens in the `master` branch. All Pull Requests should be pointed
+to that branch. Please, make sure you follow the [CONTRIBUTING.md](CONTRIBUTING.md)
+guidelines. All Pull Requests require that at least two developers review them
+first before merging.
 
-### Installing RIOT-OS
+### Installing the toolchain
 
-RIOT is a real-time multi-threading operating system that supports a range of devices that are typically found in the Internet of Things (IoT): 8-bit, 16-bit and 32-bit microcontrollers.
+The firmware is based on RIOT-OS, it's a real-time multi-threading operating
+system that supports a range of devices that are typically found in the
+Internet of Things (IoT): 8-bit, 16-bit and 32-bit microcontrollers.
 
-currently only it is only compatible with linux (Debian / Ubuntu) for Mac OS you can search for alternatives like docker [here](https://doc.riot-os.org/group__cpu__esp32.html#esp32_toolchain) we leave you a detailed guide check by riot team.
+We use it for the CC1312 and ESP32 microcontrollers.
 
+Currently only it is only compatible with Linux, we highly recommend you to
+use Debian based distributions, although the compilation process might work
+for on other distributions, if it doesn't works, please file an issue
+on this repository, or provide a pull request, be perpared to touch some
+files. For Mac OS you can search for alternatives like docker, or install
+all the necessary tools to build the firmware.
+
+First, you need to install the ESP32 toolchain to build the firmware,
+not to be confused to the one provided by Espressif (ESP-IDF). Please follow
+[this guide](https://doc.riot-os.org/group__cpu__esp32.html#esp32_toolchain)
+to install the necessary tools on your Linux system.
+
+To install the development tools for building the CC1312 firmware you will
+need to follow [this guide](https://doc.riot-os.org/group__boards__cc1312__launchpad.html),
+see especially the _Flashing and debugging_ section on the guide.
+
+You have to install the ARM-GCC toolchain to build the CC1312 firmware, follow
+[this guide](https://github.com/RIOT-OS/RIOT/wiki/Family:-ARM) to install
+the toolchain for your operating system.
 
 ### Clone this repository
 
 ```
-`git clone git@github.com:btcven/turpial-firmware.git`
+git clone https://github.com/btcven/turpial-firmware.git
 ```
+
 ### Compiling
 
- 1.  cd turpial-firmware
- 2.  git submodule init
- 3.  git submodule update
- 4.  make
+ 1. Enter the firmware directory: `cd turpial-firmware`
+ 2. Update the submodules: `git submodule update --init --recurisve`
+ 3. Build the mesh firmware (for the CC1312): `make -C mesh BOARD=...`,
+    where `BOARD` is the board you are using, for example, the CC1312
+    LaunchPad provided by Texas Instruments, is `cc1312-launchpad`.
+    For example: `make -C mesh BOARD=cc1312-launchpad`.
+ 4. Build the wifi firmware (for the ESP32): `make -C wifi BOARD=...`,
+    where `BOARD` is the board you are using, for a generic ESP32 WROOM
+    board, use `esp32-wroom-32`.
+    For example: `make -C wifi BOARD=esp32-wroom-32`.
 
-### Flashing the Firmware
+
+### Flashing the firmware
 
 To upload the binary to the ESP32 you have connected to your computer, you
 need to use the following command:
 
 ```bash
-  make -p PORT flash 
+make -C wifi flash PORT=/dev/ttyUSB0
 ```
 
 Where `PORT` specifies on what port you have connected your ESP32 development
 board.
 
-
-### Compiling Documentation
-
-You can compile the code documentation by installing the following tools:
-
-1. [Doxygen](http://www.doxygen.nl/download.html)
-2. [Python 3](https://www.python.org/downloads/)
-3. `pip install -U sphinx`
-4. `pip install -U sphinx-rtd-theme`
-5. `pip install -U breathe`
-
-Now you can just checkout to the `doc/` directory and run:
+To upload the binary to the CC1312, you need to use the following command:
 
 ```bash
-make html
+make -C mesh flash PROGRAMMER=uniflash
 ```
 
-The documentation will reside in `doc/build/_html/`, from there you can open
-`index.html`.
+If you have installed TI version of OpenOCD, use `PROGRAMMER=openocd`.
+
+See also [btcven/ti-bootloader](https://github.com/btcven/ti-bootloader),
+to flash the firmware onto the CC1312 using the serial port only. And
+not through JTAG.
 
 ## License
-Copyright © 2019 **Bitcoin Venezuela** and **Locha Mesh** developers.
 
-Licensed under the **Apache License, Version 2.0**
+```
+Copyright 2021 btcven and Locha Mesh developers
 
----
-**A text quote is shown below**
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
 
->Unless required by applicable law or agreed to in writing, software
+   http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
-___
+```
+
 Read the full text:
-[Locha Mesh Apache License 2.0](LICENSE)
+
+[Apache License 2.0](LICENSE)
