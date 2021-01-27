@@ -1,5 +1,18 @@
 menu "Turpial Firmware configuration"
 
+config TURPIAL_AP_SSID
+    string "Turpial AP SSID"
+    default "Turpial_"
+    help
+        Turpial AP SSID. If not specified, by default an SSID of
+        Turpial_<ESP32 MAC> will be used.
+
+config TURPIAL_AP_PASSWORD
+    string "Turpial AP password"
+    default "mypassword"
+    help
+        Turpial AP password.
+
 config TURPIAL_GLOBAL_ADDR
     string "Turpial default IPv6 global address"
     default "2001:db8::1"
