@@ -33,6 +33,7 @@ jobs:
 
     - uses: eine/tip@master
       with:
+        if: github.ref == 'refs/heads/main'
         token: ${{ secrets.GITHUB_TOKEN }}
         tag: 'nightly'
         files: |
