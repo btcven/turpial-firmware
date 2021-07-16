@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 Freie Universität Berlin
  * Copyright (C) 2014 Lotte Steenbrink <lotte.steenbrink@fu-berlin.de>
- * Copyright (C) 2020 Locha Inc
+ * Copyright (C) 2021 Locha Mesh developers
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -16,8 +16,7 @@
  * @brief       RFC5444 server implementation
  *
  * @author      Lotte Steenbrink <lotte.steenbrink@fu-berlin.de>
- * @author      Gustavo Grisales <gustavosinbandera1@hotmail.com>
- * @author      Jean Pierre Dudey <jeandudey@hotmail.com>
+ * @author      Locha Mesh devs <contact@locha.io>
  * @}
  */
 

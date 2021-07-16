@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 Freie Universität Berlin
  * Copyright (C) 2014 Lotte Steenbrink <lotte.steenbrink@fu-berlin.de>
- * Copyright (C) 2020 Locha Inc
+ * Copyright (C) 2021 Locha Mesh developers <contact@locha.io>
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -16,8 +16,7 @@
  * @brief       RFC5444 RREQ
  *
  * @author      Lotte Steenbrink <lotte.steenbrink@fu-berlin.de>
- * @author      Gustavo Grisales <gustavosinbandera1@hotmail.com>
- * @author      Jean Pierre Dudey <jeandudey@hotmail.com>
+ * @author      Locha Mesh devs <contact@locha.io>
  * @}
  */
 
@@ -215,7 +214,7 @@ int aodvv2_writer_send_rrep(struct rfc5444_writer *wr, aodvv2_message_t *message
 {
     memcpy(&_msg, message, sizeof(aodvv2_message_t));
 
-    /* TODO(jeandudey): should we use alltarget for RREP? AFAIK we should have
+    /* TODO: should we use alltarget for RREP? AFAIK we should have
      * multiple targets to specific destinations (with the specified network
      * interface), not to _all targets_ (all nodes we know of) */
     if (rfc5444_writer_create_message_alltarget(wr, RFC5444_MSGTYPE_RREP,
