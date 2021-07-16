@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Locha Inc
+ * Copyright (C) 2021 btcven and Locha Mesh developers
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -13,7 +13,7 @@
  * @file
  * @brief       Demonstrating management of AODVv2 sequence numbers
  *
- * @author      Jean Pierre Dudey <jeandudey@hotmail.com>
+ * @author      Locha Mesh devs <contact@locha.io>
  *
  * @}
  */

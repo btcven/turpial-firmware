@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Locha Inc
+ * Copyright (C) 2021 btcven and Locha Mesh developers
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -13,8 +13,6 @@
  * @file
  * @brief       Extended shell commands
  *
- * @author      Gustavo Grisales <gustavosinbandera1@hotmail.com>
- * @author      Jean Pierre Dudey <jeandudey@hotmail.com>
  */
 
 #ifndef SHELL_EXTENDED_H
