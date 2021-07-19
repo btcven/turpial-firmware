@@ -134,7 +134,7 @@ git clone https://github.com/btcven/turpial-firmware.git
     ```
  2. Initialize and update the submodules:
     ```bash
-    git submodule update --init --recurisve
+    git submodule update --init --recursive
     ```
  3. Build the mesh firmware (for the CC1312):
 
