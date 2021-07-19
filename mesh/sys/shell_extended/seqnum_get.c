@@ -13,7 +13,7 @@
  * @file
  * @brief       Demonstrating management of AODVv2 sequence numbers
  *
- * @author      Locha Mesh devs <contact@locha.io>
+ * @author      Locha Mesh developers <contact@locha.io>
  *
  * @}
  */
