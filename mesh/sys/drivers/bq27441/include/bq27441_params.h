@@ -1,5 +1,5 @@
 /*
- * Copyright (C) 2020 Locha Inc
+ * Copyright (C) 2021 btcven and Locha Mesh developers <contact@locha.io>
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -12,7 +12,7 @@
  * @file
  * @brief       Fuel Gauge BQ27441
  *
- * @author      Locha Mesh Developers <developers@locha.io>
+ * @author      Locha Mesh developers <contact@locha.io>
  */
 
 #ifndef BQ27441_PARAMS_H
