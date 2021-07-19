@@ -122,22 +122,47 @@ the toolchain for your operating system.
 
 ### Clone this repository
 
-```
+```bash
 git clone https://github.com/btcven/turpial-firmware.git
 ```
 
 ### Compiling
 
- 1. Enter the firmware directory: `cd turpial-firmware`
- 2. Update the submodules: `git submodule update --init --recurisve`
- 3. Build the mesh firmware (for the CC1312): `make -C mesh BOARD=...`,
-    where `BOARD` is the board you are using, for example, the CC1312
+ 1. Enter the firmware directory: 
+    ```bash
+    cd turpial-firmware
+    ```
+ 2. Initialize and update the submodules:
+    ```bash
+    git submodule update --init --recurisve
+    ```
+ 3. Build the mesh firmware (for the CC1312):
+
+    ```bash
+    make -C mesh BOARD=<your_radio_board>
+    ```
+    
+    Where `your_radio_board` is the board you are using, for example, the CC1312
     LaunchPad provided by Texas Instruments, is `cc1312-launchpad`.
-    For example: `make -C mesh BOARD=cc1312-launchpad`.
- 4. Build the wifi firmware (for the ESP32): `make -C wifi BOARD=...`,
-    where `BOARD` is the board you are using, for a generic ESP32 WROOM
+    For example:
+
+    ```bash
+    make -C mesh BOARD=cc1312-launchpad
+    ```
+
+ 4. Build the wifi firmware (for the ESP32):
+
+    ```bash
+    make -C wifi BOARD=<your_wifi_board>
+    ```
+
+    Where `<your_wifi_board>` is the board you are using, for a generic ESP32 WROOM
     board, use `esp32-wroom-32`.
-    For example: `make -C wifi BOARD=esp32-wroom-32`.
+
+    For example: 
+    ```bash
+    make -C wifi BOARD=esp32-wroom-32
+    ```
 
 
 ### Flashing the firmware
