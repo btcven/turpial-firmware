@@ -13,6 +13,8 @@
  * @file
  * @brief       Extended shell commands
  *
+ * @author      Locha Mesh developers <developers@locha.io>
+ *
  */
 
 #ifndef SHELL_EXTENDED_H
