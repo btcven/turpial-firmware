@@ -1,6 +1,6 @@
 /*
  * Copyright (C)  2018 Gunar Schorcht
- * Copyright (C)  2021 btcven and Locha Mesh Developers
+ * Copyright (C)  2021 btcven and Locha Mesh Developers <contact@locha.io>
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -15,7 +15,7 @@
  * @brief       Board specific configuration for the Arduino API
  *
  * @author      Gunar Schorcht <gunar@schorcht.net>
- * @author      Locha Mesh Developers <contact@locha.io>
+ * @author      Locha Mesh developers <contact@locha.io>
  */
 
 #ifndef ARDUINO_BOARD_H
