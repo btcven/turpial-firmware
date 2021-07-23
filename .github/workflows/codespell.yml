@@ -9,8 +9,8 @@ jobs:
         steps:
             - uses: actions/checkout@v1
             - uses: codespell-project/actions-codespell@master
-        with:
-            check_filenames: false
-            check_hidden: false
-            skip: RIOT,*.svg,./core/contrib,.git
-            ignore_words_list: rsource,inout,doubleclick,crate,rsource,bufffer,trucated,calculate,childs,elments,continous,neigbor,Initalize,initalize,happend,inout
+            with:
+                check_filenames: false
+                check_hidden: false
+                skip: RIOT,*.svg,./core/contrib,.git
+                ignore_words_list: rsource,inout,doubleclick,crate,rsource,bufffer,trucated,calculate,childs,elments,continous,neigbor,Initalize,initalize,happend,inout
