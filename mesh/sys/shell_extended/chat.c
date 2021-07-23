@@ -13,7 +13,7 @@
  * @file
  * @brief       Chat send test message
  *
- * @author      Locha Mesh devs <contact@locha.io>
+ * @author      Locha Mesh developers <contact@locha.io>
  *
  * @}
  */

@@ -13,7 +13,7 @@
  * @file
  * @brief       MANET standards helper code
  *
- * @author      Locha Mesh devs <contact@locha.io>
+ * @author      Locha Mesh developers <contact@locha.io>
  */
 
 #ifndef NET_MANET_H

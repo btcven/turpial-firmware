@@ -16,7 +16,7 @@
  * @brief       AODVv2 routing protocol
  *
  * @author      Lotte Steenbrink <lotte.steenbrink@fu-berlin.de>
- * @author      Locha Mesh devs <contact@locha.io>
+ * @author      Locha Mesh developers <contact@locha.io>
  * @}
  */
 

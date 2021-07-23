@@ -16,7 +16,7 @@
  * @brief       AODVV2
  *
  * @author      Lotte Steenbrink <lotte.steenbrink@fu-berlin.de>
- * @author      Locha Mesh devs <contact@locha.io>
+ * @author      Locha Mesh developers <contact@locha.io>
  */
 
 #ifndef NET_AODVV2_AODVV2_H

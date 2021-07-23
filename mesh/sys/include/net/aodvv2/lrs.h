@@ -1,7 +1,7 @@
 /*
  * Copyright (C) 2014 Freie Universität Berlin
  * Copyright (C) 2014 Lotte Steenbrink <lotte.steenbrink@fu-berlin.de>
- * Copyright (C) 2021 btcven and Locha Mesh developers
+ * Copyright (C) 2021 btcven and Locha Mesh developers <contact@locha.io>
  *
  * This file is subject to the terms and conditions of the GNU Lesser
  * General Public License v2.1. See the file LICENSE in the top level
@@ -15,7 +15,7 @@
  * @brief       AODVv2 Local Route Set
  *
  * @author      Lotte Steenbrink <lotte.steenbrink@fu-berlin.de>
- * @author      Locha Mesh devs <contact@locha.io> 
+ * @author      Locha Mesh developers <contact@locha.io> 
  */
 
 #ifndef AODVV2_LRS_H
