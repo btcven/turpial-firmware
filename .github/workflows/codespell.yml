@@ -14,5 +14,5 @@ jobs:
             check_hidden: false
             skip: RIOT,*.svg,./core/contrib,.git
             # ignore_words_list: rsource,inout,doubleclick,crate,rsource,bufffer,trucated,calculate,childs,elments,continous,neigbor,Initalize,initalize,happend,inout
-            ignore_words_file: .dist/codespell/ignored_words.txt
+            ignore_words_file: ./dist/codespell/ignored_words.txt
             only_warn: 1
