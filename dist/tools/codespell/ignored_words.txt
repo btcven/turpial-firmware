@@ -3,7 +3,7 @@ crate
 rsource
 bufffer
 trucated
-calulate
+calculate
 childs
 elments
 continous

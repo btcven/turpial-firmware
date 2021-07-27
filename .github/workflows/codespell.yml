@@ -1,0 +1,16 @@
+name: Codespell
+
+on: [push, pull_request]
+
+jobs:
+  codespell:
+    name: Check for spelling errors
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: codespell-project/actions-codespell@master
+        with:
+            check_filenames: false
+            check_hidden: false
+            skip: RIOT, *.svg, core/contrib, .git
+            ignore_words_file: dist/tools/codespell/ignored_words.txt
